@@ -1,0 +1,34 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+
+rules:
+    - name: numbers
+      label: Ordinal
+      priority: 1
+      type: token
+      pattern: |
+        [entity=/ORDINAL/]
+
+    - name: any-entity
+      label: NounPhrase
+      priority: ${rulepriority}
+      type: token
+      pattern: |
+        [chunk="B-NP"] [chunk="I-NP"]*
+
+    - name: room
+      label: Room
+      priority: ${rulepriority}
+      type: token
+      pattern: |
+        [chunk="B-NP"] [chunk="I-NP"]* [lemma=room] [chunk="I-NP"]*
+
+    - name: door
+      label: Door
+      priority: ${rulepriority}
+      type: token
+      pattern: |
+        [chunk="B-NP"] [chunk="I-NP"]* [lemma=door] [chunk="I-NP"]*
+
+
+

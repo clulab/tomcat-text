@@ -1,0 +1,10 @@
+transpose_triggers: "move|shift"
+
+moveto_triggers: "go|move|run|walk"
+
+close_triggers: "close|shut"
+open_triggers: "open"
+
+search_triggers: "hunt|look|search" # go find, but not "found" or "did you find"
+
+

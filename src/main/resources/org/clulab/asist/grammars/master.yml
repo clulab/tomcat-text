@@ -1,0 +1,27 @@
+taxonomy: org/clulab/asist/grammars/taxonomy.yml
+
+vars: org/clulab/asist/grammars/triggers.yml
+
+rules:
+
+  # Extract the entities
+  - import: org/clulab/asist/grammars/entities.yml
+    vars:
+      rulepriority: "1"
+
+  # Extract the events
+  - import: org/clulab/asist/grammars/move.yml
+    vars:
+      rulepriority: "3"
+      addlabel: "Property"
+      trigger: ${moveto_triggers}
+
+  - import: org/clulab/asist/grammars/template.yml
+    vars:
+      rulepriority: "3"
+      addlabel: "Close"
+      label: Close
+      trigger: ${close_triggers}
+
+
+
