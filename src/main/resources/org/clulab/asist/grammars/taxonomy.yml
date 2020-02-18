@@ -2,6 +2,7 @@
   - NounPhrase
   - Attribute
   - Ordinal
+  - Switch
   - Infrastructure:
       - Room
       - Door
@@ -12,10 +13,9 @@
       - Ceiling
       - Lever
       - Button
-      - Sign
   - Obstacle:
-      - fire
-      - building_collapse
+      - Fire
+      - BuildingCollapse
   - Actions:
     - SimpleActions:
       - MoveTo
@@ -25,6 +25,9 @@
       - Toggle
       - Jump
       - Communicate
+      - Extinguish
+      - Save
+      - Defeat
     - ComplexActions:
         - Search
   - EntityTypes:
@@ -43,29 +46,29 @@
     - UP_Z
     - DOWN_Z
   - ItemType:
-    - bow
-    - arrow
-    - sword
-    - shovel
-    - pickaxe
-    - axe
-    - flint
-    - painting
-    - sign
-    - wooden_door
-    - bucket
-    - water_bucket
-    - lava_bucket
-    - minecart
-    - saddle
-    - iron_door
-    - redstone
-    - boat
-    - clock
-    - bed
-    - emerald
-    - item_frame
-    - flower_pot
+    - Bow
+    - Arrow
+    - Sword
+    - Shovel
+    - Pickaxe
+    - Axe
+    - Flint
+    - Painting
+    - Sign
+    - WoodenDoor
+    - Bucket
+    - WaterBucket
+    - LavaBucket
+    - Minecart
+    - Saddle
+    - IronDoor
+    - Redstone
+    - Boat
+    - Clock
+    - Bed
+    - Emerald
+    - ItemFrame
+    - FlowerPot
 - Sentiment:
     - Positive
     - Negative:

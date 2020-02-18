@@ -27,4 +27,6 @@ transparent_nouns: "level|amount|quantit" # do we need these in general?
 reasons: "cause|factor|motivation|reason"
 report: "cite|give|mention|provide|report"
 
+search_relations: ">dobj|>nmod_in|>nmod_within|>nmod_around|>nmod_beneath"
+
 # Todo: nmod_from "X will follow from Y"

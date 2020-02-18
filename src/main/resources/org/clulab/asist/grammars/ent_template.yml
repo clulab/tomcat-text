@@ -1,0 +1,9 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  - name: ${ name }_detection
+    priority: ${ priority }
+    label: ${ label }
+    type: token
+    pattern: |
+      [lemma=/(?i)^(${ trigger })/]

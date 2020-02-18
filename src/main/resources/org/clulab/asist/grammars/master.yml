@@ -10,18 +10,7 @@ rules:
       rulepriority: "1"
 
   # Extract the events
-  - import: org/clulab/asist/grammars/move.yml
+  - import: org/clulab/asist/grammars/actions.yml
     vars:
-      rulepriority: "3"
-      addlabel: "Property"
-      trigger: ${moveto_triggers}
-
-  - import: org/clulab/asist/grammars/template.yml
-    vars:
-      rulepriority: "3"
-      addlabel: "Close"
-      label: Close
-      trigger: ${close_triggers}
-
-
+      rulepriority: "2"
 
