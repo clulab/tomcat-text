@@ -15,7 +15,7 @@ libraryDependencies ++= {
     "org.clulab"    %% "processors-odin"          % procVer,
     "org.clulab"    %% "processors-modelsmain"    % procVer,
     "org.clulab"    %% "processors-modelscorenlp" % procVer,
-    "ai.lum"        %% "common"                   % "0.0.9-SNAPSHOT",
+    "ai.lum"        %% "common"                   % "0.0.9",
     "org.scalatest" %% "scalatest"                % "3.0.4" % "test",
     "com.typesafe"  %  "config"                   % "1.3.1",
     "net.sf.saxon"  % "saxon-dom"                 % "8.7",
