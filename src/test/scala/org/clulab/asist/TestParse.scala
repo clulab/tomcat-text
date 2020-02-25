@@ -44,7 +44,7 @@ class TestParse extends FlatSpec with Matchers {
     }
 
     "AsistEngine" should "Parse search events properly" in {
-        val doc = extractor.annotate("I will search inside the building for the villagers")
+        val doc = extractor.annotate("I will search for the villagers inside the building")
         val mentions = extractor.extractFrom(doc)
         mentions.size should be (3)
         println("Search events successfully extracted.")   
