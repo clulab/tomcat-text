@@ -29,6 +29,13 @@ rules:
       label: Foe
       trigger: ${ foe_triggers }
 
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: person
+      priority: ${ rulepriority }
+      label: Neutral
+      trigger: ${ person_triggers }
+
   - name: numbers
     label: Ordinal
     priority: 1

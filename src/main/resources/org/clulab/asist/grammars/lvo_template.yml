@@ -7,3 +7,19 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/]
       target: ${ object_type } = >dobj
+
+  - name: passive-${name}
+    priority: ${ template_priority }
+    label: ${ label }
+    type: dependency
+    pattern: |
+      trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^VBN/]
+      target:  ${ object_type } = nsubjpass
+
+  - name: prepnom-${name}
+    priority: ${ template_priority }
+    label: ${ label }
+    type: dependency
+    pattern: |
+      trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^N/]
+      target:  ${ object_type } = <conj_and*  nmod_of

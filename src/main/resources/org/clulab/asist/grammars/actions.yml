@@ -41,10 +41,26 @@ rules:
       trigger: ${ attack_triggers }
       object_type: Foe?
 
-  - name: search_action
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: search
+      template_priority: ${ rulepriority }
+      label: Search
+      trigger: ${ search_triggers }
+      object_type: Neutral
+
+  - name: search_infra_action
+    priority: ${ rulepriority }
+    label: Search
+    pattern: |
+      trigger = [lemma=/${ search_triggers }/]
+      area: Infrastructure = ${ search_relations }
+      target: Concept? = >nmod_for
+
+  - name: search_nmod_for_action
     priority: ${ rulepriority }
     label: Search
     pattern: |
       trigger = [lemma=/${ search_triggers }/]
       area: Infrastructure? = ${ search_relations }
-      target: Concept? = >nmod_for
+      target: Concept = >nmod_for

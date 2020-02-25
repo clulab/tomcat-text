@@ -23,3 +23,5 @@ infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house"
 switch_triggers: "switch|toggle|lever|door"
 
 foe_triggers: "zombie|mob|enemy"
+
+person_triggers: "person|guy|victim|villager|dude"
