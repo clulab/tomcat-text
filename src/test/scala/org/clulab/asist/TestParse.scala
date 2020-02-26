@@ -11,77 +11,82 @@ class TestParse extends FlatSpec with Matchers {
     "AsistEngine" should "Parse close events properly" in {
         val doc = extractor.annotate("I will close the door")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (3)
-        println("Close events successfully extracted.")   
+        mentions(0).label should be ("Infrastructure")
+        mentions(1).label should be ("Switch")
+        mentions(2).label should be ("Close")
     }
 
-    "AsistEngine" should "Parse extinguish events properly" in {
+    it should "Parse extinguish events properly" in {
         val doc = extractor.annotate("I'm going to put out the fire before leaving")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (2)
-        println("Extinguish events successfully extracted.")   
+        mentions(0).label should be ("Fire")
+        mentions(1).label should be ("Extinguish")
     }
 
-    "AsistEngine" should "Parse toggle events properly" in {
+    it should "Parse toggle events properly" in {
         val doc = extractor.annotate("He opened the door and walked into the sunset.")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (3)
-        println("Toggle events successfully extracted.")   
+        mentions(0).label should be ("Infrastructure")
+        mentions(1).label should be ("Switch")
+        mentions(2).label should be ("Toggle")
     }
 
-    "AsistEngine" should "Parse save events properly" in {
+    it should "Parse save events properly" in {
         val doc = extractor.annotate("I'm going to save the villager over there")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (2)
-        println("Save events successfully extracted.")   
+        mentions(0).label should be ("Neutral")
+        mentions(1).label should be ("Save")
     }
 
-    "AsistEngine" should "Parse defeat events properly" in {
+    it should "Parse defeat events properly" in {
         val doc = extractor.annotate("To progress I will kill the zombies")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (2)
-        println("Defeat events successfully extracted.")   
+        mentions(0).label should be ("Foe")
+        mentions(1).label should be ("Defeat")
     }
 
-    "AsistEngine" should "Parse search events properly" in {
+    it should "Parse search events properly" in {
         val doc = extractor.annotate("I will search for the villagers inside the building")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (3)
-        println("Search events successfully extracted.")   
+        mentions(0).label should be ("Search")
+        mentions(1).label should be ("Neutral")
+        mentions(2).label should be ("Infrastructure")
     }
 
-    "AsistEngine" should "Recognize fire entities" in {
-        val doc = extractor.annotate("Inside, the a flame was spreading through the kitchen")
+    it should "Recognize fire entities" in {
+        val doc = extractor.annotate("Inside, a flame was spreading through the kitchen")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (1)
-        println("Fire entities successfully detected")
+        mentions(0).label should be ("Fire") 
     }
 
-    "AsistEngine" should "Recognize infrastructure entities" in {
+    it should "Recognize infrastructure entities" in {
         val doc = extractor.annotate("The room was up the stairs, behind the first door on the left")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (4)
-        println("Infrastructure entities successfully detected")
+        mentions(0).label should be ("Infrastructure")
+        mentions(1).label should be ("Switch")
+        mentions(2).label should be ("Ordinal")
+        mentions(3).label should be ("Infrastructure")
     }
 
-    "AsistEngine" should "Recognize switch entities" in {
+    it should "Recognize switch entities" in {
         val doc = extractor.annotate("The lever is behind the door")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (3)
-        println("Switch entities successfully detected")
+        mentions(0).label should be ("Switch")
+        mentions(1).label should be ("Infrastructure")
+        mentions(2).label should be ("Switch")
     }
 
-    "AsistEngine" should "Recognize foe entities" in {
+    it should "Recognize foe entities" in {
         val doc = extractor.annotate("Down the road I see a mob who seems like a zombie.")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (2)
-        println("Foe entities successfully detected")
+        mentions(0).label should be ("Foe")
+        mentions(0).label should be ("Foe")
     }
 
-    "AsistEngine" should "Recognize person entities" in {
+    it should "Recognize person entities" in {
         val doc = extractor.annotate("There's a guy over there, next to the other person")
         val mentions = extractor.extractFrom(doc)
-        mentions.size should be (2)
-        println("Person entities successfully detected")
+        mentions(0).label should be ("Neutral")
+        mentions(1).label should be ("Neutral")
     }
 }
