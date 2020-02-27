@@ -49,6 +49,22 @@ rules:
       trigger: ${ search_triggers }
       object_type: Neutral
 
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Concept?
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: craft
+      template_priority: ${ rulepriority }
+      label: Craft
+      trigger: ${ craft_triggers }
+      object_type: Concept?
+
   - name: search_infra_action
     priority: ${ rulepriority }
     label: Search

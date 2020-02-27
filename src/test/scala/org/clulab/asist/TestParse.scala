@@ -16,6 +16,18 @@ class TestParse extends FlatSpec with Matchers {
         mentions(2).label should be ("Close")
     }
 
+    it should "Parse craft events properly" in {
+        val doc = extractor.annotate("After crafting this sword, I push the button")
+        val mentions = extractor.extractFrom(doc)
+        mentions(0).label should be ("Craft")
+    }
+
+    it should "Parse sight events properly" in {
+        val doc = extractor.annotate("I think I see something over there")
+        val mentions = extractor.extractFrom(doc)
+        mentions(0).label should be ("Sight")
+    }
+    
     it should "Parse extinguish events properly" in {
         val doc = extractor.annotate("I'm going to put out the fire before leaving")
         val mentions = extractor.extractFrom(doc)
@@ -77,10 +89,10 @@ class TestParse extends FlatSpec with Matchers {
     }
 
     it should "Recognize foe entities" in {
-        val doc = extractor.annotate("Down the road I see a mob who seems like a zombie.")
+        val doc = extractor.annotate("Down the road there is a mob who looks like a zombie.")
         val mentions = extractor.extractFrom(doc)
         mentions(0).label should be ("Foe")
-        mentions(0).label should be ("Foe")
+        mentions(1).label should be ("Foe")
     }
 
     it should "Recognize person entities" in {

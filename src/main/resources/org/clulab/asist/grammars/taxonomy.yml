@@ -28,6 +28,8 @@
       - Extinguish
       - Save
       - Defeat
+      - Sight
+      - Craft
     - ComplexActions:
         - Search
   - EntityTypes:

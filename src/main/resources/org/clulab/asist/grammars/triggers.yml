@@ -25,3 +25,7 @@ switch_triggers: "switch|toggle|lever|door"
 foe_triggers: "zombie|mob|enemy"
 
 person_triggers: "person|guy|victim|villager|dude"
+
+sight_triggers: "see|observe|glimse"
+
+craft_triggers: "craft|make|produce|brew|create"
