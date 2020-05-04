@@ -18,11 +18,11 @@ attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 fire_triggers: "fire|blaze|flame"
 
-infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house"
+infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof"
 
 switch_triggers: "switch|toggle|lever|door"
 
-foe_triggers: "zombie|mob|enemy"
+foe_triggers: "zombie|mob|enemy|skeleton"
 
 person_triggers: "person|guy|victim|villager|dude"
 

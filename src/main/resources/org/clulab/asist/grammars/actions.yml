@@ -11,6 +11,14 @@ rules:
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
+      name: move
+      template_priority: ${ rulepriority }
+      label: MoveTo
+      trigger: ${ moveto_triggers }
+      object_type: Concept?
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
       name: extinguish
       template_priority: ${ rulepriority }
       label: Extinguish
@@ -47,7 +55,7 @@ rules:
       template_priority: ${ rulepriority }
       label: Search
       trigger: ${ search_triggers }
-      object_type: Neutral
+      object_type: EntityTypes
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
