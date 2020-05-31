@@ -42,3 +42,11 @@ rules:
     type: token
     pattern: |
       [entity=/ORDINAL/]
+
+  - name: anaphor
+    label: Anaphor
+    priority: 1
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/]

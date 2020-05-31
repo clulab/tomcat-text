@@ -47,15 +47,7 @@ rules:
       template_priority: ${ rulepriority }
       label: Defeat
       trigger: ${ attack_triggers }
-      object_type: Foe
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: attack-anaphor
-      template_priority: ${ rulepriority }
-      label: Defeat
-      trigger: ${ attack_triggers }
-      object_type: Anaphor
+      object_type: Foe?
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:

@@ -5,6 +5,7 @@ import com.typesafe.config.ConfigFactory
 import org.clulab.odin.{ExtractorEngine, Mention, State}
 import org.clulab.processors.{Document, Processor}
 import org.clulab.processors.fastnlp.FastNLPProcessor
+import org.clulab.processors.clu.CluProcessor
 import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.LoggerFactory
 
