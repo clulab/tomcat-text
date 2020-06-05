@@ -5,6 +5,13 @@ from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 
+"""
+To use this script you need to replace two strings, the NEEDSKEY and 
+NEEDSINSTANCEURL strings.
+This is done by creating a speech-to-text resouce in the IBM Cloud console.
+When the resource is created, the console will provide these two strings. 
+"""
+
 authenticator = IAMAuthenticator('NEEDSKEY')
 speech_to_text = SpeechToTextV1(
     authenticator=authenticator
