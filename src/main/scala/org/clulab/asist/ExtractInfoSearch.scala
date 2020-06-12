@@ -20,7 +20,9 @@ import scala.util.parsing.json.JSON
 
 
 object ExtractInfoSearch extends App {
-    
+   
+    val useCorefResolution = false
+     
     def getProv(event: Any): (Int, Int, Int) = {
         val eventMap = event.asInstanceOf[immutable.Map[String, Any]]
         val prov = eventMap.get("provenance").get.asInstanceOf[String].split(", ")
@@ -133,8 +135,9 @@ object ExtractInfoSearch extends App {
 
     val text_iter = Source.fromResource(text_file_name).getLines
 
-    for (line <- text_iter){ // The total number of utterances
-        println(s"Processing text : ${line}" )
+    val all_events = new ArrayBuffer[Mention]
+    for (line <- text_iter){
+        //println(s"Processing text : ${line}" )
 
         val corenlp_doc = new Annotation(line)
         pipeline.annotate(corenlp_doc)
@@ -144,14 +147,15 @@ object ExtractInfoSearch extends App {
         val mentions = ieSystem.extractFrom(doc).sortBy(m => 
                             (m.sentence, m.getClass.getSimpleName))
         for (m <- mentions){
+            all_events += m
             if (m.arguments contains "target"){
                 val target = m.arguments("target").head
-                println(s" ${m.label} -> ")
+                //println(s" ${m.label} -> ")
                 for (i <- target.tokenInterval){
                     val sent = m.document.sentences(target.sentence)
-                    println(s"   ${target.label}:${sent.words(i)}")
+                    //println(s"   ${target.label}:${sent.words(i)}")
                 }
-                if (target.label == "Anaphor"){
+                if (useCorefResolution && target.label == "Anaphor"){
                     insideCorefChain(coref_chains.asScala, target, m) match {
                         case Some(coref_head) =>
                             // Now check if coref_head has label other than anaphor
@@ -178,5 +182,19 @@ object ExtractInfoSearch extends App {
         }
 
 
+    }
+
+    println("Number of events detected: " + all_events.size)
+    val eventMap = new mutable.ListMap[String, Int]()
+    for (m <- all_events){
+        var key = m.label
+        if (m.arguments contains "target") {
+            key += "-"+m.arguments("target").head.label
+        }
+        eventMap.update(key, eventMap.getOrElse(key, 0) + 1)
+    }
+    println("Number of unique events: "+eventMap.size+"\n")
+    for (key <- eventMap.keys){
+        println(key+": "+eventMap.get(key).get)
     }
 }
