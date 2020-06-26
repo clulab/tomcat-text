@@ -24,24 +24,10 @@ rules:
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: foe
-      priority: ${ rulepriority }
-      label: Foe
-      trigger: ${ foe_triggers }
-
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
       name: person
       priority: ${ rulepriority }
       label: Neutral
       trigger: ${ person_triggers }
-
-  - name: numbers
-    label: Ordinal
-    priority: 1
-    type: token
-    pattern: |
-      [entity=/ORDINAL/]
 
   - name: anaphor
     label: Anaphor

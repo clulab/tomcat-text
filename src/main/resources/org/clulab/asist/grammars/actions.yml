@@ -15,15 +15,7 @@ rules:
       template_priority: ${ rulepriority }
       label: MoveTo
       trigger: ${ moveto_triggers }
-      object_type: Concept?
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: extinguish
-      template_priority: ${ rulepriority }
-      label: Extinguish
-      trigger: ${ extinguish_triggers }
-      object_type: Fire
+      object_type: Concept
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -40,22 +32,6 @@ rules:
       label: Save
       trigger: ${ triage_triggers }
       object_type: Concept
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: attack
-      template_priority: ${ rulepriority }
-      label: Defeat
-      trigger: ${ attack_triggers }
-      object_type: Foe
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: attack-anaphor
-      template_priority: ${ rulepriority }
-      label: Defeat
-      trigger: ${ attack_triggers }
-      object_type: Anaphor
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -96,3 +72,10 @@ rules:
       trigger = [lemma=/${ search_triggers }/]
       area: Infrastructure? = ${ search_relations }
       target: Concept = >nmod_for
+
+  - name: move_nmod_into_action
+    priority: ${ rulepriority }
+    label: MoveTo
+    pattern: |
+      trigger = [lemma=/${ moveto_triggers }/]
+      target: Infrastructure = >nmod_into

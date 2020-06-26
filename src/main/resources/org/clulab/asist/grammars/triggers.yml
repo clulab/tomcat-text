@@ -6,7 +6,7 @@ close_triggers: "close|shut"
 
 open_triggers: "open"
 
-search_triggers: "find|hunt|look|search"
+search_triggers: "find|hunt|look|search|check"
 
 extinguish_triggers: "extinguish|put|stop"
 
@@ -18,7 +18,7 @@ attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 fire_triggers: "fire|blaze|flame"
 
-infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof"
+infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall"
 
 switch_triggers: "switch|toggle|lever|door"
 
