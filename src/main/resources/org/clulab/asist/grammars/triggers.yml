@@ -1,6 +1,6 @@
 transpose_triggers: "move|shift"
 
-moveto_triggers: "go|move|run|walk"
+moveto_triggers: "go|move|run|walk|come"
 
 close_triggers: "close|shut"
 
@@ -12,7 +12,7 @@ extinguish_triggers: "extinguish|put|stop"
 
 toggle_triggers: "flip|toggle|turn|switch|pull|open"
 
-triage_triggers: "save|triage|heal|help"
+triage_triggers: "save|triage|heal|help|get|do"
 
 attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
@@ -24,8 +24,8 @@ switch_triggers: "switch|toggle|lever|door"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 
-person_triggers: "person|guy|victim|villager|dude"
+person_triggers: "person|guy|victim|villager|dude|green|yellow"
 
-sight_triggers: "see|observe|glimse"
+sight_triggers: "see|observe|glimpse"
 
 craft_triggers: "craft|make|produce|brew|create"
