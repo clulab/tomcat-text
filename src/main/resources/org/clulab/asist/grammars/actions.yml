@@ -1,13 +1,13 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: close
-      template_priority: ${ rulepriority }
-      label: Close
-      trigger: ${ close_triggers }
-      object_type: Infrastructure
+#  - import: org/clulab/asist/grammars/lvo_template.yml
+#    vars:
+#      name: close
+#      template_priority: ${ rulepriority }
+#      label: Close
+#      trigger: ${ close_triggers }
+#      object_type: Infrastructure
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -15,15 +15,15 @@ rules:
       template_priority: ${ rulepriority }
       label: MoveTo
       trigger: ${ moveto_triggers }
-      object_type: Concept
+      object_type: Location
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: toggle
-      template_priority: ${ rulepriority }
-      label: Toggle
-      trigger: ${ toggle_triggers }
-      object_type: Switch
+#  - import: org/clulab/asist/grammars/lvo_template.yml
+#    vars:
+#      name: toggle
+#      template_priority: ${ rulepriority }
+#      label: Toggle
+#      trigger: ${ toggle_triggers }
+#      object_type: Switch
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -39,7 +39,7 @@ rules:
       template_priority: ${ rulepriority }
       label: Search
       trigger: ${ search_triggers }
-      object_type: EntityTypes
+      object_type: Location
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -47,22 +47,22 @@ rules:
       template_priority: ${ rulepriority }
       label: Sight
       trigger: ${ sight_triggers }
-      object_type: Concept?
+      object_type: EntityTypes
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: craft
-      template_priority: ${ rulepriority }
-      label: Craft
-      trigger: ${ craft_triggers }
-      object_type: Concept?
+#  - import: org/clulab/asist/grammars/lvo_template.yml
+#    vars:
+#      name: craft
+#      template_priority: ${ rulepriority }
+#      label: Craft
+#      trigger: ${ craft_triggers }
+#      object_type: Concept?
 
   - name: search_infra_action
     priority: ${ rulepriority }
     label: Search
     pattern: |
       trigger = [lemma=/${ search_triggers }/]
-      area: Infrastructure = ${ search_relations }
+      area: Location = ${ search_relations }
       target: Concept? = >nmod_for
 
   - name: search_nmod_for_action
@@ -70,12 +70,21 @@ rules:
     label: Search
     pattern: |
       trigger = [lemma=/${ search_triggers }/]
-      area: Infrastructure? = ${ search_relations }
+      area: Location? = ${ search_relations }
       target: Concept = >nmod_for
 
-  - name: move_nmod_into_action
+  - name: move_nmod_action
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
-      target: Infrastructure = >nmod_into
+      target: Location = >nmod_into | >nmod_to | >nmod_towards
+      person: Anaphor? = >nsubj
+
+  - name: move_deixis_action
+    priority: ${ rulepriority }
+    label: MoveTo
+    pattern: |
+      trigger = [lemma=/${ moveto_triggers }/]
+      target: Deictic = >nmod_into | >nmod_to | >nmod_towards | >advmod
+      person: Anaphor? = >nsubj

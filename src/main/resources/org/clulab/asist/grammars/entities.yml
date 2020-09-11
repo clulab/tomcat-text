@@ -17,6 +17,13 @@ rules:
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
+      name: deictic
+      priority: ${ rulepriority }
+      label: Deictic
+      trigger: ${ deixis_triggers }
+
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
       name: switch
       priority: ${ rulepriority }
       label: Switch

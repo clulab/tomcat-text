@@ -12,13 +12,13 @@ extinguish_triggers: "extinguish|put|stop"
 
 toggle_triggers: "flip|toggle|turn|switch|pull|open"
 
-triage_triggers: "save|triage|heal|help|get|do"
+triage_triggers: "save|triage|heal|help|get|do|rescue"
 
 attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 fire_triggers: "fire|blaze|flame"
 
-infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall"
+infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance"
 
 switch_triggers: "switch|toggle|lever|door"
 
@@ -29,3 +29,8 @@ person_triggers: "person|guy|victim|villager|dude|green|yellow"
 sight_triggers: "see|observe|glimpse"
 
 craft_triggers: "craft|make|produce|brew|create"
+
+deixis_triggers: "here|there|back|in|through"
+
+plan_switch_triggers: "start|begin|switch"
+

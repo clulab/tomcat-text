@@ -3,8 +3,11 @@
   - Attribute
   - Ordinal
   - Switch
-  - Anaphor 
-  - Infrastructure:
+  - Anaphor
+  - Location:
+    - Inferred:
+      - Deictic
+    - Infrastructure:
       - Room
       - Door
       - Building
