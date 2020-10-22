@@ -4,6 +4,7 @@ rules:
   - name: lemma_verb_dobj-${name}
     priority: ${ template_priority }
     label: ${ label }
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/]
       target: ${ object_type } = >dobj
@@ -11,6 +12,7 @@ rules:
   - name: passive-${name}
     priority: ${ template_priority }
     label: ${ label }
+    action: removeResearcher
     type: dependency
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^VBN/]
@@ -19,6 +21,7 @@ rules:
   - name: prepnom-${name}
     priority: ${ template_priority }
     label: ${ label }
+    action: removeResearcher
     type: dependency
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^N/]

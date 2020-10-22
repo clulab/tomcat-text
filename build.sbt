@@ -8,6 +8,7 @@ scalaVersion := "2.12.4"
 
 resolvers += "Artifactory" at "http://artifactory.cs.arizona.edu:8081/artifactory/sbt-release"
 
+libraryDependencies += "io.spray" %%  "spray-json" % "1.3.5"
 libraryDependencies ++= {
   val procVer = "7.1.0"
 

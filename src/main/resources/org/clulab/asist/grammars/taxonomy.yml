@@ -22,13 +22,14 @@
       - BuildingCollapse
   - Actions:
     - SimpleActions:
-      - MoveTo
+      - Move
       - Open
       - Close
       - Push
       - Toggle
       - Jump
       - Communicate
+      - Continue
       - Extinguish
       - Save
       - Defeat
@@ -36,8 +37,11 @@
       - Craft
     - ComplexActions:
         - Search
+        - ChangePriority
   - EntityTypes:
-    - Neutral
+    - Victim:
+        - Yellow
+        - Green
     - Friend
     - Foe
   - Facing:

@@ -13,7 +13,7 @@ rules:
     vars:
       name: move
       template_priority: ${ rulepriority }
-      label: MoveTo
+      label: Move
       trigger: ${ moveto_triggers }
       object_type: Location
 
@@ -60,6 +60,7 @@ rules:
   - name: search_infra_action
     priority: ${ rulepriority }
     label: Search
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/${ search_triggers }/]
       area: Location = ${ search_relations }
@@ -68,6 +69,7 @@ rules:
   - name: search_nmod_for_action
     priority: ${ rulepriority }
     label: Search
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/${ search_triggers }/]
       area: Location? = ${ search_relations }
@@ -75,7 +77,8 @@ rules:
 
   - name: move_nmod_action
     priority: ${ rulepriority }
-    label: MoveTo
+    label: Move
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
       target: Location = >nmod_into | >nmod_to | >nmod_towards
@@ -83,8 +86,41 @@ rules:
 
   - name: move_deixis_action
     priority: ${ rulepriority }
-    label: MoveTo
+    label: Move
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
       target: Deictic = >nmod_into | >nmod_to | >nmod_towards | >advmod
+      person: Anaphor? = >nsubj
+
+  - name: sight_presence
+    priority: ${ rulepriority }
+    label: Sight
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      target: Victim = >nsubj
+
+  - name: i_am_searching
+    priority: ${ rulepriority }
+    label: Search
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ search_triggers })/]
+      person: Anaphor = >nsubj
+
+  - name: continue_action
+    priority: ${ rulepriority }
+    label: Continue
+    pattern: |
+      trigger = [lemma=/(?i)^(${ continue_triggers })/]
+      person: Anaphor = >nsubj
+
+  - name: change_priority
+    priority: ${ rulepriority }
+    label: ChangePriority
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
+      target: Victim = >dobj
       person: Anaphor? = >nsubj

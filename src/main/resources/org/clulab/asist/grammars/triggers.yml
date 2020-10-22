@@ -24,7 +24,7 @@ switch_triggers: "switch|toggle|lever|door"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 
-person_triggers: "person|guy|victim|villager|dude|green|yellow"
+person_triggers: "person|guy|victim|villager|dude"
 
 sight_triggers: "see|observe|glimpse"
 
@@ -34,3 +34,8 @@ deixis_triggers: "here|there|back|in|through"
 
 plan_switch_triggers: "start|begin|switch"
 
+continue_triggers: "going"
+
+change_priority_triggers: "target|prioritize|focus"
+
+exist_triggers: "be"

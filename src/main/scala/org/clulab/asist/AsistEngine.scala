@@ -1,5 +1,7 @@
 package org.clulab.asist
 
+import java.util.Date
+
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.config.ConfigFactory
 import org.clulab.odin.{ExtractorEngine, Mention, State}
@@ -9,7 +11,10 @@ import org.clulab.processors.clu.CluProcessor
 import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.LoggerFactory
 
-class AsistEngine(val config: Config = ConfigFactory.load("stub")) extends Configured {
+import scala.collection.mutable.ArrayBuffer
+
+class AsistEngine(var timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]), val config: Config
+    = ConfigFactory.load("stub")) extends Configured {
 
   val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
 
@@ -37,7 +42,7 @@ class AsistEngine(val config: Config = ConfigFactory.load("stub")) extends Confi
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time based on paths in the config file.
       val masterRules = FileUtils.getTextFromResource(masterRulesPath)
-      val actions = StubActions(taxonomyPath)
+      val actions = StubActions(timeintervals)
 
       new LoadableAttributes(
         actions,

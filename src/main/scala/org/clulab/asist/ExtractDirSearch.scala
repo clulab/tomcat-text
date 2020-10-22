@@ -1,20 +1,16 @@
 package org.clulab.asist
 
 import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
-import java.util.Properties
 import java.text.SimpleDateFormat
+import java.util.Properties
 
-import org.clulab.factuality.Factuality
 import edu.stanford.nlp.coref.CorefCoreAnnotations
 import edu.stanford.nlp.coref.data.CorefChain
-import edu.stanford.nlp.dcoref.CoNLL2011DocumentReader.Document
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
-import org.clulab.odin.{Actions, EventMention, Mention, State, TextBoundMention}
-import org.json4s.JObject
-import org.json4s.JsonDSL._
+import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import org.json4s.jackson.JsonMethods._
+import spray.json.DefaultJsonProtocol._
 import spray.json._
-import DefaultJsonProtocol._
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
@@ -22,10 +18,10 @@ import scala.collection.mutable.{ArrayBuffer, Map}
 import scala.collection.{immutable, mutable}
 import scala.io.Source
 import scala.util.control.Breaks._
-import scala.util.parsing.json.{JSON, JSONType}
+import scala.util.parsing.json.JSON
 
 
-object ExtractInfoSearch extends App {
+object ExtractDirSearch extends App {
 
     def getProv(event: Any): (Int, Int, Int) = {
         val eventMap = event.asInstanceOf[immutable.Map[String, Any]]
@@ -425,195 +421,114 @@ object ExtractInfoSearch extends App {
 
     // SCRIPT START
 
-    //println("[CoreNLP] Initializing the CoreNLP pipeline ...")
+    println("[CoreNLP] Initializing the CoreNLP pipeline ...")
     val corenlp_properties = new Properties()
     corenlp_properties.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref")
     val pipeline = new StanfordCoreNLP(corenlp_properties)
-    //println("[CoreNLP] Completed Initialization")
+    println("[CoreNLP] Completed Initialization")
 
     val taxonomy_map_raw = Source.fromResource("taxonomy_map.json").mkString
     val taxonomy_json = JsonParser(taxonomy_map_raw)
     val tax_map = taxonomy_json.convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
-    val input_file_name = if (args.length > 0){
+    println("[AsistEngine] Initializing the AsistEngine ...")
+    val ieSystem = new AsistEngine((null, null, null))
+    var proc = ieSystem.proc
+    println("[AsistEngine] Completed Initialization ...")
+
+    val input_dir_name = if (args.length > 0){
         args(0)
     } else {
-        throw new Exception("Must include transcript file path: {transcript file} {metadata|None} {annotation|None")
+        throw new Exception("Must include transcript directory path: {transcript file} {metadata|None} {annotation|None")
     }
 
-    var raw_text = getCleanDoc(input_file_name)
-    //println(raw_text)
-    var time_lists = getTimeMap(input_file_name)
+    val output_file = new PrintWriter(new File("output_events.txt"))
 
-    //println("[AsistEngine] Initializing the AsistEngine ...")
-    val ieSystem = new AsistEngine((time_lists._1, time_lists._3, time_lists._4))
-    var proc = ieSystem.proc
-    //println("[AsistEngine] Completed Initialization ...")
+    //https://alvinalexander.com/scala/how-to-list-subdirectories-under-directory-in-scala/
+    def getFilesInDir(dir: File): Array[String] =
+      dir.listFiles
+        .filter(_.isFile)
+        .map(_.getAbsolutePath)
 
-    var doc:org.clulab.processors.Document = null
-    val all_events = new ArrayBuffer[Array[Any]]
-    val (extractions, extracted_doc) = runExtraction(raw_text, "")
-    doc = extracted_doc
-    extractions.foreach(event_array =>
-        all_events.append(event_array)
-    )
-    //println("Completed event extraction step")
+    println("Starting in: "+input_dir_name)
+    for (input_file_name <- getFilesInDir(new File(input_dir_name))){
+      println("Extracting from: "+input_file_name+" . . .")
+      val raw_text = getCleanDoc(input_file_name)
+      val time_lists = getTimeMap(input_file_name)
 
-    // Only given transcript & metadata, print extracted events in JSON format
-    if (args.length < 3) {
-      var experiment_id = ""
-      var trial_id = ""
-      // If no metadata file is given, just put NULL for missing info
-      if (args.length < 2) {
-        experiment_id = "NULL"
-        trial_id = "NULL"
-      } else {
-        val metadata = getMetaData(args(1))
-        experiment_id = metadata._1
-        trial_id = metadata._2
-      }
+      ieSystem.timeintervals = (time_lists._1, time_lists._3, time_lists._4)
+      ieSystem.reload()
+
+      var doc:org.clulab.processors.Document = null
+      val all_events = new ArrayBuffer[Array[Any]]
+      val (extractions, extracted_doc) = runExtraction(raw_text, "")
+      doc = extracted_doc
+      extractions.foreach(event_array =>
+          all_events.append(event_array)
+      )
+      //println("Completed event extraction step")
+
+      val experiment_id = "NULL"; val trial_id = "NULL"
       val time_format = new SimpleDateFormat("HH:mm:ss.SSS")
       var text: String = ""; var startOffset = 0; var endOffset = 0
-      val output_file = new PrintWriter(new File("output_events.txt"))
-      try {
-        for (extraction <- all_events) {
-          val mention = extraction(0).asInstanceOf[Mention]
-          val argument_labels = for (key <- mention.arguments.keys)
-            yield mention.arguments.get(key).get(0).label
-          mention match {
-            case cur: EventMention =>
-              text = cur.trigger.text
-              startOffset = cur.trigger.startOffset
-              endOffset = cur.trigger.endOffset
-            case cur: TextBoundMention =>
-              text = cur.text
-              startOffset = cur.startOffset
-              endOffset = cur.endOffset
-          }
-          val timestamp = getTimeStamp(time_lists._1, time_lists._2, startOffset)
-          var taxonomy_matches = "{\n"
-          var count = 0
-          for (term <- tax_map(mention.label.toLowerCase)) {
-            taxonomy_matches = taxonomy_matches + s"""|         \"${term("term")}\": \"${term("score")}\""""
-            count += 1
-            if (count != tax_map(mention.label.toLowerCase).size) {
-              taxonomy_matches = taxonomy_matches + ",\n"
-            } else {
-              taxonomy_matches = taxonomy_matches + "\n"
-            }
-          }
-          taxonomy_matches = taxonomy_matches + "    }"
-          val json_rep_raw =
-            s"""
-               |{
-               | "header": {
-               |   "timestamp": "${time_format.format(timestamp)}",
-               |   "message_type": "event",
-               |   "version": "0.1"
-               | },
-               | "msg": {
-               |   "source": "DialogueActionExtractor",
-               |   "experiment_id": "${experiment_id.toString}",
-               |   "trial_id": "${trial_id.toString}",
-               |   "timestamp": "${time_format.format(timestamp)}",
-               |   "sub_type": "Event:dialogue_action",
-               |   "version": "0.1"
-               | },
-               | "data": {
-               |     "Label" : "${mention.label}",
-               |     "Span" : "${mention.words.mkString(" ")}",
-               |     "Arguments" : "${argument_labels.mkString(" ")}",
-               |     "Text" : "${doc.sentences(mention.sentence).getSentenceText}",
-               |     "timestamp" : "${time_format.format(timestamp)}",
-               |     "TaxonomyMatches" : ${taxonomy_matches}
-               | }
-               |}
-               |"""
-              val json_rep = parse(json_rep_raw.
-                stripMargin)
-              output_file.write(
-                compact(render(json_rep)) + "\n")
-          }
-        } finally {
-          output_file.close()
+      for (extraction <- all_events) {
+        val mention = extraction(0).asInstanceOf[Mention]
+        val argument_labels = for (key <- mention.arguments.keys)
+          yield mention.arguments.get(key).get(0).label
+        mention match {
+          case cur: EventMention =>
+            text = cur.trigger.text
+            startOffset = cur.trigger.startOffset
+            endOffset = cur.trigger.endOffset
+          case cur: TextBoundMention =>
+            text = cur.text
+            startOffset = cur.startOffset
+            endOffset = cur.endOffset
         }
-      // If there are 3 args then third must be annotation file, evaluate performance
-    } else {
-        val annotation_tuple = getAnnotations(args(2))
-        val annotation_events = annotation_tuple._1
-        val coref_events = annotation_tuple._2
-
-        println("Number of true labels: "+annotation_events.size)
-        var anno_index = 0
-        var cur_anno = annotation_events(anno_index)
-        var num_shallow_match = 0
-        var num_deep_match = 0
-        for (m <- all_events){
-            val cur = m(0).asInstanceOf[Mention]
-            var label = cur.label
-            var text = ""
-            var startOffset = 0
-            var endOffset = 0
-            cur match {
-                case cur: EventMention =>
-                    text = cur.trigger.text
-                    startOffset = cur.trigger.startOffset
-                    endOffset = cur.trigger.endOffset
-                case cur: TextBoundMention =>
-                    text = cur.text
-                    startOffset = cur.startOffset
-                    endOffset = cur.endOffset
-            }
-            println("Looking at extraction: "+text+" : "+doc.sentences(cur.sentence).getSentenceText)
-            println("   comparing to: " + cur_anno)
-            if (anno_index < annotation_events.size) {
-                cur_anno = annotation_events(anno_index)
-                breakable{
-                    while (startOffset > cur_anno.start_offset && endOffset > cur_anno.end_offset) {
-                        anno_index += 1
-                        if (anno_index >= annotation_events.size) break
-                        cur_anno = annotation_events(anno_index)
-                        println("   comparing to: " + cur_anno)
-                    }
-                }
-                if (cur_anno.shallowCompare(label, startOffset, endOffset)) {
-                    println("--------shallow match-----------")
-                    num_shallow_match += 1
-                }
-                if (cur.arguments contains "target") {
-                    if (cur_anno.deepCompare(label, startOffset, endOffset,
-                       Some(cur.arguments("target")(0).text))) {
-                        println("--------deep match-----------")
-                        num_deep_match += 1
-                    }
-                } else {
-                    if (cur_anno.deepCompare(label, startOffset, endOffset)) {
-                        println("--------deep match-----------")
-                        num_deep_match += 1
-                    }
-                }
-            }
+        val timestamp = getTimeStamp(time_lists._1, time_lists._2, startOffset)
+        var taxonomy_matches = "{\n"
+        var count = 0
+        for (term <- tax_map(mention.label.toLowerCase)) {
+          taxonomy_matches = taxonomy_matches + s"""|         \"${term("term")}\": \"${term("score")}\""""
+          count += 1
+          if (count != tax_map(mention.label.toLowerCase).size) {
+            taxonomy_matches = taxonomy_matches + ",\n"
+          } else {
+            taxonomy_matches = taxonomy_matches + "\n"
+          }
         }
-        println("\nNumber of matched events (shallow): "+num_shallow_match)
-        println("Number of matched events (deep): "+num_deep_match)
-        println("Number of true positive events: "+annotation_events.size)
-        println("Number of estimated positive events: "+all_events.size)
-
-        val shallow_recall = num_shallow_match.toDouble/all_events.size.toDouble
-        val shallow_precision = num_shallow_match.toDouble/annotation_events.size
-        val shallow_f1 = 2.0 * (shallow_recall * shallow_precision) / (shallow_recall + shallow_precision)
-        println("\n- - - Shallow Match - - -")
-        println("Recall: "+shallow_recall)
-        println("Precision: "+shallow_precision)
-        println("F1: "+shallow_f1)
-
-        val deep_recall = num_deep_match.toDouble/all_events.size.toDouble
-        val deep_precision = num_deep_match.toDouble/annotation_events.size
-        val deep_f1 = 2.0 * (deep_recall * deep_precision) / (deep_recall + deep_precision)
-        println("\n- - - Deep Match - - -")
-        println("Recall: "+deep_recall)
-        println("Precision: "+deep_precision)
-        println("F1: "+deep_f1)
-
-    }
+        taxonomy_matches = taxonomy_matches + "    }"
+        val json_rep_raw =
+          s"""
+             |{
+             | "header": {
+             |   "timestamp": "${time_format.format(timestamp)}",
+             |   "message_type": "event",
+             |   "version": "0.1"
+             | },
+             | "msg": {
+             |   "source": "DialogueActionExtractor",
+             |   "experiment_id": "${experiment_id.toString}",
+             |   "trial_id": "${trial_id.toString}",
+             |   "timestamp": "${time_format.format(timestamp)}",
+             |   "sub_type": "Event:dialogue_action",
+             |   "version": "0.1"
+             | },
+             | "data": {
+             |     "Label" : "${mention.label}",
+             |     "Span" : "${mention.words.mkString(" ")}",
+             |     "Arguments" : "${argument_labels.mkString(" ")}",
+             |     "Text" : "${doc.sentences(mention.sentence).getSentenceText}",
+             |     "timestamp" : "${time_format.format(timestamp)}",
+             |     "TaxonomyMatches" : ${taxonomy_matches}
+             | }
+             |}
+             |"""
+            val json_rep = parse(json_rep_raw.
+              stripMargin)
+            output_file.write(
+              compact(render(json_rep)) + "\n")
+        }
+  }
+  output_file.close()
 }

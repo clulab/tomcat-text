@@ -1,12 +1,16 @@
 package org.clulab.asist
 
+import java.util.Date
+
 import org.clulab.asist.AsistEngine
 import org.clulab.processors.Processor
 import org.clulab.processors.fastnlp.FastNLPProcessor
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.collection.mutable.ArrayBuffer
+
 class TestParse extends FlatSpec with Matchers {
-    val extractor = new AsistEngine() 
+    val extractor = new AsistEngine((new ArrayBuffer[Int], new ArrayBuffer[Int], new ArrayBuffer[Int])) //TODO remove
     
     "AsistEngine" should "Parse close events properly" in {
         val doc = extractor.annotate("I will close the door")

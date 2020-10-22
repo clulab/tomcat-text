@@ -33,7 +33,7 @@ rules:
     vars:
       name: person
       priority: ${ rulepriority }
-      label: Neutral
+      label: Victim
       trigger: ${ person_triggers }
 
   - name: anaphor
@@ -43,3 +43,19 @@ rules:
     keep: false
     pattern: |
       [tag=/PRP/]
+
+  - name: green
+    label: Green
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^(green)/]
+
+  - name: yellow
+    label: Yellow
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^(yellow)/]
