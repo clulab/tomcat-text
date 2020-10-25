@@ -13,8 +13,11 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
 
-class AsistEngine(var timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]), val config: Config
-    = ConfigFactory.load("stub")) extends Configured {
+class AsistEngine(
+                   var timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]) =
+                     (new ArrayBuffer[Int], new ArrayBuffer[Int], new ArrayBuffer[Int]),
+                   val config: Config =
+                     ConfigFactory.load("stub")) extends Configured {
 
   val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
 

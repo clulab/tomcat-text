@@ -16,7 +16,11 @@ class StubActions(val timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBu
     mentions
   }
 
-  def removeResearcher(mentions: Seq[Mention], state: State = new State()): Seq[Mention] ={
+  def removeResearcher(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    // If there are no timeintervals, return all events found
+    if (timeintervals._1.size == 0){
+      return mentions
+    }
     val to_be_returned = new ArrayBuffer[Mention]
     for (men <- mentions) {
       val startOffset = men match {
@@ -34,7 +38,7 @@ class StubActions(val timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBu
         to_be_returned.append(men)
         if (timeintervals._3 contains timeintervals._1(i - 1)) {
           // This checks if the previous utterance was a researcher question
-          println(men.words.mkString)
+          //println(men.words.mkString)
           // TODO create new event mention
         }
       }

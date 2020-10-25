@@ -432,7 +432,7 @@ object ExtractDirSearch extends App {
     val tax_map = taxonomy_json.convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
     println("[AsistEngine] Initializing the AsistEngine ...")
-    val ieSystem = new AsistEngine((null, null, null))
+    val ieSystem = new AsistEngine()
     var proc = ieSystem.proc
     println("[AsistEngine] Completed Initialization ...")
 
@@ -445,12 +445,14 @@ object ExtractDirSearch extends App {
     val output_file = new PrintWriter(new File("output_events.txt"))
 
     //https://alvinalexander.com/scala/how-to-list-subdirectories-under-directory-in-scala/
-    def getFilesInDir(dir: File): Array[String] =
+    def getFilesInDir(dir: File): Array[String] = {
       dir.listFiles
         .filter(_.isFile)
         .map(_.getAbsolutePath)
+        .filter(_.endsWith(".vtt"))
+    }
 
-    println("Starting in: "+input_dir_name)
+  println("Starting in: "+input_dir_name)
     for (input_file_name <- getFilesInDir(new File(input_dir_name))){
       println("Extracting from: "+input_file_name+" . . .")
       val raw_text = getCleanDoc(input_file_name)
@@ -488,10 +490,10 @@ object ExtractDirSearch extends App {
         val timestamp = getTimeStamp(time_lists._1, time_lists._2, startOffset)
         var taxonomy_matches = "{\n"
         var count = 0
-        for (term <- tax_map(mention.label.toLowerCase)) {
+        for (term <- tax_map(mention.label)) {
           taxonomy_matches = taxonomy_matches + s"""|         \"${term("term")}\": \"${term("score")}\""""
           count += 1
-          if (count != tax_map(mention.label.toLowerCase).size) {
+          if (count != tax_map(mention.label).size) {
             taxonomy_matches = taxonomy_matches + ",\n"
           } else {
             taxonomy_matches = taxonomy_matches + "\n"
