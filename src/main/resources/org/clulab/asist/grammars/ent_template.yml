@@ -5,6 +5,6 @@ rules:
     priority: ${ priority }
     label: ${ label }
     type: token
-    keep: false
+    keep: true
     pattern: |
       [lemma=/(?i)^(${ trigger })/]
