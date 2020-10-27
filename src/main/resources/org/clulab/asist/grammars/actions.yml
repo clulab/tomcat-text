@@ -1,13 +1,13 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-#  - import: org/clulab/asist/grammars/lvo_template.yml
-#    vars:
-#      name: close
-#      template_priority: ${ rulepriority }
-#      label: Close
-#      trigger: ${ close_triggers }
-#      object_type: Infrastructure
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: close
+      template_priority: ${ rulepriority }
+      label: Close
+      trigger: ${ close_triggers }
+      object_type: Infrastructure
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -17,13 +17,13 @@ rules:
       trigger: ${ moveto_triggers }
       object_type: Location
 
-#  - import: org/clulab/asist/grammars/lvo_template.yml
-#    vars:
-#      name: toggle
-#      template_priority: ${ rulepriority }
-#      label: Toggle
-#      trigger: ${ toggle_triggers }
-#      object_type: Switch
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: toggle
+      template_priority: ${ rulepriority }
+      label: Toggle
+      trigger: ${ toggle_triggers }
+      object_type: Switch
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -35,27 +35,35 @@ rules:
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
-      name: search
-      template_priority: ${ rulepriority }
-      label: Search
-      trigger: ${ search_triggers }
-      object_type: Location
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
       name: sight
       template_priority: ${ rulepriority }
       label: Sight
       trigger: ${ sight_triggers }
       object_type: EntityTypes
 
-#  - import: org/clulab/asist/grammars/lvo_template.yml
-#    vars:
-#      name: craft
-#      template_priority: ${ rulepriority }
-#      label: Craft
-#      trigger: ${ craft_triggers }
-#      object_type: Concept?
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: craft
+      template_priority: ${ rulepriority }
+      label: Craft
+      trigger: ${ craft_triggers }
+      object_type: Concept?
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: defeat
+      template_priority: ${ rulepriority }
+      label: Defeat
+      trigger: ${ attack_triggers }
+      object_type: Foe
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: search
+      template_priority: ${ rulepriority }
+      label: Search
+      trigger: ${ search_triggers }
+      object_type: Location
 
   - name: search_infra_action
     priority: ${ rulepriority }
@@ -66,14 +74,14 @@ rules:
       area: Location = ${ search_relations }
       target: Concept? = >nmod_for
 
-  - name: search_nmod_for_action
+  - name: i_am_searching
     priority: ${ rulepriority }
     label: Search
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/${ search_triggers }/]
-      area: Location? = ${ search_relations }
-      target: Concept = >nmod_for
+      trigger = [lemma=/(?i)^(${ search_triggers })/]
+      person: Anaphor = >nsubj
+      target: Concept? = >nmod_for
 
   - name: move_nmod_action
     priority: ${ rulepriority }
@@ -100,14 +108,6 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
       target: Victim = >nsubj
-
-  - name: i_am_searching
-    priority: ${ rulepriority }
-    label: Search
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ search_triggers })/]
-      person: Anaphor = >nsubj
 
   - name: continue_action
     priority: ${ rulepriority }
