@@ -15,9 +15,11 @@ data_dir = (
 os.makedirs(data_dir, exist_ok=True)
 
 extensions_to_exclude = (
+    "pdf",
+    "qsf",
     "mp4",
-    "metadata",
     "m4a",
+    "metadata",
     "tsv",
     "png",
     "PNG",
