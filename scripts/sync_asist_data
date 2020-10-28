@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+import os
+from subprocess import run
+from pathlib import Path
+
+# Get the path to the data directory, assuming that the repo directory
+# structure is mirrored.
+gcs_dir = "study-1_2020.08"
+data_dir = (
+    Path(os.path.dirname(os.path.realpath(__file__))).parent / "data" / gcs_dir
+)
+
+
+os.makedirs(data_dir, exist_ok=True)
+
+extensions_to_exclude = (
+    "mp4",
+    "metadata",
+    "m4a",
+    "tsv",
+    "png",
+    "PNG",
+    "xlsx",
+    "zip",
+    "csv",
+    "fov",
+    "docx",
+)
+
+# Construct a regex for gsutil rsync exclusion
+exclusion_regex = (
+    "$|".join((f".*\.{ext}" for ext in extensions_to_exclude)) + "$"
+)
+
+run(
+    [
+        "gsutil",
+        "-m",
+        "rsync",
+        "-r",
+        "-x",
+        exclusion_regex,
+        f"gs://studies.aptima.com/{gcs_dir}",
+        data_dir,
+    ],
+    cwd=data_dir,
+)
