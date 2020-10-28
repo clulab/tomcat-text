@@ -1,0 +1,1630 @@
+{
+    "Stairs": [
+        {
+            "term": "finish-triaging",
+            "score": "10.005182219281002"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "9.2547354298764"
+        },
+        {
+            "term": "finish-searching",
+            "score": "9.038482712280048"
+        },
+        {
+            "term": "start-triaging",
+            "score": "8.1206760948024"
+        },
+        {
+            "term": "start-searching",
+            "score": "8.096229650040748"
+        }
+    ],
+    "Emerald": [
+        {
+            "term": "end-mission",
+            "score": "3.3490062946980004"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "3.2551254502030003"
+        },
+        {
+            "term": "finish-searching",
+            "score": "2.8908100976423503"
+        },
+        {
+            "term": "done-searching",
+            "score": "1.9487274965164705"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "1.9185021670317721"
+        }
+    ],
+    "Negative": [
+        {
+            "term": "change-priority",
+            "score": "14.341921231537702"
+        },
+        {
+            "term": "move",
+            "score": "14.01595505799"
+        },
+        {
+            "term": "start-triaging",
+            "score": "11.577880481606"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "10.900598294362497"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "10.874453584478"
+        }
+    ],
+    "Toggle": [
+        {
+            "term": "triage",
+            "score": "4.269732024898"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "3.4385932556591667"
+        },
+        {
+            "term": "spotted-severely-injured-victim",
+            "score": "2.713097528814526"
+        },
+        {
+            "term": "end-mission",
+            "score": "2.1680824839440005"
+        },
+        {
+            "term": "done-searching",
+            "score": "1.7396900181251795"
+        }
+    ],
+    "ChangePriority": [
+        {
+            "term": "change-priority",
+            "score": "20.79060462184043"
+        },
+        {
+            "term": "move",
+            "score": "16.993263396896396"
+        },
+        {
+            "term": "start-triaging",
+            "score": "15.3074894493652"
+        },
+        {
+            "term": "end-mission",
+            "score": "15.0065594711291"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "14.5004857926787"
+        }
+    ],
+    "Open": [
+        {
+            "term": "start-triaging",
+            "score": "19.597383254427402"
+        },
+        {
+            "term": "move",
+            "score": "17.823994593329402"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "17.5614864126968"
+        },
+        {
+            "term": "end-mission",
+            "score": "17.0470779330985"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "16.405442432224703"
+        }
+    ],
+    "Ordinal": [
+        {
+            "term": "finish-triaging",
+            "score": "6.511136416717999"
+        },
+        {
+            "term": "spotted-severely-injured-victim",
+            "score": "5.0090629255427155"
+        },
+        {
+            "term": "finish-searching",
+            "score": "4.89576007084395"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "4.586425422247"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "4.392697589071999"
+        }
+    ],
+    "Positive": [
+        {
+            "term": "start-triaging",
+            "score": "15.295958076656998"
+        },
+        {
+            "term": "change-priority",
+            "score": "15.0278976354655"
+        },
+        {
+            "term": "move",
+            "score": "14.674186470317201"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "12.189600879163997"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "11.729209764147718"
+        }
+    ],
+    "Push": [
+        {
+            "term": "move",
+            "score": "19.597681474186"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "16.8487163390757"
+        },
+        {
+            "term": "start-triaging",
+            "score": "16.53781982951"
+        },
+        {
+            "term": "change-priority",
+            "score": "15.591176532662303"
+        },
+        {
+            "term": "end-mission",
+            "score": "15.037230804620501"
+        }
+    ],
+    "Location": [
+        {
+            "term": "end-mission",
+            "score": "13.94872975064"
+        },
+        {
+            "term": "move",
+            "score": "13.7327217337471"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "12.332384662949435"
+        },
+        {
+            "term": "change-priority",
+            "score": "11.9087192180092"
+        },
+        {
+            "term": "done-searching",
+            "score": "11.60033961962795"
+        }
+    ],
+    "Bucket": [
+        {
+            "term": "triage",
+            "score": "5.988420975688"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "5.680783411549701"
+        },
+        {
+            "term": "finish-searching",
+            "score": "4.2253891974979005"
+        },
+        {
+            "term": "done-searching",
+            "score": "3.61612773488597"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "3.4655331257914663"
+        }
+    ],
+    "NounPhrase": [
+        {
+            "term": "change-priority",
+            "score": "6.324004967610254"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "5.91061824201175"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "5.898393764155498"
+        },
+        {
+            "term": "move",
+            "score": "5.658007292705999"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "5.364084368489601"
+        }
+    ],
+    "Redstone": [
+        {
+            "term": "triage",
+            "score": "3.3513862464860003"
+        },
+        {
+            "term": "change-priority",
+            "score": "2.4080831167445"
+        },
+        {
+            "term": "move",
+            "score": "2.2334903216243998"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "1.67348775202"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "1.5146234338527995"
+        }
+    ],
+    "ItemType": [
+        {
+            "term": "change-priority",
+            "score": "12.1157067195198"
+        },
+        {
+            "term": "move",
+            "score": "10.3770079272235"
+        },
+        {
+            "term": "start-triaging",
+            "score": "9.642427839302801"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "9.254568224473799"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "9.028700489286583"
+        }
+    ],
+    "Infrastructure": [
+        {
+            "term": "change-priority",
+            "score": "15.320010206153698"
+        },
+        {
+            "term": "end-mission",
+            "score": "11.863119252784502"
+        },
+        {
+            "term": "continue-searching",
+            "score": "11.378320733759951"
+        },
+        {
+            "term": "start-triaging",
+            "score": "11.148714302069"
+        },
+        {
+            "term": "move",
+            "score": "10.766892162845998"
+        }
+    ],
+    "Room": [
+        {
+            "term": "start-triaging",
+            "score": "14.490882552677098"
+        },
+        {
+            "term": "move",
+            "score": "14.284502637278699"
+        },
+        {
+            "term": "end-mission",
+            "score": "13.628810863115701"
+        },
+        {
+            "term": "done-searching",
+            "score": "13.532557513771135"
+        },
+        {
+            "term": "start-searching",
+            "score": "13.183263998587387"
+        }
+    ],
+    "Obstacle": [
+        {
+            "term": "change-priority",
+            "score": "12.535646363762302"
+        },
+        {
+            "term": "move",
+            "score": "10.17425652953072"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "10.066396492031997"
+        },
+        {
+            "term": "start-triaging",
+            "score": "9.8877398245887"
+        },
+        {
+            "term": "end-mission",
+            "score": "9.078987005106898"
+        }
+    ],
+    "Friend": [
+        {
+            "term": "stop-triaging-victim",
+            "score": "13.022824373736501"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "12.657748440745603"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "11.80459344454692"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "11.374447897610587"
+        },
+        {
+            "term": "done-searching",
+            "score": "11.215053948003499"
+        }
+    ],
+    "ItemFrame": [
+        {
+            "term": "move",
+            "score": "10.377188222897999"
+        },
+        {
+            "term": "change-priority",
+            "score": "10.17778238867205"
+        },
+        {
+            "term": "start-triaging",
+            "score": "8.5425712481864"
+        },
+        {
+            "term": "end-mission",
+            "score": "8.002507912705076"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "7.888275036484648"
+        }
+    ],
+    "Victim": [
+        {
+            "term": "stop-triaging-victim",
+            "score": "18.593763750341402"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "17.326888048081006"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "16.777340870340307"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "16.340800440275004"
+        },
+        {
+            "term": "spotted-severely-injured-victim",
+            "score": "15.606892463887728"
+        }
+    ],
+    "Save": [
+        {
+            "term": "start-triaging",
+            "score": "16.4243865074296"
+        },
+        {
+            "term": "move",
+            "score": "15.417899300882999"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "15.2120539958268"
+        },
+        {
+            "term": "end-mission",
+            "score": "14.3756297393461"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "14.3655654091178"
+        }
+    ],
+    "IronDoor": [
+        {
+            "term": "stop-triaging",
+            "score": "12.129300999592301"
+        },
+        {
+            "term": "move",
+            "score": "11.8676850926845"
+        },
+        {
+            "term": "start-triaging",
+            "score": "11.7992854397066"
+        },
+        {
+            "term": "end-mission",
+            "score": "11.060400661253928"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "10.312289641448999"
+        }
+    ],
+    "Ceiling": [
+        {
+            "term": "move",
+            "score": "9.521692700247998"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "9.200369040523901"
+        },
+        {
+            "term": "start-triaging",
+            "score": "8.610248134668101"
+        },
+        {
+            "term": "end-mission",
+            "score": "8.344256476602801"
+        },
+        {
+            "term": "change-priority",
+            "score": "8.039763036349001"
+        }
+    ],
+    "Painting": [
+        {
+            "term": "finish-triaging",
+            "score": "11.457080647975001"
+        },
+        {
+            "term": "done-searching",
+            "score": "10.92832718023705"
+        },
+        {
+            "term": "finish-searching",
+            "score": "9.96826241066275"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "9.592960228316999"
+        },
+        {
+            "term": "start-triaging",
+            "score": "9.0853416695257"
+        }
+    ],
+    "LavaBucket": [
+        {
+            "term": "no-victims-spotted",
+            "score": "4.364464803730254"
+        },
+        {
+            "term": "start-searching",
+            "score": "3.8073011465607"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "3.6389941111764994"
+        },
+        {
+            "term": "start-triaging",
+            "score": "3.5359616887344987"
+        },
+        {
+            "term": "finish-searching",
+            "score": "3.4933181387113748"
+        }
+    ],
+    "Deictic": [
+        {
+            "term": "finish-triaging",
+            "score": "7.5568876562069995"
+        },
+        {
+            "term": "start-triaging",
+            "score": "7.3469120111747985"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "6.297731037339998"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "6.274214173366999"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "6.1692263508509"
+        }
+    ],
+    "Search": [
+        {
+            "term": "continue-searching",
+            "score": "18.7099107167421"
+        },
+        {
+            "term": "start-searching",
+            "score": "18.69711838468465"
+        },
+        {
+            "term": "done-searching",
+            "score": "17.548639458790802"
+        },
+        {
+            "term": "finish-searching",
+            "score": "16.905345424998497"
+        },
+        {
+            "term": "end-mission",
+            "score": "16.571817596497198"
+        }
+    ],
+    "WaterBucket": [
+        {
+            "term": "stop-triaging",
+            "score": "10.098249907745002"
+        },
+        {
+            "term": "start-triaging",
+            "score": "9.015130352586501"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "8.942592314511415"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "8.83400158265535"
+        },
+        {
+            "term": "done-searching",
+            "score": "8.512298131811832"
+        }
+    ],
+    "Sight": [
+        {
+            "term": "stop-triaging",
+            "score": "11.709686762798679"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "10.767969549025242"
+        },
+        {
+            "term": "start-triaging",
+            "score": "10.602379112681499"
+        },
+        {
+            "term": "end-mission",
+            "score": "10.557661089612202"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "10.495014278024438"
+        }
+    ],
+    "Floor": [
+        {
+            "term": "finish-triaging",
+            "score": "15.995756754849502"
+        },
+        {
+            "term": "move",
+            "score": "14.330935721048998"
+        },
+        {
+            "term": "start-triaging",
+            "score": "13.61414255535638"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "12.705173749691097"
+        },
+        {
+            "term": "finish-searching",
+            "score": "12.42345396735555"
+        }
+    ],
+    "Jump": [
+        {
+            "term": "finish-triaging",
+            "score": "19.079860328738505"
+        },
+        {
+            "term": "start-triaging",
+            "score": "15.6856340384945"
+        },
+        {
+            "term": "move",
+            "score": "13.961191502871"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "13.1534551294797"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "12.673207476510301"
+        }
+    ],
+    "EntityTypes": [
+        {
+            "term": "change-priority",
+            "score": "9.7187647181874"
+        },
+        {
+            "term": "move",
+            "score": "9.02359640411995"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "8.165461295492486"
+        },
+        {
+            "term": "end-mission",
+            "score": "8.075629628779502"
+        },
+        {
+            "term": "continue-searching",
+            "score": "7.8900769204276235"
+        }
+    ],
+    "Craft": [
+        {
+            "term": "end-mission",
+            "score": "11.503877236764952"
+        },
+        {
+            "term": "start-searching",
+            "score": "10.072895854877064"
+        },
+        {
+            "term": "continue-searching",
+            "score": "10.008283696059383"
+        },
+        {
+            "term": "done-searching",
+            "score": "9.685724885408504"
+        },
+        {
+            "term": "start-triaging",
+            "score": "9.375748801418824"
+        }
+    ],
+    "WoodenDoor": [
+        {
+            "term": "stop-triaging",
+            "score": "11.6375100750763"
+        },
+        {
+            "term": "start-triaging",
+            "score": "11.341482254646097"
+        },
+        {
+            "term": "move",
+            "score": "10.991405495325589"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "10.758401727851105"
+        },
+        {
+            "term": "end-mission",
+            "score": "10.746528162710677"
+        }
+    ],
+    "Attribute": [
+        {
+            "term": "change-priority",
+            "score": "7.422810166407399"
+        },
+        {
+            "term": "continue-searching",
+            "score": "5.210173321637001"
+        },
+        {
+            "term": "move",
+            "score": "5.054983716574"
+        },
+        {
+            "term": "done-searching",
+            "score": "4.7252360306552"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "4.5749740715835"
+        }
+    ],
+    "Concept": [
+        {
+            "term": "change-priority",
+            "score": "13.430911206958399"
+        },
+        {
+            "term": "end-mission",
+            "score": "12.7572734913325"
+        },
+        {
+            "term": "move",
+            "score": "11.219537356683999"
+        },
+        {
+            "term": "done-searching",
+            "score": "9.948925138781"
+        },
+        {
+            "term": "start-triaging",
+            "score": "9.851150154801402"
+        }
+    ],
+    "Building": [
+        {
+            "term": "move",
+            "score": "17.08943635436568"
+        },
+        {
+            "term": "end-mission",
+            "score": "16.8890510755365"
+        },
+        {
+            "term": "start-triaging",
+            "score": "16.577058615008003"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "15.763428704111998"
+        },
+        {
+            "term": "start-searching",
+            "score": "14.877232782987804"
+        }
+    ],
+    "Sign": [
+        {
+            "term": "move",
+            "score": "18.517372648509"
+        },
+        {
+            "term": "start-triaging",
+            "score": "17.545626217563104"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "16.665686703619603"
+        },
+        {
+            "term": "change-priority",
+            "score": "15.339266763180591"
+        },
+        {
+            "term": "end-mission",
+            "score": "15.059531153522853"
+        }
+    ],
+    "Bed": [
+        {
+            "term": "no-victims-spotted",
+            "score": "10.747913823095447"
+        },
+        {
+            "term": "start-triaging",
+            "score": "10.1588463392282"
+        },
+        {
+            "term": "done-searching",
+            "score": "9.966561068903061"
+        },
+        {
+            "term": "start-searching",
+            "score": "9.7835230680364"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "9.600985122980898"
+        }
+    ],
+    "SimpleActions": [
+        {
+            "term": "move",
+            "score": "14.81225597973685"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "13.995270755296348"
+        },
+        {
+            "term": "change-priority",
+            "score": "13.380224009757697"
+        },
+        {
+            "term": "end-mission",
+            "score": "13.182517098015902"
+        },
+        {
+            "term": "start-triaging",
+            "score": "12.599987783284595"
+        }
+    ],
+    "Switch": [
+        {
+            "term": "start-triaging",
+            "score": "13.926470073261001"
+        },
+        {
+            "term": "move",
+            "score": "13.850467373913801"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "12.153631815947078"
+        },
+        {
+            "term": "change-priority",
+            "score": "11.825234091018501"
+        },
+        {
+            "term": "start-searching",
+            "score": "9.520953370653004"
+        }
+    ],
+    "Yellow": [
+        {
+            "term": "finish-triaging",
+            "score": "11.978001178538"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "11.555193451123301"
+        },
+        {
+            "term": "start-triaging",
+            "score": "11.060291437681999"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "10.048111379952001"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "9.934620025154832"
+        }
+    ],
+    "Actions": [
+        {
+            "term": "move",
+            "score": "17.117883289501"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "16.1069260084446"
+        },
+        {
+            "term": "change-priority",
+            "score": "14.8213128074655"
+        },
+        {
+            "term": "end-mission",
+            "score": "14.502337117896001"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "14.0652069476293"
+        }
+    ],
+    "Facing": [
+        {
+            "term": "start-triaging",
+            "score": "13.721677783687998"
+        },
+        {
+            "term": "change-priority",
+            "score": "13.70691783517695"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "13.403733486368"
+        },
+        {
+            "term": "move",
+            "score": "13.368499667277"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "12.4406594247426"
+        }
+    ],
+    "BuildingCollapse": [
+        {
+            "term": "start-triaging",
+            "score": "15.50051248851025"
+        },
+        {
+            "term": "move",
+            "score": "15.120682430620278"
+        },
+        {
+            "term": "end-mission",
+            "score": "14.779623360326013"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "13.815839795147628"
+        },
+        {
+            "term": "start-searching",
+            "score": "12.811756723882068"
+        }
+    ],
+    "Close": [
+        {
+            "term": "move",
+            "score": "17.768546759579998"
+        },
+        {
+            "term": "start-triaging",
+            "score": "17.053643194484398"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "16.6353984283291"
+        },
+        {
+            "term": "end-mission",
+            "score": "16.596805561125"
+        },
+        {
+            "term": "start-searching",
+            "score": "15.106111602752799"
+        }
+    ],
+    "Arrow": [
+        {
+            "term": "stop-triaging",
+            "score": "7.298446198250001"
+        },
+        {
+            "term": "move",
+            "score": "5.97597811445"
+        },
+        {
+            "term": "end-mission",
+            "score": "5.893560520921051"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "5.518123863114566"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "4.7592738072030105"
+        }
+    ],
+    "Sword": [
+        {
+            "term": "stop-triaging-victim",
+            "score": "7.0713747641335996"
+        },
+        {
+            "term": "end-mission",
+            "score": "7.0062122379595"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "6.8008618082800005"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "6.0717721165448015"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "5.9826102824481"
+        }
+    ],
+    "FlowerPot": [
+        {
+            "term": "start-triaging",
+            "score": "7.4373949058547595"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "6.73815975432625"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "6.287611201037499"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "6.1579198658546135"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "5.911817090316605"
+        }
+    ],
+    "Lever": [
+        {
+            "term": "move",
+            "score": "7.266270063726499"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "6.028423188352999"
+        },
+        {
+            "term": "change-priority",
+            "score": "3.924913920138721"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "3.6180578832337806"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "3.5336858735522"
+        }
+    ],
+    "Green": [
+        {
+            "term": "start-triaging",
+            "score": "13.66995822662032"
+        },
+        {
+            "term": "move",
+            "score": "13.44867957248534"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "13.198781599918401"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "11.783040806656297"
+        },
+        {
+            "term": "end-mission",
+            "score": "11.426177642474302"
+        }
+    ],
+    "ComplexActions": [
+        {
+            "term": "move",
+            "score": "15.489149195303002"
+        },
+        {
+            "term": "end-mission",
+            "score": "14.133211732232"
+        },
+        {
+            "term": "change-priority",
+            "score": "13.1891992754575"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "12.8677696094633"
+        },
+        {
+            "term": "start-triaging",
+            "score": "11.9704559380735"
+        }
+    ],
+    "Move": [
+        {
+            "term": "move",
+            "score": "25.871771108859168"
+        },
+        {
+            "term": "start-triaging",
+            "score": "19.963379225463598"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "19.458903828710998"
+        },
+        {
+            "term": "end-mission",
+            "score": "18.069953740244998"
+        },
+        {
+            "term": "change-priority",
+            "score": "16.993263396896396"
+        }
+    ],
+    "Shovel": [
+        {
+            "term": "finish-triaging",
+            "score": "6.417922143022999"
+        },
+        {
+            "term": "finish-searching",
+            "score": "5.815143055832751"
+        },
+        {
+            "term": "start-triaging",
+            "score": "5.321771723584"
+        },
+        {
+            "term": "start-searching",
+            "score": "5.2670678461132505"
+        },
+        {
+            "term": "done-searching",
+            "score": "5.26034522218545"
+        }
+    ],
+    "Boat": [
+        {
+            "term": "stop-triaging",
+            "score": "14.757841548073001"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "14.0695889033451"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "13.195134455868265"
+        },
+        {
+            "term": "end-mission",
+            "score": "12.629814583407999"
+        },
+        {
+            "term": "start-searching",
+            "score": "12.6021400069077"
+        }
+    ],
+    "Bow": [
+        {
+            "term": "stop-triaging",
+            "score": "10.582240913081202"
+        },
+        {
+            "term": "move",
+            "score": "8.635258574355"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "8.5027349783033"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "8.296115109274298"
+        },
+        {
+            "term": "end-mission",
+            "score": "8.156642758562002"
+        }
+    ],
+    "Anger": [
+        {
+            "term": "stop-triaging",
+            "score": "13.069762213915498"
+        },
+        {
+            "term": "move",
+            "score": "12.715133717686498"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "12.03124040986265"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "10.044294941460183"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "9.429297589286657"
+        }
+    ],
+    "Worry": [
+        {
+            "term": "stop-triaging",
+            "score": "14.307656422725"
+        },
+        {
+            "term": "start-triaging",
+            "score": "13.846037776529002"
+        },
+        {
+            "term": "move",
+            "score": "13.043259231913002"
+        },
+        {
+            "term": "change-priority",
+            "score": "12.718820948236504"
+        },
+        {
+            "term": "continue-searching",
+            "score": "12.110134343007056"
+        }
+    ],
+    "Defeat": [
+        {
+            "term": "start-triaging",
+            "score": "15.233701199901118"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "14.9285977670168"
+        },
+        {
+            "term": "move",
+            "score": "14.870443045540599"
+        },
+        {
+            "term": "end-mission",
+            "score": "13.3558727349792"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "12.967029801884799"
+        }
+    ],
+    "Clock": [
+        {
+            "term": "start-triaging",
+            "score": "13.2779127462025"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "12.7111399030166"
+        },
+        {
+            "term": "move",
+            "score": "10.725676427129203"
+        },
+        {
+            "term": "end-mission",
+            "score": "10.638764137307003"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "10.405195930421751"
+        }
+    ],
+    "Door": [
+        {
+            "term": "stop-triaging",
+            "score": "15.625063640466598"
+        },
+        {
+            "term": "start-triaging",
+            "score": "14.7106662544392"
+        },
+        {
+            "term": "move",
+            "score": "14.02102709958"
+        },
+        {
+            "term": "end-mission",
+            "score": "13.660520799005347"
+        },
+        {
+            "term": "start-searching",
+            "score": "13.2464160844174"
+        }
+    ],
+    "Flint": [
+        {
+            "term": "end-mission",
+            "score": "3.3741723447675005"
+        },
+        {
+            "term": "done-searching",
+            "score": "3.1564378564331994"
+        },
+        {
+            "term": "start-searching",
+            "score": "3.04665394215795"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "2.9588295068306967"
+        },
+        {
+            "term": "start-triaging",
+            "score": "2.5828111116139003"
+        }
+    ],
+    "Sentiment": [
+        {
+            "term": "move",
+            "score": "11.001948074038998"
+        },
+        {
+            "term": "change-priority",
+            "score": "8.893377477594099"
+        },
+        {
+            "term": "start-triaging",
+            "score": "8.3787083282064"
+        },
+        {
+            "term": "continue-searching",
+            "score": "7.952936019780951"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "7.665228074512915"
+        }
+    ],
+    "Window": [
+        {
+            "term": "start-triaging",
+            "score": "12.791994534638"
+        },
+        {
+            "term": "move",
+            "score": "12.472972367352"
+        },
+        {
+            "term": "end-mission",
+            "score": "12.416386292550005"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "12.27701675519"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "11.8013380258387"
+        }
+    ],
+    "Saddle": [
+        {
+            "term": "finish-triaging",
+            "score": "7.7454163022052995"
+        },
+        {
+            "term": "finish-searching",
+            "score": "4.344086214743499"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "4.2117265459951"
+        },
+        {
+            "term": "start-triaging",
+            "score": "3.6241644416346204"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "3.4198367723227507"
+        }
+    ],
+    "Extinguish": [
+        {
+            "term": "stop-triaging",
+            "score": "7.4035070318909995"
+        },
+        {
+            "term": "continue-searching",
+            "score": "6.4958239168381"
+        },
+        {
+            "term": "finish-searching",
+            "score": "6.1133678350733005"
+        },
+        {
+            "term": "start-searching",
+            "score": "5.699764652508831"
+        },
+        {
+            "term": "done-searching",
+            "score": "5.5102923362697"
+        }
+    ],
+    "Pickaxe": [
+        {
+            "term": "end-mission",
+            "score": "5.34907804077655"
+        },
+        {
+            "term": "start-triaging",
+            "score": "4.9681758129561"
+        },
+        {
+            "term": "move",
+            "score": "4.9431027489331"
+        },
+        {
+            "term": "move-and-mark-for-revisit",
+            "score": "4.711335593328125"
+        },
+        {
+            "term": "change-priority",
+            "score": "4.31041370072985"
+        }
+    ],
+    "Button": [
+        {
+            "term": "finish-triaging",
+            "score": "13.880714564950999"
+        },
+        {
+            "term": "start-triaging",
+            "score": "10.965144226079001"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "10.656305689486"
+        },
+        {
+            "term": "finish-triaging-victim",
+            "score": "10.007736115660997"
+        },
+        {
+            "term": "move",
+            "score": "9.974427785641998"
+        }
+    ],
+    "Communicate": [
+        {
+            "term": "continue-searching",
+            "score": "10.05438377450975"
+        },
+        {
+            "term": "done-searching",
+            "score": "9.98792399103165"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "9.563002377032"
+        },
+        {
+            "term": "move",
+            "score": "9.556005008447999"
+        },
+        {
+            "term": "change-priority",
+            "score": "8.741041138232003"
+        }
+    ],
+    "Continue": [
+        {
+            "term": "start-triaging",
+            "score": "21.359091429612697"
+        },
+        {
+            "term": "move",
+            "score": "20.970304025054997"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "20.537859742188"
+        },
+        {
+            "term": "continue-searching",
+            "score": "20.099822070539297"
+        },
+        {
+            "term": "end-mission",
+            "score": "18.97772588966965"
+        }
+    ],
+    "Foe": [
+        {
+            "term": "stop-triaging-victim",
+            "score": "6.154339098558999"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "5.603035390852999"
+        },
+        {
+            "term": "move",
+            "score": "5.518378785689199"
+        },
+        {
+            "term": "end-mission",
+            "score": "5.079118822896999"
+        },
+        {
+            "term": "change-priority",
+            "score": "5.00413008677"
+        }
+    ],
+    "Fire": [
+        {
+            "term": "stop-triaging",
+            "score": "19.077645811798998"
+        },
+        {
+            "term": "no-victims-spotted",
+            "score": "16.82247035165737"
+        },
+        {
+            "term": "end-mission",
+            "score": "16.613357116567002"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "15.855832208971467"
+        },
+        {
+            "term": "start-triaging",
+            "score": "15.792332127925299"
+        }
+    ],
+    "Axe": [
+        {
+            "term": "stop-triaging-victim",
+            "score": "5.7251216515285"
+        },
+        {
+            "term": "stop-triaging",
+            "score": "5.689595496427001"
+        },
+        {
+            "term": "move",
+            "score": "5.612208576433999"
+        },
+        {
+            "term": "spotted-injured-victim",
+            "score": "4.838511880012967"
+        },
+        {
+            "term": "start-triaging-victim",
+            "score": "4.6876058243506"
+        }
+    ],
+    "Inferred": [
+        {
+            "term": "stop-triaging",
+            "score": "3.5565515259970004"
+        },
+        {
+            "term": "finish-triaging",
+            "score": "2.4106698454733"
+        },
+        {
+            "term": "start-triaging",
+            "score": "2.2668320135594193"
+        },
+        {
+            "term": "done-searching",
+            "score": "1.7189615120722999"
+        },
+        {
+            "term": "stop-triaging-victim",
+            "score": "1.3603538993152"
+        }
+    ]
+}
