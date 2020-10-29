@@ -19,7 +19,10 @@ jobs:
       matrix:
         # os: [ubuntu-20.04, macos-latest]  Skipping macos until we can speed up testing.
         os: [ubuntu-20.04]   
-      
+    
+    # Abort testing if it does not finish within ten minutes
+    timeout-minutes: 20        
+    
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
@@ -46,15 +49,17 @@ jobs:
     - name: Log java version
       run: java -version
 
-    # SBT build and test in one operation
-    - name: SBT Test
+    # If running on a macOS runner, we install sbt using Homebrew
+    - name: If macos detected, use brew to install sbt
       run: |
-        # If running on a macOS runner, we install sbt using Homebrew
         if [[ $OSTYPE == "darwin"* ]]; then
           echo "macos detected, updating brew ..."
           brew update
           echo "Using brew to install sbt ..."
           brew install sbt
         fi
-        echo "sbt test"
-        sbt test
+
+    # SBT testing
+    - name: SBT Test
+      run:  sbt test
+
