@@ -21,7 +21,7 @@ jobs:
         os: [ubuntu-20.04]   
     
     # Abort testing if it does not finish within ten minutes
-    timeout-minutes: 10        
+    timeout-minutes: 20        
     
     steps:
     - uses: actions/checkout@v2
@@ -50,7 +50,7 @@ jobs:
       run: java -version
     
     # If running on a macOS runner, we install sbt using Homebrew
-    - name: Maybe macos
+    - name: If macos detected, use brew to install sbt
       run: |
         if [[ $OSTYPE == "darwin"* ]]; then
           echo "macos detected, updating brew ..."
