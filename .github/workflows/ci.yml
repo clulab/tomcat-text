@@ -56,10 +56,7 @@ jobs:
           brew install sbt
         fi
 
-    # SBT does the heavy lifting
-    - name: SBT Clean
-      timeout-minutes: 2
-      run: sbt clean
+    # SBT testing
     - name: SBT Test
-      timeout-minutes: 2  # will break, this is only a test
+      timeout-minutes: 10  # Abort the test after 10 minutes.
       run:  sbt test
