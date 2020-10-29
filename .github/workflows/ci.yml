@@ -56,5 +56,7 @@ jobs:
           echo "Using brew to install sbt ..."
           brew install sbt
         fi
+        echo "sbt clean"
+        sbt clean
         echo "sbt test"
         sbt test
