@@ -45,18 +45,21 @@ jobs:
     # Capture the java version
     - name: Log java version
       run: java -version
-
-    # SBT build and test in one operation
-    - name: SBT Test
+    
+    # If running on a macOS runner, we install sbt using Homebrew
+    - name: Maybe macos
       run: |
-        # If running on a macOS runner, we install sbt using Homebrew
         if [[ $OSTYPE == "darwin"* ]]; then
           echo "macos detected, updating brew ..."
           brew update
           echo "Using brew to install sbt ..."
           brew install sbt
         fi
-        echo "sbt clean"
-        sbt clean
-        echo "sbt test"
-        sbt test
+
+    # SBT does the heavy lifting
+    - name: SBT Clean
+      timeout-minutes: 2
+      run: sbt clean
+    - name: SBT Test
+      timeout-minutes: 2  # will break, this is only a test
+      run:  sbt test
