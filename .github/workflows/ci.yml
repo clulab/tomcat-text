@@ -1,5 +1,5 @@
 
-# Continuous Integration workflow for tomcat-text
+# Continuous integration workflow for the tomcat-text repository.
 # jastier 2020 October 
 
 name: CI
