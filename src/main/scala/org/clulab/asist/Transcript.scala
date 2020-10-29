@@ -5,14 +5,12 @@ import java.text.SimpleDateFormat
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
-
-
-class Transcript (val file_name: String){
+class Transcript(val file_name: String) {
 
   override def toString: String = {
     var big_string = ""
-    for (line <- Source.fromFile(file_name).getLines){
-      big_string += line+"\n"
+    for (line <- Source.fromFile(file_name).getLines) {
+      big_string += line + "\n"
     }
     big_string
   }
@@ -22,14 +20,14 @@ class Transcript (val file_name: String){
     zoom_lines.next
     var output_string = ""; var cur = ""
     val punctuation = Set('?', '!', '.')
-    for (line <- zoom_lines){
+    for (line <- zoom_lines) {
       cur = line.stripLineEnd
       if (cur.size > 3) {
         if (!cur.charAt(0).isDigit) {
           if (cur.contains(":")) {
             cur = cur.split(":")(1)
           }
-          if (!punctuation(cur.charAt(cur.size-1))) {
+          if (!punctuation(cur.charAt(cur.size - 1))) {
             cur += "."
           }
           output_string += cur
@@ -40,19 +38,26 @@ class Transcript (val file_name: String){
   }
 
   def isVictimQuestion(utterance: String): Boolean = {
-    val gold_tokens = "Which type of victim will you save next Yellow green or whoever comes next".split(' ').toSet
+    val gold_tokens =
+      "Which type of victim will you save next Yellow green or whoever comes next"
+        .split(' ')
+        .toSet
     var tokens = utterance.split(' ').toSet
     var match_count = 0
-    for (tok <- tokens){
-      if (gold_tokens contains tok){
+    for (tok <- tokens) {
+      if (gold_tokens contains tok) {
         match_count += 1
       }
     }
     (match_count > 4)
   }
 
-  def getTimeMap(): (ArrayBuffer[Int], ArrayBuffer[java.util.Date],
-    ArrayBuffer[Int], ArrayBuffer[Int]) = {
+  def getTimeMap(): (
+      ArrayBuffer[Int],
+      ArrayBuffer[java.util.Date],
+      ArrayBuffer[Int],
+      ArrayBuffer[Int]
+  ) = {
     // This returns the ending char for each utterance the timestamp of each utterance, and the
     //  index of researcher utterances
     val zoom_lines = Source.fromFile(file_name).getLines
@@ -88,8 +93,8 @@ class Transcript (val file_name: String){
           char_values.append(char_index)
           date_values.append(timestamp)
           if (researcher_flag) {
-            researcher_char_values.append(char_values.size-1)
-            if (isVictimQuestion(cur)){
+            researcher_char_values.append(char_values.size - 1)
+            if (isVictimQuestion(cur)) {
               researcher_questions.append(char_index)
             }
           }
