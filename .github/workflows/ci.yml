@@ -20,8 +20,8 @@ jobs:
         # os: [ubuntu-20.04, macos-latest]  Skipping macos until we can speed up testing.
         os: [ubuntu-20.04]   
     
-    # Abort testing if it does not finish within ten minutes
-    timeout-minutes: 20        
+    # SBT can sometimes hang on GitHub.  
+    timeout-minutes: 20
     
     steps:
     - uses: actions/checkout@v2
