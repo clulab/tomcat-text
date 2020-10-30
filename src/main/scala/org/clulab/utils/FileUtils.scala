@@ -29,8 +29,7 @@ object FileUtils {
         .toArray
         // Skips "empty" lines as well as comments
         .filter(line => !line.startsWith("#") && line.trim().nonEmpty)
-    }
-    finally {
+    } finally {
       source.close()
     }
   }
@@ -49,8 +48,7 @@ object FileUtils {
   protected def getTextFromSource(source: Source): String = {
     try {
       source.mkString
-    }
-    finally {
+    } finally {
       source.close()
     }
   }
@@ -71,4 +69,3 @@ object FileUtils {
     yaml.load(input).asInstanceOf[Collection[Any]]
   }
 }
-

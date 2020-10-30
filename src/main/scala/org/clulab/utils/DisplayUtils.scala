@@ -10,25 +10,33 @@ object DisplayUtils {
   protected val tab = "\t"
 
   def mentionsToDisplayString(
-    mentions: Seq[Mention],
-    doc: Document,
-    printDeps: Boolean = false): String = {
+      mentions: Seq[Mention],
+      doc: Document,
+      printDeps: Boolean = false
+  ): String = {
 
     val sb = new StringBuffer()
-    val mentionsBySentence = mentions groupBy (_.sentence) mapValues (_.sortBy(_.start)) withDefaultValue Nil
+    val mentionsBySentence = mentions groupBy (_.sentence) mapValues (_.sortBy(
+      _.start
+    )) withDefaultValue Nil
     for ((s, i) <- doc.sentences.zipWithIndex) {
       sb.append(s"sentence #$i $nl")
       sb.append(s.getSentenceText + nl)
-      sb.append("Tokens: " + (s.words.indices, s.words, s.tags.get).zipped.mkString(", ") + nl)
+      sb.append(
+        "Tokens: " + (s.words.indices, s.words, s.tags.get).zipped
+          .mkString(", ") + nl
+      )
       if (printDeps) sb.append(syntacticDependenciesToString(s) + nl)
       sb.append(nl)
-      
+
       val sortedMentions = mentionsBySentence(i).sortBy(_.label)
       val (events, entities) = sortedMentions.partition(_ matches "Event")
       val (tbs, rels) = entities.partition(_.isInstanceOf[TextBoundMention])
       val sortedEntities = tbs ++ rels.sortBy(_.label)
       sb.append(s"entities: $nl")
-      sortedEntities.foreach(e => sb.append(s"${mentionToDisplayString(e)} $nl"))
+      sortedEntities.foreach(e =>
+        sb.append(s"${mentionToDisplayString(e)} $nl")
+      )
 
       sb.append(nl)
       sb.append(s"events: $nl")
@@ -50,18 +58,28 @@ object DisplayUtils {
     mention match {
       case tb: TextBoundMention =>
         sb.append(s"$tab ${tb.labels.mkString(", ")} => ${tb.text} $nl")
-        if (tb.attachments.nonEmpty) sb.append(s"$tab  * Attachments: ${attachmentsString(tb.attachments)} $nl")
+        if (tb.attachments.nonEmpty)
+          sb.append(
+            s"$tab  * Attachments: ${attachmentsString(tb.attachments)} $nl"
+          )
       case em: EventMention =>
         sb.append(s"$tab trigger => ${em.trigger.text} $nl")
-        if (em.trigger.attachments.nonEmpty) sb.append(s"$tab  * Attachments: ${attachmentsString(em.trigger.attachments)} $nl")
+        if (em.trigger.attachments.nonEmpty)
+          sb.append(
+            s"$tab  * Attachments: ${attachmentsString(em.trigger.attachments)} $nl"
+          )
         sb.append(argumentsToString(em, nl, tab) + nl)
         if (em.attachments.nonEmpty) {
-          sb.append(s"$tab Event Attachments: ${attachmentsString(em.attachments)} $nl")
+          sb.append(
+            s"$tab Event Attachments: ${attachmentsString(em.attachments)} $nl"
+          )
         }
       case rel: RelationMention =>
         sb.append(argumentsToString(rel, nl, tab) + nl)
         if (rel.attachments.nonEmpty) {
-          sb.append(s"$tab Relation Attachments: ${attachmentsString(rel.attachments)} $nl")
+          sb.append(
+            s"$tab Relation Attachments: ${attachmentsString(rel.attachments)} $nl"
+          )
         }
       case _ => ()
     }
@@ -71,42 +89,58 @@ object DisplayUtils {
 
   def argumentsToString(b: Mention, nl: String, tab: String): String = {
     val sb = new StringBuffer
-    b.arguments foreach {
-      case (argName, ms) =>
-        ms foreach { v =>
-          sb.append(s"$tab $argName ${v.labels.mkString("(", ", ", ")")} => ${v.text} $nl")
-          if (v.attachments.nonEmpty) sb.append(s"$tab  * Attachments: ${attachmentsString(v.attachments)} $nl")
-        }
+    b.arguments foreach { case (argName, ms) =>
+      ms foreach { v =>
+        sb.append(
+          s"$tab $argName ${v.labels.mkString("(", ", ", ")")} => ${v.text} $nl"
+        )
+        if (v.attachments.nonEmpty)
+          sb.append(
+            s"$tab  * Attachments: ${attachmentsString(v.attachments)} $nl"
+          )
+      }
     }
     sb.toString
   }
 
-  def attachmentsString(mods: Set[Attachment]): String = s"${mods.mkString(", ")}"
+  def attachmentsString(mods: Set[Attachment]): String =
+    s"${mods.mkString(", ")}"
 
-  def syntacticDependenciesToString(s:Sentence): String = {
+  def syntacticDependenciesToString(s: Sentence): String = {
     if (s.dependencies.isDefined) {
       s.dependencies.get.toString
     } else "[Dependencies not defined]"
   }
 
-
   /* Wrappers for displaying the mention string */
-  def displayMentions(mentions: Seq[Mention], doc: Document, printDeps: Boolean = false): Unit = {
+  def displayMentions(
+      mentions: Seq[Mention],
+      doc: Document,
+      printDeps: Boolean = false
+  ): Unit = {
     println(mentionsToDisplayString(mentions, doc, printDeps))
   }
 
-  def displayMention(mention: Mention): Unit = println(mentionToDisplayString(mention))
-
+  def displayMention(mention: Mention): Unit = println(
+    mentionToDisplayString(mention)
+  )
 
   /* Wrappers for printing the mention string to a file */
-  def printMentions(mentions: Seq[Mention], doc: Document, pw: PrintWriter, printDeps: Boolean = false): Unit = {
+  def printMentions(
+      mentions: Seq[Mention],
+      doc: Document,
+      pw: PrintWriter,
+      printDeps: Boolean = false
+  ): Unit = {
     pw.println(mentionsToDisplayString(mentions, doc, printDeps))
   }
 
-  def printMention(mention: Mention, pw: PrintWriter): Unit = pw.println(mentionToDisplayString(mention))
+  def printMention(mention: Mention, pw: PrintWriter): Unit =
+    pw.println(mentionToDisplayString(mention))
 
   def webAppMention(mention: Mention): String =
-      xml.Utility.escape(mentionToDisplayString(mention))
-          .replaceAll(nl, "<br>")
-          .replaceAll(tab, "&nbsp;&nbsp;&nbsp;&nbsp;")
+    xml.Utility
+      .escape(mentionToDisplayString(mention))
+      .replaceAll(nl, "<br>")
+      .replaceAll(tab, "&nbsp;&nbsp;&nbsp;&nbsp;")
 }
