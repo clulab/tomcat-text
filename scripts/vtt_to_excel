@@ -1,0 +1,167 @@
+#!/usr/bin/env python
+
+# Script to convert a directory of WebVTT files to an Excel file.
+# This script was created to process the Zoom transcripts from the ASIST Fall
+# 2020 data.
+
+# Author: Adarsh Pyarelal (adarsh@arizona.edu)
+
+import webvtt
+import pandas as pd
+from pathlib import Path
+from glob import glob
+from tqdm import tqdm
+
+input_directory = Path("data/study-1_2020.08")
+
+dicts = []
+
+# We assume a seven-point Likert scale.
+# Note: Some of the Zoom transcriptions of the IC inquiries seem to be on a
+# 10-point scale. Unsure how to deal with this. - Adarsh, 2020-11-03.
+likert_number_dict = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+}
+
+# We declare the set of experimenters.
+experimenters = {
+    "Verica Buchanan (ASU)",
+    "Aaron Zhen Yang Teo",
+    "Aaron Teo",
+    "Lovein Thomas",
+    "Anagha",
+    "Federico Scholcover",
+    "anagha mudigonda",
+    "Lovein",
+    "Christopher Corral",
+    "Anagha Mudigonda",
+}
+
+# Process all the .vtt files in the input directory.
+for filepath in tqdm(glob(str(input_directory / "*.vtt"))):
+    filename = Path(filepath).name
+    for caption in webvtt.read(filepath):
+
+        # If a speaker is identified, extract the speaker.
+        text_components = caption.text.rsplit(": ", 1)
+        speaker = text_components[0] if len(text_components) > 1 else None
+
+        # Extract the text
+        text = (
+            text_components[1]
+            if len(text_components) > 1
+            else text_components[0]
+        )
+
+        # Make the text lowercase
+        text = text.lower()
+
+        # Replace commas and periods with spaces
+        text = text.replace(",", " ").replace(".", " ")
+
+        # -----------------------------------------------------------
+        # Detect potential Likert scale responses and color responses
+        # -----------------------------------------------------------
+
+        # Set the default value for the Likert response column to be a blank
+        # string.
+        likert_numbers = ""
+        color_responses = ""
+        location_responses = ""
+
+        # Make sure that the speaker is not an experimenter
+        if speaker not in experimenters:
+            # In certain cases, the speaker is an experimenter but their name
+            # is blank, so we try to handle that case with some heuristics -
+            # excluding text that contains some text examples that
+            # experimenters might say, like 'scale', 'extremely', etc..
+            if speaker is None and any(
+                t not in text
+                for t in {
+                    "scale",
+                    "extremely",
+                    "minute",
+                    "second",
+                }
+            ):
+                pass
+
+            else:
+                likert_numbers = ",".join(
+                    [
+                        str(likert_number_dict[word])
+                        for word in text.split()
+                        if likert_number_dict.get(word) is not None
+                    ]
+                )
+
+                # Detect potential color responses
+                color_responses = ",".join(
+                    word
+                    for word in text.split()
+                    if word in ("yellow", "green")
+                )
+
+                # Detect potential location responses
+                location_responses = ",".join(
+                    word
+                    for word in text.split()
+                    if word in ("room", "hallway", "door")
+                )
+
+        # -----------------------------
+        # Detect experimenter questions
+        # -----------------------------
+
+        # By default, the potential_experimenter_questions column should be
+        # blank.
+        experimenter_questions = []
+
+        # Try to identify Likert questions:
+        if "scale" in text:
+            if "anxious" in text:
+                experimenter_questions.append("anxiety")
+            if "confident" in text:
+                experimenter_questions.append("confidence")
+            if "effort" in text:
+                experimenter_questions.append("effort")
+
+        # Try to identify other types of questions
+
+        # Location question
+        if "describe where" in text:
+            experimenter_questions.append("location")
+
+        # Question about victim type
+        if "what type" in text:
+            experimenter_questions.append("victim_type")
+
+        dicts.append(
+            {
+                "filename": filename,
+                "participant_id": filename.split("Member-")[-1].split("_Vers")[0],
+                "condition_between": filename.split("_")[2].split("-")[1],
+                "start_timestamp": caption.start,
+                "end_timestamp": caption.end,
+                "speaker": speaker,
+                "text": text,
+                "potential_experimenter_questions": ",".join(
+                    experimenter_questions
+                ),
+                "potential_likert_responses": likert_numbers,
+                "potential_color_responses": color_responses,
+                "potential_location_responses": location_responses,
+            }
+        )
+
+# Create the dataframe
+df = pd.DataFrame(dicts)
+
+# Output the dataframe to Excel
+df.to_excel("vtt_transcripts_processed.xlsx", index=False)
