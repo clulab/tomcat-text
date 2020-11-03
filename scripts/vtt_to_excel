@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 # Script to convert a directory of WebVTT files to an Excel file.
+# This script was created to process the Zoom transcripts from the ASIST Fall
+# 2020 data.
+
+# Author: Adarsh Pyarelal (adarsh@arizona.edu)
+
 import webvtt
 import pandas as pd
 from pathlib import Path
@@ -12,6 +17,8 @@ input_directory = Path("data/study-1_2020.08")
 dicts = []
 
 # We assume a seven-point Likert scale.
+# Note: Some of the Zoom transcriptions of the IC inquiries seem to be on a
+# 10-point scale. Unsure how to deal with this. - Adarsh, 2020-11-03.
 likert_number_dict = {
     "one": 1,
     "two": 2,
@@ -22,6 +29,7 @@ likert_number_dict = {
     "seven": 7,
 }
 
+# We declare the set of experimenters.
 experimenters = {
     "Verica Buchanan (ASU)",
     "Aaron Zhen Yang Teo",
@@ -67,9 +75,7 @@ for filepath in tqdm(glob(str(input_directory / "*.vtt"))):
         color_responses = ""
         location_responses = ""
 
-        # Make sure that the speaker is not an experimenter, and if the speaker
-        # if 'backtrack' in text:
-        # print(speaker, text)
+        # Make sure that the speaker is not an experimenter
         if speaker not in experimenters:
             # In certain cases, the speaker is an experimenter but their name
             # is blank, so we try to handle that case with some heuristics -
@@ -106,14 +112,15 @@ for filepath in tqdm(glob(str(input_directory / "*.vtt"))):
                 location_responses = ",".join(
                     word
                     for word in text.split()
-                    if word in ("yellow", "green")
+                    if word in ("room", "hallway", "door")
                 )
 
         # -----------------------------
         # Detect experimenter questions
         # -----------------------------
 
-        # Default value of likert_question column
+        # By default, the potential_experimenter_questions column should be
+        # blank.
         experimenter_questions = []
 
         # Try to identify Likert questions:
@@ -126,8 +133,12 @@ for filepath in tqdm(glob(str(input_directory / "*.vtt"))):
                 experimenter_questions.append("effort")
 
         # Try to identify other types of questions
+
+        # Location question
         if "describe where" in text:
             experimenter_questions.append("location")
+
+        # Question about victim type
         if "what type" in text:
             experimenter_questions.append("victim_type")
 
