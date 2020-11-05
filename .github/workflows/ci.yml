@@ -21,7 +21,7 @@ jobs:
         os: [ubuntu-20.04]   
     
     # SBT can sometimes hang on GitHub.  
-    timeout-minutes: 20
+    timeout-minutes: 60
     
     steps:
     - uses: actions/checkout@v2
