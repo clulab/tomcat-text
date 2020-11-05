@@ -1,0 +1,65 @@
+
+# Continuous integration workflow for the tomcat-text repository.
+# jastier 2020 October 
+
+name: CI
+
+# Run it on any activity
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:     
+      matrix:
+        # os: [ubuntu-20.04, macos-latest]  Skipping macos until we can speed up testing.
+        os: [ubuntu-20.04]   
+    
+    # SBT can sometimes hang on GitHub.  
+    timeout-minutes: 20
+    
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '8.0.232'
+
+    # A test that will always pass just to prove CI is active
+    - name: CI Start
+      run: echo "CI startup"
+    
+    # Capture our test environment
+    - name: Log environment
+      run: env
+    
+    # Capture our path
+    - name: Log path
+      run: echo $PATH
+      
+    # Capture which java we are running
+    - name: Log java location
+      run: which java
+      
+    # Capture the java version
+    - name: Log java version
+      run: java -version
+
+    # If running on a macOS runner, we install sbt using Homebrew
+    - name: If macos detected, use brew to install sbt
+      run: |
+        if [[ $OSTYPE == "darwin"* ]]; then
+          echo "macos detected, updating brew ..."
+          brew update
+          echo "Using brew to install sbt ..."
+          brew install sbt
+        fi
+
+    # SBT testing
+    - name: SBT Test
+      run:  sbt test
+

@@ -14,12 +14,13 @@ import org.slf4j.LoggerFactory
 import scala.collection.mutable.ArrayBuffer
 
 class AsistEngine(
-                   var timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]) =
-                     (new ArrayBuffer[Int], new ArrayBuffer[Int], new ArrayBuffer[Int]),
-                   val config: Config =
-                     ConfigFactory.load("stub")) extends Configured {
+    var timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]) =
+      (new ArrayBuffer[Int], new ArrayBuffer[Int], new ArrayBuffer[Int]),
+    val config: Config = ConfigFactory.load("stub")
+) extends Configured {
 
-  val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
+  val proc: Processor =
+    new FastNLPProcessor() // TODO: Get from configuration file soon
 
   override def getConf: Config = config
 
@@ -33,14 +34,16 @@ class AsistEngine(
   }
 
   class LoadableAttributes(
-    // These are the values which can be reloaded.  Query them for current assignments.
-    val actions: StubActions,
-    val engine: ExtractorEngine,
+      // These are the values which can be reloaded.  Query them for current assignments.
+      val actions: StubActions,
+      val engine: ExtractorEngine
   )
 
   object LoadableAttributes {
-    val   masterRulesPath: String = getPath(  "masterRulesPath", "/org/clulab/asist/grammars/master.yml")
-    val      taxonomyPath: String = getPath(     "taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
+    val masterRulesPath: String =
+      getPath("masterRulesPath", "/org/clulab/asist/grammars/master.yml")
+    val taxonomyPath: String =
+      getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
 
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time based on paths in the config file.
@@ -49,7 +52,7 @@ class AsistEngine(
 
       new LoadableAttributes(
         actions,
-        ExtractorEngine(masterRules, actions), // ODIN component
+        ExtractorEngine(masterRules, actions) // ODIN component
       )
     }
   }
@@ -62,8 +65,6 @@ class AsistEngine(
 
   def reload() = loadableAttributes = LoadableAttributes()
 
-
-
   // MAIN PIPELINE METHOD
   def extractFromText(text: String, keepText: Boolean = false): Seq[Mention] = {
     val doc = annotate(text, keepText)
@@ -73,9 +74,8 @@ class AsistEngine(
     odinMentions
   }
 
-
   def extractFrom(doc: Document): Vector[Mention] = {
-    val events =  engine.extractFrom(doc, new State()).toVector
+    val events = engine.extractFrom(doc, new State()).toVector
     //println(s"In extractFrom() -- res : ${res.map(m => m.text).mkString(",\t")}")
 
     // todo: some appropriate version of "keepMostComplete"
@@ -99,4 +99,3 @@ object AsistEngine {
   val PREFIX: String = "AsistEngine"
 
 }
-

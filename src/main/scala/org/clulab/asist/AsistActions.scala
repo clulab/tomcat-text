@@ -11,20 +11,29 @@ import org.yaml.snakeyaml.constructor.Constructor
 
 import scala.collection.mutable.ArrayBuffer
 
-class StubActions(val timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])) extends Actions with LazyLogging {
-  def passThrough(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+class StubActions(
+    val timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
+) extends Actions
+    with LazyLogging {
+  def passThrough(
+      mentions: Seq[Mention],
+      state: State = new State()
+  ): Seq[Mention] = {
     mentions
   }
 
-  def removeResearcher(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+  def removeResearcher(
+      mentions: Seq[Mention],
+      state: State = new State()
+  ): Seq[Mention] = {
     // If there are no timeintervals, return all events found
-    if (timeintervals._1.size == 0){
+    if (timeintervals._1.size == 0) {
       return mentions
     }
     val to_be_returned = new ArrayBuffer[Mention]
     for (men <- mentions) {
       val startOffset = men match {
-        case cur: EventMention => cur.trigger.startOffset
+        case cur: EventMention     => cur.trigger.startOffset
         case cur: TextBoundMention => cur.startOffset
       }
 
@@ -49,6 +58,10 @@ class StubActions(val timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBu
 
 object StubActions {
 
-  def apply(timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])) =
-    new StubActions(timeintervals:(ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]))
+  def apply(
+      timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
+  ) =
+    new StubActions(
+      timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
+    )
 }
