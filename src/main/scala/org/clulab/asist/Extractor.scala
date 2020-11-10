@@ -7,6 +7,7 @@ import edu.stanford.nlp.coref.data.CorefChain
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
+import org.json4s.JsonDSL._
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
@@ -198,36 +199,27 @@ class Extractor(
         }
       }
       taxonomy_matches = taxonomy_matches + "    }"
-      val json_rep_raw =
-        s"""
-                   |{
-                   | "header": {
-                   |   "timestamp": "${time_format.format(timestamp)}",
-                   |   "message_type": "event",
-                   |   "version": "0.1"
-                   | },
-                   | "msg": {
-                   |   "source": "DialogueActionExtractor",
-                   |   "experiment_id": "${experiment_id.toString}",
-                   |   "trial_id": "${trial_id.toString}",
-                   |   "timestamp": "${time_format.format(timestamp)}",
-                   |   "sub_type": "Event:dialogue_action",
-                   |   "version": "0.1"
-                   | },
-                   | "data": {
-                   |     "Label" : "${mention.label}",
-                   |     "Span" : "${mention.words.mkString(" ")}",
-                   |     "Arguments" : "${argument_labels.mkString(" ")}",
-                   |     "Text" : "${doc
-          .sentences(mention.sentence)
-          .getSentenceText}",
-                   |     "timestamp" : "${time_format.format(timestamp)}",
-                   |     "TaxonomyMatches" : ${taxonomy_matches}
-                   | }
-                   |}
-                   |"""
-      val json_rep = parse(json_rep_raw.stripMargin)
-      output_array.add(compact(render(json_rep)))
+      val json = 
+        (("header" ->
+          ("timestamp" -> time_format.format(timestamp)) ~
+          ("message_type" -> "event") ~
+          ("version" -> 0.1)) ~
+        ("msg" ->
+          ("source" -> "DialogueActionExtractor") ~
+          ("experiment_id" -> experiment_id.toString) ~
+          ("filename" -> file_name) ~
+          ("timestamp" -> time_format.format(timestamp)) ~
+          ("sub_type" -> "Event:dialogue_action") ~
+          ("version" -> "0.1")) ~
+        ("data" -> 
+          ("Label" -> mention.label) ~
+          ("Span" -> mention.words.mkString(" ")) ~
+          ("Arguments" -> argument_labels.mkString(" ")) ~
+          ("Text" -> doc.sentences(mention.sentence).getSentenceText) ~
+          ("timestamp" -> time_format.format(timestamp)) ~
+          ("TaxonomyMatches" -> taxonomy_matches)))
+      output_array.add(compact(render(json)))
+      println(compact(render(json)))
     }
     output_array
   }
