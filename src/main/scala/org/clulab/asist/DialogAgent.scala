@@ -11,7 +11,7 @@ import scala.collection.{immutable, mutable}
 import scala.io.Source
 import scala.util.parsing.json.JSON
 
-object DialogInfo extends App {
+object DialogAgent extends App {
 
   println("DialogInfo Starting")
 
