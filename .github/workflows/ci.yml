@@ -49,6 +49,10 @@ jobs:
     - name: Log java version
       run: java -version
 
+    # Capture which sbt we are running
+    - name: Log sbt location
+      run: which sbt
+
     # If running on a macOS runner, we install sbt using Homebrew
     - name: If macos detected, use brew to install sbt
       run: |
