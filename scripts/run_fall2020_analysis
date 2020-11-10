@@ -7,12 +7,13 @@ set -euo pipefail
 ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" >/dev/null 2>&1 && pwd)"
 GCS_DIR=study-1_2020.08
 DATA_DIR="$ROOTDIR"/data/$GCS_DIR
+OUTPUT_FILE="output_events.txt"
+EXPERIMENT_ID=f7f3f5b6-835d-4523-8f79-68fd5199ae89
 
 pushd $ROOTDIR
     echo "Syncing ASIST data"
     ./scripts/sync_asist_data
 
-
     echo "Running the extraction pipeline"
-    sbt "runMain org.clulab.asist.ExtractDirSearch ${DATA_DIR}"
+    sbt "runMain org.clulab.asist.ExtractDirSearch ${DATA_DIR} ${EXPERIMENT_ID} ${OUTPUT_FILE}"
 popd
