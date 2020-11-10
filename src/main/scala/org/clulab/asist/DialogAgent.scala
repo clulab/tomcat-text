@@ -13,9 +13,10 @@ import scala.util.parsing.json.JSON
 
 object DialogAgent extends App {
 
-  println("DialogInfo Starting")
+  println("DialogAgent Starting")
 
   // ...
 
-  println("DialogInfo Ending")
+  println("DialogAgent Ending")
 }
+
