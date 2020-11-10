@@ -38,6 +38,7 @@ object ExtractDirSearch extends App {
 
   val extractor = new Extractor(pipeline, ieSystem, tax_map)
 
+  // We set some default arguments
   val input_dir_name = if (args.length > 0) {
     args(0)
   } else {
@@ -46,7 +47,19 @@ object ExtractDirSearch extends App {
     )
   }
 
-  val output_file = new PrintWriter(new File("output_events.txt"))
+  val experiment_id = if (args.length > 1) {
+    args(1)
+  } else {
+    "NULL"
+  }
+
+  val output_filename = if (args.length > 2) {
+    args(2)
+  } else {
+    "output_events.txt"
+  }
+
+  val output_file = new PrintWriter(new File(output_filename))
 
   //https://alvinalexander.com/scala/how-to-list-subdirectories-under-directory-in-scala/
   def getFilesInDir(dir: File): Array[String] = {
@@ -60,7 +73,8 @@ object ExtractDirSearch extends App {
     println("Starting in: " + input_dir_name)
     for (input_file_name <- getFilesInDir(new File(input_dir_name))) {
       println("Extracting from: " + input_file_name + " . . .")
-      val extracted_mention_json = extractor.extractMentions(input_file_name)
+      val extracted_mention_json =
+        extractor.extractMentions(input_file_name, experiment_id)
       for (event_json <- extracted_mention_json) {
         output_file.write(event_json + "\n")
       }

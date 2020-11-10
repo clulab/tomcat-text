@@ -151,7 +151,10 @@ class Extractor(
     (all_events, doc)
   }
 
-  def extractMentions(file_name: String): ArrayBuffer[String] = {
+  def extractMentions(
+      file_name: String,
+      experiment_id: String = "NULL"
+  ): ArrayBuffer[String] = {
     val output_array = new ArrayBuffer[String]()
     val transcript = new Transcript(file_name)
     val raw_text = transcript.getCleanDoc
@@ -166,7 +169,7 @@ class Extractor(
     doc = extracted_doc
     extractions.foreach(event_array => all_events.append(event_array))
 
-    val experiment_id = "NULL"; val trial_id = "NULL"
+    val trial_id = "NULL"
     val time_format = new SimpleDateFormat("HH:mm:ss.SSS")
     var text: String = ""; var startOffset = 0; var endOffset = 0
     for (extraction <- all_events) {
@@ -185,41 +188,30 @@ class Extractor(
           endOffset = cur.endOffset
       }
       val timestamp = getTimeStamp(time_lists._1, time_lists._2, startOffset)
-      var taxonomy_matches = "{\n"
-      var count = 0
-      for (term <- tax_map(mention.label)) {
-        taxonomy_matches = taxonomy_matches + s"""|         \"${term(
-          "term"
-        )}\": \"${term("score")}\""""
-        count += 1
-        if (count != tax_map(mention.label).size) {
-          taxonomy_matches = taxonomy_matches + ",\n"
-        } else {
-          taxonomy_matches = taxonomy_matches + "\n"
-        }
-      }
-      taxonomy_matches = taxonomy_matches + "    }"
-      val json = 
-        (("header" ->
-          ("timestamp" -> time_format.format(timestamp)) ~
-          ("message_type" -> "event") ~
-          ("version" -> 0.1)) ~
-        ("msg" ->
-          ("source" -> "DialogueActionExtractor") ~
-          ("experiment_id" -> experiment_id.toString) ~
-          ("filename" -> file_name) ~
-          ("timestamp" -> time_format.format(timestamp)) ~
-          ("sub_type" -> "Event:dialogue_action") ~
-          ("version" -> "0.1")) ~
-        ("data" -> 
-          ("Label" -> mention.label) ~
-          ("Span" -> mention.words.mkString(" ")) ~
-          ("Arguments" -> argument_labels.mkString(" ")) ~
-          ("Text" -> doc.sentences(mention.sentence).getSentenceText) ~
-          ("timestamp" -> time_format.format(timestamp)) ~
-          ("TaxonomyMatches" -> taxonomy_matches)))
+      val taxonomy_matches =
+        tax_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
+      val json =
+        (
+          ("header" ->
+            ("timestamp" -> time_format.format(timestamp)) ~
+            ("message_type" -> "event") ~
+            ("version" -> 0.1)) ~
+            ("msg" ->
+              ("source" -> "DialogueActionExtractor") ~
+              ("experiment_id" -> experiment_id.toString) ~
+              ("filename" -> file_name) ~
+              ("timestamp" -> time_format.format(timestamp)) ~
+              ("sub_type" -> "Event:dialogue_action") ~
+              ("version" -> "0.1")) ~
+            ("data" ->
+              ("Label" -> mention.label) ~
+              ("Span" -> mention.words.mkString(" ")) ~
+              ("Arguments" -> argument_labels.mkString(" ")) ~
+              ("Text" -> doc.sentences(mention.sentence).getSentenceText) ~
+              ("timestamp" -> time_format.format(timestamp)) ~
+              ("TaxonomyMatches" -> taxonomy_matches))
+        )
       output_array.add(compact(render(json)))
-      println(compact(render(json)))
     }
     output_array
   }
