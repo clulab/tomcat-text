@@ -25,7 +25,7 @@ object DialogAgent extends App {
     val topic = "example_topic"
     val persistence = new MemoryPersistence()
 
-    val subscriber = new MqttSubscribe(brokerUrl, clientId, qos, persistence)
+    val subscriber = new DialogSubscriber(brokerUrl, clientId, qos, persistence)
 
     override def main(args:Array[String]): Unit = {
         println("DialogAgent main")

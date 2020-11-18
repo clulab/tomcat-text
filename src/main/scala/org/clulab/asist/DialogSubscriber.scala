@@ -1,4 +1,4 @@
-//  MqttSubscribe
+//  DialogSubscribe
 //
 //  Author:  Joseph Astier
 //  Date:  2020 November
@@ -12,7 +12,7 @@ package org.clulab.asist
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-class MqttSubscribe (
+class DialogSubscribe (
         brokerUrl: String, 
         clientID: String, 
         qos: Int,
@@ -29,7 +29,7 @@ class MqttSubscribe (
 
 
     def report(msg: String): Unit = {
-        println("MqttSubscribe:" + msg)
+        println("DialogSubscribe:" + msg)
     }
 
 
