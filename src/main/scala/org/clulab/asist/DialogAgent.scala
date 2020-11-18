@@ -20,17 +20,16 @@ object DialogAgent extends App {
 
 
     val brokerUrl = "tcp://127.0.0.1:1883"
-    val clientId = "TomcatClient"
     val qos = 2
     val topic = "example_topic"
-    val persistence = new MemoryPersistence()
+    val message = "Hello Mosquitto!"
 
-    val subscriber = new DialogSubscriber(brokerUrl, clientId, qos, persistence)
-
-    override def main(args:Array[String]): Unit = {
-        println("DialogAgent main")
-    }
-
+    val subscriber = new DialogSubscriber(brokerUrl, qos)
+    val publisher = new DialogPublisher(brokerUrl, qos)
+    subscriber.connect()
+    publisher.connect()
+    subscriber.subscribe(topic)
+    publisher.publish(topic, message)
 }
 
 
