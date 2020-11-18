@@ -10,12 +10,10 @@ import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-/**
- * A singleton class to provide a convenient interface to the Eclipse Paho
- * MQTT client library.
- */
 
-object MqttPublish extends App {
+// A "Hello World" example of publishing to a Mosquitto topic
+
+object MqttPublish {
 
     println("MqttPublish Starting")
 
@@ -25,6 +23,7 @@ object MqttPublish extends App {
     val clientID = "TomcatClient"
     val topic = "example_topic"
     val persistence = new MemoryPersistence()
+
 
     try {
         val client = new MqttClient(broker, clientID, persistence)
@@ -44,7 +43,10 @@ object MqttPublish extends App {
     }
     catch {
         case me: MqttException => {
-            println("MqttException")
+            println("Caught a MqttException")
+        }
+        case _ =>{
+            println("Caught an Exception")
         }
     }
     
