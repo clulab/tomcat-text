@@ -12,17 +12,18 @@ package org.clulab.asist
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-class DialogSubscriber (brokerUrl: String, qos: Int) extends MqttCallback {
+class DialogSubscriber (
+        clientId: String, 
+        brokerUri: String,
+        qos: Int) extends MqttCallback {
 
-    val clientId: String = "tomcat_subscriber"
     val persistence: MemoryPersistence = new MemoryPersistence()
     val connectOptions: MqttConnectOptions = new MqttConnectOptions()
     val client: MqttAsyncClient = new MqttAsyncClient(
-        brokerUrl, clientId, persistence)
+        brokerUri, clientId, persistence)
 
     connectOptions.setCleanSession(true)
     client.setCallback(this)
-
 
     private def report(msg: String): Unit = {
         println(clientId +":" + msg)
@@ -30,24 +31,22 @@ class DialogSubscriber (brokerUrl: String, qos: Int) extends MqttCallback {
 
 
     def subscribe(topic: String): Unit = try {
-        report("subscribe:  subscribing to: " + topic + "...")
         client.subscribe(topic, qos)
-        report("subscribe:  subscribed to: " + topic)
+        report("subscribed to: " + topic)
     } catch {
-        case ex: Exception => {
-            report("subscribe:  Exception caught")
-            report("subscribe:  " + ex.toString())
+        case e: Exception => {
+            report("Exception during subscribe to " + topic + ", " + e)
         }
     }
 
+
     def connect(): Unit = try {
-        report("connect: Connecting to broker: "+brokerUrl + " ...")
         client.connect(connectOptions)
-        report("connect: Connected")
+        report("connected to " + brokerUri)
     }
     catch {
         case e: Exception => {
-            report("connect: Caught an Exception: " + e)
+            report("Exception during connection to " + brokerUri + ", " + e)
         }
     }
 
@@ -57,23 +56,13 @@ class DialogSubscriber (brokerUrl: String, qos: Int) extends MqttCallback {
     }
 
 
-    override def deliveryComplete(token: IMqttDeliveryToken): Unit = try {
+    override def deliveryComplete(token: IMqttDeliveryToken): Unit = {
         report("deliveryComplete: " + token.getMessage())
-    } catch {
-        case e: Exception => {
-            report("deliveryComplete: Caught an Exception: " + e)
-        }
     }
 
 
-    override def messageArrived(topic: String, msg: MqttMessage): Unit = try { 
-        report("messageArrived: topic   = " + topic)
-        report("messageArrived: message = " + msg)
-
-    } catch {
-        case e: Exception => {
-            report("messageArrived: Caught an Exception: " + e)
-        }
+    override def messageArrived(topic: String, msg: MqttMessage): Unit = { 
+        report("messageArrived: " + topic + " -> " + msg)
     }
 }
 

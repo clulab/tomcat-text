@@ -1,4 +1,4 @@
-//  DialogSubscriber
+//  DialogPublisher
 //
 //  Author:  Joseph Astier
 //  Date:  2020 November
@@ -12,12 +12,11 @@ import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
 
-class DialogPublisher (brokerUrl: String, qos: Int) {
+class DialogPublisher (clientId: String, brokerUri: String, qos: Int) {
 
-    val clientId = "tomcat_publisher"
     val persistence = new MemoryPersistence()
     val connectOptions = new MqttConnectOptions()
-    val client = new MqttClient(brokerUrl, clientId, persistence)
+    val client = new MqttClient(brokerUri, clientId, persistence)
 
     connectOptions.setCleanSession(true)
 
@@ -30,11 +29,10 @@ class DialogPublisher (brokerUrl: String, qos: Int) {
 
     // Send a
     def publish(topic: String, payload: String): Unit = try {
-        report("publish:  topic   = "+topic)
-        report("publish:  payload = "+payload)
         val message = new MqttMessage(payload.getBytes())
         message.setQos(qos)
         client.publish(topic, message)
+        report("Published message: \"" + payload + "\" on topic \"" + topic + "\"")
     }
     catch {
         case e: Exception =>{
@@ -42,27 +40,24 @@ class DialogPublisher (brokerUrl: String, qos: Int) {
         }
     }
 
-
     def connect(): Unit = try {
-        report("connect: Connecting to broker: "+brokerUrl + " ...")
         client.connect(connectOptions)
-        report("connect: Connected")
+        report("connected to " + brokerUri)
     }
     catch {
-        case e: Exception =>{
-            report("connect: Caught an Exception: " + e.toString())
+        case e: Exception => {
+            report("Exception during connection to " + brokerUri + ", " + e)
         }
     }
-    
+
 
     def disconnect(): Unit = try {
-        report("disconnect: disconnecting...")
         client.disconnect()
-        report("disconnect: disonnected")
+        report("disconnected from " + brokerUri)
     }
     catch {
         case e: Exception =>{
-            report("disconnect: Caught an Exception: " + e.toString())
+            report("Exception during disconnect from " + brokerUri + ": " + e.toString())
         }
     }
 }
