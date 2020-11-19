@@ -34,9 +34,3 @@ class DialogRelayer(
 }
 
 
-class Foo() {
-}
-
-
-class Bar() {
-}
