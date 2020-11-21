@@ -3,7 +3,8 @@
 //  Author:  Joseph Astier
 //  Date:  2020 November
 //
-//  Asynchronous event-driven Mosquitto message subscriber
+//  Asynchronous event-driven Mosquitto message relayer, can also be used
+//  as a standalone subscriber or publisher.
 //  Based on the Eclipse Paho Mosquitto API: www.eclipse.org/paho/files/javadoc
 //
 package org.clulab.asist
@@ -11,6 +12,7 @@ package org.clulab.asist
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
+// this class allows a test of the Relayer 
 object DialogAgent extends App {
 
     val host    = "127.0.0.1"
@@ -29,6 +31,7 @@ object DialogAgent extends App {
 }
 
 
+// Mosquitto topic relayer.
 class DialogRelayer (host: String, port: Int)extends MqttCallback { 
     val id         = "Relayer"
     val subId      = "Subscriber"
@@ -143,8 +146,8 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
     override def messageArrived(topic: String, msg: MqttMessage): Unit = { 
         report("Read '%s' on '%s'\n".format(msg.toString, topic))
         if(topic == relaySrc) {
-            report(" RELAY '%s' received on '%s' to '%s'\n".format(
-                msg.toString, relaySrc, relaySrc))
+            report(" RELAY '%s' from '%s' to '%s'\n".format(
+                msg.toString, relaySrc, relayDst))
             publish(relayDst, msg)
         }
     }
