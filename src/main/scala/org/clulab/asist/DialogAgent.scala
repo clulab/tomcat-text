@@ -18,14 +18,13 @@ object DialogAgent extends App {
     val host    = "127.0.0.1"
     val port    = 1883
     val topic   = "observations/chat"
-    val message = "Hello Mosquitto!"
     val relayer = new DialogRelayer(host, port)
 
     println("Entering relayer startup ...")
     if(relayer.startUp()) {
         println("Startup completed successfully.")
-        relayer.publish (topic, message)
-        relayer.publish ("foo", message)
+        relayer.publish (topic, "Relay message")
+        relayer.publish ("foo", "Non-relay message")
     } else
         println("Startup failed.")
 }
@@ -97,15 +96,10 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
         subscriber.isConnected && publisher.isConnected
     }
 
-    def connectOptions(): MqttConnectOptions = { 
-        val co = new MqttConnectOptions
-        co.setCleanSession(true)
-        co
-    }
 
     def connectSubscriber(): Boolean = {
         report("Connecting subscriber to %s ...\n".format(uri))
-        subscriber.connect(connectOptions).waitForCompletion 
+        subscriber.connect(new MqttConnectOptions).waitForCompletion 
         if(subscriber.isConnected) {
             report("subscriber is connected to %s\n".format(uri))
             true
@@ -118,7 +112,7 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
 
     def connectPublisher(): Boolean = {
         report("Connecting publisher to %s ...\n".format(uri))
-        publisher.connect(connectOptions) 
+        publisher.connect(new MqttConnectOptions) 
         if(publisher.isConnected) {
             report("publisher is connected to %s\n".format(uri))
             true
@@ -146,7 +140,7 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
     override def messageArrived(topic: String, msg: MqttMessage): Unit = { 
         report("Read '%s' on '%s'\n".format(msg.toString, topic))
         if(topic == relaySrc) {
-            report(" RELAY '%s' from '%s' to '%s'\n".format(
+            report("RELAY '%s' from '%s' to '%s'\n".format(
                 msg.toString, relaySrc, relayDst))
             publish(relayDst, msg)
         }
