@@ -3,7 +3,7 @@
 //  Author:  Joseph Astier, Adarsh Pyarelal
 //  Date:  2020 November
 //
-//  Based on the Eclipse Paho Mosquitto API: www.eclipse.org/paho/files/javadoc
+//  Based on the Eclipse Paho MQTT client API: www.eclipse.org/paho/files/javadoc
 //
 package org.clulab.asist
 
@@ -17,11 +17,11 @@ object DialogAgentTest extends App {
   val port = 1883
   val agent = new DialogAgent(host, port)
 
-  // use hard-coded values already in agent for this test
+  // Use hard-coded values already in agent for this test
   val relay_source_topic = agent.relaySrc
   val relay_destination_topic = agent.relayDst
 
-  // send a message on the relay source topic, and see if it is published
+  // Send a message on the relay source topic, and see if it is published
   // on the relay destination topic.
   if (agent.start()) {
     agent.publish(relay_source_topic, "Relay message")
@@ -29,8 +29,8 @@ object DialogAgentTest extends App {
     println("Could not start Dialog Relayer.")
 }
 
-//  Asynchronous event-driven Mosquitto message agent, Messages read on one
-//  Mosquitto bus topic are resent on another
+//  Asynchronous event-driven MQTT agent. Messages read on one
+//  bus topic are resent on another
 class DialogAgent(host: String, port: Int) extends MqttCallback {
   val id = "DialogAgent"
   val subId = "Subscriber"
@@ -45,18 +45,18 @@ class DialogAgent(host: String, port: Int) extends MqttCallback {
 
   subscriber.setCallback(this)
 
-  // optional progress reports
+  // Optional progress reports
   private def report(msg: String): Unit = if (verbose) print(id + ": " + msg)
 
-  // publish a string
+  // Publish a string
   def publish(topic: String, text: String): Boolean =
     publish(topic, text.getBytes)
 
-  // publish any byte array
+  // Publish any byte array
   def publish(topic: String, payload: Array[Byte]): Boolean =
     publish(topic, new MqttMessage(payload))
 
-  // publish Mosquitto message
+  // Publish message
   def publish(topic: String, msg: MqttMessage): Boolean = try {
     if (publisher.isConnected) {
       publisher.publish(topic, msg)
@@ -81,7 +81,7 @@ class DialogAgent(host: String, port: Int) extends MqttCallback {
     }
   }
 
-  // subscribe to any topic.  This could also be a list of topics.
+  // Subscribe to any topic.  This could also be a list of topics.
   def subscribe(topic: String): Boolean = try {
     if (subscriber.isConnected) {
       subscriber.subscribe(topic, qos)
