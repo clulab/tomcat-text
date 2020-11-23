@@ -38,6 +38,19 @@ libraryDependencies ++= {
   )
 }
 
+libraryDependencies ++= Seq(
+  "com.google.code.gson" % "gson" % "2.8.5"
+)
+
+
+val AkkaVersion = "2.5.31"
+libraryDependencies ++= Seq(
+  "com.lightbend.akka" %% "akka-stream-alpakka-mqtt-streaming" % "2.0.2",
+  "com.lightbend.akka" %% "akka-stream-alpakka-mqtt" % "2.0.2",
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion
+)
+
 
 lazy val core = project in file(".")
 
