@@ -43,14 +43,8 @@ libraryDependencies ++= Seq(
 )
 
 
-val AkkaVersion = "2.5.31"
-libraryDependencies ++= Seq(
-  "com.lightbend.akka" %% "akka-stream-alpakka-mqtt-streaming" % "2.0.2",
-  "com.lightbend.akka" %% "akka-stream-alpakka-mqtt" % "2.0.2",
-  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
-  "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion
-)
-
+// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
+libraryDependencies += "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5"
 
 lazy val core = project in file(".")
 
