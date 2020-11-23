@@ -1,10 +1,8 @@
-//  DialogSubscriber
+//  DialogAgent
 //
-//  Author:  Joseph Astier
+//  Author:  Joseph Astier, Adarsh Pyarelal
 //  Date:  2020 November
 //
-//  Asynchronous event-driven Mosquitto message relayer, can also be used
-//  as a standalone subscriber or publisher.
 //  Based on the Eclipse Paho Mosquitto API: www.eclipse.org/paho/files/javadoc
 //
 package org.clulab.asist
@@ -12,34 +10,38 @@ package org.clulab.asist
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-// this class allows a test of the Relayer 
-object DialogAgent extends App {
+// this object allows a test of the DialogAgent 
+object DialogAgentTest extends App {
 
-    val host    = "127.0.0.1"
-    val port    = 1883
-    val topic   = "observations/chat"
-    val relayer = new DialogRelayer(host, port)
+    val host  = "127.0.0.1"
+    val port  = 1883
+    val agent = new DialogAgent(host, port)
 
-    println("Entering relayer startup ...")
-    if(relayer.startUp()) {
-        println("Startup completed successfully.")
-        relayer.publish (topic, "Relay message")
-        relayer.publish ("foo", "Non-relay message")
+    // use hard-coded values already in agent for this test
+    val relay_source_topic = agent.relaySrc
+    val relay_destination_topic = agent.relayDst
+
+    // send a message on the relay source topic, and see if it is published
+    // on the relay destination topic.   
+    if(agent.start()) {
+        agent.publish (relay_source_topic, "Relay message")
     } else
-        println("Startup failed.")
+        println("Could not start Dialog Relayer.")
 }
 
 
-// Mosquitto topic relayer.
-class DialogRelayer (host: String, port: Int)extends MqttCallback { 
-    val id         = "Relayer"
+
+//  Asynchronous event-driven Mosquitto message agent, Messages read on one
+//  Mosquitto bus topic are resent on another
+class DialogAgent (host: String, port: Int)extends MqttCallback { 
+    val id         = "DialogAgent"
     val subId      = "Subscriber"
     val pubId      = "Publisher"
     val uri        = "tcp://%s:%d".format(host, port)
-    val relaySrc   = "observations/chat"
-    val relayDst   = "agent/tomcat_chatbot"
+    val relaySrc   = "observations/chat"    // relay messages from here
+    val relayDst   = "agent/tomcat_chatbot" // relay messages to here
     val qos        = 2
-    val verbose    = true  // debugging
+    val verbose    = true  // set true for debug printf output
     val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence())
     val publisher  = new MqttClient(uri, pubId, new MemoryPersistence())
 
@@ -48,13 +50,16 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
     // optional progress reports
     private def report(msg: String): Unit = if(verbose) print(id +": " + msg)
 
+
     // publish a string
-    def publish(topic: String, text: String): Boolean = publish(
-        topic, text.getBytes)
+    def publish(topic: String, text: String): Boolean =
+        publish(topic, text.getBytes)
+
 
     // publish any byte array
-    def publish(topic: String, payload: Array[Byte]): Boolean = publish(
-        topic, new MqttMessage(payload))
+    def publish(topic: String, payload: Array[Byte]): Boolean =
+        publish(topic, new MqttMessage(payload))
+
 
     // publish Mosquitto message
     def publish(topic: String, msg: MqttMessage): Boolean = try {
@@ -75,7 +80,8 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
         }
     }
 
-    // subscribe to any topic
+
+    // subscribe to any topic.  This could also be a list of topics.
     def subscribe(topic: String): Boolean  = try {
         if(subscriber.isConnected) {
             subscriber.subscribe(topic, qos)
@@ -92,55 +98,62 @@ class DialogRelayer (host: String, port: Int)extends MqttCallback {
         }
     }
 
-    def isConnected(): Boolean = {
-        subscriber.isConnected && publisher.isConnected
-    }
 
-
+    // Connect subscriber to the broker URI
     def connectSubscriber(): Boolean = {
-        report("Connecting subscriber to %s ...\n".format(uri))
         subscriber.connect(new MqttConnectOptions).waitForCompletion 
         if(subscriber.isConnected) {
             report("subscriber is connected to %s\n".format(uri))
             true
         } else {
-            report("subscriber is not connected to %s\n".format(uri))
+            report("subscriber could not connect to %s\n".format(uri))
             false
         }
     }
 
 
+    // Connect broker to the broker URI
     def connectPublisher(): Boolean = {
-        report("Connecting publisher to %s ...\n".format(uri))
         publisher.connect(new MqttConnectOptions) 
         if(publisher.isConnected) {
             report("publisher is connected to %s\n".format(uri))
             true
         } else {
-            report("publisher is not connected to %s\n".format(uri))
+            report("publisher could not connect to %s\n".format(uri))
             false
         }
     }
 
 
-    def startUp(): Boolean = (connectPublisher 
-        && connectSubscriber
-        && subscribe(relayDst) 
-        && subscribe(relaySrc))
+    // Activate relayer
+    def start(): Boolean = if (connectPublisher
+            && connectSubscriber
+            && subscribe(relayDst) 
+            && subscribe(relaySrc)) { 
+        report("Topic '%s' will be relayed to topic '%s'\n".format(relaySrc, relayDst))
+        true} else false
 
 
+    // Deactivate relayer
+    // ...
+
+
+    // Needed for MqttCallback extension
     override def connectionLost(cause: Throwable): Unit = 
         report("%s\n".format(cause.toString))
 
 
+    // Needed for MqttCallback extension
     override def deliveryComplete(token: IMqttDeliveryToken): Unit = 
         report("deliveryComplete: " + token.getMessage)
 
 
+    // When a message is received on the relay source topic, putlish it to the
+    // relay destination topic.
     override def messageArrived(topic: String, msg: MqttMessage): Unit = { 
         report("Read '%s' on '%s'\n".format(msg.toString, topic))
         if(topic == relaySrc) {
-            report("RELAY '%s' from '%s' to '%s'\n".format(
+            report("Relaying '%s' from '%s' to '%s'\n".format(
                 msg.toString, relaySrc, relayDst))
             publish(relayDst, msg)
         }
