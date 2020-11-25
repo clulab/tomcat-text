@@ -3,18 +3,20 @@
 //  Author:  Joseph Astier, Adarsh Pyarelal
 //  Date:  2020 November
 //
-//  This class mirrors a json object
 //
+//  Data for JSON seriialization
+
 package org.clulab.asist
 
 import java.text.SimpleDateFormat
 import org.clulab.odin.Mention
 import scala.collection.mutable.ArrayBuffer
-
+import scala.collection.immutable
 
 case class ChatAnalysisMessage(val timestamp: SimpleDateFormat,
     val experimentId: String,
     val extractions: ArrayBuffer[Array[Any]],
+    val tax_map: immutable.Map[String, Array[immutable.Map[String, String]]],
     val doc: org.clulab.processors.Document,
     val mention: Mention) {
 
