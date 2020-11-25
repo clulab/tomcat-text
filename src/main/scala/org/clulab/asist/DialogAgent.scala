@@ -3,7 +3,7 @@
 //  Author:  Joseph Astier, Adarsh Pyarelal
 //  Date:  2020 November
 //
-//  Based on the Eclipse Paho MQTT client API: www.eclipse.org/paho/files/javadoc
+//  Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
 //
 package org.clulab.asist
 
@@ -30,8 +30,9 @@ object DialogAgentTest extends App {
 }
 
 //  Asynchronous event-driven MQTT agent. Messages read on one
-//  bus topic are resent on another
-class DialogAgent(host: String, port: Int) extends MqttCallback {
+//  bus topic are published on another
+class DialogAgent(val host: String, val port: Int, val extractor: Option[Extractor])
+    extends MqttCallback {
   val id = "DialogAgent"
   val subId = "Subscriber"
   val pubId = "Publisher"
@@ -43,10 +44,35 @@ class DialogAgent(host: String, port: Int) extends MqttCallback {
   val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence())
   val publisher = new MqttClient(uri, pubId, new MemoryPersistence())
 
+  // relay same text as in MQTT message
+  def this(host: String, port: Int) {
+    this(host, port, None)
+  }
+
+  // relay JSON converted MQTT message text
+  def this(host: String, port: Int, extractor: Extractor) {
+    this(host, port, Some(extractor))
+  }
+
   subscriber.setCallback(this)
 
-  // Optional progress reports
-  private def report(msg: String): Unit = if (verbose) print(id + ": " + msg)
+  // Optional progress reports.  Return output for logging.
+  def report(msg: String): Option[String] = if(verbose) {
+    val output = "%s: %s".format(id, msg)
+    print(output)
+    Some(output)
+  } else None
+
+  // relay a message 
+  def relay(msg: MqttMessage): Unit = {
+    val text = msg.toString
+    extractor.foreach(e => {
+      val (extractions, extracted_doc) = e.runExtraction(text, "")
+      // ...
+    })
+    report("Relaying '%s' from '%s' to '%s'\n".format(text, relaySrc, relayDst))
+    publish(relayDst, msg)
+  }
 
   // Publish a string
   def publish(topic: String, text: String): Boolean =
@@ -64,7 +90,7 @@ class DialogAgent(host: String, port: Int) extends MqttCallback {
       true
     } else {
       report(
-        "Can't publish '%s' to '%s'. Not conected.n".format(msg.toString, topic)
+        "Can't publish '%s' to '%s'. Not conected\n".format(msg.toString, topic)
       )
       false
     }
@@ -110,7 +136,7 @@ class DialogAgent(host: String, port: Int) extends MqttCallback {
     }
   }
 
-  // Connect broker to the broker URI
+  // Connect publisher to the broker URI
   def connectPublisher(): Boolean = {
     publisher.connect(new MqttConnectOptions)
     if (publisher.isConnected) {
@@ -136,29 +162,20 @@ class DialogAgent(host: String, port: Int) extends MqttCallback {
   } else false
 
   // Deactivate relayer
-  // ...
+  // def stop(): Boolean = ...
 
   // Needed for MqttCallback extension
   override def connectionLost(cause: Throwable): Unit =
-    report("%s\n".format(cause.toString))
+    report("Connection lost: %s\n".format(cause.toString))
 
   // Needed for MqttCallback extension
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
     report("deliveryComplete: " + token.getMessage)
 
-  // When a message is received on the relay source topic, putlish it to the
-  // relay destination topic.
+  // Report any activity on our topic subscriptions.  Relay anything
+  // that arrives on the relay source topic.
   override def messageArrived(topic: String, msg: MqttMessage): Unit = {
     report("Read '%s' on '%s'\n".format(msg.toString, topic))
-    if (topic == relaySrc) {
-      report(
-        "Relaying '%s' from '%s' to '%s'\n".format(
-          msg.toString,
-          relaySrc,
-          relayDst
-        )
-      )
-      publish(relayDst, msg)
-    }
+    if (topic == relaySrc) relay(msg)
   }
 }
