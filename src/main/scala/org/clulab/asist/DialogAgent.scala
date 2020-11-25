@@ -10,6 +10,9 @@ package org.clulab.asist
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
+import org.json4s._
+
+
 // this object allows a test of the DialogAgent
 object DialogAgentTest extends App {
 
@@ -29,6 +32,7 @@ object DialogAgentTest extends App {
     println("Could not start Dialog Relayer.")
 }
 
+
 //  Asynchronous event-driven MQTT agent. Messages read on one
 //  bus topic are published on another
 class DialogAgent(val host: String, val port: Int, val extractor: Option[Extractor])
@@ -41,8 +45,15 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   val relayDst = "agent/tomcat_chatbot" // relay messages to here
   val qos = 2
   val verbose = true // set true for debug printf output
-  val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence())
-  val publisher = new MqttClient(uri, pubId, new MemoryPersistence())
+  val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence)
+  val publisher = new MqttClient(uri, pubId, new MemoryPersistence)
+
+  subscriber.setCallback(this)
+
+  // output status updates to stdout if the verbose flag is true
+  def report(msg: String): Unit = if(verbose) {
+    print("%s: %s".format(id, msg))
+  } 
 
   // relay same text as in MQTT message
   def this(host: String, port: Int) {
@@ -53,15 +64,6 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   def this(host: String, port: Int, extractor: Extractor) {
     this(host, port, Some(extractor))
   }
-
-  subscriber.setCallback(this)
-
-  // Optional progress reports.  Return output for logging.
-  def report(msg: String): Option[String] = if(verbose) {
-    val output = "%s: %s".format(id, msg)
-    print(output)
-    Some(output)
-  } else None
 
   // relay a message 
   def relay(msg: MqttMessage): Unit = {
@@ -114,7 +116,7 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
       report("Subscribed to '%s'\n".format(topic))
       true
     } else {
-      report("Can't subscribe '%s', not connected\n".format(topic))
+      report("Can't subscribe to '%s', not connected\n".format(topic))
       false
     }
   } catch {
