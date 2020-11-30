@@ -67,6 +67,10 @@ jobs:
           brew install sbt
         fi
 
+    # Run the ExtractDirSearch test
+    - name: ExtractDirSearch test
+      run: scripts/test_ExtractDirSearch
+
     # SBT testing
     - name: SBT Test
       run:  sbt test
