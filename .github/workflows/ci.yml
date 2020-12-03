@@ -69,7 +69,7 @@ jobs:
 
     # Run the ExtractDirSearch test
     - name: ExtractDirSearch test
-      run: scripts/test_ExtractDirSearch
+      run: sbt 'runMain org.clulab.asist.ExtractDirSearch data/test'
 
     # SBT testing
     - name: SBT Test
