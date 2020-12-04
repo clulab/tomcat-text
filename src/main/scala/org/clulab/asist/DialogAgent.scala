@@ -13,26 +13,6 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json4s._
 
 
-// this object allows a test of the DialogAgent
-object DialogAgentTest extends App {
-
-  val host = "127.0.0.1"
-  val port = 1883
-  val agent = new DialogAgent(host, port)
-
-  // Use hard-coded values already in agent for this test
-  val relay_source_topic = agent.relaySrc
-  val relay_destination_topic = agent.relayDst
-
-  // Send a message on the relay source topic, and see if it is published
-  // on the relay destination topic.
-  if (agent.start()) {
-    agent.publish(relay_source_topic, "Relay message")
-  } else
-    println("Could not start Dialog Relayer.")
-}
-
-
 //  Asynchronous event-driven MQTT agent. Messages read on one
 //  bus topic are published on another
 class DialogAgent(val host: String, val port: Int, val extractor: Option[Extractor])
@@ -47,6 +27,8 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   val verbose = true // set true for debug printf output
   val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence)
   val publisher = new MqttClient(uri, pubId, new MemoryPersistence)
+
+  
 
   subscriber.setCallback(this)
 
@@ -68,11 +50,15 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   // relay a message 
   def relay(msg: MqttMessage): Unit = {
     val text = msg.toString
+    report("Relaying '%s' from '%s' to '%s'\n".format(text, relaySrc, relayDst))
     extractor.foreach(e => {
+      report(" extractor iteration\n")
       val (extractions, extracted_doc) = e.runExtraction(text, "")
+      report(" extractions.length = %s\n".format(extractions.length.toString))
+     
+      
       // ...
     })
-    report("Relaying '%s' from '%s' to '%s'\n".format(text, relaySrc, relayDst))
     publish(relayDst, msg)
   }
 
