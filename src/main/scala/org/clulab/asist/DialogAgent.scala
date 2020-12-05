@@ -7,16 +7,23 @@
 //
 package org.clulab.asist
 
+import edu.stanford.nlp.pipeline.StanfordCoreNLP
+import java.io.{File, PrintWriter}
+import java.util.Properties
+import org.clulab.odin.Mention
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
-
 import org.json4s._
+import scala.collection.immutable
+import scala.io.Source
+import scala.util.parsing.json.JSON
+import spray.json._
+import spray.json.DefaultJsonProtocol._
 
 
 //  Asynchronous event-driven MQTT agent. Messages read on one
 //  bus topic are published on another
-class DialogAgent(val host: String, val port: Int, val extractor: Option[Extractor])
-    extends MqttCallback {
+class DialogAgent(val host: String, val port: Int) extends MqttCallback {
   val id = "DialogAgent"
   val subId = "Subscriber"
   val pubId = "Publisher"
@@ -28,7 +35,14 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence)
   val publisher = new MqttClient(uri, pubId, new MemoryPersistence)
 
-  
+  // Build an extractor for our tokens
+  val pipeline = new StanfordCoreNLP(new Properties() {
+    setProperty("annotators","tokenize, ssplit, pos, lemma, ner, parse, dcoref")
+  })
+  val json_tax_map = JsonParser(
+    Source.fromResource("taxonomy_map.json").mkString
+  ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
+  val extractor = new Extractor(pipeline, new AsistEngine(), json_tax_map)
 
   subscriber.setCallback(this)
 
@@ -37,28 +51,20 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
     print("%s: %s".format(id, msg))
   } 
 
-  // relay same text as in MQTT message
-  def this(host: String, port: Int) {
-    this(host, port, None)
-  }
-
-  // relay JSON converted MQTT message text
-  def this(host: String, port: Int, extractor: Extractor) {
-    this(host, port, Some(extractor))
-  }
-
   // relay a message 
   def relay(msg: MqttMessage): Unit = {
     val text = msg.toString
-    report("Relaying '%s' from '%s' to '%s'\n".format(text, relaySrc, relayDst))
-    extractor.foreach(e => {
-      report(" extractor iteration\n")
-      val (extractions, extracted_doc) = e.runExtraction(text, "")
-      report(" extractions.length = %s\n".format(extractions.length.toString))
+    report("Relaying '%s' from [%s] to [%s]\n".format(text, relaySrc, relayDst))
+
+    val (extractions, extracted_doc) = extractor.runExtraction(text, "")
+
+    report("extractions:\n")
+    extractions.foreach(e => report("  %s\n".format(e.toString)))
+
+    report("extracted_doc = %s\n".format(extracted_doc))
      
-      
-      // ...
-    })
+    // ... 
+
     publish(relayDst, msg)
   }
 
@@ -74,23 +80,15 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   def publish(topic: String, msg: MqttMessage): Boolean = try {
     if (publisher.isConnected) {
       publisher.publish(topic, msg)
-      report("Published '%s' to '%s'\n".format(msg.toString, topic))
+      report("[%s] published '%s'\n".format(topic, msg.toString))
       true
     } else {
-      report(
-        "Can't publish '%s' to '%s'. Not conected\n".format(msg.toString, topic)
-      )
+      report ("[%s] can't publish anything, not conected\n".format(topic))
       false
     }
   } catch {
     case e: Exception => {
-      report(
-        "Can't publish '%s' to '%s'. %s\n".format(
-          msg.toString,
-          topic,
-          e.toString
-        )
-      )
+      report("[%s] caught exception during publish: %s\n".format(topic, e.toString))
       false
     }
   }
@@ -99,15 +97,15 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   def subscribe(topic: String): Boolean = try {
     if (subscriber.isConnected) {
       subscriber.subscribe(topic, qos)
-      report("Subscribed to '%s'\n".format(topic))
+      report("Subscribed to [%s]\n".format(topic))
       true
     } else {
-      report("Can't subscribe to '%s', not connected\n".format(topic))
+      report("Can't subscribe to [%s], not connected\n".format(topic))
       false
     }
   } catch {
     case e: Exception => {
-      report("Exception during subscribe to " + topic + ", " + e)
+      report("Exception during subscribe to [%s]: '%s'\n".format(topic, e.toString))
       false
     }
   }
@@ -143,9 +141,7 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
     && subscribe(relayDst)
     && subscribe(relaySrc)
   ) {
-    report(
-      "Topic '%s' will be relayed to topic '%s'\n".format(relaySrc, relayDst)
-    )
+    report("[%s] will be relayed to [%s]\n".format(relaySrc, relayDst))
     true
   } else false
 
@@ -163,7 +159,7 @@ class DialogAgent(val host: String, val port: Int, val extractor: Option[Extract
   // Report any activity on our topic subscriptions.  Relay anything
   // that arrives on the relay source topic.
   override def messageArrived(topic: String, msg: MqttMessage): Unit = {
-    report("Read '%s' on '%s'\n".format(msg.toString, topic))
+    report("[%s] read '%s'\n".format(topic, msg.toString))
     if (topic == relaySrc) relay(msg)
   }
 }
