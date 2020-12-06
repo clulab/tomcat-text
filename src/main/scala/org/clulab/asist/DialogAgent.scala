@@ -47,21 +47,21 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
   subscriber.setCallback(this)
 
   // output status updates to stdout if the verbose flag is true
-  def report(msg: String): Unit = if(verbose) {
-    print("%s: %s".format(id, msg))
+  def log(msg: String): Unit = if(verbose) {
+    print("%s: %s\n".format(id, msg))
   } 
 
   // relay a message 
   def relay(msg: MqttMessage): Unit = {
     val text = msg.toString
-    report("Relaying '%s' from [%s] to [%s]\n".format(text, relaySrc, relayDst))
+    log("Relaying '%s' from [%s] to [%s]".format(text, relaySrc, relayDst))
 
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
 
-    report("extractions:\n")
-    extractions.foreach(e => report("  %s\n".format(e.toString)))
+    log("extractions:")
+    extractions.foreach(e => log("  %s".format(e.toString)))
 
-    report("extracted_doc = %s\n".format(extracted_doc))
+    log("extracted_doc = %s".format(extracted_doc))
      
     // ... 
 
@@ -80,15 +80,15 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
   def publish(topic: String, msg: MqttMessage): Boolean = try {
     if (publisher.isConnected) {
       publisher.publish(topic, msg)
-      report("[%s] published '%s'\n".format(topic, msg.toString))
+      log("[%s] published '%s'".format(topic, msg.toString))
       true
     } else {
-      report ("[%s] can't publish anything, not conected\n".format(topic))
+      log ("[%s] can't publish anything, not conected".format(topic))
       false
     }
   } catch {
     case e: Exception => {
-      report("[%s] caught exception during publish: %s\n".format(topic, e.toString))
+      log("[%s] caught exception during publish: %s".format(topic, e.toString))
       false
     }
   }
@@ -97,15 +97,15 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
   def subscribe(topic: String): Boolean = try {
     if (subscriber.isConnected) {
       subscriber.subscribe(topic, qos)
-      report("Subscribed to [%s]\n".format(topic))
+      log("Subscribed to [%s]".format(topic))
       true
     } else {
-      report("Can't subscribe to [%s], not connected\n".format(topic))
+      log("Can't subscribe to [%s], not connected".format(topic))
       false
     }
   } catch {
     case e: Exception => {
-      report("Exception during subscribe to [%s]: '%s'\n".format(topic, e.toString))
+      log("Exception during subscribe to [%s]: '%s'".format(topic, e.toString))
       false
     }
   }
@@ -114,10 +114,10 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
   def connectSubscriber(): Boolean = {
     subscriber.connect(new MqttConnectOptions).waitForCompletion
     if (subscriber.isConnected) {
-      report("subscriber is connected to %s\n".format(uri))
+      log("subscriber is connected to %s".format(uri))
       true
     } else {
-      report("subscriber could not connect to %s\n".format(uri))
+      log("subscriber could not connect to %s".format(uri))
       false
     }
   }
@@ -126,10 +126,10 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
   def connectPublisher(): Boolean = {
     publisher.connect(new MqttConnectOptions)
     if (publisher.isConnected) {
-      report("publisher is connected to %s\n".format(uri))
+      log("publisher is connected to %s".format(uri))
       true
     } else {
-      report("publisher could not connect to %s\n".format(uri))
+      log("publisher could not connect to %s".format(uri))
       false
     }
   }
@@ -141,7 +141,7 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
     && subscribe(relayDst)
     && subscribe(relaySrc)
   ) {
-    report("[%s] will be relayed to [%s]\n".format(relaySrc, relayDst))
+    log("[%s] will be relayed to [%s]".format(relaySrc, relayDst))
     true
   } else false
 
@@ -150,16 +150,16 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
 
   // Needed for MqttCallback extension
   override def connectionLost(cause: Throwable): Unit =
-    report("Connection lost: %s\n".format(cause.toString))
+    log("Connection lost: %s".format(cause.toString))
 
   // Needed for MqttCallback extension
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
-    report("deliveryComplete: " + token.getMessage)
+    log("deliveryComplete: " + token.getMessage)
 
   // Report any activity on our topic subscriptions.  Relay anything
   // that arrives on the relay source topic.
   override def messageArrived(topic: String, msg: MqttMessage): Unit = {
-    report("[%s] read '%s'\n".format(topic, msg.toString))
+    log("[%s] read '%s'".format(topic, msg.toString))
     if (topic == relaySrc) relay(msg)
   }
 }
