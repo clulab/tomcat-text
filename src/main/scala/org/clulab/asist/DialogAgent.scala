@@ -7,65 +7,82 @@
 //
 package org.clulab.asist
 
+//import java.io.{File, PrintWriter}
+//import org.clulab.odin.Mention
+
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
-import java.io.{File, PrintWriter}
-import java.util.Properties
-import org.clulab.odin.Mention
+import java.util.{Arrays, Properties}
+import org.clulab.processors.Document
 import org.eclipse.paho.client.mqttv3._
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+
 import org.json4s._
+import scala.collection.mutable.ArrayBuffer
 import scala.collection.immutable
 import scala.io.Source
 import scala.util.parsing.json.JSON
 import spray.json._
 import spray.json.DefaultJsonProtocol._
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import org.json4s.jackson.JsonMethods.{compact, parse, render}
+
 
 
 //  Asynchronous event-driven MQTT agent. Messages read on one
 //  bus topic are published on another
 class DialogAgent(val host: String, val port: Int) extends MqttCallback {
-  val id = "DialogAgent"
-  val subId = "Subscriber"
-  val pubId = "Publisher"
-  val uri = "tcp://%s:%d".format(host, port)
+  val id = "DialogAgent"  // arbitrary name for MQTT broker connection
+  val subId = "DialogAgentSubscriber" // arbitrary, just has to be unique
+  val pubId = "DialogAgentPublisher" // arbitrary, just has to be unique
+  val uri = "tcp://%s:%d".format(host, port)  // location of MQTT broker
   val relaySrc = "observations/chat" // relay messages from here
   val relayDst = "agent/tomcat_chatbot" // relay messages to here
-  val qos = 2
+  val qos = 2  // MQTT quality of service, 2 is highest
   val verbose = true // set true for debug printf output
   val subscriber = new MqttAsyncClient(uri, subId, new MemoryPersistence)
   val publisher = new MqttClient(uri, pubId, new MemoryPersistence)
 
   // Build an extractor for our tokens
   val pipeline = new StanfordCoreNLP(new Properties() {
-    setProperty("annotators","tokenize, ssplit, pos, lemma, ner, parse, dcoref")
+    setProperty(
+      "annotators",
+      "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
+    )
   })
   val json_tax_map = JsonParser(
     Source.fromResource("taxonomy_map.json").mkString
   ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
   val extractor = new Extractor(pipeline, new AsistEngine(), json_tax_map)
 
+  // init tasks
   subscriber.setCallback(this)
 
   // output status updates to stdout if the verbose flag is true
-  def log(msg: String): Unit = if(verbose) {
-    print("%s: %s\n".format(id, msg))
-  } 
+  def log(msg: String): Unit = if (verbose) {
+    println("%s: %s".format(id, msg))
+  }
 
-  // relay a message 
+  // dump an extractions to text
+  def sayExtractions(extractions: ArrayBuffer[Array[Any]]): Unit = { 
+    log("Extractions:")
+    extractions.foreach(extraction => {
+      log("  Extraction:")
+      extraction.foreach(e => log("    '%s'".format(e.toString)))
+    })
+  }
+
+
+  // convert clulab.processor.Document to JSON
+  def toJson(extractions: ArrayBuffer[Array[Any]], doc: Document): String = {
+    sayExtractions(extractions)
+    "Extractions: %s".format(extractions.toString)
+  }
+
+  // relay a message
   def relay(msg: MqttMessage): Unit = {
     val text = msg.toString
     log("Relaying '%s' from [%s] to [%s]".format(text, relaySrc, relayDst))
-
-    val (extractions, extracted_doc) = extractor.runExtraction(text, "")
-
-    log("extractions:")
-    extractions.foreach(e => log("  %s".format(e.toString)))
-
-    log("extracted_doc = %s".format(extracted_doc))
-     
-    // ... 
-
-    publish(relayDst, msg)
+    val (extractions, doc) = extractor.runExtraction(text, "")
+    publish(relayDst, toJson(extractions, doc))
   }
 
   // Publish a string
@@ -83,7 +100,7 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
       log("[%s] published '%s'".format(topic, msg.toString))
       true
     } else {
-      log ("[%s] can't publish anything, not conected".format(topic))
+      log("[%s] can't publish anything, not conected".format(topic))
       false
     }
   } catch {
@@ -136,10 +153,10 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
 
   // Activate relayer
   def start(): Boolean = if (
-    connectPublisher
-    && connectSubscriber
-    && subscribe(relayDst)
-    && subscribe(relaySrc)
+    connectPublisher &&
+    connectSubscriber &&
+    subscribe(relayDst) &&
+    subscribe(relaySrc)
   ) {
     log("[%s] will be relayed to [%s]".format(relaySrc, relayDst))
     true
@@ -163,3 +180,4 @@ class DialogAgent(val host: String, val port: Int) extends MqttCallback {
     if (topic == relaySrc) relay(msg)
   }
 }
+
