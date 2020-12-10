@@ -9,11 +9,9 @@ package org.clulab.asist
 
 object DialogAgentTest extends App {
 
-  // Test data, this should contain all cases, ideally from an actual mission
-  val testData = Array(
-    "Researcher: Are you ready to enter Minecraft?",
-    "Subject: Yes, let's go.",
-  )
+  // test data, that we can hopefully parse
+  val messageToRelay = 
+    "Which type of victim will you save next Yellow green or whoever comes next"
 
   // configure the MQTT broker URI
   val host = "127.0.0.1"
@@ -26,10 +24,10 @@ object DialogAgentTest extends App {
   val relay_source_topic = agent.relaySrc
   val relay_destination_topic = agent.relayDst
 
-  // Send a message on the relay source topic, and see if it is published
+  // Send the message on the relay source topic, and see if it is published
   // on the relay destination topic.
   if (agent.start()) {
-    testData.foreach(test => agent.publish(relay_source_topic, test))
+    agent.publish(relay_source_topic, messageToRelay)
   } else
     println("Could not start Dialog Relayer.")
 }
