@@ -1,48 +1,49 @@
 //  ChatAnalysisMessage
 //
 //  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2020 November
+//  Date:  2020 December
 //
 //
-//  Data for JSON seriialization
+//  JSON serializable message for DialogAgent
 
 package org.clulab.asist
 
 import java.text.SimpleDateFormat
 import org.clulab.odin.Mention
-import scala.collection.mutable.ArrayBuffer
 import scala.collection.immutable
+import scala.collection.mutable._
+import org.json4s._
 
-case class ChatAnalysisMessage(val timestamp: SimpleDateFormat,
-    val experimentId: String,
-    val extractions: ArrayBuffer[Array[Any]],
-    val tax_map: immutable.Map[String, Array[immutable.Map[String, String]]],
-    val doc: org.clulab.processors.Document,
-    val mention: Mention) {
 
-  val message_type = "event"
-  val version = "0.1"
-  val timeFormat = new SimpleDateFormat("HH:mm:ss.SSS")
-  val msg = Msg(version, experimentId, timeFormat)
-  val data = Data(mention, timestamp)
+case class Header(
+  val timestamp: String = "timestamp",
+  val message_type: String = "message_type",
+  val version: String = "version",
+)
 
-  case class Msg(var version: String, 
-      var experiment_id: String,
-      var timestamp: SimpleDateFormat) {
-    val source = "DialogAgent"
-    val filename = "file_name"
-    val sub_type = "sub_type"
-  }
 
-  case class Data (var mention: Mention, var timestamp: SimpleDateFormat)  {
-    val argument_labels =
-      for (key <- mention.arguments.keys)
-        yield mention.arguments.get(key).get(0).label
-    val taxonomy_matches =
-      tax_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
-    val label = mention.label
-    val span = mention.words.mkString(" ") 
-    val arguments = argument_labels.mkString(" ")
-    val text = doc.sentences(mention.sentence).getSentenceText
-  }
-}
+case class Msg(
+  val source: String = "source",
+  val experiment_id: String = "experiment_id",
+  val filename: String = "filename",
+  val timestamp: String = "timestamp",
+  val sub_type: String = "sub_type",
+  val version: String = "version",
+)
+
+
+case class Data(
+  val label: String = "label",
+  val span: String = "span",
+  val arguments: String = "arguments",
+  val test: String = "test",
+  val timestamp: String = "timestamp",
+  val taxonomy_matches: String = "taxonomy_matches",
+)
+
+case class ChatAnalysisMessage(
+  val header: Header = new Header,
+  val msg: Msg = new Msg,
+  val data: Data = new Data,
+)
+
