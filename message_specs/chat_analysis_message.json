@@ -4,7 +4,7 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"$id": "https://github.com/clulab/tomcat-text/message_specs/chat_analysis_message.json",
 	"type": "object",
-	"title": "Chat Analysis Message Schema",
+	"title": "chat_analysis_message schema",
 	"version": "0.1",
 	"required": [
 		"header",
