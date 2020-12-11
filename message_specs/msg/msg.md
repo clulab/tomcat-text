@@ -1,11 +1,14 @@
-# Data Subtype: Chat Analysis Message Data
-This structure is owned by the chat_analysis_message class
+# Datatype: chat_analysis_message.msg
+
+Structure of the chat_analysis_message.msg datatype
+
 
 ## TOPIC
 
-chat_analysis_message msg fields
+message_spec/msg
 
-## Data Fields
+
+## Member fields
 
 | Field Name | Type | Description
 | --- | --- | --- |
@@ -17,7 +20,7 @@ chat_analysis_message msg fields
 | version | String | ???
 
 
-## Data Example
+## Example
 ```json
 {
 "source": "???",

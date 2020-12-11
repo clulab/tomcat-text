@@ -1,11 +1,13 @@
-# Data type: Chat Analysis Message
+# Data type: chat_analysis_message
 
+Structure of the chat_analysis_message datatype
 
 ## TOPIC
 
-chat_analysis_message subtypes
+message_spec
 
-## Message Objects
+## 
+chat_analysis_message fields
 
 | Field Name | Type | Description
 | --- | --- | --- |

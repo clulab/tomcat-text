@@ -1,9 +1,10 @@
-# Data Subtype: Chat Analysis Message Data
-This data structure is owned by the ChatAnalysisMessage class
+# Datatype: chat_analysis_message.data 
+
+Structure of the chat_analysis_message.data datatype
 
 ## TOPIC
 
-ChatAnalysisMessage Data fields
+message_spec/data
 
 ## Data Fields
 

@@ -1,12 +1,14 @@
-# Data Subtype: Chat Analysis Message Data
-This structure is owned by the chat_analysis_message class
+# Datatype: chat_analysis_message.header
 
+Structure of the chat_analysis_message.header datatype
 
 ## TOPIC
 
-chat_analysis_message header fields
+message_spec/header
 
-## Data Fields
+
+
+## Member Fields
 
 | Field Name | Type | Description
 | --- | --- | --- |
@@ -15,7 +17,7 @@ chat_analysis_message header fields
 | message_type | String | ???
 
 
-## Data Example
+## Example
 ```json
 {
 "timestamp": "2019-12-26T12:47:23.1234Z",
