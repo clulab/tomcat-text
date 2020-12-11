@@ -3,14 +3,13 @@
 
 ## TOPIC
 
-Chat Analysis Message fields
+chat_analysis_message subtypes
 
 ## Message Objects
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| header | Header | ./header/header.md
-| msg | Msg | ./msg/msg.md
-| data| Data | ./data/data.md
-
+| header | header | ./header/header.md
+| msg | msg | ./msg/msg.md
+| data| data | ./data/data.md
 
