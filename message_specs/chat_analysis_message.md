@@ -9,8 +9,8 @@ Chat Analysis Message fields
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| header | Header | ./header.md
-| msg | Msg | ./msg.md
-| data| Data | ./data.md
+| header | Header | ./header/header.md
+| msg | Msg | ./msg/msg.md
+| data| Data | ./data/data.md
 
 

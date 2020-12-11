@@ -13,13 +13,13 @@
 	],
 	"properties": {
 		"header": {
-			"$ref": "header.json"
+			"$ref": "header/header.json"
 		},
 		"msg": {
-			"$ref": "msg.json"
+			"$ref": "msg/msg.json"
 		},
 		"data": {
-			"$ref": "data.json"
+			"$ref": "data/data.json"
 		}
 	}
 }
