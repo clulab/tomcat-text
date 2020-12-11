@@ -1,0 +1,68 @@
+{
+	"definitions": {
+	},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://github.com/clulab/tomcat-text/message_specs/data.json",
+	"type": "object",
+	"title": "Dialog Analysis Data Schema",
+	"version": "0.5",
+	"required": [
+		"Label",
+		"Span",
+		"Arguments",
+		"Text",
+		"timestamp",
+		"TaxonomyMatches"
+       	],
+	"properties": {
+		"Label": {
+			"$id": "#/properties/Label",
+			"type": "string",
+			"title": "The Label Schema",
+			"default": "",
+			"examples": [ "Label" ],
+			"pattern": "^(.*)$"
+		},
+		"Span": {
+			"$id": "#/properties/Span",
+			"type": "string",
+			"title": "The Span Schema",
+			"default": "",
+			"examples": [ "Span" ],
+			"pattern": "^(.*)$"
+		},
+		"Arguments": {
+			"$id": "#/properties/Arguments",
+			"type": "string",
+			"title": "The Arguments Schema",
+			"default": "",
+			"examples": [ "Arguments" ],
+			"pattern": "^(.*)$"
+		},
+		"Text": {
+			"$id": "#/properties/Text",
+			"type": "string",
+			"title": "The Text Schema",
+			"default": "",
+			"examples": [ "Text" ],
+			"pattern": "^(.*)$"
+		},
+		"timestamp": {
+			"$id": "#/properties/timestamp",
+			"type": "string",
+			"title": "The Timestamp Schema",
+			"default": "",
+			"examples": [ "2019-12-26T14:05:02.3412Z" ],
+			"pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.]?[0-9]{0,}?Z"
+		},
+		"TaxonomyMatches": {
+			"$id": "#/properties/TaxonomyMatches",
+			"type": "string",
+			"title": "The TaxonomyMatches Schema",
+			"default": "",
+			"examples": [ "Text" ],
+			"pattern": "^(.*)$"
+		},
+	}
+}
+
