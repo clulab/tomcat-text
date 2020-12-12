@@ -5,14 +5,7 @@
 //
 //
 //  JSON serializable message for DialogAgent
-
 package org.clulab.asist
-
-import java.text.SimpleDateFormat
-import org.clulab.odin.Mention
-import scala.collection.immutable
-import scala.collection.mutable._
-import org.json4s._
 
 
 case class Header(
@@ -40,6 +33,7 @@ case class Data(
   val timestamp: String = "timestamp",
   val taxonomy_matches: String = "taxonomy_matches",
 )
+
 
 case class ChatAnalysisMessage(
   val header: Header = new Header,
