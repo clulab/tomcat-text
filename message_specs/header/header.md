@@ -1,6 +1,6 @@
 # Datatype: chat_analysis_message.header
 
-All messages will start with a header stating the UTC time of the message, the software version, and the message type.
+The message header contains the UTC message publication time, the message type, and the software version.
 
 ## TOPIC
 
