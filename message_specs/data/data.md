@@ -2,20 +2,17 @@
 
 Structure of the chat_analysis_message.data datatype
 
-## TOPIC
 
-message_spec/data
-
-## Data Fields
+## Member Fields
 
 | Field Name | Type | Description
 | --- | --- | --- |
 | label | String | ???
-| span | ??? | ???
-| arguments | ??? | ???
+| span | String | A string of all the mention words, separated by spaces.
+| arguments | String | A string of all the argument labels, separated by spaces.
 | text | String | ???
-| timestamp | java.util.Date | ???
-| taxonomy_matches | ??? | ???
+| timestamp | String | ???
+| taxonomy_matches | String[] | ???
 
 
 ## Data Example
