@@ -27,7 +27,7 @@ chat_analysis_message/msg
 "timestamp": "2019-12-26T12:47:23.1234Z",
 "source": "simulator",
 "sub_type": "pickup",
-"filename": "message.vtt",
+"filename": "transcript.vtt",
 "version": "1.0"
 }
 ```
