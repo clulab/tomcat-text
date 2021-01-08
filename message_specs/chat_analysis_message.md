@@ -2,8 +2,7 @@
 
 Structure of the chat_analysis_message datatype
 
-## 
-chat_analysis_message fields
+## chat_analysis_message Fields
 
 | Field Name | Type | Description
 | --- | --- | --- |
