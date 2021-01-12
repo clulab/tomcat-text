@@ -16,7 +16,7 @@ chat_analysis_message/msg
 | timestamp | String | The UTC time the message was published, in format: YYYY-MM-DDThh:mm:ss.ssssZ
 | source | String | The name of the testbed component that published this data
 | sub_type | String | The subtype of the data.  This field describes the format of this particular type of data
-| filename | String | ???
+| filename | String | Transcript file name
 | version | String | The version of the sub_type format
 
 
@@ -27,7 +27,7 @@ chat_analysis_message/msg
 "timestamp": "2019-12-26T12:47:23.1234Z",
 "source": "simulator",
 "sub_type": "pickup",
-"filename": "???",
+"filename": "transcript.vtt",
 "version": "1.0"
 }
 ```
