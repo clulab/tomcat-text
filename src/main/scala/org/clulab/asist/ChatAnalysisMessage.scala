@@ -32,7 +32,7 @@ case class Data(
   val label: String = "label",
   val span: String = "span",
   val arguments: String = "arguments",
-  val test: String = "test",
+  val text: String = "text",
   val timestamp: String = "timestamp",
   val taxonomyMatches: String = "taxonomy_matches",
 )
