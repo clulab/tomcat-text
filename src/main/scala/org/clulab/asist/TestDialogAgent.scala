@@ -7,7 +7,11 @@
 //
 package org.clulab.asist
 
+
 object DialogAgentTest extends App {
+
+  // a lot of test data
+  val testData = ChatTestData.data
 
   // test data, that we can hopefully parse
   val messageToRelay = 
@@ -15,6 +19,7 @@ object DialogAgentTest extends App {
 
   // configure the MQTT broker URI
   val host = "127.0.0.1"
+//  val host = "host.docker.internal"
   val port = 1883
   
   // this DialogAget is the test article
@@ -27,6 +32,7 @@ object DialogAgentTest extends App {
   // Send the message on the relay source topic, and see if it is published
   // on the relay destination topic.
   if (agent.start()) {
+    testData.foreach(chat => agent.publish(relay_source_topic, chat))
     agent.publish(relay_source_topic, messageToRelay)
   } else
     println("Could not start Dialog Relayer.")
