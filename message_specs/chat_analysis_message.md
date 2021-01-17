@@ -2,7 +2,11 @@
 
 Structure of the chat_analysis_message datatype
 
-## chat_analysis_message Fields
+## TOPIC
+message_spec/header
+
+
+## Member Fields
 
 | Field Name | Type | Description
 | --- | --- | --- |
