@@ -1,4 +1,4 @@
-//  ChatAnalysisMessage
+//  DialogAnalysisMessage
 //
 //  Author:  Joseph Astier, Adarsh Pyarelal
 //  Date:  2020 December
@@ -7,20 +7,23 @@
 //  JSON serializable message for DialogAgent
 package org.clulab.asist
 
+import spray.json._
+import spray.json.DefaultJsonProtocol._
+
 
 case class Header(
   val timestamp: String = "timestamp",
-  val message_type: String = "message_type",
+  val messageType: String = "message_type",
   val version: String = "version",
 )
 
 
 case class Msg(
   val source: String = "source",
-  val experiment_id: String = "experiment_id",
+  val experimentId: String = "experiment_id",
   val filename: String = "filename",
   val timestamp: String = "timestamp",
-  val sub_type: String = "sub_type",
+  val subType: String = "sub_type",
   val version: String = "version",
 )
 
@@ -31,7 +34,7 @@ case class Data(
   val arguments: String = "arguments",
   val test: String = "test",
   val timestamp: String = "timestamp",
-  val taxonomy_matches: String = "taxonomy_matches",
+  val taxonomyMatches: String = "taxonomy_matches",
 )
 
 
