@@ -11,37 +11,26 @@ import java.net.ConnectException
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-// this object allows a test of the DialogAgent
-object DialogAgentTest extends App {
-
-  val host = "127.0.0.1"
-  val port = 1883
-  val agent = new DialogAgent(host, port)
-
-  // Send a message on the relay source topic.   It should be relayed to
-  // the relay destination topic.
-  agent.publish(agent.relaySrc, "Relay this message")
-
-  // Send a message on the relay destination topic.  It should not be relayed.
-  agent.publish(agent.relayDst, "Do not relay this message")
-}
-
-
 //  Asynchronous event-driven MQTT agent. Messages read on one
 //  bus topic are resent on another
-class DialogAgent(host: String, port: Int) extends MqttCallback {
-  val id = "DialogAgent"
-  val uri = "tcp://%s:%d".format(host, port)
+
+class DialogAgent(host: String = "localhost", port: Int = 1883)
+    extends MqttCallback {
+
+  println("DialogAgent: Using host  %s".format(host))
+  println("DialogAgent: Using port  %s".format(port))
+
+  val uri = "tcp://%s:%d".format(host,port)
   val relaySrc = "observations/chat" // relay messages from here
   val relayDst = "agent/tomcat_chatbot" // relay messages to here
+  val verbose = true  // maybe make this an input flag
   val qos = 2
-  val verbose = true // set true for debug printf output
   val subscriber = connectSubscriber("DialogAgentSubscriber")
   val publisher = connectPublisher("DialogAgentPublisher")
 
   // print status reports if the 'verbose' flag is set.
-  private def report(msg: String): Unit = 
-    if (verbose) println("%s: %s".format(id,msg))
+  private def report(msg: String): Unit = if (verbose) 
+    println("DialogAgent: %s".format(msg))
 
   report("Topic %s will be relayed to %s".format(relaySrc, relayDst))
 
