@@ -16,8 +16,10 @@ package org.clulab.asist
 object  RunDialogAgent extends App {
 
   // default server and port.
-  val cleanArgs = parseArgs(("localhost", 1883), args.toList)
-  val agent = new DialogAgent(cleanArgs._1, cleanArgs._2)
+  val userArgs = parseArgs(("localhost", 1883), args.toList)
+  val host = userArgs._1
+  val port = userArgs._2
+  val agent = new DialogAgent(host, port)
 
   // read user args for host and port.   Use defaults if they are not found.
   def parseArgs(
