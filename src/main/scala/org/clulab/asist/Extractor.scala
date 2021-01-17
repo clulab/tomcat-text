@@ -107,6 +107,7 @@ class Extractor(
       transcript: String,
       transcription_id: String
   ): (ArrayBuffer[Array[Any]], org.clulab.processors.Document) = {
+    println("Extractor.runExtraction")
     val all_events = new ArrayBuffer[Array[Any]]
     val corenlp_doc = new Annotation(transcript)
     processor.annotate(corenlp_doc)
@@ -118,6 +119,8 @@ class Extractor(
       .extractFrom(doc)
       .sortBy(m => (m.sentence, m.getClass.getSimpleName))
     for (m <- mentions) {
+      println("mention.label = " + m.label)
+      println("mention = " + m.toString)
       if (m.arguments contains "target") {
         all_events += Array(
           m,
@@ -155,6 +158,8 @@ class Extractor(
       file_name: String,
       experiment_id: String = "NULL"
   ): ArrayBuffer[String] = {
+
+    println("Extractor.extractMentions")
     val output_array = new ArrayBuffer[String]()
     val transcript = new Transcript(file_name)
     val raw_text = transcript.getCleanDoc
@@ -212,6 +217,7 @@ class Extractor(
               ("TaxonomyMatches" -> taxonomy_matches))
         )
       output_array.add(compact(render(json)))
+      println(json.toString)
     }
     output_array
   }
