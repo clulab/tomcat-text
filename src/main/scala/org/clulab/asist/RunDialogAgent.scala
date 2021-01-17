@@ -13,7 +13,7 @@
 //
 package org.clulab.asist
 
-object  DialogAgentRun extends App {
+object  RunDialogAgent extends App {
 
   // default server and port.
   val cleanArgs = parseArgs(("localhost", 1883), args.toList)
