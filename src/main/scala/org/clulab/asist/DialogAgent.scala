@@ -17,8 +17,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 class DialogAgent(host: String = "localhost", port: Int = 1883)
     extends MqttCallback {
 
-  println("DialogAgent: Using host  %s".format(host))
-  println("DialogAgent: Using port  %s".format(port))
+  println("DialogAgent: Trying host  %s".format(host))
+  println("DialogAgent: Trying port  %s".format(port))
 
   val uri = "tcp://%s:%d".format(host,port)
   val relaySrc = "observations/chat" // relay messages from here
@@ -32,14 +32,20 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   private def report(msg: String): Unit = if (verbose) 
     println("DialogAgent: %s".format(msg))
 
-  report("Topic %s will be relayed to %s".format(relaySrc, relayDst))
+  if(connected)
+    report("Topic %s will be relayed to %s".format(relaySrc, relayDst))
+  else
+    report("Could not connect to %d on %s".format(port,host))
+
 
   // Describe any throwables we catch.
   def toString(t: Throwable): String = t match {
-    case e: ConnectException => "ConnectException: %s".format(e.toString)
-    case e: Exception => "Exception: %s".format(e.toString)
-    case _: Throwable => "Throwable: %s".format(t.toString)
+    case e: Exception => "  Exception: %s".format(e.toString)
+    case _: Throwable => "  Throwable: %s".format(t.toString)
   }
+
+  // return true if there were no connection issues.
+  def connected: Boolean = !subscriber.isEmpty && !publisher.isEmpty
 
   // Connect publisher to the broker URI
   def connectPublisher(name: String): Option[MqttClient] = try {
