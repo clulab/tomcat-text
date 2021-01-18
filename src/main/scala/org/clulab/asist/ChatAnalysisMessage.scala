@@ -11,12 +11,12 @@ import spray.json._
 import spray.json.DefaultJsonProtocol._
 
 
+
 case class Header(
   val timestamp: String = "timestamp",
   val messageType: String = "message_type",
   val version: String = "version",
 )
-
 
 case class Msg(
   val source: String = "source",
@@ -26,7 +26,6 @@ case class Msg(
   val subType: String = "sub_type",
   val version: String = "version",
 )
-
 
 case class Data(
   val label: String = "label",
@@ -38,9 +37,14 @@ case class Data(
 )
 
 
-case class ChatAnalysisMessage(
-  val header: Header = new Header,
-  val msg: Msg = new Msg,
-  val data: Data = new Data,
-)
+class ChatAnalysisMessage (val h: Header, val m: Msg, val d: Data) {
+
+  def this() {
+    this(new Header, new Msg, new Data)
+  }
+
+  override def toString: String = {
+    "ChatAnalysisMessage{\n  Header\n  Msg\n  Data\n}"
+  }
+}
 
