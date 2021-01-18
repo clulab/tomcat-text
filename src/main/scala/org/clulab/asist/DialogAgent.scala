@@ -21,22 +21,26 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   println("DialogAgent: Trying port  %s".format(port))
 
   val uri = "tcp://%s:%d".format(host,port)
-  val relaySrc = "observations/chat" // relay messages from here
-  val relayDst = "agent/tomcat_chatbot" // relay messages to here
+  val subTopic = "observations/chat" // Read messages here
+  val pubTopic = "agent/tomcat_chatbot" // write converted messages here
   val verbose = true  // maybe make this an input flag
   val qos = 2
   val subscriber = connectSubscriber("DialogAgentSubscriber")
   val publisher = connectPublisher("DialogAgentPublisher")
+  val chatAnalysis = new ChatAnalysis  // convert text format for publication topic
+
+  if(connected)
+    report("Topic %s will be relayed to %s".format(subTopic, pubTopic))
+  else
+    report("Could not connect to %d on %s".format(port,host))
 
   // print status reports if the 'verbose' flag is set.
   private def report(msg: String): Unit = if (verbose) 
     println("DialogAgent: %s".format(msg))
 
-  if(connected)
-    report("Topic %s will be relayed to %s".format(relaySrc, relayDst))
-  else
-    report("Could not connect to %d on %s".format(port,host))
-
+  // Convert the chat to the tomcat chatbot format
+  private def convert (rawText: String): String = 
+    chatAnalysis.toChatAnalysisMessage(rawText).toString
 
   // Describe any throwables we catch.
   def toString(t: Throwable): String = t match {
@@ -71,8 +75,7 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
     val sub = new MqttAsyncClient(uri, name, new MemoryPersistence())
     sub.setCallback(this)
     sub.connect(new MqttConnectOptions).waitForCompletion
-    sub.subscribe(relaySrc, qos)
-    sub.subscribe(relayDst, qos)
+    sub.subscribe(subTopic, qos)
     report("subscriber is connected to MQTT broker at %s".format(uri))
     Some(sub)
   } catch {
@@ -84,22 +87,20 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   }
 
   // Publish a string
-  def publish(topic: String, text: String): Unit =
-    publish(topic, text.getBytes)
+  def publish(text: String): Unit = publish(text.getBytes)
 
-  // Publish any byte array
-  def publish(topic: String, payload: Array[Byte]): Unit =
-    publish(topic, new MqttMessage(payload))
+  // Publish a byte array
+  def publish(payload: Array[Byte]): Unit = publish(new MqttMessage(payload))
 
-  // Publish message
-  def publish(topic: String, msg: MqttMessage): Unit = try {
+  // Publish a MQTT message
+  def publish(msg: MqttMessage): Unit = try {
     publisher.foreach(pub => {
-      pub.publish(topic, msg)
-      report("Published '%s' to %s".format(msg.toString, topic))
+      pub.publish(pubTopic, msg)
+      report("Published '%s' to %s".format(msg.toString, pubTopic))
     })
   } catch {
     case t: Throwable => { 
-      report("Could not publish '%s' to %s".format(msg.toString,topic))
+      report("Could not publish '%s' to %s".format(msg.toString,pubTopic))
       report(toString(t))
     }
   }
@@ -114,14 +115,11 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
     report("deliveryComplete: %s" + token.getMessage)
 
-  // When a message is received on the relay source topic, publish it to the
-  // relay destination topic.
+  // When a message is received on the relay topic, convert it and publish it to the chatbot topic
   override def messageArrived(topic: String, msg: MqttMessage): Unit = {
-    report("Read '%s' on %s".format(msg.toString, topic))
-    if (topic == relaySrc) {
-      report("Relaying to %s".format(relayDst))
-      publish(relayDst, msg)
-    }
+    val str = msg.toString
+    report("Read '%s' on %s".format(str, topic))
+    if (topic == subTopic) publish(convert(str))
   }
 }
 
