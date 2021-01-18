@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Generic MQTT publisher
+
+host="localhost"
+port=1883
+topic="observations/chat"
+
+printf "\nMQTT publish on host '$host', port $port, topic '$topic'\n"
+
+mosquitto_pub -h $host -p $port -t $topic -m "This is a test" 
+

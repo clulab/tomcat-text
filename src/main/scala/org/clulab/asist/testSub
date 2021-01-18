@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Generic MQTT subscriber
+
+host="localhost"
+port=1883
+topic="agent/tomcat_chatbot"
+
+printf "\nMQTT subscriber on host '$host', port $port, topic '$topic'\n"
+
+mosquitto_sub -h $host -p $port -t $topic 
+
