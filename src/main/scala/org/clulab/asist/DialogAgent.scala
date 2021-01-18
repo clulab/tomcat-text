@@ -39,8 +39,8 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
     println("DialogAgent: %s".format(msg))
 
   // Convert the chat to the tomcat chatbot format
-  private def convert (rawText: String): String = 
-    chatAnalysis.toChatAnalysisMessage(rawText).toString
+  private def convert (rawText: String): List[String] = 
+    chatAnalysis.toJsonString(rawText)
 
   // Describe any throwables we catch.
   def toString(t: Throwable): String = t match {
@@ -119,7 +119,7 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   override def messageArrived(topic: String, msg: MqttMessage): Unit = {
     val str = msg.toString
     report("Read '%s' on %s".format(str, topic))
-    if (topic == subTopic) publish(convert(str))
+    if (topic == subTopic) convert(str).foreach(str => publish(str))
   }
 }
 
