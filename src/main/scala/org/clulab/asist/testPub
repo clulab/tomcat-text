@@ -1,12 +1,23 @@
 #!/bin/bash
 
-# Generic MQTT publisher
+# Publish a text file to an MQTT topic one line at a time.
 
 host="localhost"
 port=1883
 topic="observations/chat"
 
-printf "\nMQTT publish on host '$host', port $port, topic '$topic'\n"
 
-mosquitto_pub -h $host -p $port -t $topic -m "This is a test" 
+if [ -z ${1+x} ]; then printf "No input file set\n"; 
+  else {
+    printf "\nPublishing '$1' on MQTT host '$host', port $port, topic '$topic'...\n\n"
+    while IFS= read -r line
+    do
+      printf "$line\n"
+      mosquitto_pub -h $host -p $port -t $topic -m "$line"
+    done < $1
+    printf "\nDone publishing '$1'\n"
+  }; 
+fi
+
+
 
