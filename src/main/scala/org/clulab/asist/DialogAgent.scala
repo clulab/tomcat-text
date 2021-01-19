@@ -17,20 +17,23 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 class DialogAgent(host: String = "localhost", port: Int = 1883)
     extends MqttCallback {
 
-  println("DialogAgent: Trying host  %s".format(host))
-  println("DialogAgent: Trying port  %s".format(port))
+  val verbose = true  // maybe make this an input flag
+  report("Initializing chat analysis pipeline ...")
+  val chatAnalysis = new ChatAnalysis  // convert text format for publication topic
+
+  report("Connecting to port %d on %s ...".format(port, host))
 
   val uri = "tcp://%s:%d".format(host,port)
   val subTopic = "observations/chat" // Read messages here
   val pubTopic = "agent/tomcat_chatbot" // write converted messages here
-  val verbose = true  // maybe make this an input flag
   val qos = 2
   val subscriber = connectSubscriber("DialogAgentSubscriber")
   val publisher = connectPublisher("DialogAgentPublisher")
-  val chatAnalysis = new ChatAnalysis  // convert text format for publication topic
 
-  if(connected)
+  if(connected) {
     report("Topic %s will be relayed to %s".format(subTopic, pubTopic))
+    report("Ready.")
+  }
   else
     report("Could not connect to %d on %s".format(port,host))
 
@@ -40,7 +43,7 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
 
   // Convert the chat to the tomcat chatbot format
   private def convert (rawText: String): List[String] = 
-    chatAnalysis.toJsonString(rawText)
+    chatAnalysis.toJson(rawText)
 
   // Describe any throwables we catch.
   def toString(t: Throwable): String = t match {

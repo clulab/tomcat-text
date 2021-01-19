@@ -28,11 +28,25 @@ import scala.util.parsing.json.JSON
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 
+import org.json4s._
+import org.json4s.jackson.JsonMethods.{compact, parse, render}
+import org.json4s.JsonDSL._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write => swrite}
+import spray.json._
+import spray.json.DefaultJsonProtocol._
+
+
 
 class ChatAnalysis {
 
   val verbose = true
-  val time_format = new SimpleDateFormat("HH:mm:ss.SSS")
+  val time_format = new SimpleDateFormat("HH:mm:ss.SSS") // needs Date?
+  val version = 0.1
+  val messageType = "event" // always?
+  val source = "ChatAnalysis" // this class
+  val experimentId = "experiment_id"  // where to get?
+  val subType = "Event:dialogue_action"  // always?
 
 
   // Build an extractor for our tokens
@@ -42,7 +56,8 @@ class ChatAnalysis {
       "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
     )
   })
- val taxonomy_json = JsonParser(
+
+  val taxonomy_json = JsonParser(
     Source.fromResource("taxonomy_map.json").mkString
   )
   val tax_map = taxonomy_json
@@ -54,19 +69,13 @@ class ChatAnalysis {
   private def report(msg: String): Unit = if (verbose) 
     println("ChatAnalysis: %s".format(msg))
 
-
-//  def toChatAnalysisMessage(rawText: String): ChatAnalysisMessage = {
-//
-//    new ChatAnalysisMessage
-//  }
-
-  def toJsonString(rawText: String): List[String] = {
+  def toJson(rawText: String): List[String] = {
     val (extractions, extracted_doc) = extractor.runExtraction(rawText, "")
-
-
-    val foo = extractions.map(extraction => analyze("experiment_id", rawText, extraction))
-
-    foo.toList
+    val cams = extractions.map(
+      extraction => 
+        toChatAnalysisMessage("experiment_id", rawText, extraction)
+    ).toList
+    cams.map(cam => ChatAnalysisMessageUtils.toJson(cam))
   }
 
   def getTimeStamp(
@@ -84,11 +93,11 @@ class ChatAnalysis {
   }
 
 
-  def analyze(
+  def toChatAnalysisMessage(
       experiment_id: String,
       rawText: String, 
       extraction: Array[Any]
-    ): String = {
+    ): ChatAnalysisMessage = {
 
     // will have to watch these vars as we loop
     var text: String = ""
@@ -116,26 +125,29 @@ class ChatAnalysis {
     val timeStr = "timestamp"
     val taxonomy_matches =
       tax_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
-    val json = (
-      ("header" ->
-        ("timestamp" -> timeStr) ~ 
-        ("message_type" -> "event") ~
-        ("version" -> 0.1)) ~
-        ("msg" ->
-          ("source" -> "DialogueActionExtractor") ~
-          ("experiment_id" -> experiment_id.toString) ~
-          ("filename" -> "file_name") ~
-          ("timestamp" -> timeStr) ~ 
-          ("sub_type" -> "Event:dialogue_action") ~
-          ("version" -> "0.1")) ~
-        ("data" ->
-          ("Label" -> mention.label) ~
-          ("Span" -> mention.words.mkString(" ")) ~
-          ("Arguments" -> argument_labels.mkString(" ")) ~
-          ("Text" -> rawText) ~ //doc.sentences(mention.sentence).getSentenceText) ~
-          ("timestamp" -> timeStr) ~ 
-          ("TaxonomyMatches" -> taxonomy_matches))
+
+    val camHeader = new ChatAnalysisMessageHeader(
+      timeStr, // timestamp
+      messageType, // messageType
+      version // version
     )
-    json.toString
+    val camMsg = new ChatAnalysisMessageMsg(
+      source,  // source
+      experimentId, // experimentId
+      timeStr, // timestamp
+      subType, // subType
+      version // version
+    )
+    val camData = new ChatAnalysisMessageData(
+      mention.label,  // label
+      mention.words.mkString(" "), // span
+      argument_labels.mkString(" "), // arguments
+      rawText, // text
+      timeStr, // timestamp
+      taxonomy_matches // taxonomyMatches
+    )
+    val cam = ChatAnalysisMessage(camHeader, camMsg, camData)
+    ChatAnalysisMessageUtils.test(cam)
+    cam
   }
 }
