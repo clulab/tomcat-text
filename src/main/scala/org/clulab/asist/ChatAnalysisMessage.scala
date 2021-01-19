@@ -9,29 +9,29 @@ package org.clulab.asist
 
 import org.json4s._
 import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write => swrite}
+import org.json4s.jackson.Serialization.{read, write}
 
 
 case class ChatAnalysisMessageHeader(
-  val timestamp: String = "timestamp",
-  val messageType: String = "message_type",
-  val version: Double = 0.1
+  val timestamp: String = "",
+  val messageType: String = "",
+  val version: Double = 0
 )
 
 case class ChatAnalysisMessageMsg(
-  val source: String = "source",
-  val experimentId: String = "experiment_id",
-  val timestamp: String = "timestamp",
-  val subType: String = "sub_type",
-  val version: Double = 0.1
+  val source: String = "",
+  val experimentId: String = "",
+  val timestamp: String = "",
+  val subType: String = "",
+  val version: Double = 0
 )
 
 case class ChatAnalysisMessageData(
-  val label: String = "label",
-  val span: String = "span",
-  val arguments: String = "arguments",
-  val text: String = "text",
-  val timestamp: String = "timestamp",
+  val label: String = "",
+  val span: String = "",
+  val arguments: String = "",
+  val text: String = "",
+  val timestamp: String = "",
   val taxonomyMatches: Seq[(String, String)] = Seq.empty
 )
 
@@ -42,35 +42,11 @@ case class ChatAnalysisMessage (
 ) 
 
 
-object ChatAnalysisMessageUtils {
+// translate between json strings and ChatAnalysisMessage datatypes
+object ChatAnalysisMessageJson {
   implicit  val formats = Serialization.formats(NoTypeHints)
-
-  def toJson(cam: ChatAnalysisMessage): String = swrite(cam)
-
-  // Test the Json serialization by using it to create a copy
-  // of the original.   If the serializations match, then
-  // we know it is working correctly.
-  def test(original: ChatAnalysisMessage): Boolean = {
-    Report("Testing ChatAnalysisMessage serialization ... ")
-
-    val jsonOriginal = toJson(original)
-
-    val copy = read[ChatAnalysisMessage](jsonOriginal)
-
-    val jsonCopy = toJson(copy)
-
-
-    if(jsonOriginal == jsonCopy) {
-      Report("PASS") 
-      true
-    } else {
-      Report("FAIL")
-      Report(" Serialization readback comparison failed.")
-      Report(" ORIGINAL:\n%s".format(jsonOriginal))
-      Report("")
-      Report(" READBACK:\n%s".format(jsonCopy))
-      false
-    }
-  }
+  def apply(cam: ChatAnalysisMessage): String = write(cam)
+  def apply(json: String): ChatAnalysisMessage = read[ChatAnalysisMessage](json)
 }
+
 
