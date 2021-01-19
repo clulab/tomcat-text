@@ -1,0 +1,15 @@
+# docker-compose.yml, based on: https://dev.to/natterstefan/docker-tip-how-to-get-host-s-ip-address-inside-a-docker-container-5anh
+#
+# Add this to your .bashrc:      export DOCKER_GATEWAY_HOST=172.17.0.1
+# Add this to your /etc/hosts:   172.17.0.1      host.docker.internal
+#
+
+version: '3.8'
+services:
+  mqtt_internal:
+    image: mqtt_internal:latest
+    container_name: mqtt_internal
+    environment:
+      DB_UPSTREAM: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:1883  # experimental use only
+    build: .
+

@@ -1,0 +1,7 @@
+version: '3'
+services:
+  tomcat_text:
+    image: tomcat_text:latest
+    container_name: tomcat_text
+    build: .
+

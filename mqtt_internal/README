@@ -1,0 +1,38 @@
+
+
+Running the Dockerized tomcat-text agent on the Docker internal network
+
+The docker internal network should be running already:
+  hostname:  host.docker.internal
+  address:   172.17.0.1
+
+
+Test if the network is running by pinging it:
+
+  ping host.docker.internal -c 5
+
+
+Start the MQTT broker image on the Docker internal network:
+
+  docker run --hostname=host.docker.internal -p 1883:1883 mqtt_internal
+
+
+Then start the Dockerized tomcat-text image.  If it starts correctly,
+you should see output at runtime indicating that the publisher and subscriber
+were able to connect to the broker.    
+
+
+Testing the setup:
+
+Subscribe to the tomcat-text relay destination:
+
+  mosquitto_sub -h host.docker.internal -p 1883 -t agent/tomcat_chatbot
+
+Publish a message on the tomcat-text relay source:
+
+  mosquitto_pub -h localhost -p 1883 -t observations/chat -m "Hello!"
+
+
+If everything is working the subscriber will receive the published message
+
+
