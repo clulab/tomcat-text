@@ -8,12 +8,8 @@
 package org.clulab.asist
 
 import org.json4s._
-import org.json4s.jackson.JsonMethods.{compact, parse, render}
-import org.json4s.JsonDSL._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write => swrite}
-import spray.json._
-import spray.json.DefaultJsonProtocol._
 
 
 case class ChatAnalysisMessageHeader(
@@ -39,37 +35,40 @@ case class ChatAnalysisMessageData(
   val taxonomyMatches: Seq[(String, String)] = Seq.empty
 )
 
-
 case class ChatAnalysisMessage (
   val header: ChatAnalysisMessageHeader,
   val msg: ChatAnalysisMessageMsg,
   val data: ChatAnalysisMessageData
 ) 
 
+
 object ChatAnalysisMessageUtils {
   implicit  val formats = Serialization.formats(NoTypeHints)
 
   def toJson(cam: ChatAnalysisMessage): String = swrite(cam)
 
-  def test(cam: ChatAnalysisMessage): Boolean = {
-    println("Testing ChatAnalysisMessage serialization")
+  // Test the Json serialization by using it to create a copy
+  // of the original.   If the serializations match, then
+  // we know it is working correctly.
+  def test(original: ChatAnalysisMessage): Boolean = {
+    Report("Testing ChatAnalysisMessage serialization ... ")
 
-    val jsonOriginal = toJson(cam)
+    val jsonOriginal = toJson(original)
 
-    val readback = read[ChatAnalysisMessage](jsonOriginal)
+    val copy = read[ChatAnalysisMessage](jsonOriginal)
 
-    val jsonReadback = toJson(readback)
+    val jsonCopy = toJson(copy)
 
 
-    if(jsonOriginal == jsonReadback) {
-      println("PASS") 
+    if(jsonOriginal == jsonCopy) {
+      Report("PASS") 
       true
     } else {
-      println("FAIL")
-      println(" Serialization readback comparison failed.")
-      println(" ORIGINAL:\n%s".format(jsonOriginal))
-      println()
-      println(" READBACK:\n%s".format(jsonReadback))
+      Report("FAIL")
+      Report(" Serialization readback comparison failed.")
+      Report(" ORIGINAL:\n%s".format(jsonOriginal))
+      Report("")
+      Report(" READBACK:\n%s".format(jsonCopy))
       false
     }
   }

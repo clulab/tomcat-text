@@ -103,8 +103,6 @@ class ChatAnalysis {
     var text: String = ""
     var startOffset = 0; 
     var endOffset = 0
-    
-
 
     val mention = extraction(0).asInstanceOf[Mention]
     val argument_labels =
@@ -146,8 +144,6 @@ class ChatAnalysis {
       timeStr, // timestamp
       taxonomy_matches // taxonomyMatches
     )
-    val cam = ChatAnalysisMessage(camHeader, camMsg, camData)
-    ChatAnalysisMessageUtils.test(cam)
-    cam
+    ChatAnalysisMessage(camHeader, camMsg, camData)
   }
 }
