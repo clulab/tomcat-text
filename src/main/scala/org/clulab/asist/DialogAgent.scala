@@ -31,8 +31,8 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   // connect to the MQTT broker 
   Report("Connecting to port %d on %s ...".format(port, host))
   val uri = "tcp://%s:%d".format(host,port)
-  val subTopic = "observations/chat" // Read messages here
-  val pubTopic = "agent/tomcat_chatbot" // write converted messages here
+  val subTopic = "observations/chat" // Read chat messages here
+  val pubTopic = "agent/tomcat_chatbot" // write json-converted analysis here
   val qos = 2
   val subscriber = connectSubscriber("DialogAgentSubscriber")
   val publisher = connectPublisher("DialogAgentPublisher")
@@ -98,13 +98,20 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   def publish(msg: MqttMessage): Unit = try {
     publisher.foreach(pub => {
       pub.publish(pubTopic, msg)
-      Report("Published '%s' to %s".format(msg.toString, pubTopic))
+      Report("Published to %s: %s".format(pubTopic, msg.toString))
     })
   } catch {
     case t: Throwable => { 
-      Report("Could not publish '%s' to %s".format(msg.toString,pubTopic))
+      Report("Could not publish to %s".format(pubTopic))
       Report(toString(t))
     }
+  }
+
+  // Translate the chat text ChatAnalysisMessage structures, and 
+  // publish their json serializations.
+  def relay(chatText: String): Unit = {
+    val cams = chatAnalysis.toChatAnalysisMessages(chatText)
+    cams.foreach(cam => publish(ChatAnalysisMessageJson(cam)))
   }
 
   // Needed for MqttCallback extension
@@ -120,10 +127,9 @@ class DialogAgent(host: String = "localhost", port: Int = 1883)
   // When a message is received on the relay topic, convert it to Json and 
   // publish it to the chatbot topic.  Needed for MqttCallback extension
   override def messageArrived(topic: String, msg: MqttMessage): Unit = {
-    val text = msg.toString
-    Report("Read '%s' on %s".format(text, topic))
-    if (topic == subTopic) 
-      chatAnalysis.toJson(text).foreach(str => publish(str))
+    val chatText = msg.toString
+    Report("Read from %s: %s".format(topic, chatText))
+    if (topic == subTopic) relay(chatText)
   }
 }
 
