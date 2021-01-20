@@ -1,11 +1,10 @@
-//  ChatAnalysis
-//
-//  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2020 December
-//
-//  Convert a text chat message to a ChatAnalysisMessage object
-//
-//
+/**  ChatAnalysis
+ *
+ *  Author:  Joseph Astier, Adarsh Pyarelal
+ *  Date:  2020 December
+ *
+ *  Convert a text chat message to a ChatAnalysisMessage object
+ */
 package org.clulab.asist
 
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
@@ -18,14 +17,15 @@ import scala.io.Source
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 
+/** Process a chat text message using the StanfordCoreNLP pipeline */
 class ChatAnalysis {
-  val version = 0.1
+  val version = "0.1"
   val messageType = "event" // always?
   val source = "ChatAnalysis" 
   val experimentId = "experiment_id"  // where to get?
   val subType = "Event:dialogue_action"  // always?
 
-  // Build an extractor for our tokens
+  /** Build an extractor for our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
     setProperty(
       "annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
@@ -40,14 +40,21 @@ class ChatAnalysis {
 
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
 
-  // create a list of ChatAnalysisMessages based on the text extractions
-  def toChatAnalysisMessages(chatText: String): List[ChatAnalysisMessage] = {
-    val (extractions, extracted_doc) = extractor.runExtraction(chatText, "")
-    extractions.map(ex => toChatAnalysisMessage(chatText, ex)).toList
+  /** create a list of ChatAnalysisMessages based on the text extractions */
+  def toChatAnalysisMessages(input: String): List[ChatAnalysisMessage] = 
+    AsrMessageJson(input) match {
+      case Some(am) => toChatAnalysisMessages(am)
+      case None => List.empty
   }
 
-  // Compose a ChatAnalysisMessage using chat text and pipeline extractions
-  def toChatAnalysisMessage(
+  def toChatAnalysisMessages(am: AsrMessage): List[ChatAnalysisMessage] = {
+    val (extractions, extracted_doc) = extractor.runExtraction(am.data.text, "")
+    extractions.map(ex => toChatAnalysisMessage(am.data.text, ex)).toList
+  }
+
+
+  /** Compose a ChatAnalysisMessage using chat text and extractions */
+  private def toChatAnalysisMessage(
       chatText: String, 
       extraction: Array[Any]
     ): ChatAnalysisMessage = {

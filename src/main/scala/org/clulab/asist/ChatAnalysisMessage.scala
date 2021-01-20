@@ -12,20 +12,23 @@ import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 
 
+/** Part of the ChatAnalysisMessage class */
 case class ChatAnalysisMessageHeader(
-  val timestamp: String = "",
+  val timestamp: String = "",  
   val messageType: String = "",
-  val version: Double = 0
+  val version: String = ""
 )
 
+/** Part of the ChatAnalysisMessage class */
 case class ChatAnalysisMessageMsg(
   val source: String = "",
   val experimentId: String = "",
   val timestamp: String = "",
   val subType: String = "",
-  val version: Double = 0
+  val version: String = ""
 )
 
+/** Part of the ChatAnalysisMessage class */
 case class ChatAnalysisMessageData(
   val label: String = "",
   val span: String = "",
@@ -35,6 +38,7 @@ case class ChatAnalysisMessageData(
   val taxonomyMatches: Seq[(String, String)] = Seq.empty
 )
 
+/** Contains the full analysis data of one chat message */
 case class ChatAnalysisMessage (
   val header: ChatAnalysisMessageHeader,
   val msg: ChatAnalysisMessageMsg,
@@ -42,11 +46,13 @@ case class ChatAnalysisMessage (
 ) 
 
 
-// translate between json strings and ChatAnalysisMessage datatypes
+/** Serialization and deserialization of ChatAnalysisMessages via Json */
 object ChatAnalysisMessageJson {
   implicit  val formats = Serialization.formats(NoTypeHints)
+
+  /** Create a Json serialization from a ChatAnalysisMessage */
   def apply(cam: ChatAnalysisMessage): String = write(cam)
+
+  /** Create a ChatAnalysisMessage from a Json serialization */
   def apply(json: String): ChatAnalysisMessage = read[ChatAnalysisMessage](json)
 }
-
-
