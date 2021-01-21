@@ -57,7 +57,6 @@ object AsrMessageJson {
     Some(read[AsrMessage](json))
   } catch {
     case t: Throwable => {
-      Report("Could not parse AsrMessage json text")
       None
     }
   }
