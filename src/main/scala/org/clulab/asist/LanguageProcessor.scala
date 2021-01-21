@@ -3,7 +3,7 @@
  *  Author:  Joseph Astier, Adarsh Pyarelal
  *  Date:  2020 December
  *
- *  Convert a text chat message to a ChatAnalysisMessage object
+ *  Convert a text chat message to a DialogAgentMessage object
  */
 package org.clulab.asist
 
@@ -17,8 +17,8 @@ import scala.io.Source
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 
-/** Process a chat text message using the StanfordCoreNLP pipeline */
-class ChatAnalysis {
+/** Process text using the StanfordCoreNLP */
+class LanguageProcessor {
   val version = "0.1"
   val messageType = "event" // always?
   val source = "ChatAnalysis" 
@@ -40,24 +40,17 @@ class ChatAnalysis {
 
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
 
-  /** create a list of ChatAnalysisMessages based on the text extractions */
-  def toChatAnalysisMessages(input: String): List[ChatAnalysisMessage] = 
-    AsrMessageJson(input) match {
-      case Some(am) => toChatAnalysisMessages(am)
-      case None => List.empty
+  /** Compose a list of DialogAgentMessages based on language extractions */
+  def languageAnalysis(lang: String): List[DialogAgentMessage] = {
+    val (extractions, extracted_doc) = extractor.runExtraction(lang, "")
+    extractions.map(ex => toDialogAgentMessage(lang, ex)).toList
   }
 
-  def toChatAnalysisMessages(am: AsrMessage): List[ChatAnalysisMessage] = {
-    val (extractions, extracted_doc) = extractor.runExtraction(am.data.text, "")
-    extractions.map(ex => toChatAnalysisMessage(am.data.text, ex)).toList
-  }
-
-
-  /** Compose a ChatAnalysisMessage using chat text and extractions */
-  private def toChatAnalysisMessage(
+  /** Compose a DialogAgentMessage using chat text and extractions */
+  private def toDialogAgentMessage(
       chatText: String, 
       extraction: Array[Any]
-    ): ChatAnalysisMessage = {
+    ): DialogAgentMessage = {
 
     val mention = extraction(0).asInstanceOf[Mention]
     val timestamp = Clock.systemUTC.instant.toString
@@ -67,20 +60,20 @@ class ChatAnalysis {
     val taxonomyMatches =
       taxonomy_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
 
-    ChatAnalysisMessage(
-      ChatAnalysisMessageHeader(
+    DialogAgentMessage(
+      DialogAgentMessageHeader(
         timestamp,
         messageType,
         version
       ),
-      ChatAnalysisMessageMsg(
+      DialogAgentMessageMsg(
         source,
         experimentId,
         timestamp,
         subType,
         version
       ),
-      ChatAnalysisMessageData(
+      DialogAgentMessageData(
         mention.label,
         mention.words.mkString(" "),
         argumentLabels.mkString(" "),
