@@ -26,13 +26,13 @@ object  RunDialogAgent extends App {
       ca: Tuple2[String, Int], 
       args: List[String]): Tuple2[String, Int]= args match {
 
-    case "-h" :: arg :: tail => {
-      if(arg(0)=='-') parseArgs(ca, args.tail)
-      else parseArgs((arg, ca._2), tail)
+    case "-h" :: arg :: tail => arg(0) match {
+      case '-' => parseArgs(ca, args.tail)
+      case _ => parseArgs((arg, ca._2), tail)
     }
-    case "-p" :: arg :: tail => {
-      if(arg(0)=='-') parseArgs(ca, args.tail)
-      else try {
+    case "-p" :: arg :: tail => arg(0) match {
+      case '-' => parseArgs(ca, args.tail)
+      case _ => try {
         parseArgs((ca._1, arg.toInt), tail)
       } catch {
         case e: NumberFormatException => parseArgs(ca, tail)
