@@ -12,15 +12,15 @@ import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 
 
-/** Part of the ChatAnalysisMessage class */
-case class ChatAnalysisMessageHeader(
+/** Part of the DialogAgentMessage class */
+case class DialogAgentMessageHeader(
   val timestamp: String = "",  
   val messageType: String = "",
   val version: String = ""
 )
 
-/** Part of the ChatAnalysisMessage class */
-case class ChatAnalysisMessageMsg(
+/** Part of the DialogAgentMessage class */
+case class DialogAgentMessageMsg(
   val source: String = "",
   val experimentId: String = "",
   val timestamp: String = "",
@@ -28,8 +28,8 @@ case class ChatAnalysisMessageMsg(
   val version: String = ""
 )
 
-/** Part of the ChatAnalysisMessage class */
-case class ChatAnalysisMessageData(
+/** Part of the DialogAgentMessage class */
+case class DialogAgentMessageData(
   val label: String = "",
   val span: String = "",
   val arguments: String = "",
@@ -39,20 +39,20 @@ case class ChatAnalysisMessageData(
 )
 
 /** Contains the full analysis data of one chat message */
-case class ChatAnalysisMessage (
-  val header: ChatAnalysisMessageHeader,
-  val msg: ChatAnalysisMessageMsg,
-  val data: ChatAnalysisMessageData
+case class DialogAgentMessage (
+  val header: DialogAgentMessageHeader,
+  val msg: DialogAgentMessageMsg,
+  val data: DialogAgentMessageData
 ) 
 
 
-/** Serialization and deserialization of ChatAnalysisMessages via Json */
-object ChatAnalysisMessageJson {
+/** Serialization and deserialization of DialogAgentMessages via Json */
+object DialogAgentMessageJson {
   implicit  val formats = Serialization.formats(NoTypeHints)
 
-  /** Create a Json serialization from a ChatAnalysisMessage */
-  def apply(cam: ChatAnalysisMessage): String = write(cam)
+  /** Create a Json serialization from a DialogAgentMessage */
+  def apply(cam: DialogAgentMessage): String = write(cam)
 
-  /** Create a ChatAnalysisMessage from a Json serialization */
-  def apply(json: String): ChatAnalysisMessage = read[ChatAnalysisMessage](json)
+  /** Create a DialogAgentMessage from a Json serialization */
+  def apply(json: String): DialogAgentMessage = read[DialogAgentMessage](json)
 }
