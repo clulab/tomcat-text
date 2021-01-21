@@ -15,16 +15,16 @@ import org.json4s.jackson.Serialization.{read, write}
 /** Part of the DialogAgentMessage class */
 case class DialogAgentMessageHeader(
   val timestamp: String = "",  
-  val messageType: String = "",
+  val message_type: String = "",
   val version: String = ""
 )
 
 /** Part of the DialogAgentMessage class */
 case class DialogAgentMessageMsg(
   val source: String = "",
-  val experimentId: String = "",
+  val experiment_id: String = "",
   val timestamp: String = "",
-  val subType: String = "",
+  val sub_type: String = "",
   val version: String = ""
 )
 
@@ -35,7 +35,7 @@ case class DialogAgentMessageData(
   val arguments: String = "",
   val text: String = "",
   val timestamp: String = "",
-  val taxonomyMatches: Seq[(String, String)] = Seq.empty
+  val taxonomy_matches: Seq[(String, String)] = Seq.empty
 )
 
 /** Contains the full analysis data of one chat message */
@@ -47,12 +47,21 @@ case class DialogAgentMessage (
 
 
 /** Serialization and deserialization of DialogAgentMessages via Json */
-object DialogAgentMessageJson {
+object DialogAgentMessage{
   implicit  val formats = Serialization.formats(NoTypeHints)
 
   /** Create a Json serialization from a DialogAgentMessage */
-  def apply(cam: DialogAgentMessage): String = write(cam)
+  def json(a: DialogAgentMessage): String = write(a)
 
   /** Create a DialogAgentMessage from a Json serialization */
-  def apply(json: String): DialogAgentMessage = read[DialogAgentMessage](json)
+  def json(a: String): Option[DialogAgentMessage] = try {
+    Some(read[DialogAgentMessage](a))
+  } catch {
+    case t: Throwable => {
+      None
+    }
+  }
+
+  /** Return the experiment ID for this message */
+  def experiment_id(a: DialogAgentMessage): String = a.msg.experiment_id
 }

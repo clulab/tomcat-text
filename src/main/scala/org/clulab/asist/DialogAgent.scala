@@ -32,15 +32,13 @@ abstract class Subscriber {
 /** Handler for chat messages */
 class SubscriberObs extends Subscriber {
   val topic = "observations/chat"
-  def language(json: String): List[String] = 
-    ObsMessageJson(json).toList.map(om => om.data.text)
+  def language(json: String): List[String] = ObsMessage.language(json)
 }
 
 /** Handler for ASR messages */
 class SubscriberAsr extends Subscriber {
   val topic = "agent/asr"
-  def language(json: String): List[String] = 
-    AsrMessageJson(json).toList.map(am => am.data.text)
+  def language(json: String): List[String] = AsrMessage.language(json)
 }
 
 
@@ -129,14 +127,14 @@ class DialogAgent(
   }
 
   def relay(sub: Subscriber, input: String): Unit = 
-    sub.language(input).foreach(chat => publish(lp.languageAnalysis(chat)))
+    sub.language(input).foreach(lang => publish(lp.languageAnalysis(lang)))
 
   /** Publish a list DialogAgentMessage as Json serializations */
   def publish(output: List[DialogAgentMessage]): Unit = output.map(publish(_))
 
   /** Publish a DialogAgentMessage as a Json serialization */
   def publish(output: DialogAgentMessage): Unit =
-    publish(DialogAgentMessageJson(output))
+    publish(DialogAgentMessage.json(output))
 
   /** Publish a string to the chatbot topic.  */
   def publish(text: String): Unit = publish(text.getBytes)

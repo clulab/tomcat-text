@@ -15,19 +15,19 @@ import org.json4s.jackson.Serialization.{read, write}
 /** Part of the AsrMessage class */
 case class AsrMessageHeader(
   val timestamp: String = "",  // "2021-01-19T23:27:58.633076Z"
-  val messageType: String = "",  // "observation"
+  val message_type: String = "",  // "observation"
   val version: String = ""  // "0.1"
 )
 
 /** Part of the AsrMessage class */
 case class AsrMessageMsg(
   val timestamp: String = "",  // "2021-01-19T23:27:58.633967Z"
-  val experimentId: String = "",  // null
-  val participantId: String = "",  // null
-  val trialId: String = "",  // null
+  val experiment_id: String = "",  // null
+  val participant_id: String = "",  // null
+  val trial_id: String = "",  // null
   val version: String = "",  // "0.1"
   val source: String = "",  // "tomcat_asr_agent"
-  val subType: String = ""  // "asr"
+  val sub_type: String = ""  // "asr"
 )
 
 /** Part of the AsrMessage class */
@@ -46,20 +46,28 @@ case class AsrMessage (
 
 
 /** Serialization and deserialization of AsrMessages via Json */
-object AsrMessageJson {
+object AsrMessage {
   implicit  val formats = Serialization.formats(NoTypeHints)
 
   /** Create a Json serialization from a AsrMessage */
-  def apply(am: AsrMessage): String = write(am)
+  def json(a: AsrMessage): String = write(a)
 
   /** Create an AsrMessage from a Json serialization */
-  def apply(json: String): Option[AsrMessage] = try {
-    Some(read[AsrMessage](json))
+  def json(j: String): Option[AsrMessage] = try {
+    Some(read[AsrMessage](j))
   } catch {
     case t: Throwable => {
       None
     }
   }
+
+  /** Return the experiment ID for this message */
+  def experiment_id(a: AsrMessage): String = a.msg.experiment_id
+
+  /** Return the chat language for this message */
+  def language(j: String): List[String] = 
+    json(j).toList.map(a => a.data.text)
+
 }
 
 
