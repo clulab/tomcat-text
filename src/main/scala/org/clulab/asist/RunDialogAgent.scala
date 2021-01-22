@@ -14,14 +14,13 @@
 package org.clulab.asist
 
 object  RunDialogAgent extends App {
-
-  // default server and port.
+  
   val userArgs = parseArgs(("localhost", 1883), args.toList)
   val host = userArgs._1
   val port = userArgs._2
   val agent = new DialogAgent(host, port)
 
-  // read user args for host and port.   Use defaults if they are not found.
+  /** Read user args for host and port, use defaults if not found */
   def parseArgs(
       ca: Tuple2[String, Int], 
       args: List[String]): Tuple2[String, Int]= args match {
@@ -41,4 +40,3 @@ object  RunDialogAgent extends App {
     case _ => ca
   }
 }
-
