@@ -20,10 +20,9 @@ import spray.json.DefaultJsonProtocol._
 /** Process text using the StanfordCoreNLP */
 class LanguageProcessor {
   val version = "0.1"
-  val messageType = "event" // always?
-  val source = "ChatAnalysis" 
-  val experimentId = "experiment_id"  // where to get?
-  val subType = "Event:dialogue_action"  // always?
+  val message_type = "event"
+  val source = "tomcat_textAnalyzer" 
+  val sub_type = "Event:dialogue_action"
 
   /** Build an extractor for our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
@@ -41,45 +40,47 @@ class LanguageProcessor {
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
 
   /** Compose a list of DialogAgentMessages based on language extractions */
-  def languageAnalysis(lang: String): List[DialogAgentMessage] = {
-    val (extractions, extracted_doc) = extractor.runExtraction(lang, "")
-    extractions.map(ex => toDialogAgentMessage(lang, ex)).toList
+  def processExtractions(
+      experiment_id: String,
+      text: String): List[DialogAgentMessage] = {
+    val (extractions, extracted_doc) = extractor.runExtraction(text, "")
+    extractions.map(ex => toDialogAgentMessage(experiment_id, text, ex)).toList
   }
 
   /** Compose a DialogAgentMessage using chat text and extractions */
   private def toDialogAgentMessage(
-      chatText: String, 
+      experiment_id: String,
+      text: String, 
       extraction: Array[Any]
     ): DialogAgentMessage = {
 
     val mention = extraction(0).asInstanceOf[Mention]
     val timestamp = Clock.systemUTC.instant.toString
-    val argumentLabels =
+    val argument_labels =
       for (key <- mention.arguments.keys)
         yield mention.arguments.get(key).get(0).label
-    val taxonomyMatches =
+    val taxonomy_matches =
       taxonomy_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
 
     DialogAgentMessage(
       DialogAgentMessageHeader(
         timestamp,
-        messageType,
+        message_type,
         version
       ),
       DialogAgentMessageMsg(
         source,
-        experimentId,
+        experiment_id,
         timestamp,
-        subType,
+        sub_type,
         version
       ),
       DialogAgentMessageData(
         mention.label,
         mention.words.mkString(" "),
-        argumentLabels.mkString(" "),
-        chatText,
-        timestamp,
-        taxonomyMatches
+        argument_labels.mkString(" "),
+        text,
+        taxonomy_matches
       )
     )
   }
