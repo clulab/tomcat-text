@@ -34,10 +34,10 @@ class DialogAgent(
   port: Int = 1883) extends MqttCallback {
 
   /** watch these mqtt topics for incoming messages */
-  val TOPIC_OBS = "observations/chat"
-  val TOPIC_ASR = "agent/asr"
+  val TOPIC_INPUT_OBS = "observations/chat"
+  val TOPIC_INPUT_ASR = "agent/asr"
 
-  /** publish message analysis on this mqtt topic */
+  /** publish message analysis to this mqtt topic */
   val TOPIC_OUTPUT = "agent/tomcat_chatbot"
 
   /** MQTT broker connection identities */
@@ -63,7 +63,7 @@ class DialogAgent(
     case _: Throwable => "  Throwable: %s".format(t.toString)
   }
 
-  /** All message analysis goes out on this topic */
+  /** Publisher sends our analysis to the output topic */
   val publisher: Option[MqttClient] = try {
     val pub = new MqttClient(uri, PUB_ID, new MemoryPersistence())
     pub.connect(new MqttConnectOptions)
@@ -85,13 +85,13 @@ class DialogAgent(
     }
   }
 
-  /** Connect subscriber to the broker URI on the relay destination topic */
+  /** Subscriber receives messages on all input topics */
   val subscriber: Option[MqttAsyncClient] = try {
     val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
     sub.setCallback(this)
     sub.connect(new MqttConnectOptions).waitForCompletion
-    sub.subscribe(TOPIC_ASR,qos)
-    sub.subscribe(TOPIC_OBS,qos)
+    sub.subscribe(TOPIC_INPUT_ASR,qos)
+    sub.subscribe(TOPIC_INPUT_OBS,qos)
     Info("%s connected to MQTT broker at %s".format(SUB_ID, uri))
     Some(sub)
   } catch {
@@ -102,30 +102,28 @@ class DialogAgent(
     }
   }
 
-  // If we have a publisher and a subscriber we are open for business.
+  // If publisher and subscriber are connected we are open for business.
   (!subscriber.isEmpty && !publisher.isEmpty) match {
     case true => Info("Ready.")
     case false => Error("Not ready.")
   }
 
-  /** Publish a list DialogAgentMessage as Json serializations */
-  def publish(output: List[DialogAgentMessage]): Unit = output.foreach(publish)
-
   /** Publish a DialogAgentMessage as a Json serialization */
   def publish(output: DialogAgentMessage): Unit = publish(write(output))
 
   /** Publish a string to the chatbot topic.  */
-  def publish(text: String): Unit = publish(text.getBytes)
+  def publish(output: String): Unit = publish(output.getBytes)
 
   /** Publish a byte array to the chatbot topic. */
-  def publish(payload: Array[Byte]): Unit = publish(new MqttMessage(payload))
+  def publish(output: Array[Byte]): Unit = publish(new MqttMessage(output))
 
-  /** Publish a MQTT message to the chatbot topic. */
-  def publish(msg: MqttMessage): Unit = try {
-    publisher.foreach(pub => {
-      pub.publish(TOPIC_OUTPUT, msg)
-      Info("Published to %s: %s".format(TOPIC_OUTPUT, msg.toString))
-    })
+  /** Publish a MQTT message to the chatbot topic if the publisher exists. */
+  def publish(output: MqttMessage): Unit = publisher.map(publish(_, output))
+
+  /** Publish a MQTT message to the chatbot topic with an MQTT  publisher */
+  def publish(pub: MqttClient, output: MqttMessage): Unit = try {
+    pub.publish(TOPIC_OUTPUT, output)
+    Info("Published to %s: %s".format(TOPIC_OUTPUT, output.toString))
   } catch {
     case t: Throwable => { 
       Error("Could not publish to %s".format(TOPIC_OUTPUT))
@@ -148,13 +146,13 @@ class DialogAgent(
     val input = msg.toString
     Info("Read from %s: %s".format(topic, input))
     topic match {
-      case TOPIC_ASR => {
+      case TOPIC_INPUT_ASR => {
         val a: AsrMessage = read[AsrMessage](input)
-        publish(lp.processExtractions(a.msg.experiment_id, a.data.text))
+        publish(lp.process(a.msg.experiment_id, a.data.text))
       } 
-      case TOPIC_OBS =>  {
+      case TOPIC_INPUT_OBS =>  {
         val a: ObsMessage = read[ObsMessage](input)
-        publish(lp.processExtractions(a.msg.experiment_id, a.data.text))
+        publish(lp.process(a.msg.experiment_id, a.data.text))
       } 
       case _ =>
     }

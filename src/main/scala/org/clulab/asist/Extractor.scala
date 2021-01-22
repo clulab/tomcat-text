@@ -107,7 +107,6 @@ class Extractor(
       transcript: String,
       transcription_id: String
   ): (ArrayBuffer[Array[Any]], org.clulab.processors.Document) = {
-    println("Extractor.runExtraction")
     val all_events = new ArrayBuffer[Array[Any]]
     val corenlp_doc = new Annotation(transcript)
     processor.annotate(corenlp_doc)
@@ -159,7 +158,6 @@ class Extractor(
       experiment_id: String = "NULL"
   ): ArrayBuffer[String] = {
 
-    println("Extractor.extractMentions")
     val output_array = new ArrayBuffer[String]()
     val transcript = new Transcript(file_name)
     val raw_text = transcript.getCleanDoc

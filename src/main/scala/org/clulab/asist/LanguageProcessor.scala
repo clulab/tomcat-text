@@ -13,9 +13,12 @@ import java.time.Clock
 import java.util.Properties
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import scala.collection.immutable
+import scala.collection.mutable.{ArrayBuffer, Map}
 import scala.io.Source
 import spray.json._
 import spray.json.DefaultJsonProtocol._
+
+import org.clulab.utils.DisplayUtils
 
 /** Process text using the StanfordCoreNLP */
 class LanguageProcessor {
@@ -27,7 +30,8 @@ class LanguageProcessor {
   /** Build an extractor for our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
     setProperty(
-      "annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
+      "annotators", 
+      "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
     )
   })
 
@@ -39,28 +43,13 @@ class LanguageProcessor {
 
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
 
-  /** Compose a list of DialogAgentMessages based on language extractions */
-  def processExtractions(
+  /** Compose a DialogAgentMessage based on language extractions */
+  def process(
       experiment_id: String,
-      text: String): List[DialogAgentMessage] = {
+      text: String
+  ): DialogAgentMessage = {
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
-    extractions.map(ex => toDialogAgentMessage(experiment_id, text, ex)).toList
-  }
-
-  /** Compose a DialogAgentMessage using chat text and extractions */
-  private def toDialogAgentMessage(
-      experiment_id: String,
-      text: String, 
-      extraction: Array[Any]
-    ): DialogAgentMessage = {
-
-    val mention = extraction(0).asInstanceOf[Mention]
     val timestamp = Clock.systemUTC.instant.toString
-    val argument_labels =
-      for (key <- mention.arguments.keys)
-        yield mention.arguments.get(key).get(0).label
-    val taxonomy_matches =
-      taxonomy_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
 
     DialogAgentMessage(
       DialogAgentMessageHeader(
@@ -76,12 +65,25 @@ class LanguageProcessor {
         version
       ),
       DialogAgentMessageData(
-        mention.label,
-        mention.words.mkString(" "),
-        argument_labels.mkString(" "),
         text,
-        taxonomy_matches
+        extractions.map(extraction).toList
       )
+    )
+  }
+
+  /** Create a DialogAgent extraction from Extractor data */
+  def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
+    val mention = e(0).asInstanceOf[Mention]
+    val argument_labels =
+      for (key <- mention.arguments.keys)
+        yield mention.arguments.get(key).get(0).label
+    val taxonomy_matches =
+      taxonomy_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
+    DialogAgentMessageDataExtraction(
+      mention.label,
+      mention.words.mkString(" "),
+      argument_labels.mkString(" "),
+      taxonomy_matches
     )
   }
 }
