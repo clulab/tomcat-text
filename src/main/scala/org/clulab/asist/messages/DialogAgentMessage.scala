@@ -7,13 +7,6 @@
 package org.clulab.asist
 
 /** Part of the DialogAgentMessage class */
-case class DialogAgentMessageHeader(
-  val timestamp: String = "",  
-  val message_type: String = "",
-  val version: String = ""
-)
-
-/** Part of the DialogAgentMessage class */
 case class DialogAgentMessageMsg(
   val source: String = "",
   val experiment_id: String = "",
@@ -38,7 +31,8 @@ case class DialogAgentMessageDataExtraction(
 
 /** Contains the full analysis data of one chat message */
 case class DialogAgentMessage (
-  val header: DialogAgentMessageHeader,
+  val header: MessageHeader,
   val msg: DialogAgentMessageMsg,
   val data: DialogAgentMessageData
 ) 
+

@@ -7,13 +7,6 @@
 package org.clulab.asist
 
 /** Part of the ObsMessage class */
-case class ObsMessageHeader(
-  val timestamp: String = "",  // "2019-12-26T12:47:23.1234Z"
-  val message_type: String = "",  // "chat"
-  val version: String = ""  // "0.4"
-)
-
-/** Part of the ObsMessage class */
 case class ObsMessageMsg(
   val experiment_id: String = "",  // "123e4567-e89b-12d3-a456-426655440000"
   val trial_id: String = "",  // "123e4567-e89b-12d3-a456-426655440000"
@@ -34,6 +27,6 @@ case class ObsMessageData(
 /** Contains the full structure of a chat/observations message */
 case class ObsMessage (
   val data: ObsMessageData,   // Data before header in ASR struct
-  val header: ObsMessageHeader,
+  val header: MessageHeader,
   val msg: ObsMessageMsg
 )

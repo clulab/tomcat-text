@@ -52,7 +52,7 @@ class LanguageProcessor {
     val timestamp = Clock.systemUTC.instant.toString
 
     DialogAgentMessage(
-      DialogAgentMessageHeader(
+      MessageHeader(
         timestamp,
         message_type,
         version

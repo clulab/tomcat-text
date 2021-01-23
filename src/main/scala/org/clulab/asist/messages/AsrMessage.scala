@@ -7,13 +7,6 @@
 package org.clulab.asist
 
 /** Part of the AsrMessage class */
-case class AsrMessageHeader(
-  val timestamp: String = "",  // "2021-01-19T23:27:58.633076Z"
-  val message_type: String = "",  // "observation"
-  val version: String = ""  // "0.1"
-)
-
-/** Part of the AsrMessage class */
 case class AsrMessageMsg(
   val timestamp: String = "",  // "2021-01-19T23:27:58.633967Z"
   val experiment_id: String = "",  // null
@@ -33,6 +26,6 @@ case class AsrMessageData(
 /** Contains the full structure of an Asr message */
 case class AsrMessage (
   val data: AsrMessageData,   // Data before header in ASR struct
-  val header: AsrMessageHeader,
+  val header: MessageHeader,
   val msg: AsrMessageMsg
 )
