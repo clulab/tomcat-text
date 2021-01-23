@@ -13,12 +13,21 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
+import scala.util.control.Exception._
 import sys.process._
 
-/** Report an error message to stderr */
+
+/** Report a problem to stderr */
 object Error {
   def apply(str: String): Unit = 
     System.err.println("DialogAgent: %s".format(str))
+  
+  def apply(t: Throwable): Unit = t match {
+    case e: Exception => 
+      System.err.println("DialogAgent:  %s".format(e.toString))
+    case _: Throwable => 
+      System.err.println("DialogAgent:  %s".format(t.toString))
+  }
 }
 
 /** Report a message to stdout */
@@ -33,11 +42,11 @@ class DialogAgent(
   host: String = "localhost", 
   port: Int = 1883) extends MqttCallback {
 
-  /** watch these mqtt topics for incoming messages */
+  /** watch these MQTT topics for incoming messages */
   val TOPIC_INPUT_OBS = "observations/chat"
   val TOPIC_INPUT_ASR = "agent/asr"
 
-  /** publish message analysis to this mqtt topic */
+  /** publish message analysis to this MQTT topic */
   val TOPIC_OUTPUT = "agent/tomcat_chatbot"
 
   /** MQTT broker connection identities */
@@ -51,19 +60,13 @@ class DialogAgent(
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  /** MQTT broker connection port */
+  /** MQTT broker connection address */
   val uri = "tcp://%s:%d".format(host,port)
 
   /** MQTT quality of service */
   val qos = 2
 
-  /** Describe any throwables we catch. */
-  private def toString(t: Throwable): String = t match {
-    case e: Exception => "  Exception: %s".format(e.toString)
-    case _: Throwable => "  Throwable: %s".format(t.toString)
-  }
-
-  /** Publisher sends our analysis to the output topic */
+  /** Publisher sends our message analysis to the output topic */
   val publisher: Option[MqttClient] = try {
     val pub = new MqttClient(uri, PUB_ID, new MemoryPersistence())
     pub.connect(new MqttConnectOptions)
@@ -80,12 +83,12 @@ class DialogAgent(
   } catch {
     case t: Throwable => {
       Error("%s could not connect to MQTT broker at %s".format(PUB_ID, uri))
-      Error(toString(t))
+      Error(t)
       None
     }
   }
 
-  /** Subscriber receives messages on all input topics */
+  /** Subscriber receives messages on n topics */
   val subscriber: Option[MqttAsyncClient] = try {
     val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
     sub.setCallback(this)
@@ -97,13 +100,14 @@ class DialogAgent(
   } catch {
     case t: Throwable => {
       Error("%s could not connect to MQTT broker at %s".format(SUB_ID, uri))
-      Error(toString(t))
+      Error(t)
       None
     }
   }
 
   // If publisher and subscriber are connected we are open for business.
-  (!subscriber.isEmpty && !publisher.isEmpty) match {
+  ((!subscriber.isEmpty && subscriber.head.isConnected) &&
+   (!publisher.isEmpty && publisher.head.isConnected)) match {
     case true => Info("Ready.")
     case false => Error("Not ready.")
   }
@@ -111,30 +115,27 @@ class DialogAgent(
   /** Publish a DialogAgentMessage as a Json serialization */
   def publish(output: DialogAgentMessage): Unit = publish(write(output))
 
-  /** Publish a string to the chatbot topic.  */
+  /** Publish a string */
   def publish(output: String): Unit = publish(output.getBytes)
 
-  /** Publish a byte array to the chatbot topic. */
+  /** Publish a byte array */
   def publish(output: Array[Byte]): Unit = publish(new MqttMessage(output))
 
-  /** Publish a MQTT message to the chatbot topic if the publisher exists. */
-  def publish(output: MqttMessage): Unit = publisher.map(publish(_, output))
-
-  /** Publish a MQTT message to the chatbot topic with an MQTT  publisher */
-  def publish(pub: MqttClient, output: MqttMessage): Unit = try {
-    pub.publish(TOPIC_OUTPUT, output)
+  /** Publish a MQTT message */
+  def publish(output: MqttMessage): Unit = try { 
+    publisher.map(pub=>pub.publish(TOPIC_OUTPUT, output))
     Info("Published to %s: %s".format(TOPIC_OUTPUT, output.toString))
   } catch {
     case t: Throwable => { 
       Error("Could not publish to %s".format(TOPIC_OUTPUT))
-      Error(toString(t))
+      Error(t)
     }
   }
 
   /** Report an issue that resulted in loss of contact with the MQTT broker.*/
   override def connectionLost(t: Throwable): Unit = {
     Error("Connection to MQTT broker lost.")
-    Error(toString(t))
+    Error(t)
   }
 
   /** Needed for MqttCallback extension but otherwise not used. */
@@ -158,8 +159,8 @@ class DialogAgent(
     }
   } catch {
     case t: Throwable => {
-      Error("Did not understand message on %s".format(topic))
-      Error(toString(t))
+      Error("Problem reading message on %s".format(topic))
+      Error(t)
     }
   }
 }
