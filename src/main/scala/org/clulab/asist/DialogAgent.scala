@@ -42,6 +42,9 @@ class DialogAgent(
   host: String = "localhost", 
   port: Int = 1883) extends MqttCallback {
 
+  /** Used so Json serializer can recognize case classes */
+  implicit val formats = Serialization.formats(NoTypeHints)
+
   /** watch these MQTT topics for incoming messages */
   val TOPIC_INPUT_OBS = "observations/chat"
   val TOPIC_INPUT_ASR = "agent/asr"
@@ -52,13 +55,6 @@ class DialogAgent(
   /** MQTT broker connection identities */
   val SUB_ID = "dialog_agent_subscriber"
   val PUB_ID = "dialog_agent_publisher"
-
-  /** set up the analysis pipeline for chat dialog */
-  Info("Initializing language processor (this may take a few seconds) ...")
-  val lp = new LanguageProcessor
-
-  /** Used so Json serializer can recognize case classes */
-  implicit val formats = Serialization.formats(NoTypeHints)
 
   /** MQTT broker connection address */
   val uri = "tcp://%s:%d".format(host,port)
@@ -83,12 +79,22 @@ class DialogAgent(
     sub
   }
 
-  // If publisher and subscriber are connected we are open for business.
+  // Make sure we found the broker before initializing the pipeline.
   ((!subscriber.isEmpty && subscriber.head.isConnected) &&
    (!publisher.isEmpty && publisher.head.isConnected)) match {
-    case true => Info("Ready.")
-    case false => Error("Could not connect to MQTT broker at %s".format(uri))
+    case true => Info("Connected to MQTT broker at %s".format(uri))
+    case false => {
+      Error("Could not connect to MQTT broker at %s".format(uri))
+      System.exit(0) // fail fast if no broker
+    }
   }
+
+  /** Set up the language analysis pipeline */
+  Info("Initializing language processor (this may take a few seconds) ...")
+  val lp = new LanguageProcessor 
+
+  // We are open for business.
+  Info("Ready.")
 
   /** Publish a DialogAgentMessage as a Json serialization */
   def publish(output: DialogAgentMessage): Unit = publish(write(output))
