@@ -67,49 +67,27 @@ class DialogAgent(
   val qos = 2
 
   /** Publisher sends our message analysis to the output topic */
-  val publisher: Option[MqttClient] = try {
+  val publisher: Option[MqttClient] = allCatch.opt{
     val pub = new MqttClient(uri, PUB_ID, new MemoryPersistence())
     pub.connect(new MqttConnectOptions)
-    pub.isConnected match {
-      case true => {
-        Info("%s connected to MQTT broker at %s".format(PUB_ID, uri))
-        Some(pub)
-      }
-      case false => {
-        Error("%s could not connect to MQTT broker at %s".format(PUB_ID, uri))
-        None
-      }
-    }
-  } catch {
-    case t: Throwable => {
-      Error("%s could not connect to MQTT broker at %s".format(PUB_ID, uri))
-      Error(t)
-      None
-    }
+    pub
   }
 
   /** Subscriber receives messages on n topics */
-  val subscriber: Option[MqttAsyncClient] = try {
+  val subscriber: Option[MqttAsyncClient] = allCatch.opt {
     val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
     sub.setCallback(this)
     sub.connect(new MqttConnectOptions).waitForCompletion
     sub.subscribe(TOPIC_INPUT_ASR,qos)
     sub.subscribe(TOPIC_INPUT_OBS,qos)
-    Info("%s connected to MQTT broker at %s".format(SUB_ID, uri))
-    Some(sub)
-  } catch {
-    case t: Throwable => {
-      Error("%s could not connect to MQTT broker at %s".format(SUB_ID, uri))
-      Error(t)
-      None
-    }
+    sub
   }
 
   // If publisher and subscriber are connected we are open for business.
   ((!subscriber.isEmpty && subscriber.head.isConnected) &&
    (!publisher.isEmpty && publisher.head.isConnected)) match {
     case true => Info("Ready.")
-    case false => Error("Not ready.")
+    case false => Error("Could not connect to MQTT broker at %s".format(uri))
   }
 
   /** Publish a DialogAgentMessage as a Json serialization */
