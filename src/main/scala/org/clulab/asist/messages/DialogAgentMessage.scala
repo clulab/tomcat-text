@@ -6,9 +6,6 @@
 //
 package org.clulab.asist
 
-import org.clulab.odin.{EventMention, Mention, TextBoundMention}
-
-
 /** Part of the DialogAgentMessage class */
 case class DialogAgentMessageHeader(
   val timestamp: String = "",  
