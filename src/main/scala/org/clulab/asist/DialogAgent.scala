@@ -63,7 +63,7 @@ class DialogAgent(
 
   /** Set up the language analysis pipeline */
   Info("Initializing language processor (this may take a few seconds) ...")
-  lazy val lp = new LanguageProcessor 
+  val lp = new LanguageProcessor 
 
   /** Publisher sends our message analysis to the output topic */
   val publisher: Option[MqttClient] = allCatch.opt{
