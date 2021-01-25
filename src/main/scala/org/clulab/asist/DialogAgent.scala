@@ -61,9 +61,12 @@ class DialogAgent(
   /** MQTT quality of service */
   val qos = 2
 
-  /** Set up the language analysis pipeline */
+ /** Set up the language analysis pipeline */
+  Info("Creating language processor (this may take a few seconds) ...")
+  val lp = new LanguageProcessor
+
   Info("Initializing language processor (this may take a few seconds) ...")
-  val lp = new LanguageProcessor 
+  val foo = lp.process("self-test", "saving green victim") // for now
 
   /** Publisher sends our message analysis to the output topic */
   val publisher: Option[MqttClient] = allCatch.opt{
