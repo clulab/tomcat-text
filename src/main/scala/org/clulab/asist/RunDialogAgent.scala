@@ -5,38 +5,40 @@
 //
 //  
 //
-//  This class will start the DialogAgent with command line arguments.
+//  This class will start the DialogAgent with command line key-value pairs.
 //
-// -h: String = <hostname>       // default is "localhost"
+// -h hostname[String]      // default is "localhost"
 //
-// -p: Int <port_number>         // default is 1883
+// -p port[Int]         // default is 1883
+//
+// -i inputFile[String]   // default is none
+//
+// -o outputFile[String]   // default is none
 //
 package org.clulab.asist
 
+
 object  RunDialogAgent extends App {
+
+  case class Args(
+    val h:String = "localhost", // host
+    val p:String = "1883", // port
+    val i:String = "", // input file
+    val o:String = "" // output file
+  )
   
-  val userArgs = parseArgs(("localhost", 1883), args.toList)
-  val host = userArgs._1
-  val port = userArgs._2
-  val agent = new DialogAgent(host, port)
+  val a = parseArgs(new Args, args.toList)
+  val agent = new DialogAgent(a.h, a.p)
+//  val agent = new DialogAnalysis(a.i, a.o)
 
-  /** Read user args for host and port, use defaults if not found */
-  def parseArgs(
-      ca: Tuple2[String, Int], 
-      args: List[String]): Tuple2[String, Int]= args match {
+  /** Read user args, use defaults if not found */
+  def parseArgs(a: Args, user: List[String]): Args = user match {
 
-    case "-h" :: arg :: tail => arg(0) match {
-      case '-' => parseArgs(ca, args.tail)
-      case _ => parseArgs((arg, ca._2), tail)
-    }
-    case "-p" :: arg :: tail => arg(0) match {
-      case '-' => parseArgs(ca, args.tail)
-      case _ => try {
-        parseArgs((ca._1, arg.toInt), tail)
-      } catch {
-        case e: NumberFormatException => parseArgs(ca, tail)
-      }
-    }
-    case _ => ca
+    case "-h" :: host :: tail => parseArgs (Args(host, a.p, a.i, a.o),tail)
+    case "-p" :: port :: tail => parseArgs (Args(a.h, port, a.i, a.o),tail)
+    case "-i" :: infile :: tail => parseArgs (Args(a.h, a.p, infile, a.o),tail)
+    case "-o" :: outfile :: tail => parseArgs (Args(a.h, a.p, a.i, outfile),tail)
+    case _ :: tail => parseArgs(a, tail)
+    case _ => a
   }
 }

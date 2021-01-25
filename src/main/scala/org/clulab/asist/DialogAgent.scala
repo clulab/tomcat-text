@@ -36,11 +36,10 @@ object Info {
     System.out.println("DialogAgent: %s".format(str))
 }
 
-
 /** coordinator class for all things chatbot */
 class DialogAgent(
   host: String = "localhost", 
-  port: Int = 1883) extends MqttCallback {
+  port: String = "1883") extends MqttCallback {
 
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
@@ -57,10 +56,14 @@ class DialogAgent(
   val PUB_ID = "dialog_agent_publisher"
 
   /** MQTT broker connection address */
-  val uri = "tcp://%s:%d".format(host,port)
+  val uri = "tcp://%s:%s".format(host,port)
 
   /** MQTT quality of service */
   val qos = 2
+
+  /** Set up the language analysis pipeline */
+  Info("Initializing language processor (this may take a few seconds) ...")
+  lazy val lp = new LanguageProcessor 
 
   /** Publisher sends our message analysis to the output topic */
   val publisher: Option[MqttClient] = allCatch.opt{
@@ -79,22 +82,24 @@ class DialogAgent(
     sub
   }
 
-  // Make sure we found the broker before initializing the pipeline.
+  // should have a test where we send a string to the LanguageProcessor
+  // and test that we get back what we expect.
+  //
+  // There should be a test for each message type.   Perhaps this 
+  // could be done by an external class.
+
+  // Test the MQTT broker connection before proceeding.
   ((!subscriber.isEmpty && subscriber.head.isConnected) &&
    (!publisher.isEmpty && publisher.head.isConnected)) match {
-    case true => Info("Connected to MQTT broker at %s".format(uri))
+    case true => {
+      Info("Connected to MQTT broker at %s".format(uri))
+      Info("Ready.") // Go
+    }
     case false => {
       Error("Could not connect to MQTT broker at %s".format(uri))
-      System.exit(0) // fail fast if no broker
+      System.exit(1)  // It is impossible to run without the broker
     }
   }
-
-  /** Set up the language analysis pipeline */
-  Info("Initializing language processor (this may take a few seconds) ...")
-  val lp = new LanguageProcessor 
-
-  // We are open for business.
-  Info("Ready.")
 
   /** Publish a DialogAgentMessage as a Json serialization */
   def publish(output: DialogAgentMessage): Unit = publish(write(output))
