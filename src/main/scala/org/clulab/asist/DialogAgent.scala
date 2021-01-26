@@ -64,12 +64,12 @@ class DialogAgent(
   /** Identify DialogAgentMessage structure input source */
   val input_source = "message_bus"
 
- /** Set up the language analysis pipeline */
-  Info("Creating language processor (this may take a few seconds) ...")
-  val lp = new LanguageProcessor
+ /** Set up the text analysis pipeline */
+  Info("Creating text processor (this may take a few seconds) ...")
+  val tp = new TextProcessor
 
-  Info("Initializing language processor (this may take a few seconds) ...")
-  val foo = lp.process(
+  Info("Initializing text processor (this may take a few seconds) ...")
+  val foo = tp.process(
     "TEST", 
     "saving green victim",
     "TEST",
@@ -93,7 +93,7 @@ class DialogAgent(
     sub
   }
 
-  // should have a test where we send a string to the LanguageProcessor
+  // should have a test where we send a string to the TextProcessor
   // and test that we get back what we expect.
   //
   // There should be a test for each message type.   Perhaps this 
@@ -149,7 +149,7 @@ class DialogAgent(
     topic match {
       case TOPIC_INPUT_ASR => {
         val a: AsrMessage = read[AsrMessage](input)
-        publish(lp.process(
+        publish(tp.process(
           topic,
           a.msg.experiment_id, 
           a.msg.participant_id,
@@ -159,7 +159,7 @@ class DialogAgent(
       } 
       case TOPIC_INPUT_OBS =>  {
         val a: ObsMessage = read[ObsMessage](input)
-        publish(lp.process(
+        publish(tp.process(
           topic,
           a.msg.experiment_id,
           a.data.sender,

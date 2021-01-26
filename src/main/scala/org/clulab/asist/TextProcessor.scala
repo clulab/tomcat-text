@@ -21,7 +21,7 @@ import spray.json.DefaultJsonProtocol._
 import org.clulab.utils.DisplayUtils
 
 /** Process text using the StanfordCoreNLP */
-class LanguageProcessor {
+class TextProcessor {
 
   /** Build an extractor for our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
