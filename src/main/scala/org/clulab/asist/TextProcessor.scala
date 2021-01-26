@@ -43,8 +43,8 @@ class TextProcessor {
   def process(
       topic: String,
       experiment_id: String,
-      text: String,
       participant_id: String,
+      text: String,
       source_type: String
   ): DialogAgentMessage = {
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
