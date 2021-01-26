@@ -64,10 +64,11 @@ class DialogAgent(
   /** Identify DialogAgentMessage structure input source */
   val input_source = "message_bus"
 
- /** Set up the text analysis pipeline */
+  /** Instantiate the text analysis pipeline */
   Info("Creating text processor (this may take a few seconds) ...")
   val tp = new TextProcessor
 
+  /** Complete the pipeline initialization by giving it a task */
   Info("Initializing text processor (this may take a few seconds) ...")
   val foo = tp.process(
     "TEST", 
