@@ -22,10 +22,6 @@ import org.clulab.utils.DisplayUtils
 
 /** Process text using the StanfordCoreNLP */
 class LanguageProcessor {
-  val version = "0.1"
-  val message_type = "event"
-  val source = "tomcat_textAnalyzer" 
-  val sub_type = "Event:dialogue_action"
 
   /** Build an extractor for our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
@@ -45,27 +41,33 @@ class LanguageProcessor {
 
   /** Compose a DialogAgentMessage based on language extractions */
   def process(
+      topic: String,
       experiment_id: String,
-      text: String
+      text: String,
+      participant_id: String,
+      source_type: String
   ): DialogAgentMessage = {
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
     val timestamp = Clock.systemUTC.instant.toString
 
     DialogAgentMessage(
       MessageHeader(
-        timestamp,
-        message_type,
-        version
+        timestamp = timestamp,
+        message_type = "event",
+        version = DialogAgentMessage.version
       ),
       DialogAgentMessageMsg(
-        source,
-        experiment_id,
-        timestamp,
-        sub_type,
-        version
+        source = "tomcat_textAnalyzer",
+        experiment_id = experiment_id,
+        timestamp = timestamp
       ),
       DialogAgentMessageData(
-        text,
+        participant_id = participant_id,
+        text = text,
+        DialogAgentMessageDataSource(
+          source_type = source_type,
+          topic = topic
+        ),
         extractions.map(extraction).toList
       )
     )

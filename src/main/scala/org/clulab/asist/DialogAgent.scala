@@ -61,12 +61,20 @@ class DialogAgent(
   /** MQTT quality of service */
   val qos = 2
 
+  /** Identify DialogAgentMessage structure input source */
+  val input_source = "message_bus"
+
  /** Set up the language analysis pipeline */
   Info("Creating language processor (this may take a few seconds) ...")
   val lp = new LanguageProcessor
 
   Info("Initializing language processor (this may take a few seconds) ...")
-  val foo = lp.process("self-test", "saving green victim") // for now
+  val foo = lp.process(
+    "TEST", 
+    "saving green victim",
+    "TEST",
+    "TEST",
+    "TEST") // for now
 
   /** Publisher sends our message analysis to the output topic */
   val publisher: Option[MqttClient] = allCatch.opt{
@@ -141,11 +149,23 @@ class DialogAgent(
     topic match {
       case TOPIC_INPUT_ASR => {
         val a: AsrMessage = read[AsrMessage](input)
-        publish(lp.process(a.msg.experiment_id, a.data.text))
+        publish(lp.process(
+          topic,
+          a.msg.experiment_id, 
+          a.msg.participant_id,
+          a.data.text,
+          input_source)
+        )
       } 
       case TOPIC_INPUT_OBS =>  {
         val a: ObsMessage = read[ObsMessage](input)
-        publish(lp.process(a.msg.experiment_id, a.data.text))
+        publish(lp.process(
+          topic,
+          a.msg.experiment_id,
+          a.data.sender,
+          a.data.text,
+          input_source)
+        )
       } 
       case _ =>
     }
