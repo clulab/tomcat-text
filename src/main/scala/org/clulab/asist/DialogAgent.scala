@@ -16,6 +16,8 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 import sys.process._
 
+import org.json4s.jackson.JsonMethods._
+import org.json4s.Xml.{toJson, toXml}
 
 /** Report a problem to stderr */
 object Error {
@@ -61,21 +63,9 @@ class DialogAgent(
   /** MQTT quality of service */
   val qos = 2
 
-  /** Identify DialogAgentMessage structure input source */
-  val input_source = "message_bus"
-
-  /** Instantiate the text analysis pipeline */
+  /** Create the text analysis pipeline */
   Info("Creating text processor (this may take a few seconds) ...")
   val tp = new TextProcessor
-
-  /** Complete the pipeline initialization by giving it a task */
-  Info("Initializing text processor (this may take a few seconds) ...")
-  val foo = tp.process(
-    "TEST", 
-    "saving green victim",
-    "TEST",
-    "TEST",
-    "TEST") // for now
 
   /** Publisher sends our message analysis to the output topic */
   val publisher: Option[MqttClient] = allCatch.opt{
@@ -114,7 +104,10 @@ class DialogAgent(
   }
 
   /** Publish a DialogAgentMessage as a Json serialization */
-  def publish(output: DialogAgentMessage): Unit = publish(write(output))
+  def publish(output: DialogAgentMessage): Unit = {
+    val json = write(output)
+    publish(json)
+  }
 
   /** Publish a string */
   def publish(output: String): Unit = publish(output.getBytes)
@@ -143,30 +136,44 @@ class DialogAgent(
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
     Info("deliveryComplete: %s" + token.getMessage)
 
+
+  /** Translate an AsrMessage to a DialogAgentMessage  */
+  def toDialogAgentMessage(
+    a: AsrMessage, 
+    input_source: String,
+    topic: String): DialogAgentMessage = tp.process(
+      topic,
+      a.msg.experiment_id, 
+      a.msg.participant_id,
+      a.data.text,
+      input_source
+    )
+
+  /** Translate an ObsMessage to a DialogAgentMessage  */
+  def toDialogAgentMessage(
+    o: ObsMessage, 
+    input_source: String,
+    topic: String): DialogAgentMessage = tp.process(
+      topic,
+      o.msg.experiment_id,
+      o.data.sender,
+      o.data.text,
+      input_source
+    )
+
   /** Publish analysis of messages received on subscription topics */
   override def messageArrived(topic: String, msg: MqttMessage): Unit = try {
     val input = msg.toString
+    val input_source = "message_bus"
     Info("Read from %s: %s".format(topic, input))
     topic match {
       case TOPIC_INPUT_ASR => {
         val a: AsrMessage = read[AsrMessage](input)
-        publish(tp.process(
-          topic,
-          a.msg.experiment_id, 
-          a.msg.participant_id,
-          a.data.text,
-          input_source)
-        )
+        publish(toDialogAgentMessage(a, topic, input_source))
       } 
       case TOPIC_INPUT_OBS =>  {
-        val a: ObsMessage = read[ObsMessage](input)
-        publish(tp.process(
-          topic,
-          a.msg.experiment_id,
-          a.data.sender,
-          a.data.text,
-          input_source)
-        )
+        val o: ObsMessage = read[ObsMessage](input)
+        publish(toDialogAgentMessage(o, topic, input_source))
       } 
       case _ =>
     }

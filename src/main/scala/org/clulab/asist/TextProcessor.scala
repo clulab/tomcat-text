@@ -31,13 +31,21 @@ class TextProcessor {
     )
   })
 
+  /** xxx */
   val taxonomy_map_json = JsonParser(
     Source.fromResource("taxonomy_map.json").mkString
   )
+
+  /** xxx */
   val taxonomy_map = taxonomy_map_json
     .convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
+  /** xxx */
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
+
+
+  // Run the extractor after instantiation so lazy init will happen
+  extractor.runExtraction("saving green victim","")
 
   /** Compose a DialogAgentMessage based on language extractions */
   def process(
