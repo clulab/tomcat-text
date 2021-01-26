@@ -118,8 +118,6 @@ class Extractor(
       .extractFrom(doc)
       .sortBy(m => (m.sentence, m.getClass.getSimpleName))
     for (m <- mentions) {
-      println("mention.label = " + m.label)
-      println("mention = " + m.toString)
       if (m.arguments contains "target") {
         all_events += Array(
           m,
