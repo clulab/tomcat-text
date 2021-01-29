@@ -16,7 +16,8 @@ object  RunTestDialogAgent extends App {
   val port: String = "1883"
   val testFile: String = "src/main/scala/org/clulab/asist/asr_inputs.json"
   val resultFile: String = "src/main/scala/org/clulab/asist/asr_outputs.json"
-  val testTopic: String = "agent/asr"
+  val pubTopic: String = "agent/asr"
+  val subTopic: String = "agent/tomcat_chatbot" // needs single point of truth
   val testCases: List[String] = readFile(testFile)  // AsrMessages
   val expectedResults: List[String] = readFile(resultFile)  // DialogAgentMessages
 
@@ -35,7 +36,8 @@ object  RunTestDialogAgent extends App {
   val test = new TestDialogAgent(
     host, 
     port, 
-    testTopic, 
+    pubTopic, 
+    subTopic, 
     testCases.head, 
     expectedResults.head
   )
