@@ -1,47 +1,25 @@
 //  DialogAgent
 //
 //  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2020 November
-//
-//  Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
+//  Updated:  2021 January
 //
 package org.clulab.asist
 
-import java.net.ConnectException
-import org.eclipse.paho.client.mqttv3._
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
-import scala.util.control.Exception._
-import sys.process._
-
-import org.json4s.jackson.JsonMethods._
 import org.json4s.Xml.{toJson, toXml}
-
-/** Report a problem to stderr */
-object Error {
-  def apply(str: String): Unit = 
-    System.err.println("DialogAgent: %s".format(str))
-  
-  def apply(t: Throwable): Unit = t match {
-    case e: Exception => 
-      System.err.println("DialogAgent:  %s".format(e.toString))
-    case _: Throwable => 
-      System.err.println("DialogAgent:  %s".format(t.toString))
-  }
-}
-
-/** Report a message to stdout */
-object Info {
-  def apply(str: String): Unit =
-    System.out.println("DialogAgent: %s".format(str))
-}
+import scala.util.control.Exception._
 
 /** coordinator class for all things chatbot */
 class DialogAgent(
   host: String = "localhost", 
-  port: String = "1883") extends MqttCallback {
+  port: String = "1883") extends MqttAgent(
+    host, 
+    port,
+    "dialog_agent",
+    List("agent/tomcat_chatbot"),
+    List("observations/chat", "agent/asr")) {
 
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
@@ -53,134 +31,62 @@ class DialogAgent(
   /** publish message analysis to this MQTT topic */
   val TOPIC_OUTPUT = "agent/tomcat_chatbot"
 
-  /** MQTT broker connection identities */
-  val SUB_ID = "dialog_agent_subscriber"
-  val PUB_ID = "dialog_agent_publisher"
-
-  /** MQTT broker connection address */
-  val uri = "tcp://%s:%s".format(host,port)
-
-  /** MQTT quality of service */
-  val qos = 2
 
   /** Create the text analysis pipeline */
-  Info("Creating text processor (this may take a few seconds) ...")
+  info("Creating text processor (this may take a few seconds) ...")
   val tp = new TextProcessor
 
-  /** Publisher sends our message analysis to the output topic */
-  val publisher: Option[MqttClient] = allCatch.opt{
-    val pub = new MqttClient(uri, PUB_ID, new MemoryPersistence())
-    pub.connect(new MqttConnectOptions)
-    pub
-  }
-
-  /** Subscriber receives messages on n topics */
-  val subscriber: Option[MqttAsyncClient] = allCatch.opt {
-    val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
-    sub.setCallback(this)
-    sub.connect(new MqttConnectOptions).waitForCompletion
-    sub.subscribe(TOPIC_INPUT_ASR,qos)
-    sub.subscribe(TOPIC_INPUT_OBS,qos)
-    sub
-  }
-
-  // should have a test where we send a string to the TextProcessor
-  // and test that we get back what we expect.
-  //
-  // There should be a test for each message type.   Perhaps this 
-  // could be done by an external class.
+  override def info(str: String): Unit = Info("DialogAgent", str)
+  override def error(str: String): Unit = Error("DialogAgent", str)
 
   // Test the MQTT broker connection before proceeding.
-  ((!subscriber.isEmpty && subscriber.head.isConnected) &&
-   (!publisher.isEmpty && publisher.head.isConnected)) match {
-    case true => {
-      Info("Connected to MQTT broker at %s".format(uri))
-      Info("Ready.") // Go
-    }
-    case false => {
-      Error("Could not connect to MQTT broker at %s".format(uri))
-      System.exit(1)  // It is impossible to run without the broker
-    }
+  override def start: Unit = if(ready) {
+    info("Connected to MQTT broker at %s".format(uri))
+    info("Ready.") // Go
+  } else {
+    error("Could not connect to MQTT broker at %s".format(uri))
+    System.exit(1)  // It is impossible to run without the broker
   }
+
 
   /** Publish a DialogAgentMessage as a Json serialization */
-  def publish(output: DialogAgentMessage): Unit = {
-    val json = write(output)
-    publish(json)
-  }
-
-  /** Publish a string */
-  def publish(output: String): Unit = publish(output.getBytes)
-
-  /** Publish a byte array */
-  def publish(output: Array[Byte]): Unit = publish(new MqttMessage(output))
-
-  /** Publish a MQTT message */
-  def publish(output: MqttMessage): Unit = try { 
-    publisher.map(pub=>pub.publish(TOPIC_OUTPUT, output))
-    Info("Published to %s: %s".format(TOPIC_OUTPUT, output.toString))
-  } catch {
-    case t: Throwable => { 
-      Error("Could not publish to %s".format(TOPIC_OUTPUT))
-      Error(t)
-    }
-  }
-
-  /** Report an issue that resulted in loss of contact with the MQTT broker.*/
-  override def connectionLost(t: Throwable): Unit = {
-    Error("Connection to MQTT broker lost.")
-    Error(t)
-  }
-
-  /** Needed for MqttCallback extension but otherwise not used. */
-  override def deliveryComplete(token: IMqttDeliveryToken): Unit =
-    Info("deliveryComplete: %s" + token.getMessage)
-
+  def publish(a: DialogAgentMessage): Unit = publish(write(a))
 
   /** Translate an AsrMessage to a DialogAgentMessage  */
   def toDialogAgentMessage(
     a: AsrMessage, 
-    input_source: String,
     topic: String): DialogAgentMessage = tp.process(
       topic,
       a.msg.experiment_id, 
       a.msg.participant_id,
       a.data.text,
-      input_source
+      "message_bus"
     )
 
   /** Translate an ObsMessage to a DialogAgentMessage  */
   def toDialogAgentMessage(
-    o: ObsMessage, 
-    input_source: String,
+    a: ObsMessage, 
     topic: String): DialogAgentMessage = tp.process(
       topic,
-      o.msg.experiment_id,
-      o.data.sender,
-      o.data.text,
-      input_source
+      a.msg.experiment_id,
+      a.data.sender,
+      a.data.text,
+      "message_bus"
     )
 
   /** Publish analysis of messages received on subscription topics */
-  override def messageArrived(topic: String, msg: MqttMessage): Unit = try {
-    val input = msg.toString
-    val input_source = "message_bus"
-    Info("Read from %s: %s".format(topic, input))
+  override def messageArrived(topic: String, input: String): Unit = 
     topic match {
       case TOPIC_INPUT_ASR => {
-        val a: AsrMessage = read[AsrMessage](input)
-        publish(toDialogAgentMessage(a, topic, input_source))
+        allCatch.opt {
+          read[AsrMessage](input)
+        }.map(a => publish(toDialogAgentMessage(a, topic)))
       } 
       case TOPIC_INPUT_OBS =>  {
-        val o: ObsMessage = read[ObsMessage](input)
-        publish(toDialogAgentMessage(o, topic, input_source))
+        allCatch.opt {
+          read[ObsMessage](input)
+        }.map(a => publish(toDialogAgentMessage(a, topic)))
       } 
       case _ =>
     }
-  } catch {
-    case t: Throwable => {
-      Error("Problem reading message on %s".format(topic))
-      Error(t)
-    }
-  }
 }
