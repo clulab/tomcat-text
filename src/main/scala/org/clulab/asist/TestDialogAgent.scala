@@ -58,9 +58,10 @@ class TestDialogAgent(
     sub
   }
 
-  /** Compare a message with its expected result */
+  /** Compare a message with its expected result 
+   *  @param actualResult A string to be compared with an expected result
+   */ 
   def test(actualResult: String): Unit = try {
-    Info("Read")
     val actual = read[DialogAgentMessage](actualResult)
     val expected = read[DialogAgentMessage](expectedResult)
     val ret = MessageTestDialogAgent(actual, expected)
@@ -85,9 +86,6 @@ class TestDialogAgent(
 
   // Send the test case and then wait around for a reply.
   publish(testCase)
-
-  /** Publish an AsrMessage */
-  def publish(output: AsrMessage): Unit = publish(write(output))
 
   /** Publish a string */
   def publish(output: String): Unit = publish(output.getBytes)
