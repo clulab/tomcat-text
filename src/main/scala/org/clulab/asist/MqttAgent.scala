@@ -17,8 +17,8 @@ abstract class MqttAgent(
   host: String = "localhost", 
   port: String = "1883",
   id: String,
-  pubTopics: List[String],
-  subTopics: List[String]) extends MqttCallback {
+  subTopics: List[String],
+  pubTopics: List[String]) extends MqttCallback {
 
   /** MQTT broker connection identities */
   val SUB_ID = "%s_subscriber".format(id)
@@ -50,39 +50,11 @@ abstract class MqttAgent(
     sub
   }
 
+  /** Send a message to the information logger */
   def info(str: String): Unit = Info("MqttAgent", str)
+
+  /** Send a message to the error logger */
   def error(str: String): Unit = Error("MqttAgent", str)
-
-  /** start extending classes once initialization is complete */
-  start
-  def start: Unit
-
-  /** True if publisher and subsriber are connected to the MQTT broker */
-  def readyLongVersion: Boolean = {
-    if(subscriber.isDefined) {
-      info("Subscriber is defined")
-      if(subscriber.head.isConnected) {
-        info("Subscriber is connected")
-      } else {
-        error("Subscriber is not connected")
-      }
-    } else {
-      error("Subscriber is not defined")
-    }
-
-    if(publisher.isDefined) {
-      info("Publisher is defined")
-      if(publisher.head.isConnected) {
-        info("Publisher is connected")
-      } else {
-        error("Publisher is not connected")
-      }
-    } else {
-      error("Publisher is not defined")
-    }
-
-    ready
-  }
 
   /** True if publisher and subsriber are connected to the MQTT broker */
   def ready: Boolean = 
