@@ -1,44 +1,54 @@
 //  DialogAgent
 //
 //  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2020 November
 //
-//  
+//  updated:  2021 January
 //
-//  This class will start the DialogAgent with command line key-value pairs.
+//  This class will start the DialogAgent with default arguments
 //
-// -h hostname[String]      // default is "localhost"
+// -h hostname  // default is "localhost"
 //
-// -p port[Int]         // default is 1883
-//
-// -i inputFile[String]   // default is none
-//
-// -o outputFile[String]   // default is none
+// -p port      // default is "1883"
 //
 package org.clulab.asist
 
-
 object  RunDialogAgent extends App {
 
+  /** watch these MQTT topics for incoming messages */
+  val TOPIC_INPUT_OBS = "observations/chat"
+  val TOPIC_INPUT_ASR = "agent/asr"
+
+  /** publish message analysis to this MQTT topic */
+  val TOPIC_OUTPUT = "agent/tomcat_chatbot"
+
+  /** Command line args */
   case class Args(
     val h:String = "localhost", // host
-    val p:String = "1883", // port
-    val i:String = "", // input file
-    val o:String = "" // output file
+    val p:String = "1883" // port
   )
   
-  val a = parseArgs(new Args, args.toList)
-  val agent = new DialogAgent(a.h, a.p)
-//  val agent = new DialogAnalysis(a.i, a.o)
+  /** parse the command line args and populate an Args struct */
+  val a: Args = parseArgs(new Args, args.toList)
 
-  /** Read user args, use defaults if not found */
-  def parseArgs(a: Args, user: List[String]): Args = user match {
+  /** Run a DialogAgent using the defaults and command line args */
+  val agent = new DialogAgent(
+    host = a.h, 
+    port = a.p,
+    topicSubObs = TOPIC_INPUT_OBS,
+    topicSubAsr = TOPIC_INPUT_ASR,
+    topicPub = TOPIC_OUTPUT
+  )
 
-    case "-h" :: host :: tail => parseArgs (Args(host, a.p, a.i, a.o),tail)
-    case "-p" :: port :: tail => parseArgs (Args(a.h, port, a.i, a.o),tail)
-    case "-i" :: infile :: tail => parseArgs (Args(a.h, a.p, infile, a.o),tail)
-    case "-o" :: outfile :: tail => parseArgs (Args(a.h, a.p, a.i, outfile),tail)
-    case _ :: tail => parseArgs(a, tail)
-    case _ => a
+  /** Read user args, use defaults if not found 
+   *  @param ret Args struct that is updated with command line args
+   *  @param args List of command-line arguments
+   *  @return Args struct containing the command line args
+   */
+  def parseArgs(ret: Args, args: List[String]): Args = args match {
+    case "-h" :: host :: tail => parseArgs(Args(host, ret.p), tail)
+    case "-p" :: port :: tail => parseArgs(Args(ret.h, port), tail)
+    case _ :: tail => parseArgs(ret, tail)
+    case _ => ret
   }
 }
+
