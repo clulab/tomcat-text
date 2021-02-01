@@ -31,69 +31,21 @@ class TextProcessor {
     )
   })
 
-  /** xxx */
-  val taxonomy_map_json = JsonParser(
+
+  /** Load the taxonomy map from resource file */
+  val taxonomy_map = JsonParser(
     Source.fromResource("taxonomy_map.json").mkString
-  )
+  ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
-  /** xxx */
-  val taxonomy_map = taxonomy_map_json
-    .convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
-
-  /** xxx */
+  /** Create the extractor using the pipeline and taxonomy map */
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
-
 
   // Run the extractor after instantiation so lazy init will happen
   extractor.runExtraction("saving green victim","")
 
-  /** Compose a DialogAgentMessage based on language extractions */
-  def process(
-      topic: String,
-      experiment_id: String,
-      participant_id: String,
-      text: String,
-      source_type: String
-  ): DialogAgentMessage = {
-    val (extractions, extracted_doc) = extractor.runExtraction(text, "")
-    val timestamp = Clock.systemUTC.instant.toString
 
-    DialogAgentMessage(
-      MessageHeader(
-        timestamp = timestamp,
-        message_type = "event",
-        version = DialogAgentMessage.version
-      ),
-      DialogAgentMessageMsg(
-        source = "tomcat_textAnalyzer",
-        experiment_id = experiment_id,
-        timestamp = timestamp
-      ),
-      DialogAgentMessageData(
-        participant_id = participant_id,
-        text = text,
-        DialogAgentMessageDataSource(
-          source_type = source_type,
-          topic = topic
-        ),
-        extractions.map(extraction).toList
-      )
-    )
-  }
+  /** Return the taxonomy matches found in the mention label */
+  def taxonomyMatches(mentionLabel: String) = 
+    taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
 
-  /** Create a DialogAgent extraction from Extractor data */
-  def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
-    val mention = e(0).asInstanceOf[Mention]
-    val argument_labels =
-      for (key <- mention.arguments.keys)
-        yield mention.arguments.get(key).get(0).label
-    val taxonomy_matches =
-      taxonomy_map(mention.label).map(x => (x("term") -> x("score"))).toSeq
-    DialogAgentMessageDataExtraction(
-      mention.label,
-      mention.words.mkString(" "),
-      argument_labels.mkString(" "),
-      taxonomy_matches
-    )
-  }
 }
