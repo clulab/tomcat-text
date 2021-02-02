@@ -5,76 +5,77 @@
 //
 package org.clulab.asist
 
+import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import java.time.Clock
+import java.util.Properties
+import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import org.json4s.Xml.{toJson, toXml}
+import scala.collection.immutable
+import scala.io.Source
 import scala.util.control.Exception._
-import org.clulab.odin.{EventMention, Mention, TextBoundMention}
-
+import spray.json._
+import spray.json.DefaultJsonProtocol._
 
 /** coordinator class for all things chatbot */
-class DialogAgent(
-  val host: String = "localhost", 
-  val port: String = "1883",
-  val topicSubObs: String = "observations/chat",
-  val topicSubAsr: String = "agent/asr",
-  val topicPub: String = "agent/tomcat_chatbot"
-  ) extends MqttAgent(
-    host, 
-    port,
-    id = "dialog_agent",
-    subTopics = List(topicSubAsr, topicSubObs),
-    pubTopics = List(topicPub)
-  ) {
+trait DialogAgent {
+
+  def info(str: String): Unit = Info("DialogAgent", str)
+  def error(str: String): Unit = Error("DialogAgent", str)
+
+  info("Creating pipeline (this may take a few seconds) ...")
+
+  /** Build a pipeline usingr our tokens */
+  val pipeline = new StanfordCoreNLP(new Properties {
+    setProperty(
+      "annotators",
+      "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
+    )
+  })
+
+  /** Load the taxonomy map from resource file */
+  val taxonomy_map = JsonParser(
+    Source.fromResource("taxonomy_map.json").mkString
+  ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
+
+  /** Create the extractor using the pipeline and taxonomy map */
+  val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
+
 
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
 
   /** Create the text analysis pipeline */
   info("Creating text processor (this may take a few seconds) ...")
-  val tp = new TextProcessor
 
-  override def info(str: String): Unit = Info("DialogAgent", str)
-  override def error(str: String): Unit = Error("DialogAgent", str)
-
-  // Test the MQTT broker connection before proceeding.
-  if(ready) {
-    info("Connected to MQTT broker at %s".format(uri))
-    info("Ready.") // Go
-  } else {
-    error("Could not connect to MQTT broker at %s".format(uri))
-    System.exit(1)  // It is impossible to run without the broker
-  }
-
-
-  /** Publish a DialogAgentMessage as a Json serialization */
-  def publish(a: DialogAgentMessage): Unit = publish(write(a))
 
   /** Translate an AsrMessage to a DialogAgentMessage  */
   def toDialogAgentMessage(
     a: AsrMessage, 
-    topic: String): DialogAgentMessage = {
+    topic: String,
+    source_type: String): DialogAgentMessage = {
       process(
       topic,
       a.msg.experiment_id, 
       a.msg.participant_id,
       a.data.text,
-      "message_bus"
+      source_type 
     )
   }
 
   /** Translate an ObsMessage to a DialogAgentMessage  */
   def toDialogAgentMessage(
     a: ObsMessage, 
-    topic: String): DialogAgentMessage = {
+    topic: String,
+    source_type: String): DialogAgentMessage = {
       process(
       topic,
       a.msg.experiment_id,
       a.data.sender,
       a.data.text,
-      "message_bus"
+      source_type
     )
   }
 
@@ -88,8 +89,7 @@ class DialogAgent(
   ): DialogAgentMessage = {
 
 
-    // TODO do not use tp.extractor var directly, use a function instead.
-    val (extractions, extracted_doc) = tp.extractor.runExtraction(text, "")
+    val (extractions, extracted_doc) = extractor.runExtraction(text, "")
 
     val timestamp = Clock.systemUTC.instant.toString
 
@@ -116,32 +116,23 @@ class DialogAgent(
     )
   }
 
+  /** Return the taxonomy matches found in the mention label */
+  def taxonomyMatches(mentionLabel: String) =
+    taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
+
+
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
     val mention = e(0).asInstanceOf[Mention]
     val argument_labels =
       for (key <- mention.arguments.keys)
         yield mention.arguments.get(key).get(0).label
-    val taxonomy_matches = tp.taxonomyMatches(mention.label)
+    val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageDataExtraction(
       mention.label,
       mention.words.mkString(" "),
       argument_labels.mkString(" "),
       taxonomy_matches
     )
-  }
-
-  /** Publish analysis of messages received on subscription topics */
-  override def messageArrived(topic: String, input: String): Unit =  {
-    info(input)
-    topic match {
-      case `topicSubObs` => allCatch.opt {
-        read[ObsMessage](input)
-      }.map(a => publish(toDialogAgentMessage(a, topic)))
-      case `topicSubAsr` => allCatch.opt {
-        read[AsrMessage](input)
-      }.map(a => publish(toDialogAgentMessage(a, topic)))
-      case _ =>
-    }
   }
 }

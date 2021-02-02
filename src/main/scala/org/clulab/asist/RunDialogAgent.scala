@@ -21,34 +21,36 @@ object  RunDialogAgent extends App {
   /** publish message analysis to this MQTT topic */
   val TOPIC_OUTPUT = "agent/tomcat_chatbot"
 
-  /** Command line args */
-  case class Args(
-    val h:String = "localhost", // host
-    val p:String = "1883" // port
+  /** let the user know that the DialogAgent is run in MQTT or file mode */
+  val usageText = List(
+    "Usage",
+    "mqtt <host> <portnum>",
+    "or",
+    "file <input filename> <output filename>",
   )
-  
-  /** parse the command line args and populate an Args struct */
-  val a: Args = parseArgs(new Args, args.toList)
 
-  /** Run a DialogAgent using the defaults and command line args */
-  val agent = new DialogAgent(
-    host = a.h, 
-    port = a.p,
-    topicSubObs = TOPIC_INPUT_OBS,
-    topicSubAsr = TOPIC_INPUT_ASR,
-    topicPub = TOPIC_OUTPUT
-  )
+
+  /** display the usage hints */
+  def usage: Option[DialogAgent] = {
+    usageText.map(println)
+    None
+  }
+
 
   /** Read user args, use defaults if not found 
-   *  @param ret Args struct that is updated with command line args
-   *  @param args List of command-line arguments
-   *  @return Args struct containing the command line args
+   *  @param args either "file infile outfile" or "mqtt host portnum"
    */
-  def parseArgs(ret: Args, args: List[String]): Args = args match {
-    case "-h" :: host :: tail => parseArgs(Args(host, ret.p), tail)
-    case "-p" :: port :: tail => parseArgs(Args(ret.h, port), tail)
-    case _ :: tail => parseArgs(ret, tail)
-    case _ => ret
+  def buildAgent(): Option[DialogAgent] = 
+    if(args.length !=3) usage else args(0) match {
+    case "mqtt" => Some(new DialogAgentMqtt(
+      args(1), 
+      args(2),
+      topicSubObs = TOPIC_INPUT_OBS,
+      topicSubAsr = TOPIC_INPUT_ASR,
+      topicPub = TOPIC_OUTPUT
+    ))
+    case "file" => Some(new DialogAgentFile(args(1), args(2)))
+    case _ => usage
   }
 }
 
