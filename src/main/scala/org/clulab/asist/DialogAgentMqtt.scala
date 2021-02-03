@@ -29,8 +29,9 @@ class DialogAgentMqtt(
     pubTopics = List(topicPub)
   ) with DialogAgent {
 
-  /** Create the text analysis pipeline */
-  info("Creating text processor (this may take a few seconds) ...")
+  /** Kick start the extractor with a task to get lazy init out of the way */
+  info("Initializing Extractor (this may take a few seconds) ...")
+  extractor.runExtraction("green victim","")
 
   override def info(str: String): Unit = Info("DialogAgentMqtt", str)
   override def error(str: String): Unit = Error("DialogAgentMqtt", str)
