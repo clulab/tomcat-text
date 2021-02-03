@@ -17,8 +17,8 @@ import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 
 /** coordinator class for all things chatbot */
 class DialogAgentMqtt(
-  val host: String = "localhost", 
-  val port: String = "1883",
+  val host: String = "localhost",  /** MQTT broker machine */
+  val port: String = "1883", /** MQTT broker port on broker machine */
   val topicSubObs: String = "observations/chat",
   val topicSubAsr: String = "agent/asr",
   val topicPub: String = "agent/tomcat_chatbot"
@@ -32,7 +32,7 @@ class DialogAgentMqtt(
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  /** Kickstart the extractor with a task to get lazy init out of the way */
+  // Kickstart the extractor with a task to get lazy init out of the way
   logger.info("Initializing Extractor (this may take a few seconds) ...")
   extractor.runExtraction("green victim","")
   logger.info("Extractor initialized.")

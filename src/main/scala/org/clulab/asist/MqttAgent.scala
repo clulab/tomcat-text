@@ -78,7 +78,7 @@ abstract class MqttAgent(
     pubTopics.map(topic => publish(topic, output)).foldLeft(true)(_ && _)
 
   /** Publish a MQTT message to one topic
-   *  @param topic destination for MQTT message
+   *  @param topic Destination for MQTT message
    *  @param output MQTT message to publish
    *  @return true if the output was published to the topic
    */
@@ -92,8 +92,8 @@ abstract class MqttAgent(
       }
     } 
 
-  /** This method is called when the connection to the server is lost.
-   * @param cause the reason behind the loss of connection.
+  /** Called when the connection to the server is lost.
+   * @param cause The reason behind the loss of connection.
    */
   override def connectionLost(cause: Throwable): Unit = {
     logger.error("Connection to MQTT broker lost.")
@@ -106,8 +106,8 @@ abstract class MqttAgent(
     logger.info("deliveryComplete: %s" + token.getMessage)
 
   /** This method is called when a message arrives from the server.
-   * @param topic name of the topic on the message was published to
-   * @param mm the actual message.
+   * @param topic The message topic
+   * @param mm The message
    * @throws Exception if a terminal logger.error has occurred
    */
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {

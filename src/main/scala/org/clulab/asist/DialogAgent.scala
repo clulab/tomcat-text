@@ -27,7 +27,7 @@ trait DialogAgent {
 
   logger.info("Creating Extractor (this may take a few seconds) ...")
 
-  /** Build a pipeline usingr our tokens */
+  /** Build a pipeline using annotation tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
     setProperty(
       "annotators",
