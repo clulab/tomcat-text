@@ -43,13 +43,8 @@ trait DialogAgent {
   /** Create the extractor using the pipeline and taxonomy map */
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
 
-
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
-
-  /** Create the text analysis pipeline */
-  info("Creating text processor (this may take a few seconds) ...")
-
 
   /** Translate an AsrMessage to a DialogAgentMessage  */
   def toDialogAgentMessage(
