@@ -25,7 +25,8 @@ trait DialogAgent {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  logger.info("Creating pipeline (this may take a few seconds) ...")
+  logger.info("Creating Extractor (this may take a few seconds) ...")
+
   /** Build a pipeline usingr our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
     setProperty(
@@ -41,32 +42,33 @@ trait DialogAgent {
 
   /** Create the extractor using the pipeline and taxonomy map */
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
-
-  logger.info("Pipeline created.")
+  logger.info("Extractor created.")
 
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  /** Translate an AsrMessage to a DialogAgentMessage  */
+  /** Translate an AsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
-    a: AsrMessage, 
-    topic: String,
-    source_type: String): DialogAgentMessage = {
-      process(
+      a: AsrMessage,
+      topic: String,
+      source_type: String
+  ): DialogAgentMessage = {
+    process(
       topic,
-      a.msg.experiment_id, 
+      a.msg.experiment_id,
       a.msg.participant_id,
       a.data.text,
-      source_type 
+      source_type
     )
   }
 
-  /** Translate an ObsMessage to a DialogAgentMessage  */
+  /** Translate an ObsMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
-    a: ObsMessage, 
-    topic: String,
-    source_type: String): DialogAgentMessage = {
-      process(
+      a: ObsMessage,
+      topic: String,
+      source_type: String
+  ): DialogAgentMessage = {
+    process(
       topic,
       a.msg.experiment_id,
       a.data.sender,
@@ -84,7 +86,6 @@ trait DialogAgent {
       source_type: String
   ): DialogAgentMessage = {
 
-
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
 
     val timestamp = Clock.systemUTC.instant.toString
@@ -98,6 +99,7 @@ trait DialogAgent {
       DialogAgentMessageMsg(
         source = "tomcat_textAnalyzer",
         experiment_id = experiment_id,
+        /** Return the taxonomy matches found in the mention label */
         timestamp = timestamp
       ),
       DialogAgentMessageData(
@@ -112,7 +114,6 @@ trait DialogAgent {
     )
   }
 
-  /** Return the taxonomy matches found in the mention label */
   def taxonomyMatches(mentionLabel: String) =
     taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
 
