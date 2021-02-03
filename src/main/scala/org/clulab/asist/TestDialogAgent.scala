@@ -14,6 +14,7 @@ import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import org.json4s.Xml.{toJson, toXml}
+import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
 class TestDialogAgent (
@@ -29,28 +30,21 @@ class TestDialogAgent (
     List(subTopic),
     List(pubTopic)) {
 
+  private val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  /** Log a message at the "information" level
-   *  @param str information message to log
-   */
-  override def info(str: String): Unit = Info("TestDialogAgent", str)
 
-  /** Log a message at the "error" level
-   *  @param str error message to log
-   */
-  override def error(str: String): Unit = Error("TestDialogAgent", str)
 
   // Test the MQTT broker connection before proceeding.
   if(ready) {
-    info("Connected to MQTT broker at %s".format(uri))
-    info("Ready.") // Go
+    logger.info("Connected to MQTT broker at %s".format(uri))
+    logger.info("Ready.") // Go
 
     publish(testCase)
   } else {
-    error("Could not connect to MQTT broker at %s".format(uri))
+    logger.error("Could not connect to MQTT broker at %s".format(uri))
     System.exit(1)  // It is impossible to run without the broker
   }
 
@@ -58,7 +52,7 @@ class TestDialogAgent (
    *  @param actualResult A string to be compared with an expected result
    */ 
   def test(actualResult: String): Unit = {
-    info("Testing...")
+    logger.info("Testing...")
     try {
       val actual = read[DialogAgentMessage](actualResult)
       val expected = read[DialogAgentMessage](expectedResult)
@@ -66,8 +60,8 @@ class TestDialogAgent (
       if (ret) println("PASS") else println("FAIL")
     } catch {
       case t: Throwable => {
-        error("Problem interpreting test results ")
-        error(t.toString)
+        logger.error("Problem interpreting test results ")
+        logger.error(t.toString)
       }
     }
   }
@@ -77,7 +71,7 @@ class TestDialogAgent (
    * @param message the string representation of the message
    */
   override def messageArrived(topic: String, message: String): Unit = {
-    info("Received %s on topic %s".format(message,topic))
+    logger.info("Received %s on topic %s".format(message,topic))
     topic match {
       case `subTopic` => test(message)
       case _ => 

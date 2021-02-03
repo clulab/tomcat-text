@@ -9,6 +9,7 @@ package org.clulab.asist
 
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
 
@@ -19,6 +20,8 @@ abstract class MqttAgent(
   id: String,
   subTopics: List[String],
   pubTopics: List[String]) extends MqttCallback {
+
+  private val logger = LoggerFactory.getLogger(this.getClass())
 
   /** MQTT broker connection identities */
   val SUB_ID = "%s_subscriber".format(id)
@@ -49,12 +52,6 @@ abstract class MqttAgent(
     subTopics.map(topic=> sub.subscribe(topic,qos))
     sub
   }
-
-  /** Send a message to the information logger */
-  def info(str: String): Unit = Info("MqttAgent", str)
-
-  /** Send a message to the error logger */
-  def error(str: String): Unit = Error("MqttAgent", str)
 
   /** True if publisher and subsriber are connected to the MQTT broker */
   def ready: Boolean = 
@@ -90,7 +87,7 @@ abstract class MqttAgent(
       true
     } catch {
       case t: Throwable => { 
-        error("Could not publish to %s".format(topic))
+        logger.error("Could not publish to %s".format(topic))
         false
       }
     } 
@@ -99,26 +96,26 @@ abstract class MqttAgent(
    * @param cause the reason behind the loss of connection.
    */
   override def connectionLost(cause: Throwable): Unit = {
-    error("Connection to MQTT broker lost.")
+    logger.error("Connection to MQTT broker lost.")
   }
 
   /** Called when delivery for a message has been completed.
    * @param token the delivery token associated with the message.
    */
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
-    info("deliveryComplete: %s" + token.getMessage)
+    logger.info("deliveryComplete: %s" + token.getMessage)
 
   /** This method is called when a message arrives from the server.
    * @param topic name of the topic on the message was published to
    * @param mm the actual message.
-   * @throws Exception if a terminal error has occurred
+   * @throws Exception if a terminal logger.error has occurred
    */
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
     messageArrived(topic, mm.toString)
   } catch {
     case t: Throwable => {
-      error("Problem reading message on %s".format(topic))
-      error(t.toString)
+      logger.error("Problem reading message on %s".format(topic))
+      logger.error(t.toString)
     }
   }
 

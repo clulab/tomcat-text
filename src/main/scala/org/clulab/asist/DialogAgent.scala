@@ -13,6 +13,7 @@ import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import org.json4s.Xml.{toJson, toXml}
+import org.slf4j.LoggerFactory
 import scala.collection.immutable
 import scala.io.Source
 import scala.util.control.Exception._
@@ -22,11 +23,9 @@ import spray.json.DefaultJsonProtocol._
 /** coordinator class for all things chatbot */
 trait DialogAgent {
 
-  def info(str: String): Unit = Info("DialogAgent", str)
-  def error(str: String): Unit = Error("DialogAgent", str)
+  private val logger = LoggerFactory.getLogger(this.getClass())
 
-  info("Creating pipeline (this may take a few seconds) ...")
-
+  logger.info("Creating pipeline (this may take a few seconds) ...")
   /** Build a pipeline usingr our tokens */
   val pipeline = new StanfordCoreNLP(new Properties {
     setProperty(
@@ -42,6 +41,8 @@ trait DialogAgent {
 
   /** Create the extractor using the pipeline and taxonomy map */
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
+
+  logger.info("Pipeline created.")
 
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
@@ -114,7 +115,6 @@ trait DialogAgent {
   /** Return the taxonomy matches found in the mention label */
   def taxonomyMatches(mentionLabel: String) =
     taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
-
 
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {

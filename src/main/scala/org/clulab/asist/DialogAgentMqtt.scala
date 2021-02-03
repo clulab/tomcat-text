@@ -10,6 +10,7 @@ import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import org.json4s.Xml.{toJson, toXml}
+import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 
@@ -29,21 +30,19 @@ class DialogAgentMqtt(
     pubTopics = List(topicPub)
   ) with DialogAgent {
 
-  info("in startup")
+  private val logger = LoggerFactory.getLogger(this.getClass())
 
-  /** Kick start the extractor with a task to get lazy init out of the way */
-  info("Initializing Extractor (this may take a few seconds) ...")
+  /** Kickstart the extractor with a task to get lazy init out of the way */
+  logger.info("Initializing Extractor (this may take a few seconds) ...")
   extractor.runExtraction("green victim","")
-
-  override def info(str: String): Unit = Info("DialogAgentMqtt", str)
-  override def error(str: String): Unit = Error("DialogAgentMqtt", str)
+  logger.info("Extractor initialized.")
 
   // Test the MQTT broker connection before proceeding.
   if(ready) {
-    info("Connected to MQTT broker at %s".format(uri))
-    info("Ready.") // Go
+    logger.info("Connected to MQTT broker at %s".format(uri))
+    logger.info("Ready.")
   } else {
-    error("Could not connect to MQTT broker at %s".format(uri))
+    logger.error("Could not connect to MQTT broker at %s".format(uri))
     System.exit(1)  // It is impossible to run without the broker
   }
 
@@ -66,7 +65,7 @@ class DialogAgentMqtt(
 
   /** Publish analysis of messages received on subscription topics */
   override def messageArrived(topic: String, input: String): Unit =  {
-    info(input)
+    logger.info(input)
     topic match {
       case `topicSubObs` => allCatch.opt {
         read[ObsMessage](input)
