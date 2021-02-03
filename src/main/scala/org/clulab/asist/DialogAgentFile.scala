@@ -23,6 +23,8 @@ class DialogAgentFile(
   val outfilename: String = ""
   ) extends DialogAgent {
 
+  info("In startup"
+
   /** Create the text analysis pipeline */
   info("Creating text processor (this may take a few seconds) ...")
 

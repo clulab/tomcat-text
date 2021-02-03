@@ -29,6 +29,8 @@ class DialogAgentMqtt(
     pubTopics = List(topicPub)
   ) with DialogAgent {
 
+  info("in startup")
+
   /** Kick start the extractor with a task to get lazy init out of the way */
   info("Initializing Extractor (this may take a few seconds) ...")
   extractor.runExtraction("green victim","")
