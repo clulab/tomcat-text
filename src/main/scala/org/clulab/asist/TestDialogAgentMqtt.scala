@@ -17,7 +17,7 @@ import org.json4s.Xml.{toJson, toXml}
 import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
-class TestDialogAgent (
+class TestDialogAgentMqtt (
   val host: String = "localhost",
   val port: String = "1883",
   val subTopic: String,

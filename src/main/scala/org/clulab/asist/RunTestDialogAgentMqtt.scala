@@ -9,7 +9,7 @@ import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 
 
-object  RunTestDialogAgent extends App {
+object  RunTestDialogAgentMqtt extends App {
   val host: String = "localhost"
   val port: String = "1883"
   val testFile: String = "src/main/scala/org/clulab/asist/asr_inputs.json"
@@ -31,7 +31,7 @@ object  RunTestDialogAgent extends App {
     case t: Throwable => List()
   }
 
-  val test = new TestDialogAgent(
+  val test = new TestDialogAgentMqtt(
     host, 
     port, 
     pubTopic, 
