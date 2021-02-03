@@ -14,19 +14,18 @@ package org.clulab.asist
 
 object  RunDialogAgent extends App {
 
-
-  /** display the usage hints */
-  def usage: Unit = List(
+  val usageText = List(
     "Usage",
     "mqtt <host> <port number>",
     "or",
     "file <input filename> <output filename>",
-  ).map(println)
+  )
 
+  /** display the usage hints */
+  def usage: Unit = usageText.map(println)
 
   /** Keep an instance of the agent in scope */
   val agent = buildAgent
-
 
   /** Build the DialogAgent to work with an MQTT broker 
    *  @param host the address of the MQTT broker
@@ -51,7 +50,6 @@ object  RunDialogAgent extends App {
     )
   }
 
-
   /** Build the DialogAgent to work with an MQTT broker 
    *  @param infile File to be read for processing
    *  @param outfile processed results are written here
@@ -59,8 +57,6 @@ object  RunDialogAgent extends App {
    */ 
   def buildAgentFile(infile: String, outfile: String): DialogAgentFile =
     new DialogAgentFile(infile, outfile)
-
-
 
   /** Read user args, use defaults if not found 
    *  @param args (implicit) either "file infile outfile" or "mqtt host portnum"
@@ -77,4 +73,3 @@ object  RunDialogAgent extends App {
     }
   }
 }
-
