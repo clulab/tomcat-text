@@ -19,7 +19,7 @@ case class VttJsonMessageHeader (
 case class VttJsonMessageMsg(
   val timestamp: String = "",  // "2021-02-04T19:41:57.205166Z"
   val experiment_id: String = "",  // null
-  val participant_id: String = "",  // "firname lastname"
+  val participant_id: String = "",  // "firstname lastname"
   val trial_id: String = "",  // null
   val message_type: String = "", // "observation"
   val version: String = "",  // "0.1"
