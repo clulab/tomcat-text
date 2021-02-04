@@ -7,7 +7,7 @@
  */
 package org.clulab.asist
 
-object  RunDialogAgent extends App {
+object  RunTestDialogAgent extends App {
   /** subscribe to these MQTT topics for messages */
   val TOPIC_INPUT_OBS = "observations/chat"
   val TOPIC_INPUT_ASR = "agent/asr"
@@ -24,9 +24,9 @@ object  RunDialogAgent extends App {
   ).map(println)
 
   /** Create an agent for the user args and keep it in scope */
-  val agent: Option[DialogAgent] = if(args.length == 3) args(0) match {
+  val agent: Option[TestDialogAgent] = if(args.length == 3) args(0) match {
     case "mqtt" => Some {
-      new DialogAgentMqtt(
+      new TestDialogAgentMqtt(
         host = args(1),
         port = args(2),
         topicInputObs = TOPIC_INPUT_OBS,
@@ -35,9 +35,9 @@ object  RunDialogAgent extends App {
       )
     }
     case "file" => Some {
-      new DialogAgentFile(
+      new TestDialogAgentFile(
         inputFilename = args(1),
-        outputFilename = args(2)
+        expectedResultFilename = args(2)
       )
     }
     case _ => {
