@@ -15,7 +15,7 @@ import scala.io.Source
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 
-/** coordinator class for all things chatbot */
+/** Dialog language processor */
 trait DialogAgent {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
