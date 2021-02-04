@@ -18,8 +18,8 @@ abstract class MqttAgent(
   host: String = "localhost", 
   port: String = "1883",
   id: String,
-  subTopics: List[String],
-  pubTopics: List[String]) extends MqttCallback {
+  inputTopics: List[String],
+  outputTopics: List[String]) extends MqttCallback {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -49,14 +49,21 @@ abstract class MqttAgent(
     val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
     sub.setCallback(this)
     sub.connect(new MqttConnectOptions).waitForCompletion
-    subTopics.map(topic=> sub.subscribe(topic,qos))
+    inputTopics.map(topic=> sub.subscribe(topic,qos))
     sub
   }
 
   /** True if publisher and subsriber are connected to the MQTT broker */
-  def ready: Boolean = 
+  def mqttConnected: Boolean = if (
     ((!subscriber.isEmpty && subscriber.head.isConnected) &&
     (!publisher.isEmpty && publisher.head.isConnected))
+  ) {
+    logger.info("Connected to MQTT broker at %s".format(uri))
+    true
+  } else {
+    logger.error("Could not connect to MQTT broker at %s".format(uri))
+    false
+  }
 
   /** Publish a string to all publication topics
    *  @param output string to publish
@@ -75,7 +82,7 @@ abstract class MqttAgent(
    *  @return true if the output was published to all publication topics
    */
   def publish(output: MqttMessage): Boolean = 
-    pubTopics.map(topic => publish(topic, output)).foldLeft(true)(_ && _)
+    outputTopics.map(topic => publish(topic, output)).foldLeft(true)(_ && _)
 
   /** Publish a MQTT message to one topic
    *  @param topic Destination for MQTT message
