@@ -69,6 +69,19 @@ trait DialogAgent {
     )
   }
 
+  /** Translate a json-converted .vtt file line to a DialogAgentMessage */
+  def toDialogAgentMessage(
+      a: VttJsonMessage,
+  ): DialogAgentMessage = {
+    process(
+      a.data.source_filename,
+      a.msg.experiment_id,
+      a.msg.participant_id,
+      a.data.text,
+      "file"
+    )
+  }
+
   /** Compose a DialogAgentMessage based on language extractions */
   def process(
       topic: String,
