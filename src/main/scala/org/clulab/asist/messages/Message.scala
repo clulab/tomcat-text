@@ -1,12 +1,10 @@
-//  Message
-//
-//  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2021 January
-//
-//  Components usable by more than one message class.
-//
+/**
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  updated:  2021 February
+ *
+ *  Components usable by more than one message class.
+ */
 package org.clulab.asist
-
 
 /** Generic message header */
 case class MessageHeader(
