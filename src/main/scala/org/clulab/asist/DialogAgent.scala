@@ -8,15 +8,10 @@ package org.clulab.asist
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import java.time.Clock
 import java.util.Properties
-import org.clulab.odin.{EventMention, Mention, TextBoundMention}
-import org.json4s._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
-import org.json4s.Xml.{toJson, toXml}
+import org.clulab.odin.Mention
 import org.slf4j.LoggerFactory
 import scala.collection.immutable
 import scala.io.Source
-import scala.util.control.Exception._
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 
@@ -43,9 +38,6 @@ trait DialogAgent {
   /** Create the extractor using the pipeline and taxonomy map */
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
   logger.info("Extractor created.")
-
-  /** Used so Json serializer can recognize case classes */
-  implicit val formats = Serialization.formats(NoTypeHints)
 
   /** Translate an AsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
@@ -85,11 +77,8 @@ trait DialogAgent {
       text: String,
       source_type: String
   ): DialogAgentMessage = {
-
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
-
     val timestamp = Clock.systemUTC.instant.toString
-
     DialogAgentMessage(
       MessageHeader(
         timestamp = timestamp,
