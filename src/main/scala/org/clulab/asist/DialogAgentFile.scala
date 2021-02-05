@@ -25,6 +25,7 @@ class DialogAgentFile(
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
+  /** Try to open the input stream for the filename */
   val inputOpt: Option[BufferedSource] = try {
     Some(Source.fromFile(inputFilename))
   } catch {
@@ -35,6 +36,7 @@ class DialogAgentFile(
     }
   }
 
+  /** Try to open the output stream for the filename */
   val outputOpt:Option[PrintWriter] = try {
     Some(new PrintWriter(new File(outputFilename)))
   } catch {
@@ -45,25 +47,28 @@ class DialogAgentFile(
     }
   }
 
-  (inputOpt, outputOpt) match {
-    case (i: Some[BufferedSource], o: Some[PrintWriter]) => {
-      val input = i.head
-      val output = o.head
+  /** run if we have input and output, otherwise shutdown gracefully */
+  List(inputOpt, outputOpt).flatten match {
+    case List(i: BufferedSource, o: PrintWriter) => processLines(i, o)
+    case List(i: BufferedSource) => i.close
+    case List(o: PrintWriter) => o.close
+    case _ =>
+  }
+
+  /** Convert all input lines and write to file */
+  def processLines(input: BufferedSource, output: PrintWriter): Unit = {
       val lines = input.getLines
       while(lines.hasNext) processLine(lines.next, output)
       input.close
       output.close
-    }
-    case (i: Some[BufferedSource], o: Any) => i.head.close
-    case (i: Any, o: Some[PrintWriter]) => o.head.close
-    case _ =>
   }
 
+  /** convert VttJsonMessage json to DialogAgentMessage json and write to file*/
   def processLine(json: String, output: PrintWriter): Unit = {
-    toVttJsonMessage(json).foreach(vttJsonMessage => {
-      val dialogAgentMessage = toDialogAgentMessage(vttJsonMessage)
-      val dialogAgentMessageJson = toJson(dialogAgentMessage)
-      output.write("%s\n".format(dialogAgentMessageJson))
-    })
+    List(toVttJsonMessage(json)).flatten match {
+      case List(a: VttJsonMessage) => 
+        output.write("%s\n".format(toJson(toDialogAgentMessage(a))))
+      case _ => logger.error("Could not process '%s'".format(json))
+    }
   }
 }
