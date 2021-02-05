@@ -5,16 +5,26 @@
  */
 package org.clulab.asist
 
-
 import org.slf4j.LoggerFactory
+
+/** Single point of truth for DialogAgent topics on the message bus */
+object DialogAgentMqttDefaults {
+
+  /** subscribe to these MQTT topics for messages */
+  val TOPIC_INPUT_OBS: String = "observations/chat"
+  val TOPIC_INPUT_ASR: String = "agent/asr"
+
+  /** publish message analysis to this MQTT topic */
+  val TOPIC_OUTPUT: String = "agent/tomcat_chatbot"
+}
 
 /** Message bus connectivity for dialog agents */
 class DialogAgentMqtt(
-    val host: String = "localhost",
-    val port: String = "1883",
-    val topicInputObs: String = "observations/chat",
-    val topicInputAsr: String = "agent/asr",
-    val topicOutput: String = "agent/tomcat_chatbot"
+    override val host: String = MqttAgentDefaults.HOST,
+    override val port: String = MqttAgentDefaults.PORT,
+    val topicInputObs: String = DialogAgentMqttDefaults.TOPIC_INPUT_OBS,
+    val topicInputAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_ASR,
+    val topicOutput: String = DialogAgentMqttDefaults.TOPIC_OUTPUT
 ) extends MqttAgent(
       host,
       port,
