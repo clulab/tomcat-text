@@ -8,7 +8,7 @@ package org.clulab.asist
 
 /** Generic message header */
 case class MessageHeader(
-  val timestamp: String = "",  
-  val message_type: String = "",
-  val version: String = ""
+  val timestamp: String = null,  
+  val message_type: String = null,
+  val version: String = null
 )

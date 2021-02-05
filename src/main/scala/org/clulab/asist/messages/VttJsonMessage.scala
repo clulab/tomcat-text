@@ -11,28 +11,28 @@
 package org.clulab.asist
 
 case class VttJsonMessageHeader (
-  val timestamp: String = "",  // "2021-02-04T19:41:57.205166Z"
-  val version: String = ""   // "0.1"
+  val timestamp: String = null,  // "2021-02-04T19:41:57.205166Z"
+  val version: String = null   // "0.1"
 )
 
 /** Part of the VttJsonMessage class */
 case class VttJsonMessageMsg(
-  val timestamp: String = "",  // "2021-02-04T19:41:57.205166Z"
-  val experiment_id: String = "",  // null
-  val participant_id: String = "",  // "firstname lastname"
-  val trial_id: String = "",  // null
-  val message_type: String = "", // "observation"
-  val version: String = "",  // "0.1"
-  val source: String = ""  // "vtt_to_json_msgs_script"
+  val timestamp: String = null,  // "2021-02-04T19:41:57.205166Z"
+  val experiment_id: String = null,  // null
+  val participant_id: String = null,  // "firstname lastname"
+  val trial_id: String = null,  // null
+  val message_type: String = null, // "observation"
+  val version: String = null,  // "0.1"
+  val source: String = null  // "vtt_to_json_msgs_script"
 )
 
 /** Part of the VttJsonMessage class */
 case class VttJsonMessageData(
-  val asr_system: String = "",  // "Zoom"
-  val source_filename: String = "", // "AudioTranscript_foobar.vtt"
-  val caption_start: String = "", // "00:00:24.090"
-  val caption_end: String = "",  // "00:00:32.040"
-  val text: String = "" // "We are about to start the experiment."
+  val asr_system: String = null,  // "Zoom"
+  val source_filename: String = null, // "AudioTranscript_foobar.vtt"
+  val caption_start: String = null, // "00:00:24.090"
+  val caption_end: String = null,  // "00:00:32.040"
+  val text: String = null // "We are about to start the experiment."
 )
 
 /** Contains the full structure of an VttJson message */
