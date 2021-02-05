@@ -17,21 +17,21 @@ trait DialogAgentJson {
   implicit val formats = Serialization.formats(NoTypeHints)
 
   /** Serialize a DialogAgentMessage to Json */
-  def toJson(a: DialogAgentMessage): String = write(a)
+  def toJson(da: DialogAgentMessage): String = write(da)
 
   /** Deserialize a DialogAgentMessage from Json */
-  def toDialogAgentMessage(s: String): Option[DialogAgentMessage] = 
-    allCatch.opt(read[DialogAgentMessage](s))
+  def toDialogAgentMessage(json: String): Option[DialogAgentMessage] = 
+    allCatch.opt(read[DialogAgentMessage](json))
 
   /** Deserialize a ObsMessage from Json */
-  def toObsMessage(s: String): Option[ObsMessage] = 
-    allCatch.opt(read[ObsMessage](s))
+  def toObsMessage(json: String): Option[ObsMessage] = 
+    allCatch.opt(read[ObsMessage](json))
 
   /** Deserialize a AsrMessage from Json */
-  def toAsrMessage(s: String): Option[AsrMessage] = 
-    allCatch.opt(read[AsrMessage](s))
+  def toAsrMessage(json: String): Option[AsrMessage] = 
+    allCatch.opt(read[AsrMessage](json))
 
   /** Deserialize a VttJsonMessage from Json */
-  def toVttJsonMessage(s: String): Option[VttJsonMessage] = 
-    allCatch.opt(read[VttJsonMessage](s))
+  def toVttJsonMessage(json: String): Option[VttJsonMessage] = 
+    allCatch.opt(read[VttJsonMessage](json))
 }
