@@ -45,13 +45,18 @@ class DialogAgentFile(
     }
   }
 
-  if(inputOpt.isDefined && outputOpt.isDefined) {
-    val input = inputOpt.head
-    val output = outputOpt.head
-    val lines = input.getLines
-    while(lines.hasNext) processLine(lines.next, output)
-    input.close
-    output.close
+  (inputOpt, outputOpt) match {
+    case (i: Some[BufferedSource], o: Some[PrintWriter]) => {
+      val input = i.head
+      val output = o.head
+      val lines = input.getLines
+      while(lines.hasNext) processLine(lines.next, output)
+      input.close
+      output.close
+    }
+    case (i: Some[BufferedSource], o: Any) => i.head.close
+    case (i: Any, o: Some[PrintWriter]) => o.head.close
+    case _ =>
   }
 
   def processLine(json: String, output: PrintWriter): Unit = {
