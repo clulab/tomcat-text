@@ -13,13 +13,21 @@ import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
 
-/** coordinator class for anything needing connection to the message bus */
+/** Single point of truth for connection settings for the message bus */
+object MqttAgentDefaults {
+
+  /** Connect to the MQTT broker here */
+  val HOST = "localhost"
+  val PORT = "1883"
+}
+
+/** base class for anything needing connection to the message bus */
 abstract class MqttAgent(
-  host: String = "localhost", 
-  port: String = "1883",
-  id: String,
-  inputTopics: List[String],
-  outputTopics: List[String]) extends MqttCallback {
+  val host: String = MqttAgentDefaults.HOST,
+  val port: String = MqttAgentDefaults.PORT,
+  val id: String = "",
+  val inputTopics: List[String] = List.empty,
+  val outputTopics: List[String] = List.empty) extends MqttCallback {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -87,7 +95,7 @@ abstract class MqttAgent(
   /** Publish a MQTT message to one topic
    *  @param topic Destination for MQTT message
    *  @param output MQTT message to publish
-   *  @return true if the output was published to the topic
+   *  @return true if the operation succeeded
    */
   def publish(topic: String, output: MqttMessage): Boolean = try {
       publisher.map(pub=>pub.publish(topic, output))
