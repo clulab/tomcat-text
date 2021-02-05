@@ -5,61 +5,60 @@
  *  A file-compatible DialogAgent that will take over the roles
  *  of ExtractDirSearch and ExtractInfoSearch
  *
+ *  inputFilename - a .vtt file that has been converted to .json by
+ *                  scripts/vtt_to_json_msgs
+ *
+ *  outputFilename - direct our processing output here.
  */
 package org.clulab.asist
 
-import java.time.Clock
-import org.json4s._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
-import org.json4s.Xml.{toJson, toXml}
+import java.io.{File, PrintWriter}
 import org.slf4j.LoggerFactory
+import scala.io.{BufferedSource, Source}
 import scala.util.control.Exception._
-import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 
-
-/** coordinator class for all things chatbot */
 class DialogAgentFile(
-  val inputFilename: String = "", 
-  val outputFilename: String = ""
-  ) extends DialogAgent {
+    val inputFilename: String = "",
+    val outputFilename: String = ""
+) extends DialogAgent
+    with DialogAgentJson {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  logger.info("In startup")
-
-  /** Create the text analysis pipeline */
-  logger.info("Creating text processor (this may take a few seconds) ...")
-
-  /** Translate an AsrMessage to a DialogAgentMessage  */
-  def toDialogAgentMessage(
-    a: AsrMessage,
-    topic: String): DialogAgentMessage =
-      toDialogAgentMessage(a, topic, inputFilename)
-
-  /** Translate an ObsMessage to a DialogAgentMessage  */
-  def toDialogAgentMessage(
-    a: ObsMessage,
-    topic: String): DialogAgentMessage =
-      toDialogAgentMessage(a, topic, inputFilename)
-
-
-  /** read the input file */
-  def readInput(input: String): Unit =  {
+  val inputOpt: Option[BufferedSource] = try {
+    Some(Source.fromFile(inputFilename))
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem opening %s for reading".format(inputFilename))
+      logger.error(t.toString)
+      None
+    }
   }
 
-  /** process each line of the input file */
-  def processInput(input: String): Unit =  {
-    logger.info(input)
-    /*
-    topic match {
-      case `topicSubObs` => allCatch.opt {
-        read[ObsMessage](input)
-      }.map(a => publish(toDialogAgentMessage(a, topic)))
-      case `topicSubAsr` => allCatch.opt {
-        read[AsrMessage](input)
-      }.map(a => publish(toDialogAgentMessage(a, topic)))
-      case _ =>
-    }  */
+  val outputOpt:Option[PrintWriter] = try {
+    Some(new PrintWriter(new File(outputFilename)))
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem opening %s for writing".format(outputFilename))
+      logger.error(t.toString)
+      None
+    }
+  }
+
+  if(inputOpt.isDefined && outputOpt.isDefined) {
+    val input = inputOpt.head
+    val output = outputOpt.head
+    val lines = input.getLines
+    while(lines.hasNext) processLine(lines.next, output)
+    input.close
+    output.close
+  }
+
+  def processLine(json: String, output: PrintWriter): Unit = {
+    toVttJsonMessage(json).foreach(vttJsonMessage => {
+      val dialogAgentMessage = toDialogAgentMessage(vttJsonMessage)
+      val dialogAgentMessageJson = toJson(dialogAgentMessage)
+      output.write("%s\n".format(dialogAgentMessageJson))
+    })
   }
 }
