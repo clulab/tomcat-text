@@ -39,13 +39,32 @@ trait DialogAgent {
   val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
   logger.info("Extractor created.")
 
+  /** map the mention label to the taxonomy map */
+  def taxonomyMatches(mentionLabel: String) =
+    taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
+
+  /** Create a DialogAgent extraction from Extractor data */
+  def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
+    val mention = e(0).asInstanceOf[Mention]
+    val argument_labels =
+      for (key <- mention.arguments.keys)
+        yield mention.arguments.get(key).get(0).label
+    val taxonomy_matches = taxonomyMatches(mention.label)
+    DialogAgentMessageDataExtraction(
+      mention.label,
+      mention.words.mkString(" "),
+      argument_labels.mkString(" "),
+      taxonomy_matches
+    )
+  }
+
   /** Translate an AsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
       a: AsrMessage,
       topic: String,
       source_type: String
   ): DialogAgentMessage = {
-    process(
+    compose(
       topic,
       a.msg.experiment_id,
       a.msg.participant_id,
@@ -60,7 +79,7 @@ trait DialogAgent {
       topic: String,
       source_type: String
   ): DialogAgentMessage = {
-    process(
+    compose(
       topic,
       a.msg.experiment_id,
       a.data.sender,
@@ -73,7 +92,7 @@ trait DialogAgent {
   def toDialogAgentMessage(
       a: VttJsonMessage,
   ): DialogAgentMessage = {
-    process(
+    compose(
       a.data.source_filename,
       a.msg.experiment_id,
       a.msg.participant_id,
@@ -82,8 +101,8 @@ trait DialogAgent {
     )
   }
 
-  /** Compose a DialogAgentMessage based on language extractions */
-  def process(
+  /** Compose a DialogAgentMessage */
+  def compose(
       topic: String,
       experiment_id: String,
       participant_id: String,
@@ -113,24 +132,6 @@ trait DialogAgent {
         ),
         extractions.map(extraction).toList
       )
-    )
-  }
-
-  def taxonomyMatches(mentionLabel: String) =
-    taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
-
-  /** Create a DialogAgent extraction from Extractor data */
-  def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
-    val mention = e(0).asInstanceOf[Mention]
-    val argument_labels =
-      for (key <- mention.arguments.keys)
-        yield mention.arguments.get(key).get(0).label
-    val taxonomy_matches = taxonomyMatches(mention.label)
-    DialogAgentMessageDataExtraction(
-      mention.label,
-      mention.words.mkString(" "),
-      argument_labels.mkString(" "),
-      taxonomy_matches
     )
   }
 }
