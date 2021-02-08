@@ -26,18 +26,14 @@ object  RunDialogAgent extends App {
     ""
   ).map(println)
 
-
-
-  // this is a lame, fix with list processing
-  def filenamesFromDir(dirname: String) : List[String] = {
-    val dir = new File(dirname)
-    if(dir.isDirectory) {
-      val files = dir.listFiles.toList
-        .filter(_.isFile)
-        .map(_.getAbsolutePath)
-      files
-    } else List.empty
-  }
+  /**  Find all the normal filenames in a directory */
+  def filenamesFromDir(dirname: String): List[String] = List(new File(dirname))
+    .filter(_.isDirectory)
+    .map(_.listFiles)
+    .toList
+    .flatten
+    .filter(_.isFile)
+    .map(_.getAbsolutePath)
 
 
   /** Create an agent based on the user args */
