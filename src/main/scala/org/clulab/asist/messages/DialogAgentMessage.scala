@@ -6,17 +6,13 @@
 //
 package org.clulab.asist
 
-object DialogAgentMessage{
-  val version: String = "0.1"
-}
-
 /** Part of the DialogAgentMessage class */
 case class DialogAgentMessageMsg(
   val source: String = null,
   val experiment_id: String = null,
   val timestamp: String = null,
-  val sub_type: String = "Event:dialogue_event",
-  val version: String = DialogAgentMessage.version
+  val sub_type: String = null,
+  val version: String = null
 )
 
 /** Part of the DialogAgentMessage class */
