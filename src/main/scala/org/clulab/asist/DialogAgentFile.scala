@@ -1,9 +1,10 @@
 /**
- *  Author:  Joseph Astier, Adarsh Pyarelal
- *  Updated:  2021 January
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Updated:  2021 February
  *
- *  A file-compatible DialogAgent that will take over the roles
- *  of ExtractDirSearch and ExtractInfoSearch
+ *  A file-compatible DialogAgent that will perform extractions
+ *  on directories and individual files.   Directories are 
+ *  processed one level deep.
  *
  *  inputFilenames- a list of .vtt files that have been converted to .json by
  *                  scripts/vtt_to_json_msgs

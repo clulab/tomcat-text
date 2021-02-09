@@ -20,9 +20,8 @@ trait DialogAgent {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  logger.info("Creating Extractor (this may take a few seconds) ...")
-
   /** Build a pipeline using annotation tokens */
+  logger.info("Creating Extractor (this may take a few seconds) ...")
   val pipeline = new StanfordCoreNLP(new Properties {
     setProperty(
       "annotators",
@@ -46,9 +45,8 @@ trait DialogAgent {
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
     val mention = e(0).asInstanceOf[Mention]
-    val argument_labels =
-      for (key <- mention.arguments.keys)
-        yield mention.arguments.get(key).get(0).label
+    val argument_labels = mention.arguments.keys
+      .map(mention.arguments.get(_).get(0).label)
     val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageDataExtraction(
       mention.label,
@@ -64,7 +62,7 @@ trait DialogAgent {
       topic: String,
       source_type: String
   ): DialogAgentMessage = {
-    compose(
+    toDialogAgentMessage(
       topic,
       a.msg.experiment_id,
       a.msg.participant_id,
@@ -79,7 +77,7 @@ trait DialogAgent {
       topic: String,
       source_type: String
   ): DialogAgentMessage = {
-    compose(
+    toDialogAgentMessage(
       topic,
       a.msg.experiment_id,
       a.data.sender,
@@ -92,7 +90,7 @@ trait DialogAgent {
   def toDialogAgentMessage(
       a: VttJsonMessage,
   ): DialogAgentMessage = {
-    compose(
+    toDialogAgentMessage(
       a.data.source_filename,
       a.msg.experiment_id,
       a.msg.participant_id,
@@ -101,8 +99,8 @@ trait DialogAgent {
     )
   }
 
-  /** Compose a DialogAgentMessage */
-  def compose(
+  /** create a DialogAgentMessage from text */
+  def toDialogAgentMessage(
       topic: String,
       experiment_id: String,
       participant_id: String,
@@ -111,17 +109,19 @@ trait DialogAgent {
   ): DialogAgentMessage = {
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
     val timestamp = Clock.systemUTC.instant.toString
+    val version = "0.1"
     DialogAgentMessage(
       MessageHeader(
         timestamp = timestamp,
         message_type = "event",
-        version = DialogAgentMessage.version
+        version = version
       ),
       DialogAgentMessageMsg(
         source = "tomcat_textAnalyzer",
         experiment_id = experiment_id,
-        /** Return the taxonomy matches found in the mention label */
-        timestamp = timestamp
+        timestamp = timestamp,
+        sub_type = "Event:dialogue_event",
+        version = version
       ),
       DialogAgentMessageData(
         participant_id = participant_id,
