@@ -44,6 +44,8 @@ trait DialogAgent {
 
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
+    println("extraction")
+    e.map(_ => println("  %s".format(_)))
     val mention = e(0).asInstanceOf[Mention]
     val argument_labels = mention.arguments.keys
       .map(mention.arguments.get(_).get(0).label)
@@ -63,11 +65,11 @@ trait DialogAgent {
       source_type: String
   ): DialogAgentMessage = {
     toDialogAgentMessage(
+      source_type,
       topic,
       a.msg.experiment_id,
       a.msg.participant_id,
-      a.data.text,
-      source_type
+      a.data.text
     )
   }
 
@@ -78,11 +80,11 @@ trait DialogAgent {
       source_type: String
   ): DialogAgentMessage = {
     toDialogAgentMessage(
+      source_type,
       topic,
       a.msg.experiment_id,
       a.data.sender,
-      a.data.text,
-      source_type
+      a.data.text
     )
   }
 
@@ -91,21 +93,21 @@ trait DialogAgent {
       a: VttJsonMessage,
   ): DialogAgentMessage = {
     toDialogAgentMessage(
+      "vtt_file",
       a.data.source_filename,
       a.msg.experiment_id,
       a.msg.participant_id,
-      a.data.text,
-      "file"
+      a.data.text
     )
   }
 
   /** create a DialogAgentMessage from text */
   def toDialogAgentMessage(
-      topic: String,
+      source_type: String,
+      source_name: String,
       experiment_id: String,
       participant_id: String,
-      text: String,
-      source_type: String
+      text: String
   ): DialogAgentMessage = {
     val (extractions, extracted_doc) = extractor.runExtraction(text, "")
     val timestamp = Clock.systemUTC.instant.toString
@@ -128,7 +130,7 @@ trait DialogAgent {
         text = text,
         DialogAgentMessageDataSource(
           source_type = source_type,
-          topic = topic
+          source_name = source_name
         ),
         extractions.map(extraction).toList
       )

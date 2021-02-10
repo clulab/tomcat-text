@@ -34,7 +34,7 @@ case class DialogAgentMessageDataExtraction(
 /** Part of the DialogAgentMessageData class */
 case class DialogAgentMessageDataSource(
   val source_type: String = null,
-  val topic: String =null 
+  val source_name: String = null 
 )
 
 /** Contains the full analysis data of one chat message */

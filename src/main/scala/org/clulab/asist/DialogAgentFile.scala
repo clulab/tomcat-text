@@ -6,10 +6,10 @@
  *  on directories and individual files.   Directories are 
  *  processed one level deep.
  *
- *  inputFilenames- a list of .vtt files that have been converted to .json by
- *                  scripts/vtt_to_json_msgs
+ *  inputFilename  - Either a file or directory.   In the case of a directory, 
+ *               only the first level of files is processed.
  *
- *  outputFilename - the results of processing the input filenames.
+ *  outputFilename - The results of processing the input filenames.
  */
 package org.clulab.asist
 
@@ -18,61 +18,52 @@ import org.slf4j.LoggerFactory
 import scala.io.{BufferedSource, Source}
 
 class DialogAgentFile(
-    val inputFilenames: List[String] = List.empty,
+    val inputFilename: String = "",
     val outputFilename: String = "output_events.json"
 ) extends DialogAgent
     with DialogAgentJson {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  /** Try to open an input stream */
-  def openInput(filename: String): Option[BufferedSource] = try {
-    Some(Source.fromFile(new File(filename)))
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem opening %s for reading".format(filename))
-      logger.error(t.toString)
-      None
-    }
-  }
-
-  /** Try to open the output stream */
-  def openOutput(filename: String): Option[PrintWriter] = try {
-    Some(new PrintWriter(new File(outputFilename)))
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem opening %s for writing".format(outputFilename))
-      logger.error(t.toString)
-      None
-    }
-  }
-
-  /** Convert VttJsonMessage json to DialogAgentMessage json and write to file*/
-  def processLine(vttJson: String, output: PrintWriter) = toVttJsonMessage(
+  /** Process one VttJsonMessage */
+  def processLine(vttJson: String, output: PrintWriter): Unit = toVttJsonMessage(
     vttJson
   ) match {
-    case Some(a: VttJsonMessage) =>
+    case Some(a: VttJsonMessage) => 
       output.write("%s\n".format(toJson(toDialogAgentMessage(a))))
     case _ => logger.error("Could not process '%s'".format(vttJson))
   }
 
-  /** process one filename */
-  def processFile(filename: String, output: PrintWriter): Unit =
-    openInput(filename).map(source => {
-      val lines = source.getLines
-      while (lines.hasNext) processLine(lines.next, output)
-      source.close
-  })
-
-  /** process each of the filenames sequentially */
-  def processFiles(filenames: List[String], output: PrintWriter): Unit =
-  filenames match {
-    case filename :: tail => {
-      processFile(filename, output)
-      processFiles(tail, output)
+  /** Process one input file */
+  def processFile(filename: String, output: PrintWriter): Unit = try {
+    val source = Source.fromFile(new File(filename))
+    val lines = source.getLines
+    while (lines.hasNext) processLine(lines.next, output)
+    source.close
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem reading from %s".format(filename))
+      logger.error(t.toString)
+      None
     }
-    case _ => output.close
   }
 
-  openOutput(outputFilename).map(processFiles(inputFilenames,_))
+  /** return the files to process */
+  def inputFilenames(f: File): List[String] = {
+    if(f.isDirectory) f.listFiles.toList.map(_.getAbsolutePath)
+    else List(f.getAbsolutePath)
+  }
+
+  // open the output stream and run the input files
+  try {
+    val output = new PrintWriter(new File(outputFilename))
+    inputFilenames(new File(inputFilename)).map(processFile(_, output))
+    output.close
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem writing to %s".format(outputFilename))
+      logger.error(t.toString)
+      None
+    }
+  }
 }
