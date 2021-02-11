@@ -18,7 +18,9 @@
 			"type": "string",
 			"title": "label schema",
 			"default": "",
-			"examples": [ "Sight" ],
+			"examples": [
+				"Sight"
+		       	],
 			"pattern": "^(.*)$"
 		},
 		"span": {
@@ -39,10 +41,16 @@
 		},
 		"taxonomy_matches": {
 			"$id": "#/properties/taxonomy_matches",
-			"type": "Array[TaxonomyMatch]",
+			"type": "array",
+			"items": {
+				"string": "string"
+			},
 			"title": "taxonomy_matches schema",
 			"default": "",
-			"examples": [ [ {"finish-triaging": "7.5568876562069995"},{"start-triaging": "7.3469120111747985"}]],
+			"examples": [ 
+				{"finish-triaging": "7.5568876562069995"},
+				{"start-triaging": "7.3469120111747985"}
+			],
 			"pattern": "^(.*)$"
 		}
 	}
