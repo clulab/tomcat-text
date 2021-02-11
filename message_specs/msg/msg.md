@@ -12,22 +12,20 @@ chat_analysis_message/msg
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| experiment_id | String | The experiment id this message is associated with
+| source | String | Name of the creator of this structor
+| experiment_id | String | A unique identifier
 | timestamp | String | The UTC time the message was published, in format: YYYY-MM-DDThh:mm:ss.ssssZ
-| source | String | The name of the testbed component that published this data
-| sub_type | String | The subtype of the data.  This field describes the format of this particular type of data
-| filename | String | Transcript file name
+| sub_type | String | This field describes the format of this particular type of data
 | version | String | The version of the sub_type format
 
 
 ## Example
 ```json
 {
-"experiment_id": "123e4567-e89b-12d3-a456-426655440000",
-"timestamp": "2019-12-26T12:47:23.1234Z",
-"source": "simulator",
-"sub_type": "pickup",
-"filename": "transcript.vtt",
-"version": "1.0"
+  "source": "tomcat_textAnalyzer",
+  "experiment_id": null,
+  "timestamp": "2021-02-11T19:22:23.494Z",
+  "sub_type": "Event:dialogue_event",
+  "version": "0.1"
 }
 ```

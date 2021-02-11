@@ -16,80 +16,57 @@ Structure of the chat_analysis_message.data datatype
 ## Data Example
 ```json
 {
-  "data": {
-    "participant_id": "Participant 21",
-    "text": "Five because at least I know there was one yellow victim that died so",
-    "source": {
-      "source_type": "vtt_file",
-      "source_name": "AudioTranscript_CondBtwn-TriageSignal_CondWin-na_Trial-na_Team-na_Member-21_Vers-1.vtt"
+  "participant_id": "Participant person",
+  "text": "Five because at least I know there was one yellow victim that died so",
+  "source": {
+    "source_type": "vtt_file",
+    "source_name": "AudioTranscript.vtt"
+  },
+  "extractions": [
+    {
+      "label": "Sight",
+      "span": "was one yellow victim",
+      "arguments": "Victim",
+      "taxonomy_matches": [
+        {
+          "stop-triaging": "11.709686762798679"
+        },
+        {
+          "no-victims-spotted": "10.767969549025242"
+        },
+        {
+          "start-triaging": "10.602379112681499"
+        },
+        {
+          "end-mission": "10.557661089612202"
+        },
+        {
+          "stop-triaging-victim": "10.495014278024438"
+        }
+      ]
     },
-    "extractions": [
-      {
-        "label": "Sight",
-        "span": "was one yellow victim",
-        "arguments": "Victim",
-        "taxonomy_matches": [
-          {
-            "stop-triaging": "11.709686762798679"
-          },
-          {
-            "no-victims-spotted": "10.767969549025242"
-          },
-          {
-            "start-triaging": "10.602379112681499"
-          },
-          {
-            "end-mission": "10.557661089612202"
-          },
-          {
-            "stop-triaging-victim": "10.495014278024438"
-          }
-        ]
-      },      {
-        "label": "Victim",
-        "span": "victim",
-        "arguments": "",
-        "taxonomy_matches": [
-          {
-            "stop-triaging-victim": "18.593763750341402"
-          },
-          {
-            "start-triaging-victim": "17.326888048081006"
-          },
-          {
-            "spotted-injured-victim": "16.777340870340307"
-          },
-          {
-            "finish-triaging-victim": "16.340800440275004"
-          },
-          {
-            "spotted-severely-injured-victim": "15.606892463887728"
-          }
-        ]
-      },
-      {
-        "label": "Deictic",
-        "span": "there",
-        "arguments": "",
-        "taxonomy_matches": [
-          {
-            "finish-triaging": "7.5568876562069995"
-          },
-          {
-            "start-triaging": "7.3469120111747985"
-          },
-          {
-            "stop-triaging": "6.297731037339998"
-          },
-          {
-            "finish-triaging-victim": "6.274214173366999"
-          },
-          {
-            "start-triaging-victim": "6.1692263508509"
-          }
-        ]
-      }
-    ]
-  }
+    {
+      "label": "Victim",
+      "span": "victim",
+      "arguments": "",
+      "taxonomy_matches": [
+        {
+          "stop-triaging-victim": "18.593763750341402"
+        },
+        {
+          "start-triaging-victim": "17.326888048081006"
+        },
+        {
+          "spotted-injured-victim": "16.777340870340307"
+        },
+        {
+          "finish-triaging-victim": "16.340800440275004"
+        },
+        {
+          "spotted-severely-injured-victim": "15.606892463887728"
+        }
+      ]
+    }
+  ]
 }
 ```

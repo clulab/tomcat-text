@@ -20,8 +20,8 @@ message_spec/header
 ## Example
 ```json
 {
-"timestamp": "2019-12-26T12:47:23.1234Z",
-"message_type": "event",
-"version": "1.0"
+  "timestamp": "2019-12-26T12:47:23.1234Z",
+  "message_type": "event",
+  "version": "1.0"
 }
 ```
