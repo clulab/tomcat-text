@@ -7,22 +7,21 @@ Structure of the chat_analysis_message.data datatype
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| label | String | The mention label
-| span | String | A string of all the mention words, separated by spaces.
-| arguments | String | A string of all the mention argument key labels, separated by spaces.
+| participant_id | String | The name of the subject
 | text | String | What was said in the message
-| timestamp | String | The UTC time the message was published, in format: YYYY-MM-DDThh:mm:ss.ssssZ
-| taxonomy_matches | String array | The taxonomy mappings of the mention label 
+| source | Source | The origin of the text (either a file or the message bus) and either the filename or the message bus topic.
+| extractions | Seq[Extraction] | A sequence of Extraction structs including taxonomy matches
 
 
 ## Data Example
 ```json
 {
-"label": "Diectic",
-"span": "???",
-"arguments": "???",
-"text": "I am saving a victim",
-"timestamp": "2019-12-26T12:47:23.1234Z",
-"taxonomy_matches": "???"
+  "participant_id": "participant 21",
+  "text": "I see a green victim",
+  "source": {
+    "source_type": "message_bus",
+    "source_name": "message_bus_topic"
+  }
+  "extractions": 
 }
 ```
