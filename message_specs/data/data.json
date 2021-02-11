@@ -18,7 +18,9 @@
 			"type": "string",
 			"title": "participant_id schema",
 			"default": "",
-			"examples": [ "participant 21" ],
+			"examples": [
+			       	"participant 21"
+		       	],
 			"pattern": "^(.*)$"
 		},
 		"text": {
@@ -26,7 +28,9 @@
 			"type": "string",
 			"title": "text schema",
 			"default": "",
-			"examples": [ "saving a green victim" ],
+			"examples": [
+			       	"saving a green victim"
+		       	],
 			"pattern": "^(.*)$"
 		},
 		"source": {
@@ -35,6 +39,7 @@
 		},
 		"extractions": {
 			"type": "Seq[Extraction]",
+			"default": "[]",
 			"$ref": "extraction/extraction.json"
 		}
 	}
