@@ -5,38 +5,20 @@
 	"$id": "https://github.com/clulab/tomcat-text/message_specs/data/data.json",
 	"type": "object",
 	"title": "data schema",
-	"version": "0.5",
+	"version": "0.1",
 	"required": [
-		"label",
-		"span",
-		"arguments",
+		"participant_id",
 		"text",
-		"timestamp",
-		"taxonomy_matches"
+		"source",
+		"extractions"
        	],
 	"properties": {
-		"label": {
-			"$id": "#/properties/label",
+		"participant_id": {
+			"$id": "#/properties/participant_id",
 			"type": "string",
-			"title": "label schema",
+			"title": "participant_id schema",
 			"default": "",
-			"examples": [ "label" ],
-			"pattern": "^(.*)$"
-		},
-		"span": {
-			"$id": "#/properties/span",
-			"type": "string",
-			"title": "span schema",
-			"default": "",
-			"examples": [ "span" ],
-			"pattern": "^(.*)$"
-		},
-		"arguments": {
-			"$id": "#/properties/arguments",
-			"type": "string",
-			"title": "arguments schema",
-			"default": "",
-			"examples": [ "arguments" ],
+			"examples": [ "participant 21" ],
 			"pattern": "^(.*)$"
 		},
 		"text": {
@@ -44,25 +26,16 @@
 			"type": "string",
 			"title": "text schema",
 			"default": "",
-			"examples": [ "text" ],
+			"examples": [ "saving a green victim" ],
 			"pattern": "^(.*)$"
 		},
-		"timestamp": {
-			"$id": "#/properties/timestamp",
-			"type": "string",
-			"title": "timestamp schema",
-			"default": "",
-			"examples": [ "2019-12-26T14:05:02.3412Z" ],
-			"pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.]?[0-9]{0,}?Z"
+		"source": {
+			"type": "Source",
+			"$ref": "source/source.json"
 		},
-		"taxonomy_matches": {
-			"$id": "#/properties/taxonomy_matches",
-			"type": "string",
-			"title": "taxonomy_matches schema",
-			"default": "",
-			"examples": [ "taxonomy_matches" ],
-			"pattern": "^(.*)$"
+		"extractions": {
+			"type": "Seq[Extraction]",
+			"$ref": "extraction/extraction.json"
 		}
 	}
 }
-
