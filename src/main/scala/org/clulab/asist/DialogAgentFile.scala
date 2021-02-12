@@ -1,13 +1,13 @@
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
  *  Updated:  2021 February
  *
  *  A file-compatible DialogAgent that will perform extractions
  *  on directories and individual files.   Directories are 
  *  processed one level deep.
  *
- *  inputFilename  - Either a file or directory.   In the case of a directory, 
- *               only the first level of files is processed.
+ *  inputFilename  - Either a file or directory.
  *
  *  outputFilename - The results of processing the input filenames.
  */
@@ -20,25 +20,25 @@ import scala.io.{BufferedSource, Source}
 class DialogAgentFile(
     val inputFilename: String = "",
     val outputFilename: String = "output_events.json"
-) extends DialogAgent
+) extends DialogAgent 
     with DialogAgentJson {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  /** Process one VttJsonMessage */
-  def processLine(vttJson: String, output: PrintWriter): Unit = toVttJsonMessage(
-    vttJson
-  ) match {
-    case Some(a: VttJsonMessage) => 
-      output.write("%s\n".format(toJson(toDialogAgentMessage(a))))
-    case _ => logger.error("Could not process '%s'".format(vttJson))
+  // List all the files to be processed.
+  val allFiles: List[String] = {
+    val f = new File(inputFilename)
+    if(f.isDirectory) f.listFiles.toList.map(_.getAbsolutePath)
+    else List(f.getAbsolutePath)
   }
 
-  /** Process one input file */
+  /** Process one file */
   def processFile(filename: String, output: PrintWriter): Unit = try {
     val source = Source.fromFile(new File(filename))
     val lines = source.getLines
-    while (lines.hasNext) processLine(lines.next, output)
+    while (lines.hasNext)
+      toVttJsonMessage(lines.next).map(a =>
+        output.write("%s\n".format(toJson(toDialogAgentMessage(a)))))
     source.close
   } catch {
     case t: Throwable => {
@@ -48,16 +48,10 @@ class DialogAgentFile(
     }
   }
 
-  /** return the files to process */
-  def inputFilenames(f: File): List[String] = {
-    if(f.isDirectory) f.listFiles.toList.map(_.getAbsolutePath)
-    else List(f.getAbsolutePath)
-  }
-
-  // open the output stream and run the input files
+  // open the output stream and process the files
   try {
     val output = new PrintWriter(new File(outputFilename))
-    inputFilenames(new File(inputFilename)).map(processFile(_, output))
+    allFiles.map(processFile(_, output))
     output.close
   } catch {
     case t: Throwable => {
