@@ -1,9 +1,12 @@
-//  ObsMessage
-//
-//  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2021 January
-//
-//  
+/**
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ *  Updated:  2021 February
+ *
+ *  Observation (Obs) message
+ *
+ *  ObsMessages are received on the message bus 
+ */
 package org.clulab.asist
 
 /** Part of the ObsMessage class */

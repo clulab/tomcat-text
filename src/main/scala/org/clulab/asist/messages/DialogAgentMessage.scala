@@ -1,9 +1,13 @@
-//  DialogAnalysisMessage
-//
-//  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2020 December
-//
-//
+/**
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ *  updated:  2021 February
+ *
+ *  Dialog Agent Message
+ *
+ *  DialogAgentMessages are produced by the Dialog Agent, either
+ *  as file output or on the message bus
+ */
 package org.clulab.asist
 
 /** Part of the DialogAgentMessage class */
@@ -24,17 +28,17 @@ case class DialogAgentMessageData(
 )
 
 /** Part of the DialogAgentMessageData class */
+case class DialogAgentMessageDataSource(
+  val source_type: String = null,
+  val source_name: String = null 
+)
+
+/** Part of the DialogAgentMessageData class */
 case class DialogAgentMessageDataExtraction(
   val label: String = null,
   val span: String = null,
   val arguments: String = null,
   val taxonomy_matches: Seq[(String, String)] = Seq.empty
-)
-
-/** Part of the DialogAgentMessageData class */
-case class DialogAgentMessageDataSource(
-  val source_type: String = null,
-  val source_name: String = null 
 )
 
 /** Contains the full analysis data of one chat message */

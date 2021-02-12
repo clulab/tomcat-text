@@ -1,9 +1,12 @@
-//  AsrMessage
-//
-//  Author:  Joseph Astier, Adarsh Pyarelal
-//  Date:  2020 December
-//
-//
+/** 
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ *  updated:  2020 December
+ *
+ *  Automated Speech Recognition (ASR) message 
+ *
+ *  AsrMessages are received on the message bus
+ */
 package org.clulab.asist
 
 /** Part of the AsrMessage class */
