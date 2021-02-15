@@ -116,7 +116,7 @@ object MessageTestDialogAgent extends MessageTest {
       a: DialogAgentMessageDataSource, 
       b: DialogAgentMessageDataSource): Boolean = {
     val s = test("    source_type:", a.source_type, b.source_type)
-    val t = test("    topic:", a.topic, b.topic)
+    val t = test("    source_name:", a.source_name, b.source_name)
     s && t
   }
 

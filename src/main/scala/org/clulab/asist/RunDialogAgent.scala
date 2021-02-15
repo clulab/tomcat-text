@@ -31,6 +31,8 @@ object  RunDialogAgent extends App {
       Some(new DialogAgentMqtt(host, port))
     case Array("file", inputFile: String, outputFile: String) => 
       Some(new DialogAgentFile(inputFile, outputFile))
+    case Array("test", inputFile: String, outputFile: String) => 
+      Some(new DialogAgentTest(inputFile, outputFile))
     case _ => {
       usage
       None

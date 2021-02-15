@@ -28,7 +28,7 @@
       "title": "text schema",
       "default": "",
       "examples": [
-        "saving a green victim"
+        "I see a green victim"
       ],
       "pattern": "^(.*)$"
     },

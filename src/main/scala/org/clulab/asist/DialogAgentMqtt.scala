@@ -37,7 +37,7 @@ class DialogAgentMqtt(
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  // Kickstart the extractor with a task to get lazy init out of the way
+  // Kickstart the extractor with this task to get lazy init out of the way
   logger.info("Initializing Extractor (this may take a few seconds) ...")
   extractor.runExtraction("green victim", "")
   logger.info("Extractor initialized.")
