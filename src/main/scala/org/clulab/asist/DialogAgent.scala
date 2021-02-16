@@ -70,7 +70,7 @@ trait DialogAgent {
       source_type,
       topic,
       a.msg.experiment_id,
-      a.msg.participant_id,
+      a.data.participant_id,
       a.data.text
     )
   }
