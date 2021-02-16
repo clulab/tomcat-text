@@ -34,12 +34,14 @@ class DialogAgentFile(
 
   /** Process one file */
   def processFile(filename: String, output: PrintWriter): Unit = try {
+    logger.info("Reading %s".format(filename))
     val source = Source.fromFile(new File(filename))
     val lines = source.getLines
     while (lines.hasNext)
       toVttJsonMessage(lines.next).map(a =>
         output.write("%s\n".format(toJson(toDialogAgentMessage(a)))))
     source.close
+    logger.info("Closed %s".format(filename))
   } catch {
     case t: Throwable => {
       logger.error("Problem reading from %s".format(filename))
@@ -47,6 +49,7 @@ class DialogAgentFile(
       None
     }
   }
+  
 
   // open the output stream and process the files
   try {
