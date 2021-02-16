@@ -209,6 +209,8 @@ class Extractor(
               ("Arguments" -> argument_labels.mkString(" ")) ~
               ("Text" -> doc.sentences(mention.sentence).getSentenceText) ~
               ("timestamp" -> time_format.format(timestamp)) ~
+              ("startOffset" -> startOffset) ~
+              ("endOffset" -> endOffset) ~
               ("TaxonomyMatches" -> taxonomy_matches))
         )
       output_array.add(compact(render(json)))
