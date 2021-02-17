@@ -8,7 +8,7 @@ package org.clulab.asist
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import java.time.Clock
 import java.util.Properties
-import org.clulab.odin.Mention
+import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import org.slf4j.LoggerFactory
 import scala.collection.immutable
 import scala.io.Source
@@ -52,12 +52,26 @@ trait DialogAgent {
     val argument_labels = mention.arguments.keys
       .map(mention.arguments.get(_).get(0).label)
     val taxonomy_matches = taxonomyMatches(mention.label)
-    DialogAgentMessageDataExtraction(
-      mention.label,
-      mention.words.mkString(" "),
-      argument_labels.mkString(" "),
-      taxonomy_matches
-    )
+    mention match {
+      case em: EventMention =>
+        DialogAgentMessageDataExtraction(
+          mention.label,
+          mention.words.mkString(" "),
+          argument_labels.mkString(" "),
+          em.trigger.startOffset.toString,
+          em.trigger.endOffset.toString,
+          taxonomy_matches
+        )
+      case tbm: TextBoundMention =>
+        DialogAgentMessageDataExtraction(
+          mention.label,
+          mention.words.mkString(" "),
+          argument_labels.mkString(" "),
+          tbm.startOffset.toString,
+          tbm.endOffset.toString,
+          taxonomy_matches
+        )
+    }
   }
 
   /** Translate an AsrMessage to a DialogAgentMessage */
