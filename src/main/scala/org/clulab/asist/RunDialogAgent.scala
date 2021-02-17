@@ -12,15 +12,17 @@ package org.clulab.asist
 import java.io.File
 
 object  RunDialogAgent extends App {
+  
+  val appName ="DialogAgent"
 
   /** Show the usage hints */
   def usage: Unit = List(
     "",
-    "To use %s on the message bus:".format(args(0)),
-    "%s mqtt [host] [port]".format(args(0)),
+    "To use %s on the message bus:".format(appName),
+    "%s mqtt [host] [port]".format(appName),
     "",
-    "To use %s on a file or directory (first level only):".format(args(0)),
-    "%s file [inputFileOrDir] [outputFile]".format(args(0)),
+    "To use %s on a file or the first level of a directory:".format(appName),
+    "%s file [inputFileOrDir] [outputFile]".format(appName),
     ""
   ).map(println)
 
@@ -28,13 +30,11 @@ object  RunDialogAgent extends App {
   /** Create an agent based on the user args */
   val agent: Option[DialogAgent] = args match {
     case Array("mqtt") => 
-      Some(new DialogAgentMqtt)
+      Some(new DialogAgentMqtt(MqttAgentDefaults.HOST, MqttAgentDefaults.PORT))
     case Array("mqtt", host: String, port: String) => 
       Some(new DialogAgentMqtt(host, port))
     case Array("file", inputFile: String, outputFile: String) => 
       Some(new DialogAgentFile(inputFile, outputFile))
-    case Array("test", inputFile: String, outputFile: String) => 
-      Some(new DialogAgentTest(inputFile, outputFile))
     case _ => {
       usage
       None
