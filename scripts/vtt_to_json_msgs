@@ -47,7 +47,6 @@ if __name__ == "__main__":
             "msg": {
                 "timestamp": timestamp,
                 "experiment_id": args.experiment_id,
-                "participant_id": speaker,
                 "trial_id": args.trial_id,
                 "message_type": "observation",
                 "version": "0.1",
@@ -56,6 +55,7 @@ if __name__ == "__main__":
             "data": {
                 "asr_system": "Zoom",
                 "source_filename": Path(args.file).name,
+                "participant_id": speaker,
                 "caption_start": caption.start,
                 "caption_end": caption.end,
                 "text": text,
