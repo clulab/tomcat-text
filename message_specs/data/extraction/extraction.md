@@ -1,4 +1,4 @@
-# Datatype: chat_analysis_message.data 
+# Datatype: chat_analysis_message.data.extraction
 
 Structure of the chat_analysis_message.data.extraction datatype
 
@@ -7,8 +7,8 @@ Structure of the chat_analysis_message.data.extraction datatype
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| label | String | The mention label
-| span | String | The text that was analyzed
+| label | String | The dialog mention label
+| span | String | The text that was analyzed in the dialog
 | arguments | String | A string of all the mention argument key labels, separated by spaces.
 | start_offset | Integer | The start of the span in the dialog
 | end_offset | Integer | The end of the span in the dialog

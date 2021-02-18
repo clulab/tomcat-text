@@ -12,7 +12,7 @@ the results to json output.  Two input json formats are currently supported.
 | [OBS Json][2] | Input from Observation chat
 | [DialogAgentMessage][3] | Output from the Dialog Agent
 
-[1]:
+[1]: https://gitlab.asist.aptima.com/asist/testbed/-/issues/10
 [2]: 
 [3]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/chat_analysis_message.md
 
