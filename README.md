@@ -3,6 +3,20 @@ tomcat-text
 
 Natural language text processing code for the DARPA ASIST program
 
+A Dialog Agent is provided that will read json input, process the text, and write
+the results to json output.  Two input json formats are currently supported.
+
+| Datatype | Description
+| --- | ---
+| [ASR Json][1] | Input from Automated Speech Recognition 
+| [OBS Json][2] | Input from Observation chat
+| [DialogAgentMessage][3] | Output from the Dialog Agent
+
+[1]:
+[2]: 
+[3]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/chat_analysis_message.md
+
+
 
 Running the Code
 ----------------
