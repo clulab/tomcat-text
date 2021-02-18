@@ -8,9 +8,9 @@ Structure of the chat_analysis_message.data datatype
 | Field Name | Type | Description
 | --- | --- | --- |
 | participant_id | String | The name of the subject
-| text | String | What was said in the message
-| source | Source | The origin of the text (either a file or the message bus) and either the filename or the message bus topic.
-| extractions | Seq([Extraction][1]) | A sequence of Extraction structs including taxonomy matches
+| text | String | The dialog text that was analyzed.
+| source | Source | The origin of the text (either a filename or message bus topic).
+| extractions | Seq([Extraction][1]) | The results of the text analysis.
 
 
 [1]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/data/extraction/extraction.md
