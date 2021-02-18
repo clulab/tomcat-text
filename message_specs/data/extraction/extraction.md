@@ -10,9 +10,9 @@ Structure of the chat_analysis_message.data.extraction datatype
 | label | String | The dialog mention label
 | span | String | The text that was analyzed in the dialog
 | arguments | String | A string of all the mention argument key labels, separated by spaces.
-| start_offset | Integer | The start of the span in the dialog
-| end_offset | Integer | The end of the span in the dialog
-| taxonomy_matches | Seq(String, String) | The taxonomy mappings of the mention label as key-value pairs
+| start_offset | Integer | The start of the span in the dialog text
+| end_offset | Integer | The end of the span in the dialog text
+| taxonomy_matches | Seq(String, String) | The taxonomy mappings of the text analysis as key-value pairs
 
 
 ## Data Example
