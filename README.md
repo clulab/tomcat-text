@@ -58,9 +58,11 @@ sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
 ```
 When run on the message bus, the agent will analyze messages received on two topics:
 
-### observations/chat
+### Chat messages
 
-Message received on the Observations topic is expected in the following format:
+Message bus topic 'observations/chat'
+
+Message received on the chat topic are expected to have the following json format:
 ```json
 {
   "header": {
@@ -88,10 +90,11 @@ Message received on the Observations topic is expected in the following format:
 }
 ```
 
-### agent/asr
+### ASR messages
 
-Messages recieved on the Automated Speech Recognition (ASR) topic are expected to be
-in the following format:
+Message bus topic 'agent/asr'
+
+Messages recieved on the Automated Speech Recognition (ASR) topic are expected to have the following json format
 
 ```json
 {
