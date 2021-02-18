@@ -12,7 +12,7 @@ Structure of the chat_analysis_message.data.extraction datatype
 | arguments | String | A string of all the mention argument key labels, separated by spaces.
 | start_offset | Integer | The start of the span in the dialog
 | end_offset | Integer | The end of the span in the dialog
-| taxonomy_matches | String array | The taxonomy mappings of the mention label as key-value pairs
+| taxonomy_matches | Seq(String, String) | The taxonomy mappings of the mention label as key-value pairs
 
 
 ## Data Example
