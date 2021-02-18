@@ -7,8 +7,8 @@ Structure of the chat_analysis_message.data datatype
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| participant_id | String | The name of the subject
-| text | String | The dialog text that was analyzed.
+| participant_id | String | The person who spoke the dialog.
+| text | String | The dialog text being analyzed.
 | source | Source | The origin of the text (either a filename or message bus topic).
 | extractions | Seq([Extraction][1]) | The results of the text analysis.
 
