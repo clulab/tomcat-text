@@ -21,8 +21,8 @@ Structure of the chat_analysis_message.data.extraction datatype
   "label": "Sight",
   "span": "was one yellow victim",
   "arguments": "Victim",
-  "start_offset", 20,
-  "end_offset", 25,
+  "start_offset": 20,
+  "end_offset": 25,
   "taxonomy_matches": [
     {
       "stop-triaging": "11.709686762798679"
