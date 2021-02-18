@@ -10,9 +10,9 @@ message_spec/header
 
 | Field Name | Type | Description
 | --- | --- | --- |
-| header | [header][1] | The message header contains the UTC message publication time, the message type, and the software version.
-| msg | [msg][2] | ./msg/msg.md
-| data| [data][3] | ./data/data.md
+| header | [header][1] | The header contains the UTC message publication time, the message type, and the software version.
+| msg | [msg][2] | The msg identifies the source of the analysis, in this case the tomcat-text dialog analyzer
+| data| [data][3] | The data contains the text being analyzed, the source of the data, and the extractions produced by the analysis.
 
 [1]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/header/header.md
 [2]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/msg/msg.md
