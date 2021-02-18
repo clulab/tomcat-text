@@ -10,7 +10,7 @@ Running the Code
 The Dialog Agent will analyze text that reads either from the message bus or 
 from files.  The results are output in DialogAgentMessage format.
 
-### Running the Dialog Agent on files
+## Running the Dialog Agent on files
 
 Individual files or the first level of a directory can be processed by using
 the agent in file mode.  Output is written to a single output file in both cases.
@@ -49,7 +49,7 @@ using the 'scripts/vtt_to_json_msgs' script, as in the following example:
 ```
 
 
-### Running the Dialog Agent on the Message Bus
+## Running the Dialog Agent on the Message Bus
 
 The agent can be run on the message bus by running it in MQTT mode with the hostname
 and port of the MQTT broker.  
@@ -58,14 +58,37 @@ sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
 ```
 When run on the message bus, the agent will analyze messages received on two topics:
 
-# observations/chat
+### observations/chat
 
 Message received on the Observations topic is expected in the following format:
 ```json
-
+{
+  "header": {
+    "timestamp": "2019-12-26T12:47:23.1234Z",
+    "message_type": "chat",
+    "version": "0.4"
+  },
+  "msg": {
+    "experiment_id": "123e4567-e89b-12d3-a456-426655440000",
+    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
+    "timestamp": "2019-12-26T14:05:02.1412Z",
+    "source": "simulator",
+    "sub_type": "Event:Chat",
+    "version": "0.4"
+  },
+  "data": {
+    "mission_timer": "8 : 36",
+    "sender": "Aptiminer1",
+    "addressees": [
+      "Player746"
+    ],
+    "text": "I'm in room 210"
+  }
+}
 ```
 
-# agent/asr
+### agent/asr
 
 Messages recieved on the Automated Speech Recognition (ASR) topic are expected to be
 in the following format:
