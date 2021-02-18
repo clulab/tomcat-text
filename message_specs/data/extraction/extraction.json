@@ -1,6 +1,5 @@
 {
-  "definitions": {
-  },
+  "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/clulab/tomcat-text/message_specs/data/extraction/extraction.json",
   "type": "object",
@@ -10,8 +9,10 @@
     "label",
     "span",
     "arguments",
+    "start_offset",
+    "end_offset",
     "taxonomy_matches"
-         ],
+  ],
   "properties": {
     "label": {
       "$id": "#/properties/label",
@@ -20,7 +21,7 @@
       "default": "",
       "examples": [
         "Sight"
-             ],
+      ],
       "pattern": "^(.*)$"
     },
     "span": {
@@ -28,7 +29,9 @@
       "type": "string",
       "title": "span schema",
       "default": "",
-      "examples": [ "was one yellow victim" ],
+      "examples": [
+        "was one yellow victim"
+      ],
       "pattern": "^(.*)$"
     },
     "arguments": {
@@ -36,8 +39,30 @@
       "type": "string",
       "title": "arguments schema",
       "default": "",
-      "examples": [ "Victim" ],
+      "examples": [
+        "Victim"
+      ],
       "pattern": "^(.*)$"
+    },
+    "start_offset": {
+      "$id": "#/properties/start_offset",
+      "type": "integer",
+      "title": "start_offset schema",
+      "default": "",
+      "examples": [
+        32
+      ],
+      "pattern": "^[0-9]+$"
+    },
+    "end_offset": {
+      "$id": "#/properties/end_offset",
+      "type": "integer",
+      "title": "end_offset schema",
+      "default": "",
+      "examples": [
+        50
+      ],
+      "pattern": "^[0-9]+$"
     },
     "taxonomy_matches": {
       "$id": "#/properties/taxonomy_matches",
@@ -47,7 +72,7 @@
         "string": "string"
       },
       "default": [],
-      "examples": [ 
+      "examples": [
         {
           "finish-triaging": "7.5568876562069995"
         },
