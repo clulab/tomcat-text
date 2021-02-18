@@ -45,34 +45,29 @@ trait DialogAgent {
     taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
 
   /** Create a DialogAgent extraction from Extractor data */
-  def extraction(e: Array[Any]): DialogAgentMessageDataExtraction = {
-    println("extraction")
-    e.map(_ => println("  %s".format(_)))
-    val mention = e(0).asInstanceOf[Mention]
-    val argument_labels = mention.arguments.keys
-      .map(mention.arguments.get(_).get(0).label)
-    val taxonomy_matches = taxonomyMatches(mention.label)
-    mention match {
-      case em: EventMention =>
+  def extraction(e: Array[Any]): Option[DialogAgentMessageDataExtraction] = 
+    if(e.size > 0) {
+      val mention = e(0).asInstanceOf[Mention]
+      val argument_labels = mention.arguments.keys.map(
+        mention.arguments.get(_).get(0).label
+      )
+      val taxonomy_matches = taxonomyMatches(mention.label)
+      val charOffsets: Tuple2[Int, Int] = mention match {
+        case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
+        case e: TextBoundMention => (e.startOffset, e.endOffset)
+        case _ => (-1,-1)
+      }
+      Some(
         DialogAgentMessageDataExtraction(
           mention.label,
           mention.words.mkString(" "),
           argument_labels.mkString(" "),
-          em.trigger.startOffset.toString,
-          em.trigger.endOffset.toString,
+          charOffsets._1,
+          charOffsets._2,
           taxonomy_matches
         )
-      case tbm: TextBoundMention =>
-        DialogAgentMessageDataExtraction(
-          mention.label,
-          mention.words.mkString(" "),
-          argument_labels.mkString(" "),
-          tbm.startOffset.toString,
-          tbm.endOffset.toString,
-          taxonomy_matches
-        )
-    }
-  }
+      )
+    } else None
 
   /** Translate an AsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
@@ -155,7 +150,7 @@ trait DialogAgent {
           source_type = source_type,
           source_name = source_name
         ),
-        extractions.map(extraction).toList
+        extractions.map(extraction).toList.flatten
       )
     )
   }
