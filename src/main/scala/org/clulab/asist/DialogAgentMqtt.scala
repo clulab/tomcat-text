@@ -55,7 +55,7 @@ class DialogAgentMqtt(
   /** Publish a DialogAgentMessage as a Json serialization */
   def publish(a: DialogAgentMessage): Unit = {
     val output = toJson(a)
-    logger.info("published on %s: %s".format(
+    logger.info("published on '%s': %s".format(
       DialogAgentMqttDefaults.TOPIC_OUTPUT,
       output)
     )
@@ -64,7 +64,7 @@ class DialogAgentMqtt(
 
   /** Publish analysis of messages received on subscription topics */
   override def messageArrived(topic: String, input: String): Unit = {
-    logger.info("Received on %s: %s".format(topic, input))
+    logger.info("Received on '%s': %s".format(topic, input))
     topic match {
       case `topicInputObs` => toObsMessage(input).map(a => 
         publish(toDialogAgentMessage(a, topicInputObs, "message_bus")))
