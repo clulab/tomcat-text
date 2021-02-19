@@ -107,7 +107,7 @@ trait DialogAgent {
       "vtt_file",
       a.data.source_filename,
       a.msg.experiment_id,
-      a.msg.participant_id,
+      a.data.participant_id,
       a.data.text
     )
   }
