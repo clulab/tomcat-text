@@ -53,10 +53,16 @@ class DialogAgentMqtt(
   if (mqttConnected) logger.info("Ready.") else System.exit(1)
 
   /** Publish a DialogAgentMessage as a Json serialization */
-  def publish(a: DialogAgentMessage): Unit = publish(toJson(a))
+  def publish(a: DialogAgentMessage): Unit = {
+    val output = toJson(a)
+    logger.info("published on %s:".format(DialogAgentMqttDefaults.TOPIC_OUTPUT))
+    logger.info(output)
+    publish(output)
+  }
 
   /** Publish analysis of messages received on subscription topics */
   override def messageArrived(topic: String, input: String): Unit = {
+    logger.info("Received on %s:".format(topicOutput))
     logger.info(input)
     topic match {
       case `topicInputObs` => toObsMessage(input).map(a => 
