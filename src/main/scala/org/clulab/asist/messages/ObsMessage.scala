@@ -29,7 +29,7 @@ case class ObsMessageData(
 
 /** Contains the full structure of a chat/observations message */
 case class ObsMessage (
-  val data: ObsMessageData,   // Data before header in ASR struct
   val header: MessageHeader,
+  val data: ObsMessageData,
   val msg: ObsMessageMsg
 )
