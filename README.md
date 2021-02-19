@@ -135,3 +135,12 @@ expected to have the following format:
   }
 }
 ```
+
+
+### Output 
+
+Message bus topic: `agent/tomcat_chatbot`
+
+The Dialog Agent will publish its analysis to the message bus in [chat_analysis_message][1] format.
+
+[1]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/chat_analysis_message.md
