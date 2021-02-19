@@ -46,6 +46,8 @@ message_spec/header
         "label": "Sight",
         "span": "was one yellow victim",
         "arguments": "Victim",
+        "start_offset": 20,
+        "end_offset": 25,
         "taxonomy_matches": [
           {
             "stop-triaging": "11.709686762798679"
@@ -68,6 +70,8 @@ message_spec/header
         "label": "Victim",
         "span": "victim",
         "arguments": "",
+        "start_offset": 60,
+        "end_offset": 75,
         "taxonomy_matches": [
           {
             "stop-triaging-victim": "18.593763750341402"
