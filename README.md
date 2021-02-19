@@ -38,7 +38,6 @@ from an input file.
   "msg": {
     "timestamp": "2021-02-04T19:41:57.205166Z",
     "experiment_id": "bdcd487f-b409-495e-9325-2155890a287d",
-    "participant_id": "anagha mudigonda",
     "trial_id": "42418c83-f63a-495f-9b27-db0be18fd1cf",
     "message_type": "observation",
     "version": "0.1",
@@ -47,6 +46,7 @@ from an input file.
   "data": {
     "asr_system": "Zoom",
     "source_filename": "AudioTranscript_CondBtwn-TriageSignal_CondWin-na_Trial-na_Team-na_Member-21_Vers-1.vtt",
+    "participant_id": "anagha mudigonda",
     "caption_start": "00:00:24.090",
     "caption_end": "00:00:32.040",
     "text": "Something's missing redundant or we may not answer all your questions here"
