@@ -10,16 +10,17 @@ chat_analysis_message/msg
 
 ## Member fields
 
-| Field Name | Type | Description
-| --- | --- | --- |
-| source | String | Name of the creator of this structor
+| Field Name    | Type   | Description
+| ---           | ---    | ---
+| source        | String | Name of the producer of this message
 | experiment_id | String | A unique identifier
-| timestamp | String | The UTC time the message was published, in format: YYYY-MM-DDThh:mm:ss.ssssZ
-| sub_type | String | This field describes the format of this particular type of data
-| version | String | The version of the sub_type format
+| timestamp     | String | The UTC time the message was published, in format: YYYY-MM-DDThh:mm:ss.ssssZ
+| sub_type      | String | This field describes the format of this particular type of data
+| version       | String | The version of the sub_type format
 
 
 ## Example
+
 ```json
 {
   "source": "tomcat_textAnalyzer",

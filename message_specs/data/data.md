@@ -1,21 +1,21 @@
-# Datatype: chat_analysis_message.data 
+# Datatype: chat_analysis_message.data
 
 Structure of the chat_analysis_message.data datatype
 
-
 ## Member Fields
 
-| Field Name | Type | Description
-| --- | --- | --- |
-| participant_id | String | The name of the subject
-| text | String | What was said in the message
-| source | Source | The origin of the text (either a file or the message bus) and either the filename or the message bus topic.
-| extractions | Seq([Extraction][1]) | A sequence of Extraction structs including taxonomy matches
+| Field Name     | Type                 | Description
+| ---            | ---                  | ---
+| participant_id | String               | The person who produced the chat message or utterance.
+| text           | String               | The dialog text being analyzed.
+| source         | Source               | The origin of the text (either a filename or message bus topic).
+| extractions    | Seq([Extraction][1]) | The results of the text analysis.
 
 
 [1]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/data/extraction/extraction.md
 
 ## Data Example
+
 ```json
 {
   "participant_id": "Participant person",
