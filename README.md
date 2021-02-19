@@ -37,16 +37,16 @@ from an input file.
   },
   "msg": {
     "timestamp": "2021-02-04T19:41:57.205166Z",
-    "experiment_id": "bdcd487f-b409-495e-9325-2155890a287d",
-    "trial_id": "42418c83-f63a-495f-9b27-db0be18fd1cf",
+    "experiment_id": "12345678-9abc-1234-a456-123456780000",
+    "trial_id": "trial 1",
     "message_type": "observation",
     "version": "0.1",
     "source": "vtt_to_json_msgs_script"
   },
   "data": {
     "asr_system": "Zoom",
-    "source_filename": "AudioTranscript_CondBtwn-TriageSignal_CondWin-na_Trial-na_Team-na_Member-21_Vers-1.vtt",
-    "participant_id": "anagha mudigonda",
+    "source_filename": "AudioTranscript_Team-na_Member-1_Vers-1.vtt",
+    "participant_id": "participant 1",
     "caption_start": "00:00:24.090",
     "caption_end": "00:00:32.040",
     "text": "Something's missing redundant or we may not answer all your questions here"
@@ -84,9 +84,9 @@ Message received on this topic are expected to have the following json format:
     "version": "0.4"
   },
   "msg": {
-    "experiment_id": "123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
+    "experiment_id": "12345678-9abc-1234-a456-123456780000",
+    "trial_id": "trial 1",
+    "replay_id": "5555555-ab12-ffff-b200-123456az1234",
     "timestamp": "2019-12-26T14:05:02.1412Z",
     "source": "simulator",
     "sub_type": "Event:Chat",
@@ -94,9 +94,9 @@ Message received on this topic are expected to have the following json format:
   },
   "data": {
     "mission_timer": "8 : 36",
-    "sender": "Aptiminer1",
+    "sender": "Miner9",
     "addressees": [
-      "Player746"
+      "Player123"
     ],
     "text": "I'm in room 210"
   }
@@ -127,8 +127,8 @@ expected to have the following format:
   },
   "msg": {
     "timestamp": "2021-01-19T23:27:58.633967Z",
-    "experiment_id": "e2a3cb96-5f2f-11eb-8971-18810ee8274e",
-    "trial_id": "ec76544c-7080-11eb-9123-18810ee8274e",
+    "experiment_id": "12345678-9abc-1234-a456-123456780000",
+    "trial_id": "trial 1",
     "version": "0.1",
     "source": "tomcat_asr_agent",
     "sub_type": "asr"
