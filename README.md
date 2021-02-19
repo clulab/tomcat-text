@@ -1,26 +1,33 @@
 tomcat-text
 ===========
 
-Natural language text processing code for the DARPA ASIST program
+This repository contains natural language text processing code for the DARPA
+Artificial Social Intelligence for Successful Teams (ASIST) program. See the
+main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
 
+The main program in this repository is a 'dialog agent' program that can ingest
+text from a number of sources (files, MQTT message bus topics) and output
+extracted events of interest for a particular domain.
 
-Running the Code
-----------------
-
-The Dialog Agent will analyze text that reads either from the message bus or 
+The Dialog Agent will analyze text that reads either from the message bus or
 from files.  The results are output in DialogAgentMessage format.
 
-## Running the Dialog Agent on files
+The dialog agent can be run in either 'file' mode or 'mqtt' mode. The modes are
+described below.
 
-Individual files or the first level of a directory can be processed by using
-the agent in file mode.  Output is written to a single output file in both cases.
+File mode
+---------
 
-```
-sbt "runMain org.clulab.asist.RunDialogAgent file {input filename} {output filename}"
-```
+The dialog agent can take as individual files or a directory as an argument
+when running in file mode. When a directory path is provided, the agent will
+process all the files in the first level of that directory.
 
-Messages read from files are expected as transcript (.vtt) that has been converted to json
-using the 'scripts/vtt_to_json_msgs' script, as in the following example:
+    sbt "runMain org.clulab.asist.RunDialogAgent file {input filename} {output filename}"
+
+The input files are expected to have one JSON object per line, corresponding to
+utterances in a WebVTT file (.vtt) that has been converted using the
+`scripts/vtt_to_json_msgs` tool. The example below shows an example JSON object
+from an input file.
 
 ```json
 {
@@ -30,9 +37,9 @@ using the 'scripts/vtt_to_json_msgs' script, as in the following example:
   },
   "msg": {
     "timestamp": "2021-02-04T19:41:57.205166Z",
-    "experiment_id": null,
+    "experiment_id": "bdcd487f-b409-495e-9325-2155890a287d",
     "participant_id": "anagha mudigonda",
-    "trial_id": null,
+    "trial_id": "42418c83-f63a-495f-9b27-db0be18fd1cf",
     "message_type": "observation",
     "version": "0.1",
     "source": "vtt_to_json_msgs_script"
@@ -49,20 +56,26 @@ using the 'scripts/vtt_to_json_msgs' script, as in the following example:
 ```
 
 
-## Running the Dialog Agent on the Message Bus
+MQTT mode
+---------
 
-The agent can be run on the message bus by running it in MQTT mode with the hostname
-and port of the MQTT broker.  
-```
-sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
-```
+The dialog agent can also be run in 'mqtt' mode to process streaming data from
+an MQTT message bus. The following invocation launches the agent in mqtt mode,
+specifying the host and port that the MQTT message broker is running on.
+
+    sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
+
 When run on the message bus, the agent will analyze messages received on two topics:
 
 ### Chat messages
 
-Message bus topic 'observations/chat'
+Message bus topic: `observations/chat`
 
-Message received on the chat topic are expected to have the following json format:
+This topic represents text chat messages that players send to each other in
+Minecraft.
+
+Message received on this topic are expected to have the following json format:
+
 ```json
 {
   "header": {
@@ -92,9 +105,12 @@ Message received on the chat topic are expected to have the following json forma
 
 ### ASR messages
 
-Message bus topic 'agent/asr'
+Message bus topic: `agent/asr`
 
-Messages recieved on the Automated Speech Recognition (ASR) topic are expected to have the following json format
+This topic corresponds to utterances by dialogue participants that are
+automatically transcribed in real-time using an automatic speech recognition
+(ASR) service like Google Cloud Speech. Messages received on this topic are
+expected to have the following format:
 
 ```json
 {
