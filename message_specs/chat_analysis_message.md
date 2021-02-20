@@ -14,9 +14,9 @@ message_spec/header
 | msg | [msg][2] | Identifies the source of the analysis, in this case the tomcat-text dialog analyzer
 | data| [data][3] | Contains the text being analyzed, the source of the text, and the extractions produced by the analysis.
 
-[1]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/header/header.md
-[2]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/msg/msg.md
-[3]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/data/data.md
+[1]: https://github.com/clulab/tomcat-text/blob/master/message_specs/header/header.md
+[2]: https://github.com/clulab/tomcat-text/blob/master/message_specs/msg/msg.md
+[3]: https://github.com/clulab/tomcat-text/blob/master/message_specs/data/data.md
 
 
 ## Example

@@ -8,11 +8,12 @@ Structure of the chat_analysis_message.data datatype
 | ---            | ---                  | ---
 | participant_id | String               | The person who produced the chat message or utterance.
 | text           | String               | The dialog text being analyzed.
-| source         | Source               | The origin of the text (either a filename or message bus topic).
-| extractions    | Seq([Extraction][1]) | The results of the text analysis.
+| source         | [Source][1]          | The origin of the text (either a filename or message bus topic).
+| extractions    | Seq([Extraction][2]) | The results of the text analysis.
 
 
-[1]: https://github.com/clulab/tomcat-text/blob/dialog_agent_edits/message_specs/data/extraction/extraction.md
+[1]: https://github.com/clulab/tomcat-text/blob/master/message_specs/data/source/extraction.md
+[2]: https://github.com/clulab/tomcat-text/blob/master/message_specs/data/extraction/extraction.md
 
 ## Data Example
 
