@@ -1,0 +1,45 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/clulab/tomcat-text/message_specs/data/data.json",
+  "type": "object",
+  "title": "data schema",
+  "version": "0.1",
+  "required": [
+    "participant_id",
+    "text",
+    "source",
+    "extractions"
+  ],
+  "properties": {
+    "participant_id": {
+      "$id": "#/properties/participant_id",
+      "type": "string",
+      "title": "participant_id schema",
+      "default": "",
+      "examples": [
+        "participant 21"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "text": {
+      "$id": "#/properties/text",
+      "type": "string",
+      "title": "text schema",
+      "default": "",
+      "examples": [
+        "I see a green victim"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "source": {
+      "type": "Source",
+      "$ref": "source/source.json"
+    },
+    "extractions": {
+      "type": "Seq[Extraction]",
+      "default": "[]",
+      "$ref": "extraction/extraction.json"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/clulab/tomcat-text/message_specs/msg/msg.json",
+  "type": "object",
+  "title": "msg schema",
+  "version": "0.1",
+  "required": [
+    "experiment_id",
+    "timestamp",
+    "source",
+    "sub_type",
+    "filename",
+    "version"
+  ],
+  "properties": {
+    "experiment_id": {
+      "$id": "#/properties/experiment_id",
+      "type": "string",
+      "title": "experiment_id schema",
+      "default": "",
+      "examples": [ 
+        "123e4567-e89b-12d3-a456-426655440000"
+      ],
+      "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
+    "timestamp": {
+      "$id": "#/properties/timestamp",
+      "type": "string",
+      "title": "timestamp schema",
+      "default": "",
+      "examples": [
+        "2019-12-26T14:05:02.3412Z"
+      ],
+      "pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.]?[0-9]{0,}?Z"
+    },
+    "source": {
+      "$id": "#/properties/source",
+      "type": "string",
+      "title": "source schema",
+      "default": "",
+      "examples": [
+        "simulator"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "sub_type": {
+      "$id": "#/properties/sub_type",
+      "type": "string",
+      "title": "sub_type schema",
+      "default": "",
+      "examples": [
+        "equip", "triage"
+      ],
+      "pattern": "^([a-zA-Z0-9_:]*?)$"
+    },
+    "filename": {
+      "$id": "#/properties/filename",
+      "type": "string",
+      "title": "filename schema",
+      "default": "",
+      "examples": [
+        "file.name"
+      ],
+      "pattern": "^([a-zA-Z0-9_]*?\\.[a-zA-Z0-9_]*?)$"
+    },
+    "version": {
+      "$id": "#/properties/version",
+      "type": "string",
+      "title": "version schema",
+      "default": "",
+      "examples": [
+        "0.1", "1.0"
+      ],
+      "pattern": "^([0-9]*?)\\.([0-9]*?)$"
+    }
+  }
+}
+
