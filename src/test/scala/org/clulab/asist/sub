@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Subscribe to the DialogAgent output topic
+
+host="localhost"
+port=1883
+topic="agent/tomcat_chatbot"
+
+
+mosquitto_sub -h $host -p $port -t $topic
+
+
+
