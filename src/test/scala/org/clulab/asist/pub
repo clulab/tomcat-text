@@ -2,14 +2,15 @@
 #
 # Publish a text file to an MQTT topic one line at a time.
 #
-# Example for publishing to the ASR topic:
+# Publishing to the ASR topic:
 #
 #  pub asr_input.json agent/asr
 #
-# Example for publishing to the chat topic:
+#
+# Publishing to the chat topic:
 #
 #  pub chat_input.json observations/chat
-
+#
 
 host="localhost"  # MQTT default
 port=1883  # MQTT default
