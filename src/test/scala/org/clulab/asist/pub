@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Publish a text file to an MQTT topic one line at a time.
+#
+# Example for publishing to the ASR topic:
+#
+#  pub asr_input.json agent/asr
+#
+# Example for publishing to the chat topic:
+#
+#  pub chat_input.json observations/chat
+
+
+host="localhost"  # MQTT default
+port=1883  # MQTT default
+
+
+printf "\nPublishing '$1' on MQTT host '$host', port $port, 2 '$2'...\n\n"
+while IFS= read -r line
+do
+  printf "$line\n"
+  mosquitto_pub -h $host -p $port -t $2 -m "$line"
+done < $1
+printf "\nDone publishing '$1'\n"
+
+
