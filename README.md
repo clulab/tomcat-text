@@ -65,7 +65,13 @@ specifying the host and port that the MQTT message broker is running on.
 
     sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
 
-When run on the message bus, the agent will analyze messages received on two topics:
+To connect to a broker on localhost at the MQTT default port (1883), the agent
+can be started using "mqtt" as its sole argument.
+
+    sbt "runMain org.clulab.asist.RunDialogAgent mqtt"
+
+
+When run on the message bus, the agent will analyze chat messages and ASR messages.
 
 ### Chat messages
 
