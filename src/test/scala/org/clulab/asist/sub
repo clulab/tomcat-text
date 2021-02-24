@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Subscribe to DialogAgent topics on the message bus
+#
+# Subscribing to the ASR topic:   
+#
+#  sub agent/asr
+#
+#
+# Subscribing to the chat topic: 
+#
+#  sub observations/chat
+#
+#
+# Subscribing to the agent output topic:
+#
+#  sub agent/tomcat_chatbot
+
+
+host="localhost"  # MQTT default
+port=1883  # MQTT default
+
+
+printf "\n subscribing to topic '$1' on MQTT broker at '$host' on port '$port'"
+
+mosquitto_sub -h $host -p $port -t $1
+
