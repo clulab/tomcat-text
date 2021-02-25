@@ -19,6 +19,9 @@ trait DialogAgentJson {
   /** Serialize a DialogAgentMessage to Json */
   def toJson(da: DialogAgentMessage): String = write(da)
 
+  /** Serialize a VttJsonMessage to Json */
+  def toJson(a: VttJsonMessage): String = write(a)
+
   /** Deserialize a DialogAgentMessage from Json */
   def toDialogAgentMessage(json: String): Option[DialogAgentMessage] = 
     allCatch.opt(read[DialogAgentMessage](json))
