@@ -33,6 +33,8 @@ object  RunDialogAgent extends App {
       new DialogAgentMqtt(host, port)
     case Array("file", inputFile: String, outputFile: String) => 
       new DialogAgentFile(inputFile, outputFile)
+    case Array("web_vtt", inputFile: String, outputFile: String) => 
+      new DialogAgentWebVtt(inputFile, outputFile)
     case _ => {
       new DialogAgentMqtt(MqttAgentDefaults.HOST, MqttAgentDefaults.PORT)
     }
