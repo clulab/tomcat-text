@@ -99,19 +99,6 @@ trait DialogAgent {
     )
   }
 
-  /** Translate a json-converted .vtt file line to a DialogAgentMessage */
-  def toDialogAgentMessage(
-      a: VttJsonMessage,
-  ): DialogAgentMessage = {
-    toDialogAgentMessage(
-      "vtt_file",
-      a.data.source_filename,
-      a.msg.experiment_id,
-      a.data.participant_id,
-      a.data.text
-    )
-  }
-
   /** Return the extractions for the given text, which may be null */
   def runExtraction(text: String): 
     (ArrayBuffer[Array[Any]], org.clulab.processors.Document) = text match {
