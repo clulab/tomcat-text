@@ -19,9 +19,6 @@ trait DialogAgentJson {
   /** Serialize a DialogAgentMessage to Json */
   def toJson(da: DialogAgentMessage): String = write(da)
 
-  /** Serialize a VttJsonMessage to Json */
-  def toJson(a: VttJsonMessage): String = write(a)
-
   /** Deserialize a DialogAgentMessage from Json */
   def toDialogAgentMessage(json: String): Option[DialogAgentMessage] = 
     allCatch.opt(read[DialogAgentMessage](json))
@@ -33,8 +30,4 @@ trait DialogAgentJson {
   /** Deserialize a AsrMessage from Json */
   def toAsrMessage(json: String): Option[AsrMessage] = 
     allCatch.opt(read[AsrMessage](json))
-
-  /** Deserialize a VttJsonMessage from Json */
-  def toVttJsonMessage(json: String): Option[VttJsonMessage] = 
-    allCatch.opt(read[VttJsonMessage](json))
 }
