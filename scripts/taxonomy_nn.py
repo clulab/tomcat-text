@@ -106,20 +106,18 @@ def create_mapping(our_tax, their_tax, embedding_filepath):
                     scores[term] = nsmallest(
                         5, scores[term], key=lambda x: x[0])
 
-    output_json = {'terms': []}
+    output_json = {}
     for term in scores:
         if not scores[term]:
             continue  # skip empty terms
         norm_term = reverse_match_notation[term]
-        term_group = {}
-        term_group['term'] = norm_term
-        term_group['pairs'] = []
+        term_group = []
         for scoring in scores[term]:
             temp = {}
             temp['term'] = str(scoring[1])
             temp['score'] = str(-scoring[0])
-            term_group['pairs'].append(temp)
-        output_json['terms'].append(term_group)
+            term_group.append(temp)
+        output_json[term] = term_group
 
     json_mode = json.dumps(output_json, indent=4)
 
