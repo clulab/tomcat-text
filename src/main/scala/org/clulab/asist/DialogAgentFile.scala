@@ -60,50 +60,31 @@ class DialogAgentFile(
   /** Run a VttDissector on the file contents */
   def parseInputStream(stream: FileInputStream, filename: String, output: PrintWriter): Unit = 
     VttDissector(stream) match {
-      case Success(blocks) => blocks.map(block => {
-        val json = toJson(toDialogAgentMessage(block, filename))
-        output.write("%s\n".format(json))
-      })
+      case Success(blocks) => blocks.map(block => parse(block.lines.toList, filename, output))
       case Failure(f) => {
         logger.error("VttDissector could not parse input")
         logger.error(f.toString)
       }
     }
 
-
-  def toDialogAgentMessage (sub: SubtitleBlock, filename: String): DialogAgentMessage = {
-    val timestamp = Clock.systemUTC.instant.toString
-    val version = "0.1"
-    val lines: Seq[String] = sub.lines
-    val start: Int = sub.start
-    val end: Int = sub.end
-    val extractions: Seq[DialogAgentMessageDataExtraction] = Seq.empty
-
-    DialogAgentMessage(
-      MessageHeader(
-        timestamp = timestamp,
-        message_type = "observation",
-        version = version
-      ),
-      DialogAgentMessageMsg(
-        source = "tomcat_text_analyzer",
-        experiment_id = null,
-        timestamp = timestamp,
-        sub_type = "Event:dialogue_event",
-        version = version
-      ),
-      DialogAgentMessageData(
-        participant_id = null,
-        text = null, // needed
-        DialogAgentMessageDataSource(
-          source_type = null, // needed
-          source_name = filename
-        ),
-        extractions // needed
-      )
-    )
+  def parse(
+      lines: List[String],
+      filename: String,
+      output: PrintWriter): Unit = lines match {
+    case head::tail => {
+      val foo = head.split(':')
+      if(foo.length == 0) {
+        val text = lines.mkString(" ")
+        val message = toDialogAgentMessage("file", filename, null, null, text)
+        output.write("%s\n".format(toJson(message)))
+      } else {
+        val text = (foo(1)::tail).mkString(" ")
+        val message = toDialogAgentMessage("file", filename, null, foo(0), text)
+        output.write("%s\n".format(toJson(message)))
+      }
+    }
+    case _ =>
   }
-
 
   // open the output stream and process the files
   try {
