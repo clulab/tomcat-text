@@ -117,7 +117,7 @@ def create_mapping(our_tax, their_tax, embedding_filepath):
             temp['term'] = str(scoring[1])
             temp['score'] = str(-scoring[0])
             term_group.append(temp)
-        output_json[term] = term_group
+        output_json[norm_term] = term_group
 
     json_mode = json.dumps(output_json, indent=4)
 
