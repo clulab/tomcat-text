@@ -2,7 +2,6 @@ package org.clulab.asist
 
 import java.util.Date
 
-import org.clulab.asist.AsistEngine
 import org.clulab.processors.Processor
 import org.clulab.processors.fastnlp.FastNLPProcessor
 import org.scalatest.{FlatSpec, Matchers}
