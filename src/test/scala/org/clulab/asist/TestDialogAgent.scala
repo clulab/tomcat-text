@@ -9,8 +9,9 @@ package org.clulab.asist
 
 import org.scalatest.{FlatSpec, Matchers}
 
-class TestDialogAgent extends FlatSpec with DialogAgent with Matchers  {
+class TestDialogAgent extends FlatSpec with DialogAgent with DialogAgentJson with Matchers  {
 
+  "DialogAgent" should "create DialogAgentMessage structure correctly" in {
     val source_type = "CI testing"
     val source_name = "sbt test"
     val experiment_id = "test 1"
@@ -24,7 +25,6 @@ class TestDialogAgent extends FlatSpec with DialogAgent with Matchers  {
       text
     )
 
-  "DialogAgent" should "create output correctly" in {
     result.data.source.source_type should be (source_type)
     result.data.source.source_name should be (source_name)
     result.msg.experiment_id should be (experiment_id)
