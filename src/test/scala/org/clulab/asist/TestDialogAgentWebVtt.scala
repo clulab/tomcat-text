@@ -3,15 +3,20 @@
  *
  *  Updated:  2021 February
  *
- *  Test the DialogAgent by comparing its output with known standards
+ *  Test the WebVtt agent by reading a test file and comparing its the output
+ *  with known standards
  */
 package org.clulab.asist
 
-import java.io.{File, PrintWriter}
+import java.io.{BufferedReader, File, PrintWriter}
 import org.scalatest.{FlatSpec, Matchers}
 
 
-class TestDialogAgentWebVtt extends FlatSpec with DialogAgent with DialogAgentJson with Matchers  {
+class TestDialogAgentWebVtt 
+    extends FlatSpec 
+    with DialogAgent 
+    with DialogAgentJson 
+    with Matchers  {
 
   val inputFilename = "TestDialogAgentWebVtt_input.vtt"
   val outputFilename = "TestDialogAgentWebVtt_output.json"
@@ -53,5 +58,21 @@ class TestDialogAgentWebVtt extends FlatSpec with DialogAgent with DialogAgentJs
     dialogAgentWebVtt should not be (None)
   }
 
+  // at this point the results are now in the output file.   Read it back 
+  // and inspect the contents.
+  def readbackOutput: Boolean = {
+    val reader = new BufferedReader(new File(outputFilename))
+    test(reader.lines, List.empty)
+  }
+
+  def lines(stream: Stream[String], ret: List[String]): List[String] = {
+    if(stream.hasNext) lines(stream, stream.next::ret)
+    else ret
+  }
+
+
+  def test(article: List[String]): Boolean = {
+    true
+  }
 
 }
