@@ -23,9 +23,9 @@ trait DialogAgentJson {
   def toDialogAgentMessage(json: String): Option[DialogAgentMessage] = 
     allCatch.opt(read[DialogAgentMessage](json))
 
-  /** Deserialize a ObsMessage from Json */
-  def toObsMessage(json: String): Option[ObsMessage] = 
-    allCatch.opt(read[ObsMessage](json))
+  /** Deserialize a ChatMessage from Json */
+  def toChatMessage(json: String): Option[ChatMessage] = 
+    allCatch.opt(read[ChatMessage](json))
 
   /** Deserialize a AsrMessage from Json */
   def toAsrMessage(json: String): Option[AsrMessage] = 

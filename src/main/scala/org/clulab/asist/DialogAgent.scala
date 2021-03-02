@@ -84,9 +84,9 @@ trait DialogAgent {
     )
   }
 
-  /** Translate an ObsMessage to a DialogAgentMessage */
+  /** Translate a ChatMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
-      a: ObsMessage,
+      a: ChatMessage,
       topic: String,
       source_type: String
   ): DialogAgentMessage = {
