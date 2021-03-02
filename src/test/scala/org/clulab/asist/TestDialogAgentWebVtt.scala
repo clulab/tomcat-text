@@ -27,7 +27,7 @@ class TestDialogAgentWebVtt extends FlatSpec with DialogAgent with DialogAgentJs
       "",
       "2",
       "00:00:16.320 --> 00:00:23.730",
-      "Jane Doe: But before we begin, I just want to emphasize that, as this is an experiment, we may say things formerly"
+      "But before we begin, I just want to emphasize that, as this is an experiment, we may say things formerly"
     )
 
     try {
