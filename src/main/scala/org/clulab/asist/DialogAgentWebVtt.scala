@@ -67,7 +67,10 @@ class DialogAgentWebVtt(
       filename: String, 
       output: PrintWriter): Boolean = VttDissector(stream) match {
     case Success(blocks) => {
-      val results = blocks.map(block => parse(block.lines.toList, filename, output))
+      val results = blocks.map(block => {
+        val dialogAgentMessage = parse(block.lines.toList, filename)
+        dialogAgentMessage.map(a => output.write("%s\n".format(toJson(a))))
+      })
       !results.contains(false)
     }
     case Failure(f) => {
@@ -81,27 +84,22 @@ class DialogAgentWebVtt(
   /** process one web_vtt block
    * @param lines The line sequence from a single SubtitleBlock instance
    * @param filename The name of the input file where the block was read
-   * @param output Printwriter to the output file
-   * @return true if the operation succeeded
+   * @return A DialogAgentMessage based on the inputs
    */
   def parse(
       lines: List[String],
-      filename: String,
-      output: PrintWriter): Boolean = lines match {
+      filename: String): Option[DialogAgentMessage] = lines match {
     case head::tail => {
       val foo = head.split(':')
       if(foo.length == 0) {
         val text = lines.mkString(" ")
-        val message = toDialogAgentMessage("file", filename, null, null, text)
-        output.write("%s\n".format(toJson(message)))
+        Some(toDialogAgentMessage("file", filename, null, null, text))
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        val message = toDialogAgentMessage("file", filename, null, foo(0), text)
-        output.write("%s\n".format(toJson(message)))
+        Some(toDialogAgentMessage("file", filename, null, foo(0), text))
       }
-      true
     }
-    case _ => false
+    case _ => None
   }
 
 
