@@ -124,3 +124,11 @@ rules:
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
       person: Anaphor? = >nsubj
+
+  - name: clear_rubble
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      target: Rubble = >dobj

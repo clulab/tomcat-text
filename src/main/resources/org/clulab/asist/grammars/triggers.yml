@@ -39,3 +39,7 @@ continue_triggers: "going"
 change_priority_triggers: "target|prioritize|focus"
 
 exist_triggers: "be"
+
+rubble_triggers: "rubble|blockage|pile|stuff|obstacle"
+
+clear_triggers: "clear|remove|clean"

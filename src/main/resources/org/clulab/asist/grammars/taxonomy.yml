@@ -18,6 +18,7 @@
       - Lever
       - Button
   - Obstacle:
+      - Rubble
       - Fire
       - BuildingCollapse
   - Actions:
@@ -35,6 +36,7 @@
       - Defeat
       - Sight
       - Craft
+      - Clear
     - ComplexActions:
         - Search
         - ChangePriority

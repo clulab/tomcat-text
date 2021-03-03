@@ -43,6 +43,13 @@ rules:
       label: Victim
       trigger: ${ person_triggers }
 
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: rubble
+      priority: ${ rulepriority }
+      label: Rubble
+      trigger: ${ rubble_triggers }
+
   - name: anaphor
     label: Anaphor
     priority: 1
