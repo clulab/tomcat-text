@@ -31,8 +31,10 @@ object  RunDialogAgent extends App {
   val agent: Option[DialogAgent] = args match {
     case Array("mqtt", host: String, port: String) => 
       Some(new DialogAgentMqtt(host, port))
-    case Array("web_vtt", inputFile: String, outputFile: String) => 
-      Some(new DialogAgentWebVtt(inputFile, outputFile))
+    case Array("web_vtt", inputFile: String, outputFile: String) => {
+      DialogAgentWebVtt(inputFile, outputFile)
+      None
+    }
     case _ => None
   }
 }

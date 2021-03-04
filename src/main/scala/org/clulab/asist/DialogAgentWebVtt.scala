@@ -19,19 +19,34 @@ import org.slf4j.LoggerFactory
 import scala.util.{Failure, Success}
 
 
-class DialogAgentWebVtt(
-    val inputFilename: String = "",
-    val outputFilename: String = ""
-) extends DialogAgent with DialogAgentJson {
+object DialogAgentWebVtt extends DialogAgent with DialogAgentJson {
 
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  // List all the files to be processed.
-  val allFiles: List[String] = {
-    val f = new File(inputFilename)
-    if(f.isDirectory) f.listFiles.toList.map(_.getAbsolutePath)
-    else List(f.getAbsolutePath)
+  def apply(inputFilename: String, outputFilename: String): Unit = {
+
+    // List all the files to be processed.
+    val allFiles: List[String] = {
+      val f = new File(inputFilename)
+      if(f.isDirectory) f.listFiles.toList.map(_.getAbsolutePath)
+      else List(f.getAbsolutePath)
+    }
+    // open the output stream and process the files
+    try {
+      val output = new PrintWriter(new File(outputFilename))
+      val results = allFiles.map(processFile(_, output))
+      output.close
+      if(results.contains(false)) 
+        logger.error("Problems were encountered during this run.")
+      else logger.info("All operations completed successfully.")
+    } catch {
+      case t: Throwable => {
+        logger.error("Problem writing to %s".format(outputFilename))
+        logger.error(t.toString)
+        None
+      }
+    }
   }
 
 
@@ -102,20 +117,6 @@ class DialogAgentWebVtt(
     }
     case _ => None
   }
-
-
-  // open the output stream and process the files
-  try {
-    val output = new PrintWriter(new File(outputFilename))
-    val results = allFiles.map(processFile(_, output))
-    output.close
-    if(results.contains(false)) logger.error("Problems were encountered during this run.")
-    else logger.info("All operations completed successfully.")
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem writing to %s".format(outputFilename))
-      logger.error(t.toString)
-      None
-    }
-  }
 }
+
+
