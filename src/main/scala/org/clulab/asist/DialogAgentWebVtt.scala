@@ -21,30 +21,41 @@ import scala.util.{Failure, Success}
 
 object DialogAgentWebVtt extends DialogAgent with DialogAgentJson {
 
-
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  def apply(inputFilename: String, outputFilename: String): Unit = {
+  /** Parse web_vtt input and write the results to an output file
+   * @param inputFilename a web_vtt file or directory of files
+   * @param outputFilename Write results of parsing here
+   * @return true if the operation succeeded
+   */
+  def apply(inputFilename: String, outputFilename: String): Boolean = {
+    logger.info("Using input file '%s'".format(inputFilename))
+    logger.info("Using output file '%s'".format(outputFilename))
 
     // List all the files to be processed.
     val allFiles: List[String] = {
       val f = new File(inputFilename)
-      if(f.isDirectory) f.listFiles.toList.map(_.getAbsolutePath)
-      else List(f.getAbsolutePath)
+      if(f.isDirectory) f.listFiles.toList.map(_.getPath)
+      else List(f.getPath)
     }
     // open the output stream and process the files
     try {
       val output = new PrintWriter(new File(outputFilename))
       val results = allFiles.map(processFile(_, output))
       output.close
-      if(results.contains(false)) 
+      if(results.contains(false)) {
         logger.error("Problems were encountered during this run.")
-      else logger.info("All operations completed successfully.")
+        false
+      }
+      else {
+        logger.info("All operations completed successfully.")
+        true
+      }
     } catch {
       case t: Throwable => {
         logger.error("Problem writing to %s".format(outputFilename))
         logger.error(t.toString)
-        None
+        false
       }
     }
   }
