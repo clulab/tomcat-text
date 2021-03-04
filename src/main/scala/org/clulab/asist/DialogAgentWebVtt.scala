@@ -35,7 +35,7 @@ class DialogAgentWebVtt(
   }
 
 
-  /** Process one web_vtt file 
+  /** Manage one web_vtt file 
    * @param filename a single input file
    * @param output Printwriter to the output file
    * @return true if the operation succeeded
@@ -56,7 +56,7 @@ class DialogAgentWebVtt(
   }
 
 
-  /** Run a VttDissector on the file contents
+  /** Run a VttDissector on the contents of one file
    * @param stream The contents of an input file
    * @param filename The name of the input file
    * @param output Printwriter to the output file
@@ -90,8 +90,9 @@ class DialogAgentWebVtt(
       lines: List[String],
       filename: String): Option[DialogAgentMessage] = lines match {
     case head::tail => {
+      // if a colon exists in the first line, text to left is participant id
       val foo = head.split(':')
-      if(foo.length == 0) {
+      if(foo.length == 1) {
         val text = lines.mkString(" ")
         Some(toDialogAgentMessage("file", filename, null, null, text))
       } else {
