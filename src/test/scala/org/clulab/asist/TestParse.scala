@@ -1,19 +1,32 @@
 package org.clulab.asist
 
 import java.util.Date
-
 import org.clulab.asist.AsistEngine
+import org.clulab.odin.Mention
 import org.clulab.processors.Processor
 import org.clulab.processors.fastnlp.FastNLPProcessor
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class TestParse extends FlatSpec with Matchers {
   val extractor = new AsistEngine()
 
+  def getMentionMap(mentions: Vector[Mention]): mutable.Map[String, Int] = {
+    val mention_map = mutable.Map[String, Int]()
+    for (m <- mentions) {
+      if (mention_map contains m.label) {
+        mention_map (m.label) += 1
+      } else {
+        mention_map (m.label) = 1
+      }
+    }
+    mention_map
+  }
+
   "AsistEngine" should "Parse close events properly" in {
-    val doc = extractor.annotate("I will close the door")
+    val doc = extractor.annotate("I'm closing the door")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(3)
     mentions(0).label should be("Infrastructure")
@@ -66,7 +79,7 @@ class TestParse extends FlatSpec with Matchers {
   }
 
   it should "Parse defeat events properly" in {
-    val doc = extractor.annotate("To progress I will kill the zombies")
+    val doc = extractor.annotate("To progress I'm going to kill the zombies")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(2)
     mentions(0).label should be("Foe")
@@ -114,24 +127,60 @@ class TestParse extends FlatSpec with Matchers {
 
   it should "Recognize foe entities" in {
     val doc = extractor.annotate(
-      "Down the road there is a mob who looks like a zombie."
+      "Down the road there is a mob or a zombie."
     )
     val mentions = extractor.extractFrom(doc)
+    val mention_map = getMentionMap(mentions)
     mentions.size should be(3)
-    mentions(0).label should be("Foe")
-    mentions(1).label should be("Deictic")
-    mentions(2).label should be("Foe")
+    mention_map("Foe") should be(2)
+    mention_map("Deictic") should be(1)
   }
 
   it should "Recognize person entities" in {
     val doc =
       extractor.annotate("There's a guy over there, next to the other person")
     val mentions = extractor.extractFrom(doc)
+    val mention_map = getMentionMap(mentions)
     mentions.size should be(5)
-    mentions(0).label should be("Sight")
-    mentions(1).label should be("Deictic")
-    mentions(2).label should be("Victim")
-    mentions(3).label should be("Deictic")
-    mentions(4).label should be("Victim")
+    mention_map("Sight") should be(1)
+    mention_map("Victim") should be(2)
+    mention_map("Deictic") should be(2)
+  }
+
+  it should "Recognize commitments" in {
+    val doc = extractor.annotate("I will rescue the victim in here")
+    val mentions = extractor.extractFrom(doc)
+    val mention_map = getMentionMap(mentions)
+    mentions.size should be(5)
+    mention_map("Save") should be(1)
+    mention_map("Commit") should be(1)
+    mention_map("Victim") should be(1)
+    mention_map("Deictic") should be(2)
+  }
+
+  it should "Recognize questions" in {
+    val doc = extractor.annotate("What's that over there?")
+    val mentions = extractor.extractFrom(doc)
+    val mention_map = getMentionMap(mentions)
+    mentions.size should be(2)
+    mention_map("Question") should be(1)
+    mention_map("Deictic") should be(1)
+  }
+
+  it should "Recognize agreements" in {
+    val doc = extractor.annotate("Ok, sounds good")
+    val mentions = extractor.extractFrom(doc)
+    val mention_map = getMentionMap(mentions)
+    mentions.size should be(1)
+    mention_map("Agreement") should be(1)
+  }
+
+  it should "Recognize disagreements" in {
+    val doc = extractor.annotate("No, I'm headed over here")
+    val mentions = extractor.extractFrom(doc)
+    val mention_map = getMentionMap(mentions)
+    mentions.size should be(2)
+    mention_map("Disagreement") should be(1)
+    mention_map("Deictic") should be (1)
   }
 }

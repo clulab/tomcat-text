@@ -124,3 +124,11 @@ rules:
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
       person: Anaphor? = >nsubj
+
+  - name: commit_to_something
+    priority: 4
+    label: Commit
+    action: removeResearcher
+    pattern: |
+      trigger = [tag=/^MD/]
+      target: Action = <aux

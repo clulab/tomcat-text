@@ -39,3 +39,7 @@ continue_triggers: "going"
 change_priority_triggers: "target|prioritize|focus"
 
 exist_triggers: "be"
+
+agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
+
+disagree_triggers: "no|won't"

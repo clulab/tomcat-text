@@ -20,7 +20,7 @@
   - Obstacle:
       - Fire
       - BuildingCollapse
-  - Actions:
+  - Action:
     - SimpleActions:
       - Move
       - Open
@@ -35,6 +35,10 @@
       - Defeat
       - Sight
       - Craft
+      - Question
+      - Agreement
+      - Disagreement
+      - Commit
     - ComplexActions:
         - Search
         - ChangePriority
