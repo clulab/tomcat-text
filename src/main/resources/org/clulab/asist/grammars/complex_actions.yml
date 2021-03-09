@@ -1,0 +1,11 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+#####just a test rule to see if this breaks anything
+  - name: test
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      person: Anaphor? = >nsubj
