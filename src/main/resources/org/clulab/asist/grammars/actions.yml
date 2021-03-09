@@ -140,3 +140,20 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
       target: Rubble = >dobj
+
+  - name: clear_rubble_token
+    priority: ${ rulepriority }
+    label: Clear
+    type: token
+    action: removeResearcher
+    pattern: |
+      [lemma=/(?i)^(${ clear_triggers })/] [mention=Rubble]
+
+
+
+  - name: agree_ngram
+    priority: ${ rulepriority }
+    type: token
+    label: Agree
+    pattern: |
+      [lemma=/sound/ & tag=/^V/ & !outgoing=nsubj] [lemma=/good|great|fine/]
