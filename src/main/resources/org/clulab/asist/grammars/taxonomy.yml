@@ -18,6 +18,7 @@
       - Lever
       - Button
   - Obstacle:
+      - Rubble
       - Fire
       - BuildingCollapse
   - Action:
@@ -39,6 +40,7 @@
       - Agreement
       - Disagreement
       - Commit
+      - Clear
     - ComplexActions:
         - Search
         - ChangePriority

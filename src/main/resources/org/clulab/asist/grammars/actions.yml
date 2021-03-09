@@ -132,3 +132,11 @@ rules:
     pattern: |
       trigger = [tag=/^MD/]
       target: Action = <aux
+
+  - name: clear_rubble
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      target: Rubble = >dobj

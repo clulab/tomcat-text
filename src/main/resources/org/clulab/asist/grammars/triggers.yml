@@ -43,3 +43,8 @@ exist_triggers: "be"
 agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
 
 disagree_triggers: "no|won't"
+
+rubble_triggers: "rubble|blockage|pile|stuff|obstacle"
+
+clear_triggers: "clear|remove|clean"
+
