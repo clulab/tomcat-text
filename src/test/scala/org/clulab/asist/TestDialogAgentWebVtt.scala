@@ -32,13 +32,13 @@ class TestDialogAgentWebVtt
     "",
     "1",
     "00:00:03.600 --> 00:00:15.450",
-    "Jane Doe: Great. So thank you, you will be participating in the simulated search and rescue mission in the Minecraft environment, the entire experiment will take about two and half hours.",
+    "Jane Doe: You will be playing in Minecraft in this experiment.",
     "",
     "2",
     "00:00:16.320 --> 00:00:23.730",
-    "Jane Doe But before we begin, I just want to emphasize that, as this is an experiment, we may say things formerly",
+    "This is an experiment, we may say things formerly.",
     ""
-    )
+  )
 
 
   // should really abort the test if these exist, and tell the user to move them aside 
@@ -88,21 +88,35 @@ class TestDialogAgentWebVtt
   outputSource.close
 
 
-  "Test output" should "have two elements" in {
+  "Test output" should "have two dialog agent messages" in {
     output.size should be (2)
   }
 
-  "First output element" should "have correct header info" in {
+  "First dialog agent message" should "have correct header fields" in {
     val header = output(0).header
     header.message_type should be ("event")
     header.version should be ("0.1")
   }
-  it should "have correct msg info" in {
+  it should "have correct msg fields" in {
     val msg = output(0).msg
     msg.source should be ("tomcat_textAnalyzer")
     msg.experiment_id should be (null)
     msg.sub_type should be ("Event:dialogue_event")
     msg.version should be ("0.1")
+  }
+  it should "have correct data fields" in {
+    val data = output(0).data
+    data.participant_id should be ("Jane Doe")
+    data.text should be (" You will be playing in Minecraft in this experiment. ")
+  }
+  it should "have correct source fields" in {
+    val source = output(0).data.source
+    source.source_type should be ("file")
+    source.source_name should be (inputFilename)
+  }
+  it should "have two extractions" in {
+    val extractions = output(0).data.extractions
+    extractions.size should be (2)
   }
 
 }
