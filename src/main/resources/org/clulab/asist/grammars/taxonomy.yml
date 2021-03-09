@@ -42,8 +42,8 @@
       - Commit
       - Clear
     - ComplexActions:
-        - Search
-        - ChangePriority
+        - Search         # Seach(Location)
+        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
   - EntityTypes:
     - Victim:
         - Yellow
