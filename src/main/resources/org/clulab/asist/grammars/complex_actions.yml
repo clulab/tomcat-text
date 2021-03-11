@@ -1,7 +1,6 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-#####just a test rule to see if this breaks anything
   - name: precedence1
     priority: ${ rulepriority }
     label: Precedence
