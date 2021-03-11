@@ -9,8 +9,13 @@ rules:
     vars:
       rulepriority: "1"
 
-  # Extract the events
+  # Extract the simple vents
   - import: org/clulab/asist/grammars/actions.yml
     vars:
       rulepriority: "2"
+
+  # Extract the complex events
+  - import: org/clulab/asist/grammars/complex_actions.yml
+    vars:
+      rulepriority: "3"
 
