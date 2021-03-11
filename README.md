@@ -26,6 +26,16 @@ process all the files in the first level of that directory.
 
 The input files are expected to be in WebVTT file (.vtt) format.
 
+Web App
+---------
+The repo includes a webapp you can use to debug ODIN rules. When you input a piece of text, it will run the text through the system and visually display any mentions extracted by the system. The app will reload if it detects any changes to the rule files, so you can easily jump back and forth between writing rules and testing them. It also includes a syntax parse and specifies which rule generated each mention. 
+
+To open the webapp run the following command from the top level directory:
+```
+sbt webapp/run
+```
+Then navigate to the specified port using your web browser.
+
 
 MQTT mode
 ---------
