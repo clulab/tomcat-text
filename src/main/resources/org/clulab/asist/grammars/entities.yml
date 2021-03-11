@@ -43,6 +43,13 @@ rules:
       label: Victim
       trigger: ${ person_triggers }
 
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: rubble
+      priority: ${ rulepriority }
+      label: Rubble
+      trigger: ${ rubble_triggers }
+
   - name: anaphor
     label: Anaphor
     priority: 1
@@ -66,3 +73,35 @@ rules:
     keep: false
     pattern: |
       [lemma=/(?i)^(yellow)/]
+
+  - name: ask_question
+    label: Question
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [tag=/^W/]
+
+  - name: agree_token_match
+    label: Agreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ agree_triggers })/]
+
+  - name: disagree_token_match
+    label: Disagreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ disagree_triggers })/]
+
+  - name: demonstrative_pronoun
+    priority: ${ rulepriority }
+    label: DemPron
+    type: token
+    keep: false
+    pattern: |
+      [word=/${ dem_pron_triggers }/]

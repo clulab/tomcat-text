@@ -1,0 +1,21 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+#####just a test rule to see if this breaks anything
+  - name: precedence1
+    priority: ${ rulepriority }
+    label: Precedence
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/]
+      first_action: Action? = [tag=/^V/]
+      second_action: Action? = <advmod
+
+  - name: precedence2
+    priority: ${ rulepriority }
+    label: Precedence
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ before_precedence_triggers })/]
+      first_action: Action? = [tag=/^V/]
+      second_action: Action? = </mark/

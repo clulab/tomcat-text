@@ -7,6 +7,7 @@
   - Location:
     - Inferred:
       - Deictic
+      - DemPron
     - Infrastructure:
       - Room
       - Door
@@ -18,9 +19,10 @@
       - Lever
       - Button
   - Obstacle:
+      - Rubble
       - Fire
       - BuildingCollapse
-  - Actions:
+  - Action:
     - SimpleActions:
       - Move
       - Open
@@ -35,9 +37,15 @@
       - Defeat
       - Sight
       - Craft
+      - Question
+      - Agreement
+      - Disagreement
+      - Commit
+      - Clear
     - ComplexActions:
-        - Search
-        - ChangePriority
+        - Search         # Seach(Location)
+        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+        - Precedence
   - EntityTypes:
     - Victim:
         - Yellow

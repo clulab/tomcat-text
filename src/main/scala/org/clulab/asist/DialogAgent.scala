@@ -22,22 +22,13 @@ trait DialogAgent {
 
   private val logger = LoggerFactory.getLogger(this.getClass())
 
-  /** Build a pipeline using annotation tokens */
-  logger.info("Creating Extractor (this may take a few seconds) ...")
-  val pipeline = new StanfordCoreNLP(new Properties {
-    setProperty(
-      "annotators",
-      "tokenize, ssplit, pos, lemma, ner, parse, dcoref"
-    )
-  })
-
   /** Load the taxonomy map from resource file */
   val taxonomy_map = JsonParser(
     Source.fromResource("taxonomy_map.json").mkString
   ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
   /** Create the extractor using the pipeline and taxonomy map */
-  val extractor = new Extractor(pipeline, new AsistEngine(), taxonomy_map)
+  val extractor = new Extractor(new AsistEngine(), taxonomy_map)
   logger.info("Extractor created.")
 
   /** map the mention label to the taxonomy map */
@@ -45,29 +36,28 @@ trait DialogAgent {
     taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
 
   /** Create a DialogAgent extraction from Extractor data */
-  def extraction(e: Array[Any]): Option[DialogAgentMessageDataExtraction] = 
-    if(e.size > 0) {
-      val mention = e(0).asInstanceOf[Mention]
-      val argument_labels = mention.arguments.keys.map(
-        mention.arguments.get(_).get(0).label
+  def extraction(mention: Mention): Option[DialogAgentMessageDataExtraction] = {
+    val argument_labels = mention.arguments.keys.map(
+      mention.arguments.get(_).get(0).label
+    )
+    val taxonomy_matches = taxonomyMatches(mention.label)
+    val charOffsets: Tuple2[Int, Int] = mention match {
+      case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
+      case e: TextBoundMention => (e.startOffset, e.endOffset)
+      case _ => (-1, -1)
+    }
+    Some(
+      DialogAgentMessageDataExtraction(
+        mention.label,
+        mention.words.mkString(" "),
+        argument_labels.mkString(" "),
+        charOffsets._1,
+        charOffsets._2,
+        taxonomy_matches
       )
-      val taxonomy_matches = taxonomyMatches(mention.label)
-      val charOffsets: Tuple2[Int, Int] = mention match {
-        case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
-        case e: TextBoundMention => (e.startOffset, e.endOffset)
-        case _ => (-1,-1)
-      }
-      Some(
-        DialogAgentMessageDataExtraction(
-          mention.label,
-          mention.words.mkString(" "),
-          argument_labels.mkString(" "),
-          charOffsets._1,
-          charOffsets._2,
-          taxonomy_matches
-        )
-      )
-    } else None
+    )
+  }
+
 
   /** Translate an AsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
@@ -101,9 +91,9 @@ trait DialogAgent {
 
   /** Return the extractions for the given text, which may be null */
   def runExtraction(text: String): 
-    (ArrayBuffer[Array[Any]], org.clulab.processors.Document) = text match {
-      case s: String => extractor.runExtraction(s,"")
-      case _ => extractor.runExtraction("","")
+    (Seq[Mention], org.clulab.processors.Document) = text match {
+      case s: String => extractor.runExtraction(s)
+      case _ => extractor.runExtraction("")
     }
 
   /** create a DialogAgentMessage from text */

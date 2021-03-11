@@ -1,13 +1,15 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: close
-      template_priority: ${ rulepriority }
-      label: Close
-      trigger: ${ close_triggers }
-      object_type: Infrastructure
+
+  - name: close
+    priority: ${ rulepriority }
+    label: Close
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ close_triggers })/]
+      target: Infrastructure? = >dobj | >/nmod/
+      target: DemPron? = >dobj
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -25,13 +27,14 @@ rules:
       trigger: ${ toggle_triggers }
       object_type: Switch
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: triage
-      template_priority: ${ rulepriority }
-      label: Save
-      trigger: ${ triage_triggers }
-      object_type: Concept
+  - name: triage
+    priority: ${ rulepriority }
+    label: Save
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Victim = >dobj
+      location: Infrastructure? = >nmod_in
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -124,3 +127,19 @@ rules:
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
       person: Anaphor? = >nsubj
+
+  - name: commit_to_something
+    priority: 4
+    label: Commit
+    action: removeResearcher
+    pattern: |
+      trigger = [tag=/^MD/]
+      target: Action = <aux
+
+  - name: clear_rubble
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      target: Rubble = >dobj
