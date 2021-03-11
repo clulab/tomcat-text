@@ -12,7 +12,7 @@ extinguish_triggers: "extinguish|put|stop"
 
 toggle_triggers: "flip|toggle|turn|switch|pull|open"
 
-triage_triggers: "save|triage|heal|help|get|do|rescue"
+triage_triggers: "save|triage|heal|help|get|rescue"
 
 attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
@@ -24,13 +24,15 @@ switch_triggers: "switch|toggle|lever|door"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 
-person_triggers: "person|guy|victim|villager|dude"
+person_triggers: "person|guy|victim|villager|dude|patient"
 
 sight_triggers: "see|observe|glimpse"
 
 craft_triggers: "craft|make|produce|brew|create"
 
 deixis_triggers: "here|there|back|in|through"
+
+dem_pron_triggers: "this|that|those|these"
 
 plan_switch_triggers: "start|begin|switch"
 
@@ -42,9 +44,12 @@ exist_triggers: "be"
 
 agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
 
-disagree_triggers: "no|won't"
+disagree_triggers: "no|won't|nah|na|nope"
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle"
 
 clear_triggers: "clear|remove|clean"
 
+then_precedence_triggers: "then"
+
+before_precedence_triggers: "before"

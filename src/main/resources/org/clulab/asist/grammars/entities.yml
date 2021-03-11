@@ -97,3 +97,11 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)^(${ disagree_triggers })/]
+
+  - name: demonstrative_pronoun
+    priority: ${ rulepriority }
+    label: DemPron
+    type: token
+    keep: false
+    pattern: |
+      [word=/${ dem_pron_triggers }/]
