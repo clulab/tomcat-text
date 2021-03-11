@@ -123,7 +123,6 @@ abstract class MqttAgent(
   /** This method is called when a message arrives from the server.
    * @param topic The message topic
    * @param mm The message
-   * @throws Exception if a terminal logger.error has occurred
    */
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
     messageArrived(topic, mm.toString)
