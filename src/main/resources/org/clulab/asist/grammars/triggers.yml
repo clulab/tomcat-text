@@ -50,3 +50,6 @@ rubble_triggers: "rubble|blockage|pile|stuff|obstacle"
 
 clear_triggers: "clear|remove|clean"
 
+then_precedence_triggers: "then"
+
+before_precedence_triggers: "before"

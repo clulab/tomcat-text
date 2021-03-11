@@ -45,6 +45,7 @@
     - ComplexActions:
         - Search         # Seach(Location)
         - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+        - Precedence
   - EntityTypes:
     - Victim:
         - Yellow
