@@ -40,6 +40,7 @@ class TestDialogAgentWebVtt
     ""
   )
 
+  /*
 
   // should really abort the test if these exist, and tell the user to move them aside 
   "web_vtt test initialization" should "remove existing test files" in {
@@ -118,5 +119,6 @@ class TestDialogAgentWebVtt
     val extractions = output(0).data.extractions
     extractions.size should be (2)
   }
+  */
 
 }
