@@ -46,7 +46,7 @@ class DialogAgentMqtt(
 
   // Kickstart the extractor with this task to get lazy init out of the way
   logger.info("Initializing Extractor (this may take a few seconds) ...")
-  extractor.runExtraction("green victim", "")
+  extractor.runExtraction("green victim")
   logger.info("Extractor initialized.")
 
   // Make sure we're connected to the broker.  Can't run without it.
