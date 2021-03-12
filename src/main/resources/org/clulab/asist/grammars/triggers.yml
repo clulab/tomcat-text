@@ -44,12 +44,24 @@ exist_triggers: "be"
 
 agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
 
-disagree_triggers: "no|won't|nah|na|nope"
+disagree_triggers: "no$|won't|nah|na|nope"
 
-rubble_triggers: "rubble|blockage|pile|stuff|obstacle"
+rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade"
 
 clear_triggers: "clear|remove|clean"
 
 then_precedence_triggers: "then"
 
 before_precedence_triggers: "before"
+
+hammer_triggers: "hammer|hummer|mallet"
+
+medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
+
+stretcher_triggers: "stretcher|carrying bed"
+
+medic_triggers: "medic|paramedic|nurse|doctor"
+
+hazmat_triggers: "hazmat|haz mat|haze mat"
+
+specialist_triggers: "search specialist|search-specialist|specialist"

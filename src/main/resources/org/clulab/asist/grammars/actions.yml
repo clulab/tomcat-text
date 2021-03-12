@@ -143,3 +143,11 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
       target: Rubble = >dobj
+
+  - name: clear_rubble_token
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    type: token
+    pattern: |
+      [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble

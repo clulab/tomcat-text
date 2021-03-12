@@ -52,7 +52,7 @@ class AsistEngine(
 
       new LoadableAttributes(
         actions,
-        ExtractorEngine(masterRules, actions) // ODIN component
+        ExtractorEngine(masterRules, actions, actions.keepLongest) // ODIN component
       )
     }
   }
