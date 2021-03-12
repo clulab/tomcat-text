@@ -1,23 +1,17 @@
 package org.clulab.asist
 
-import java.text.SimpleDateFormat
-
 import edu.stanford.nlp.coref.CorefCoreAnnotations
 import edu.stanford.nlp.coref.data.CorefChain
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
-import org.json4s.jackson.JsonMethods.{compact, parse, render}
-import org.json4s.JsonDSL._
 
 import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
 import scala.collection.{immutable, mutable}
 import scala.collection.mutable.{ArrayBuffer, Map}
 import scala.io.Source
 import scala.util.parsing.json.JSON
 
 class Extractor(
-    processor: StanfordCoreNLP,
     ieEngine: AsistEngine,
     tax_map: immutable.Map[String, Array[immutable.Map[String, String]]]
 ) {
@@ -104,49 +98,16 @@ class Extractor(
   }
 
   def runExtraction(
-      transcript: String,
-      transcription_id: String
-  ): (ArrayBuffer[Array[Any]], org.clulab.processors.Document) = {
-    val all_events = new ArrayBuffer[Array[Any]]
-    val corenlp_doc = new Annotation(transcript)
-    processor.annotate(corenlp_doc)
-    val coref_chains =
-      corenlp_doc.get(classOf[CorefCoreAnnotations.CorefChainAnnotation])
+      transcript: String
+  ): (Seq[Mention], org.clulab.processors.Document) = {
+    val all_events = new ArrayBuffer[Mention]
 
     val doc = ieEngine.annotate(transcript)
     val mentions = ieEngine
       .extractFrom(doc)
       .sortBy(m => (m.sentence, m.getClass.getSimpleName))
     for (m <- mentions) {
-      if (m.arguments contains "target") {
-        all_events += Array(
-          m,
-          transcription_id
-        ) // TODO remove this once anaphor matching is robust
-        val target = m.arguments("target").head
-        for (i <- target.tokenInterval) {
-          val sent = m.document.sentences(target.sentence)
-        }
-        if (use_coref_resolution && target.label == "Anaphor") {
-          insideCorefChain(coref_chains.asScala, target, m) match {
-            case Some(coref_head) =>
-              // Now check if coref_head has label other than anaphor
-              getCorefHeadLabel(coref_head, mentions) match {
-                case Some(head_label) =>
-                  if (event_pair_map contains m.label) {
-                    if (event_pair_map(m.label) contains head_label) {
-                      //all_events += Array(m, transcription_id)
-                    }
-                  }
-                case _ =>
-              }
-            case _ =>
-          }
-
-        }
-      } else {
-        all_events += Array(m, transcription_id)
-      }
+      all_events += m
     }
     (all_events, doc)
   }

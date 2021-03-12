@@ -24,36 +24,17 @@ process all the files in the first level of that directory.
 
     sbt "runMain org.clulab.asist.RunDialogAgent file {input filename} {output filename}"
 
-The input files are expected to have one JSON object per line, corresponding to
-utterances in a WebVTT file (.vtt) that has been converted using the
-`scripts/vtt_to_json_msgs` tool. The example below shows an example JSON object
-from an input file.
+The input files are expected to be in WebVTT file (.vtt) format.
 
-```json
-{
-  "header": {
-    "timestamp": "2021-02-04T19:41:57.205166Z",
-    "version": "0.1"
-  },
-  "msg": {
-    "timestamp": "2021-02-04T19:41:57.205166Z",
-    "experiment_id": "12345678-9abc-1234-a456-123456780000",
-    "trial_id": "trial 1",
-    "message_type": "observation",
-    "version": "0.1",
-    "source": "vtt_to_json_msgs_script"
-  },
-  "data": {
-    "asr_system": "Zoom",
-    "source_filename": "AudioTranscript_Team-na_Member-1_Vers-1.vtt",
-    "participant_id": "participant 1",
-    "caption_start": "00:00:24.090",
-    "caption_end": "00:00:32.040",
-    "text": "Something's missing redundant or we may not answer all your questions here"
-  }
-}
+Web App
+---------
+The repo includes a webapp you can use to debug ODIN rules. When you input a piece of text, it will run the text through the system and visually display any mentions extracted by the system. The app will reload if it detects any changes to the rule files, so you can easily jump back and forth between writing rules and testing them. It also includes a syntax parse and specifies which rule generated each mention. 
 
+To open the webapp run the following command from the top level directory:
 ```
+sbt webapp/run
+```
+Then navigate to the specified port using your web browser.
 
 
 MQTT mode
