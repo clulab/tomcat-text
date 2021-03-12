@@ -8,8 +8,18 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ then_precedence_triggers })/]
-      first_action: Action? = [tag=/^V/]
+      first_action: Action? =
+        # get to the second action, which is linked to the first
+        <advmod
+        # traverse the link -- depending on the phrasing, can be any of these
+        </ccomp|conj_and|dep/
+        #<conj_and
+        # optionally go to an embedded clause
+        >/xcomp/?
+        # land on a verb
+        [tag=/^V/]
       second_action: Action? = <advmod
+
 
   - name: precedence2
     priority: ${ rulepriority }
@@ -17,5 +27,13 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ before_precedence_triggers })/]
-      first_action: Action? = [tag=/^V/]
+      first_action: Action? =
+        # get to the second action, which is linked to the first
+        </mark/
+        # traverse the link between the actions
+        </advcl_before/
+        # optionally go to an embedded clause
+        >/xcomp/?
+        # land on a verb
+        [tag=/^V/]
       second_action: Action? = </mark/
