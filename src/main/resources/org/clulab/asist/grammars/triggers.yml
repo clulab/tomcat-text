@@ -44,7 +44,7 @@ exist_triggers: "be"
 
 agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
 
-disagree_triggers: "no|won't|nah|na|nope"
+disagree_triggers: "no$|won't|nah|na|nope"
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade"
 

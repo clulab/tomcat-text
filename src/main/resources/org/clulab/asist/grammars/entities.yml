@@ -96,8 +96,9 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ disagree_triggers })/]
+      [lemma=/(?i)(${ disagree_triggers })/ & !tag=TO]
 
+### add a tag so we dont parse "na" from "gonna"
   - name: demonstrative_pronoun
     priority: ${ rulepriority }
     label: DemPron
