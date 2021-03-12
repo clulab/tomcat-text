@@ -38,26 +38,29 @@ trait DialogAgent {
   }
 
   /** Create a DialogAgent extraction from Extractor data */
-  def extraction(mention: Mention): Option[DialogAgentMessageDataExtraction] = {
-    val argument_labels = mention.arguments.keys.map(
-      mention.arguments.get(_).get(0).label
-    )
+  def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
+
+    val originalArgs = mention.arguments.toArray
+    val extractionArguments = for {
+      (role, ms) <- originalArgs
+      converted = ms.map(extraction)
+    } yield (role, converted)
+
     val taxonomy_matches = taxonomyMatches(mention.label)
     val charOffsets: Tuple2[Int, Int] = mention match {
       case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
       case e: TextBoundMention => (e.startOffset, e.endOffset)
       case _ => (-1, -1)
     }
-    Some(
-      DialogAgentMessageDataExtraction(
+    DialogAgentMessageDataExtraction(
         mention.label,
         mention.words.mkString(" "),
-        argument_labels.mkString(" "),
+        extractionArguments.toMap,
         charOffsets._1,
         charOffsets._2,
         taxonomy_matches
       )
-    )
+
   }
 
 
@@ -124,7 +127,7 @@ trait DialogAgent {
           source_type = source_type,
           source_name = source_name
         ),
-        extractions.map(extraction).toList.flatten
+        extractions.map(extraction)
       )
     )
   }
