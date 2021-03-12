@@ -91,12 +91,6 @@ trait DialogAgent {
     )
   }
 
-  /** Return the extractions for the given text, which may be null */
-  def runExtraction(text: String): 
-    (Seq[Mention], org.clulab.processors.Document) = text match {
-      case s: String => extractor.runExtraction(s)
-      case _ => extractor.runExtraction("")
-    }
 
   /** create a DialogAgentMessage from text */
   def toDialogAgentMessage(
@@ -106,7 +100,8 @@ trait DialogAgent {
       participant_id: String,
       text: String
   ): DialogAgentMessage = {
-    val (extractions, extracted_doc) = runExtraction(text)
+    val (extractions, extracted_doc) = 
+      extractor.runExtraction(Option(text).getOrElse(""))
     val timestamp = Clock.systemUTC.instant.toString
     val version = "0.1"
     DialogAgentMessage(
