@@ -32,8 +32,10 @@ trait DialogAgent {
   logger.info("Extractor created.")
 
   /** map the mention label to the taxonomy map */
-  def taxonomyMatches(mentionLabel: String) =
-    taxonomy_map(mentionLabel).map(x => (x("term") -> x("score"))).toSeq
+  def taxonomyMatches(mentionLabel: String) = {
+    val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
+    matches.map(x => (x("term") -> x("score"))).toSeq
+  }
 
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(mention: Mention): Option[DialogAgentMessageDataExtraction] = {
