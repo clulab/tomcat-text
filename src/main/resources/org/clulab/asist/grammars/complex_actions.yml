@@ -16,5 +16,5 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ before_precedence_triggers })/]
-      first_action: Action? = [tag=/^V/]
+      first_action: Action? = (?= [tag=/^V/])
       second_action: Action? = </mark/
