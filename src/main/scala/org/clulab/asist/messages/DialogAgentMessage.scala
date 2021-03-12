@@ -37,7 +37,7 @@ case class DialogAgentMessageDataSource(
 case class DialogAgentMessageDataExtraction(
   val label: String = null,
   val span: String = null,
-  val arguments: String = null,
+  val arguments: Map[String, Seq[DialogAgentMessageDataExtraction]] = null,
   val start_offset: Int = 0,
   val end_offset: Int = 0,
   val taxonomy_matches: Seq[(String, String)] = Seq.empty
