@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 object DialogAgentMqttDefaults {
 
   /** subscribe to these message bus topics for input */
-  val TOPIC_INPUT_OBS: String = "observations/chat"
+  val TOPIC_INPUT_OBS: String = "minecraft/chat"
   val TOPIC_INPUT_ASR: String = "agent/asr"
 
   /** publish input analysis to this message bus topic */

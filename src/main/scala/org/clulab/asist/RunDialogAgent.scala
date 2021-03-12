@@ -10,10 +10,16 @@
 package org.clulab.asist
 
 import java.io.File
+import org.slf4j.LoggerFactory
+
+
+
 
 object  RunDialogAgent extends App {
   
   val appName ="DialogAgent"
+
+  private val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Show the usage hints */
   def usage: Unit = List(
@@ -37,6 +43,10 @@ object  RunDialogAgent extends App {
       DialogAgentWebVtt(inputFile, outputFile)
       None
     }
-    case _ => None
+    case _ => {
+      logger.error("Arguments not recognized")
+      None
+    }
   }
+
 }
