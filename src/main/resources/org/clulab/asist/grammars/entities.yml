@@ -105,3 +105,55 @@ rules:
     keep: false
     pattern: |
       [word=/${ dem_pron_triggers }/]
+
+  - name: hammer
+    priority: ${ rulepriority }
+    label: Hammer
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/${ hammer_triggers }/]
+
+  - name: medkit
+    priority: ${ rulepriority }
+    label: MedKit
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/${ medkit_triggers }/]
+
+  - name: stretcher
+    priority: ${ rulepriority }
+    label: Stretcher
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/${ stretcher_triggers }/]
+
+  - name: search_specialist
+    priority: ${ rulepriority }
+    label: SearchSpecialist
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/${ specialist_triggers }/]
+
+  - name: hazmat
+    priority: ${ rulepriority }
+    label: Hazmat
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/${ hazmat_triggers }/]
+
+  - name: medic
+    priority: ${ rulepriority }
+    label: Medic
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/${ medic_triggers }/]
+
+
+
+
