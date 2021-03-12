@@ -74,9 +74,9 @@ trait DialogAgent {
     )
   }
 
-  /** Translate an ObsMessage to a DialogAgentMessage */
+  /** Translate a ChatMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
-      a: ObsMessage,
+      a: ChatMessage,
       topic: String,
       source_type: String
   ): DialogAgentMessage = {
@@ -85,19 +85,6 @@ trait DialogAgent {
       topic,
       a.msg.experiment_id,
       a.data.sender,
-      a.data.text
-    )
-  }
-
-  /** Translate a json-converted .vtt file line to a DialogAgentMessage */
-  def toDialogAgentMessage(
-      a: VttJsonMessage,
-  ): DialogAgentMessage = {
-    toDialogAgentMessage(
-      "vtt_file",
-      a.data.source_filename,
-      a.msg.experiment_id,
-      a.data.participant_id,
       a.data.text
     )
   }

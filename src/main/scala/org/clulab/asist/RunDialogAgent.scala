@@ -10,10 +10,16 @@
 package org.clulab.asist
 
 import java.io.File
+import org.slf4j.LoggerFactory
+
+
+
 
 object  RunDialogAgent extends App {
   
   val appName ="DialogAgent"
+
+  private val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Show the usage hints */
   def usage: Unit = List(
@@ -28,13 +34,19 @@ object  RunDialogAgent extends App {
 
 
   /** Create an agent based on the user args */
-  val agent: DialogAgent = args match {
+  val agent: Option[DialogAgent] = args match {
+    case Array() =>
+      Some(new DialogAgentMqtt)
     case Array("mqtt", host: String, port: String) => 
-      new DialogAgentMqtt(host, port)
-    case Array("file", inputFile: String, outputFile: String) => 
-      new DialogAgentFile(inputFile, outputFile)
+      Some(new DialogAgentMqtt(host, port))
+    case Array("web_vtt", inputFile: String, outputFile: String) => {
+      DialogAgentWebVtt(inputFile, outputFile)
+      None
+    }
     case _ => {
-      new DialogAgentMqtt(MqttAgentDefaults.HOST, MqttAgentDefaults.PORT)
+      logger.error("Arguments not recognized")
+      None
     }
   }
+
 }

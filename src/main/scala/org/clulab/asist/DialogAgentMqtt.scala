@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 object DialogAgentMqttDefaults {
 
   /** subscribe to these message bus topics for input */
-  val TOPIC_INPUT_OBS: String = "observations/chat"
+  val TOPIC_INPUT_OBS: String = "minecraft/chat"
   val TOPIC_INPUT_ASR: String = "agent/asr"
 
   /** publish input analysis to this message bus topic */
@@ -66,7 +66,7 @@ class DialogAgentMqtt(
   override def messageArrived(topic: String, input: String): Unit = {
     logger.info("Received on '%s': %s".format(topic, input))
     topic match {
-      case `topicInputObs` => toObsMessage(input).map(a => 
+      case `topicInputObs` => toChatMessage(input).map(a => 
         publish(toDialogAgentMessage(a, topicInputObs, "message_bus")))
       case `topicInputAsr` => toAsrMessage(input).map(a => 
         publish(toDialogAgentMessage(a, topicInputAsr, "message_bus")))
