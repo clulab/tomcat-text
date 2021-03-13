@@ -4,6 +4,10 @@
   - Ordinal
   - Switch
   - Anaphor
+  - Role:
+      - Hazmat
+      - SearchSpecialist
+      - Medic
   - Location:
     - Inferred:
       - Deictic
@@ -87,6 +91,10 @@
     - Emerald
     - ItemFrame
     - FlowerPot
+    - Resource:
+      - Hammer
+      - MedKit
+      - Stretcher
 - Sentiment:
     - Positive
     - Negative:

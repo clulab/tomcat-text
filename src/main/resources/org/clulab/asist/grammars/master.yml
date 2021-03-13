@@ -17,5 +17,5 @@ rules:
   # Extract the complex events
   - import: org/clulab/asist/grammars/complex_actions.yml
     vars:
-      rulepriority: "3"
+      rulepriority: "3+"
 

@@ -45,6 +45,7 @@ object  RunDialogAgent extends App {
     }
     case _ => {
       logger.error("Arguments not recognized")
+      usage
       None
     }
   }
