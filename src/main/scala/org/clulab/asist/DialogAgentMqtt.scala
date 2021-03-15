@@ -62,25 +62,18 @@ class DialogAgentMqtt(
 
   /** Convert a json-serialized ChatMessage to a DialogAgent message
    *  and publish to the message bus.
-   *  @param text:  A Minecraft chat message
+   *  @param msg:  input from the Minecraft chat textfield
    */
-  def processInputChat(json: String): Unit = {
-    toChatMessage(json).map(a =>
-      publish(toDialogAgentMessage(a, topicInputChat, "message_bus"))
-    )
-  }
+  def processChat(msg: ChatMessage): Unit = 
+    publish(toDialogAgentMessage(msg, topicInputChat, "message_bus"))
 
 
   /** Convert a json-serialized AsrMessage to a DialogAgent message
    *  and publish to the message bus if the 'is_final' flag is set.
-   *  @param text:  An ASR message
+   *  @param msg: Input from the Minecraft microphone
    */
-  def processInputAsr(json: String): Unit = {
-    toAsrMessage(json).map(a =>
-      if(a.data.is_final)
-        publish(toDialogAgentMessage(a, topicInputAsr, "message_bus"))
-    )
-  }
+  def processAsr(msg: AsrMessage): Unit = if(msg.data.is_final)
+    publish(toDialogAgentMessage(msg, topicInputAsr, "message_bus"))
 
 
   /** Publish analysis of messages received on subscription topics 
@@ -90,8 +83,8 @@ class DialogAgentMqtt(
   override def messageArrived(topic: String, json: String): Unit = {
     logger.info("Received on '%s': %s".format(topic, json))
     topic match {
-      case `topicInputChat` => processInputChat(json)
-      case `topicInputAsr` => processInputAsr(json)
+      case `topicInputChat` => toChatMessage(json).map(a => processChat(a))
+      case `topicInputAsr` => toAsrMessage(json).map(a => processAsr(a))
       case _ =>
     }
   }
