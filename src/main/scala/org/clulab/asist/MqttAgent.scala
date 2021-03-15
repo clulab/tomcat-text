@@ -29,7 +29,7 @@ abstract class MqttAgent(
   val inputTopics: List[String] = List.empty,
   val outputTopics: List[String] = List.empty) extends MqttCallback {
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   /** MQTT broker connection identities */
   val SUB_ID = "%s_subscriber".format(id)

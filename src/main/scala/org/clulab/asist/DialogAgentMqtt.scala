@@ -42,12 +42,7 @@ class DialogAgentMqtt(
     with DialogAgent
     with DialogAgentJson {
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
-
-  // Kickstart the extractor with this task to get lazy init out of the way
-  logger.info("Initializing Extractor (this may take a few seconds) ...")
-  extractor.runExtraction("green victim")
-  logger.info("Extractor initialized.")
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   // Make sure we're connected to the broker.  Can't run without it.
   if (mqttConnected) logger.info("Ready.") else System.exit(1)
