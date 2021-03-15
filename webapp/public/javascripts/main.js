@@ -213,7 +213,7 @@ var collData = {
         {
           "type": "Precedence",
           "labels": ["Precedence"],
-          "bgColor": "lightred",
+          "bgColor": "lightyellow",
           "borderColor": "darken",
           "arcs": [
             {"type": "first_action", "labels": ["first_action"], "borderColor": "darken", "bgColor":"violet"},
