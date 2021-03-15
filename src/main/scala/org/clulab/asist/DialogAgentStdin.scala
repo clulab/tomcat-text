@@ -14,7 +14,7 @@ class DialogAgentStdin extends DialogAgent with DialogAgentJson{
 
   println
   println("Dialog Agent stdin extractor running.")
-  println("Enter plaintext for extraction, [CTRL-C] to exit.")
+  println("Enter plaintext for extraction, [CTRL-D] to exit.")
 
   def prompt: Unit = print("\n> ")
 
@@ -28,4 +28,3 @@ class DialogAgentStdin extends DialogAgent with DialogAgentJson{
     prompt
   }
 }
-
