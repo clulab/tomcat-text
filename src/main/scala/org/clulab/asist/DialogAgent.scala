@@ -103,12 +103,8 @@ trait DialogAgent {
       participant_id: String,
       text: String
   ): DialogAgentMessage = {
-<<<<<<< HEAD
-    val (extractions, extracted_doc) = extractor.runExtraction(Option(text).getOrElse(""))
-=======
     val (extractions, extracted_doc) = 
       extractor.runExtraction(Option(text).getOrElse(""))
->>>>>>> master
     val timestamp = Clock.systemUTC.instant.toString
     val version = "0.1"
     DialogAgentMessage(
