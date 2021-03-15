@@ -151,3 +151,11 @@ rules:
     type: token
     pattern: |
       [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
+
+  - name: switch_to
+    priority: ${ rulepriority }
+    label: Switch_to
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ switch_to_triggers })/ & tag=/^V/]
+      target: Role? = >/nmod/

@@ -41,7 +41,6 @@ trait DialogAgent {
     matches.map(x => (x("term") -> x("score"))).toSeq
   }
 
-
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
 

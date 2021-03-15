@@ -84,48 +84,142 @@ var collData = {
 
     event_types: [
       {
-        "type": "Increase",
-        "labels": ["INC"],
+        "type": "Rubble",
+        "labels": ["Rubble"],
         "bgColor": "lightgreen",
         "borderColor": "darken",
-        "arcs": [
-            {"type": "theme", "labels": ["theme"], "borderColor": "darken", "bgColor":"violet"},
-            {"type": "quantifier", "labels": ["quant"], "borderColor": "darken", "bgColor":"violet"}
-        ]
+        "arcs": []
       },
-
       {
-        "type": "Decrease",
-        "labels": ["DEC"],
-        "bgColor": "red",
-        "borderColor": "darken",
-        "arcs": [
-            {"type": "theme", "labels": ["theme"], "borderColor": "darken", "bgColor":"violet"},
-            {"type": "quantifier", "labels": ["quant"], "borderColor": "darken", "bgColor":"violet"}
-        ]
+          "type": "Green",
+          "labels": ["Green"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
+       {
+         "type": "Yellow",
+         "labels": ["Yellow"],
+         "bgColor": "lightgreen",
+         "borderColor": "darken",
+         "arcs": []
       },
-
       {
-        "type": "Causal",
-        "labels": ["CAUSAL"],
-        "bgColor": causalEventColor,
-        "borderColor": "darken",
-        "arcs": [
-          {"type": "cause", "labels": ["cause"], "borderColor": "darken", "bgColor":"pink"},
-          {"type": "effect", "labels": ["effect"], "borderColor": "darken", "bgColor":"pink"}
-         ]
+           "type": "Question",
+           "labels": ["Question"],
+           "bgColor": "lightgreen",
+           "borderColor": "darken",
+           "arcs": []
+       },
+       {
+          "type": "Agreement",
+          "labels": ["Agree"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
       },
-
       {
-        "type": "Correlation",
-        "labels": ["CORRELATION"],
-        "bgColor": correlationEventColor,
+        "type": "Anaphor",
+        "labels": ["Anaphor"],
+        "bgColor": "lightgreen",
         "borderColor": "darken",
-        "arcs": [
-          {"type": "cause", "labels": ["cause"], "borderColor": "darken", "bgColor":"pink"},
-          {"type": "effect", "labels": ["effect"], "borderColor": "darken", "bgColor":"pink"}
-         ]
-      }
+        "arcs": []
+      },
+      {
+          "type": "Disagreement",
+          "labels": ["Disagree"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+      },
+      {
+          "type": "Clear",
+          "labels": ["Clear"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+      },
+      {
+          "type": "ChangePriority",
+          "labels": ["Change"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"},
+            {"type": "person", "labels": ["person"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Commit",
+          "labels": ["Commit"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Continue",
+          "labels": ["Continue"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "person", "labels": ["person"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Sight",
+          "labels": ["Sight"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Move",
+          "labels": ["Move"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "person", "labels": ["person"], "borderColor": "darken", "bgColor":"violet"},
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Search",
+          "labels": ["Search"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "area", "labels": ["area"], "borderColor": "darken", "bgColor":"violet"},
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Save",
+          "labels": ["Save"],
+          "bgColor": "lightblue",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "location", "labels": ["location"], "borderColor": "darken", "bgColor":"violet"},
+            {"type": "target", "labels": ["target"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        },
+        {
+          "type": "Precedence",
+          "labels": ["Precedence"],
+          "bgColor": "lightyellow",
+          "borderColor": "darken",
+          "arcs": [
+            {"type": "first_action", "labels": ["first_action"], "borderColor": "darken", "bgColor":"violet"},
+            {"type": "second_action", "labels": ["second_action"], "borderColor": "darken", "bgColor":"violet"}
+          ]
+        }
     ]
 };
 
