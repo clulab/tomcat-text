@@ -62,15 +62,15 @@ medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 stretcher_triggers: "stretcher|carrying bed"
 
-medic_triggers: "medic|paramedic|nurse|doctor|medical specialist|med specialist"
+medic_triggers: "medic|paramedic|nurse|doctor" #medical specialist|med specialist" <-- these neeed separate rules
 
-hazmat_triggers: "hazmat|haz mat|haze mat"
+hazmat_triggers: "hazmat" # haz mat|haze mat <-- these need separate rules
 
 specialist_triggers: "specialist"
 
 search_spec_triggers: "search|service"
 
-heavy_triggers: "heavy equipment specialist|equipment specialist|engineer|heavy specialist"
+heavy_triggers: engineer # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
 
 alpha_triggers: "alpha"
 

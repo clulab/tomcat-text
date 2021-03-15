@@ -20,7 +20,7 @@ import scala.collection.mutable.{ArrayBuffer}
 /** Dialog language processor */
 trait DialogAgent {
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Load the taxonomy map from resource file */
   val taxonomy_map = JsonParser(
@@ -28,8 +28,12 @@ trait DialogAgent {
   ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
   /** Create the extractor using the pipeline and taxonomy map */
+  logger.info("Initializing Extractor (this may take a few seconds) ...")
   val extractor = new Extractor(new AsistEngine(), taxonomy_map)
-  logger.info("Extractor created.")
+  // Kickstart the extractor with this task to get lazy init out of the way
+  extractor.runExtraction("green victim")
+  logger.info("Extractor initialized.")
+
 
   /** map the mention label to the taxonomy map */
   def taxonomyMatches(mentionLabel: String) = {
@@ -38,26 +42,29 @@ trait DialogAgent {
   }
 
   /** Create a DialogAgent extraction from Extractor data */
-  def extraction(mention: Mention): Option[DialogAgentMessageDataExtraction] = {
-    val argument_labels = mention.arguments.keys.map(
-      mention.arguments.get(_).get(0).label
-    )
+  def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
+
+    val originalArgs = mention.arguments.toArray
+    val extractionArguments = for {
+      (role, ms) <- originalArgs
+      converted = ms.map(extraction)
+    } yield (role, converted)
+
     val taxonomy_matches = taxonomyMatches(mention.label)
     val charOffsets: Tuple2[Int, Int] = mention match {
       case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
       case e: TextBoundMention => (e.startOffset, e.endOffset)
       case _ => (-1, -1)
     }
-    Some(
-      DialogAgentMessageDataExtraction(
+    DialogAgentMessageDataExtraction(
         mention.label,
         mention.words.mkString(" "),
-        argument_labels.mkString(" "),
+        extractionArguments.toMap,
         charOffsets._1,
         charOffsets._2,
         taxonomy_matches
       )
-    )
+
   }
 
 
@@ -91,12 +98,6 @@ trait DialogAgent {
     )
   }
 
-  /** Return the extractions for the given text, which may be null */
-  def runExtraction(text: String): 
-    (Seq[Mention], org.clulab.processors.Document) = text match {
-      case s: String => extractor.runExtraction(s)
-      case _ => extractor.runExtraction("")
-    }
 
   /** create a DialogAgentMessage from text */
   def toDialogAgentMessage(
@@ -106,7 +107,8 @@ trait DialogAgent {
       participant_id: String,
       text: String
   ): DialogAgentMessage = {
-    val (extractions, extracted_doc) = runExtraction(text)
+    val (extractions, extracted_doc) = 
+      extractor.runExtraction(Option(text).getOrElse(""))
     val timestamp = Clock.systemUTC.instant.toString
     val version = "0.1"
     DialogAgentMessage(
@@ -129,7 +131,7 @@ trait DialogAgent {
           source_type = source_type,
           source_name = source_name
         ),
-        extractions.map(extraction).toList.flatten
+        extractions.map(extraction)
       )
     )
   }

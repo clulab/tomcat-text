@@ -16,9 +16,15 @@ trait DialogAgentJson {
   /** Used so Json serializer can recognize case classes */
   implicit val formats = Serialization.formats(NoTypeHints)
 
+  /** Serialize a DialogAgentMessageDataExtraction to a Json string 
+   *  @param ex A DialogAgentMessageDataExtraction struct
+   *  @return The struct represented as a json string
+   */
+  def toJson(ex: DialogAgentMessageDataExtraction): String = write(ex)
+
   /** Serialize a DialogAgentMessage to a Json string 
    *  @param da A DialogAgentMessage struct
-   *  @return The structure represented as a json string
+   *  @return The struct represented as a json string
    */
   def toJson(da: DialogAgentMessage): String = write(da)
 

@@ -187,5 +187,3 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
-
-
