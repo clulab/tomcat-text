@@ -42,7 +42,7 @@ class DialogAgentMqtt(
     with DialogAgent
     with DialogAgentJson {
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   // Kickstart the extractor with this task to get lazy init out of the way
   logger.info("Initializing Extractor (this may take a few seconds) ...")

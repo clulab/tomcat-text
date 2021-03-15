@@ -19,7 +19,7 @@ object  RunDialogAgent extends App {
   
   val appName ="DialogAgent"
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Show the usage hints */
   def usage: Unit = List(
@@ -28,7 +28,7 @@ object  RunDialogAgent extends App {
     "%s mqtt [host] [port]".format(appName),
     "",
     "To use %s on a file or the first level of a directory:".format(appName),
-    "%s file [inputFileOrDir] [outputFile]".format(appName),
+    "%s web_vtt [inputFileOrDir] [outputFile]".format(appName),
     ""
   ).map(println)
 

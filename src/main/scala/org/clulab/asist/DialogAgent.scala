@@ -20,7 +20,7 @@ import scala.collection.mutable.{ArrayBuffer}
 /** Dialog language processor */
 trait DialogAgent {
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Load the taxonomy map from resource file */
   val taxonomy_map = JsonParser(

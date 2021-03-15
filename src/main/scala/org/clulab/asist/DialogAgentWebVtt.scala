@@ -21,7 +21,7 @@ import scala.util.{Failure, Success}
 
 object DialogAgentWebVtt extends DialogAgent with DialogAgentJson {
 
-  private val logger = LoggerFactory.getLogger(this.getClass())
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Parse web_vtt input and write the results to an output file
    * @param inputFilename a web_vtt file or directory of files
