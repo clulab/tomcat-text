@@ -22,6 +22,8 @@ infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|r
 
 switch_triggers: "switch|toggle|lever|door"
 
+switch_to_triggers: "switch"
+
 foe_triggers: "zombie|mob|enemy|skeleton"
 
 person_triggers: "person|guy|victim|villager|dude|patient"
@@ -46,22 +48,32 @@ agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
 
 disagree_triggers: "no$|won't|nah|na|nope"
 
-rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade"
+rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
 
-clear_triggers: "clear|remove|clean"
+clear_triggers: "clear|remove|clear|break"
 
 then_precedence_triggers: "then"
 
 before_precedence_triggers: "before"
 
-hammer_triggers: "hammer|hummer|mallet"
+hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer"
 
 medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 stretcher_triggers: "stretcher|carrying bed"
 
-medic_triggers: "medic|paramedic|nurse|doctor"
+medic_triggers: "medic|paramedic|nurse|doctor|medical specialist|med specialist"
 
 hazmat_triggers: "hazmat|haz mat|haze mat"
 
-specialist_triggers: "search specialist|search-specialist|specialist"
+specialist_triggers: "specialist"
+
+search_spec_triggers: "search|service"
+
+heavy_triggers: "heavy equipment specialist|equipment specialist|engineer|heavy specialist"
+
+alpha_triggers: "alpha"
+
+bravo_triggers: "bravo"
+
+delta_triggers: "delta"

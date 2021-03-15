@@ -8,6 +8,7 @@
       - Hazmat
       - SearchSpecialist
       - Medic
+      - Engineer
   - Location:
     - Inferred:
       - Deictic
@@ -46,6 +47,7 @@
       - Disagreement
       - Commit
       - Clear
+      - Switch_to
     - ComplexActions:
         - Search         # Seach(Location)
         - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -56,6 +58,10 @@
         - Green
     - Friend
     - Foe
+    - Player:
+        - Alpha
+        - Bravo
+        - Delta
   - Facing:
     - DOWN
     - UP
