@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 object DialogAgentMqttDefaults {
 
   /** subscribe to these message bus topics for input */
-  val TOPIC_INPUT_OBS: String = "minecraft/chat"
+  val TOPIC_INPUT_CHAT: String = "minecraft/chat"
   val TOPIC_INPUT_ASR: String = "agent/asr"
 
   /** publish input analysis to this message bus topic */
@@ -29,14 +29,14 @@ object DialogAgentMqttDefaults {
 class DialogAgentMqtt(
     override val host: String = MqttAgentDefaults.HOST,
     override val port: String = MqttAgentDefaults.PORT,
-    val topicInputObs: String = DialogAgentMqttDefaults.TOPIC_INPUT_OBS,
+    val topicInputChat: String = DialogAgentMqttDefaults.TOPIC_INPUT_CHAT,
     val topicInputAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_ASR,
     val topicOutput: String = DialogAgentMqttDefaults.TOPIC_OUTPUT
 ) extends MqttAgent(
       host,
       port,
       id = "dialog_agent",
-      inputTopics = List(topicInputAsr, topicInputObs),
+      inputTopics = List(topicInputAsr, topicInputChat),
       outputTopics = List(topicOutput)
     )
     with DialogAgent
@@ -47,24 +47,51 @@ class DialogAgentMqtt(
   // Make sure we're connected to the broker.  Can't run without it.
   if (mqttConnected) logger.info("Ready.") else System.exit(1)
 
-  /** Publish a DialogAgentMessage as a Json serialization */
+  /** Publish a DialogAgentMessage as a Json serialization
+   *  @param a:  A compete DialogAgent output message
+   */
   def publish(a: DialogAgentMessage): Unit = {
     val output = toJson(a)
+    publish(output)
     logger.info("published on '%s': %s".format(
       DialogAgentMqttDefaults.TOPIC_OUTPUT,
       output)
     )
-    publish(output)
   }
 
-  /** Publish analysis of messages received on subscription topics */
-  override def messageArrived(topic: String, input: String): Unit = {
-    logger.info("Received on '%s': %s".format(topic, input))
+
+  /** Convert a json-serialized ChatMessage to a DialogAgent message
+   *  and publish to the message bus.
+   *  @param text:  A Minecraft chat message
+   */
+  def processInputChat(json: String): Unit = {
+    toChatMessage(json).map(a =>
+      publish(toDialogAgentMessage(a, topicInputChat, "message_bus"))
+    )
+  }
+
+
+  /** Convert a json-serialized AsrMessage to a DialogAgent message
+   *  and publish to the message bus if the 'is_final' flag is set.
+   *  @param text:  An ASR message
+   */
+  def processInputAsr(json: String): Unit = {
+    toAsrMessage(json).map(a =>
+      if(a.data.is_final)
+        publish(toDialogAgentMessage(a, topicInputAsr, "message_bus"))
+    )
+  }
+
+
+  /** Publish analysis of messages received on subscription topics 
+   *  @param topic:  The message bus topic where the input appeared 
+   *  @param json:  A json representation of a case class data struct
+   */
+  override def messageArrived(topic: String, json: String): Unit = {
+    logger.info("Received on '%s': %s".format(topic, json))
     topic match {
-      case `topicInputObs` => toChatMessage(input).map(a => 
-        publish(toDialogAgentMessage(a, topicInputObs, "message_bus")))
-      case `topicInputAsr` => toAsrMessage(input).map(a => 
-        publish(toDialogAgentMessage(a, topicInputAsr, "message_bus")))
+      case `topicInputChat` => processInputChat(json)
+      case `topicInputAsr` => processInputAsr(json)
       case _ =>
     }
   }
