@@ -43,6 +43,10 @@ libraryDependencies ++= Seq(
 )
 
 
+// trying to get interactive mode running for the DialogAgent
+connectInput in run := true
+
+
 // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
 libraryDependencies += "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5"
 

@@ -27,6 +27,9 @@ object  RunDialogAgent extends App {
     "To use %s on the message bus:".format(appName),
     "%s mqtt [host] [port]".format(appName),
     "",
+    "To use %s for extractions on command line input:".format(appName),
+    "%s stdin".format(appName),
+    "",
     "To use %s on a file or the first level of a directory:".format(appName),
     "%s web_vtt [inputFileOrDir] [outputFile]".format(appName),
     ""
@@ -37,6 +40,8 @@ object  RunDialogAgent extends App {
   val agent: Option[DialogAgent] = args match {
     case Array() =>
       Some(new DialogAgentMqtt)
+    case Array("stdin") => 
+      Some(new DialogAgentStdin)
     case Array("mqtt", host: String, port: String) => 
       Some(new DialogAgentMqtt(host, port))
     case Array("web_vtt", inputFile: String, outputFile: String) => {
