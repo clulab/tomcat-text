@@ -91,6 +91,76 @@ var collData = {
         "arcs": []
       },
       {
+          "type": "Infrastructure",
+          "labels": ["Infrastructure"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Medic",
+          "labels": ["Medic"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Searcher",
+          "labels": ["Searcher"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Engineer",
+          "labels": ["Engineer"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Deictic",
+          "labels": ["Deictic"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Victim",
+          "labels": ["Victim"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Hammer",
+          "labels": ["Hammer"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Alpha",
+          "labels": ["Alpha"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
+      {
+          "type": "Bravo",
+          "labels": ["Bravo"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
+      {
+          "type": "Delta",
+          "labels": ["Delta"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
+      {
           "type": "Green",
           "labels": ["Green"],
           "bgColor": "lightgreen",
@@ -112,6 +182,13 @@ var collData = {
            "arcs": []
        },
        {
+          "type": "RoleSwitch",
+          "labels": ["RoleSwitch"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
           "type": "Agreement",
           "labels": ["Agree"],
           "bgColor": "lightgreen",

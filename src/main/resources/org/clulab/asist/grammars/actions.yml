@@ -152,10 +152,10 @@ rules:
     pattern: |
       [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
 
-  - name: switch_to
+  - name: role_switch
     priority: ${ rulepriority }
-    label: Switch_to
+    label: RoleSwitch
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/(?i)^(${ switch_to_triggers })/ & tag=/^V/]
+      trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
       target: Role? = >/nmod/
