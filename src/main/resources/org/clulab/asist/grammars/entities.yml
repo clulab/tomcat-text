@@ -124,21 +124,13 @@ rules:
     pattern: |
       [lemma=/${ stretcher_triggers }/]
 
-  - name: search_specialist
+  - name: searcher
     priority: ${ rulepriority }
-    label: SearchSpecialist
+    label: Searcher
     type: token
     keep: true
     pattern: |
       [word=/(?i)(${ search_spec_triggers })/] [word=/(?i)(${ specialist_triggers })/]
-
-  - name: hazmat
-    priority: ${ rulepriority }
-    label: Hazmat
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/${ hazmat_triggers }/]
 
   - name: medic
     priority: ${ rulepriority }
@@ -154,7 +146,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/${ heavy_triggers }/]
+      [lemma=/${ engineer_triggers }/]
 
   - name: alpha
     priority: ${ rulepriority }

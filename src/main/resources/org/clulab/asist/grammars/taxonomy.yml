@@ -5,8 +5,7 @@
   - Switch
   - Anaphor
   - Role:
-      - Hazmat
-      - SearchSpecialist
+      - Searcher
       - Medic
       - Engineer
   - Location:
