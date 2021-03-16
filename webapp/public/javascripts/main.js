@@ -133,12 +133,33 @@ var collData = {
           "arcs": []
       },
       {
-          "type": "Green",
-          "labels": ["Green"],
+          "type": "Hammer",
+          "labels": ["Hammer"],
           "bgColor": "lightgreen",
           "borderColor": "darken",
           "arcs": []
       },
+      {
+          "type": "Alpha",
+          "labels": ["Alpha"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
+      {
+          "type": "Bravo",
+          "labels": ["Bravo"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
+      {
+          "type": "Delta",
+          "labels": ["Delta"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+       },
       {
           "type": "Green",
           "labels": ["Green"],
@@ -161,6 +182,13 @@ var collData = {
            "arcs": []
        },
        {
+          "type": "RoleSwitch",
+          "labels": ["RoleSwitch"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
           "type": "Agreement",
           "labels": ["Agree"],
           "bgColor": "lightgreen",
