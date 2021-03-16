@@ -91,6 +91,55 @@ var collData = {
         "arcs": []
       },
       {
+          "type": "Infrastructure",
+          "labels": ["Infrastructure"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Medic",
+          "labels": ["Medic"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Searcher",
+          "labels": ["Searcher"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Engineer",
+          "labels": ["Engineer"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Deictic",
+          "labels": ["Deictic"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Victim",
+          "labels": ["Victim"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
+          "type": "Green",
+          "labels": ["Green"],
+          "bgColor": "lightgreen",
+          "borderColor": "darken",
+          "arcs": []
+      },
+      {
           "type": "Green",
           "labels": ["Green"],
           "bgColor": "lightgreen",
