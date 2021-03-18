@@ -4,10 +4,6 @@
   - Ordinal
   - Switch
   - Anaphor
-  - Role:
-      - Searcher
-      - Medic
-      - Engineer
   - Location:
     - Inferred:
       - Deictic
@@ -16,12 +12,15 @@
       - Room
       - Door
       - Building
+      - Hallway
       - Stairs
       - Window
       - Floor
       - Ceiling
       - Lever
       - Button
+    - Map:
+        - center
   - Obstacle:
       - Rubble
       - Fire
@@ -34,45 +33,60 @@
       - Push
       - Toggle
       - Jump
-      - Communicate
-      - Continue
       - Extinguish
       - Save
       - Defeat
       - Sight
       - Craft
-      - Question
-      - Agreement
-      - Disagreement
-      - Commit
+      - Communicate:
+        - Question
+        - Agreement
+        - Disagreement
       - Clear
       - RoleSwitch
     - ComplexActions:
         - Search         # Seach(Location)
         - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+        - Commitment:
+          - MakeCommitment
+          - ProposeCommitment
+        - Continue
+        - MoveVictim
+        - Need
         - Precedence
-  - EntityTypes:
+        - Planning
+        - OfferHelp
+        - ShareKnowledge
+  - Entity:
+    - Other
+    - Self
+    - You
+    - Role:
+      - Searcher
+      - Medic
+      - Engineer
     - Victim:
         - Yellow
         - Green
     - Friend
     - Foe
     - Player:
-        - Alpha
-        - Bravo
-        - Delta
-  - Facing:
-    - DOWN
-    - UP
-    - NORTH
-    - SOUTH
-    - WEST
-    - EAST
-    - UP_X
-    - DOWN_X
-    - UP_Z
-    - DOWN_Z
-  - ItemType:
+      - Alpha
+      - Bravo
+      - Charlie
+      - Delta
+  - Direction:
+    - Relative:
+      - Up
+      - Down
+      - Left
+      - Right
+    - Cardinal:
+      - North
+      - East
+      - South
+      - West
+  - Item:
     - Bow
     - Arrow
     - Sword
@@ -100,8 +114,11 @@
       - Hammer
       - MedKit
       - Stretcher
-- Sentiment:
-    - Positive
+  - Sentiment:
+    - Uncertainty  # include the agent
+    - Positive:
+      - Encouragement
+      - Politeness
     - Negative:
-        - Anger
-        - Worry
+      - Anger
+      - Worry
