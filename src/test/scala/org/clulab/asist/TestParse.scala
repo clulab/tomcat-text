@@ -1,37 +1,30 @@
 package org.clulab.asist
 
-import java.util.Date
-import org.clulab.asist.AsistEngine
-import org.clulab.odin.Mention
-import org.clulab.processors.Processor
-import org.clulab.processors.fastnlp.FastNLPProcessor
-import org.scalatest.{FlatSpec, Matchers}
+class TestParse extends BaseTest {
 
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
+  val CLOSE = "Close"
+  val INFRASTRUCTURE = "Infrastructure"
 
-class TestParse extends FlatSpec with Matchers {
-  val extractor = new AsistEngine()
+  behavior of "AsistEngine"
 
-  def getMentionMap(mentions: Vector[Mention]): mutable.Map[String, Int] = {
-    val mention_map = mutable.Map[String, Int]()
-    for (m <- mentions) {
-      if (mention_map contains m.label) {
-        mention_map (m.label) += 1
-      } else {
-        mention_map (m.label) = 1
-      }
-    }
-    mention_map
-  }
+   failingTest should "Parse close events properly" in {
 
-  "AsistEngine" should "Parse close events properly" in {
     val doc = extractor.annotate("I'm closing the door")
     val mentions = extractor.extractFrom(doc)
-    mentions.size should be(3)
-    mentions(0).label should be("Infrastructure")
-    mentions(1).label should be("Switch")
-    mentions(2).label should be("Close")
+
+    val door = DesiredMention(INFRASTRUCTURE, "door")
+    val doorArg = Arg("theme", Seq(door))
+    val close = DesiredMention(CLOSE, "closing the door", Seq(doorArg))
+
+    val found = getMentionsWithLabel(mentions, CLOSE)
+    found should have size(1)
+
+    testMention(found.head, close)
+
+//    mentions.size should be(3)
+//    mentions(0).label should be("Infrastructure")
+//    mentions(1).label should be("Switch")
+//    mentions(2).label should be("Close")
   }
 
   it should "Parse craft events properly" in {
@@ -130,7 +123,7 @@ class TestParse extends FlatSpec with Matchers {
       "Down the road there is a mob or a zombie."
     )
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionMap(mentions)
+    val mention_map = getMentionCounter(mentions)
     mentions.size should be(3)
     mention_map("Foe") should be(2)
     mention_map("Deictic") should be(1)
@@ -140,7 +133,7 @@ class TestParse extends FlatSpec with Matchers {
     val doc =
       extractor.annotate("There's a guy over there, next to the other person")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionMap(mentions)
+    val mention_map = getMentionCounter(mentions)
     mentions.size should be(5)
     mention_map("Sight") should be(1)
     mention_map("Victim") should be(2)
@@ -150,7 +143,7 @@ class TestParse extends FlatSpec with Matchers {
   it should "Recognize commitments" in {
     val doc = extractor.annotate("I will rescue the victim in here")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionMap(mentions)
+    val mention_map = getMentionCounter(mentions)
     mentions.size should be(5)
     mention_map("Save") should be(1)
     mention_map("Commit") should be(1)
@@ -161,7 +154,7 @@ class TestParse extends FlatSpec with Matchers {
   it should "Recognize questions" in {
     val doc = extractor.annotate("What's that over there?")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionMap(mentions)
+    val mention_map = getMentionCounter(mentions)
     mentions.size should be(2)
     mention_map("Question") should be(1)
     mention_map("Deictic") should be(1)
@@ -170,7 +163,7 @@ class TestParse extends FlatSpec with Matchers {
   it should "Recognize agreements" in {
     val doc = extractor.annotate("Ok, sounds good")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionMap(mentions)
+    val mention_map = getMentionCounter(mentions)
     mentions.size should be(1)
     mention_map("Agreement") should be(1)
   }
@@ -178,7 +171,7 @@ class TestParse extends FlatSpec with Matchers {
   it should "Recognize disagreements" in {
     val doc = extractor.annotate("No, I'm headed over here")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionMap(mentions)
+    val mention_map = getMentionCounter(mentions)
     mentions.size should be(2)
     mention_map("Disagreement") should be(1)
     mention_map("Deictic") should be (1)
