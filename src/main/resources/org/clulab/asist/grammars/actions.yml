@@ -7,7 +7,7 @@ rules:
     label: Close
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/(?i)^(${ close_triggers })/]
+      trigger = [lemma=/(?i)^(${ close_triggers })/ & tag=/^V/]
       target: Infrastructure? = >dobj | >/nmod/
       target: DemPron? = >dobj
 
@@ -130,7 +130,7 @@ rules:
 
   - name: commit_to_something
     priority: 4
-    label: Commit
+    label: MakeCommitment
     action: removeResearcher
     pattern: |
       trigger = [tag=/^MD/]

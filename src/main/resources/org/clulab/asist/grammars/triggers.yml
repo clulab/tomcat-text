@@ -44,7 +44,7 @@ change_priority_triggers: "target|prioritize|focus"
 
 exist_triggers: "be"
 
-agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
+agree_triggers: "yes|roger|acknowledge"
 
 disagree_triggers: "no$|won't|nah|na|nope"
 
