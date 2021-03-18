@@ -9,7 +9,12 @@ rules:
     vars:
       rulepriority: "1"
 
-  # Extract the simple vents
+  # Extract time mentions, e.g., "30 seconds"
+  - import: org/clulab/asist/grammars/time.yml
+    vars:
+      rulepriority: "1"
+
+  # Extract the simple events
   - import: org/clulab/asist/grammars/actions.yml
     vars:
       rulepriority: "2"
