@@ -65,7 +65,7 @@ class DialogAgentMqtt(
    *  @param msg:  input from the Minecraft chat textfield
    */
   def processChat(msg: ChatMessage): Unit = 
-    publish(toDialogAgentMessage(msg, topicInputChat, "message_bus"))
+    publish(toDialogAgentMessage(msg, "message_bus", topicInputChat))
 
 
   /** Convert a json-serialized AsrMessage to a DialogAgent message
@@ -73,7 +73,7 @@ class DialogAgentMqtt(
    *  @param msg: Input from the Minecraft microphone
    */
   def processAsr(msg: AsrMessage): Unit = if(msg.data.is_final)
-    publish(toDialogAgentMessage(msg, topicInputAsr, "message_bus"))
+    publish(toDialogAgentMessage(msg, "message_bus", topicInputAsr))
 
 
   /** Publish analysis of messages received on subscription topics 

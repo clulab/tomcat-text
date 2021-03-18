@@ -20,6 +20,11 @@ import scala.collection.mutable.{ArrayBuffer}
 /** Dialog language processor */
 trait DialogAgent {
 
+  val DIALOG_AGENT_MESSAGE_TYPE = "event"
+  val DIALOG_AGENT_SOURCE = "tomcat_textAnalyzer"
+  val DIALOG_AGENT_SUB_TYPE = "Event:dialogue_event"
+  val DIALOG_AGENT_VERSION = "1.0"
+
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   /** Load the taxonomy map from resource file */
@@ -71,12 +76,12 @@ trait DialogAgent {
   /** Translate an AsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
       a: AsrMessage,
-      topic: String,
-      source_type: String
+      source_type: String,
+      source_name: String
   ): DialogAgentMessage = {
     toDialogAgentMessage(
       source_type,
-      topic,
+      source_name,
       a.msg,
       a.data.participant_id,
       a.data.text
@@ -86,12 +91,12 @@ trait DialogAgent {
   /** Translate a ChatMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
       a: ChatMessage,
-      topic: String,
-      source_type: String
+      source_type: String,
+      source_name: String
   ): DialogAgentMessage = {
     toDialogAgentMessage(
       source_type,
-      topic,
+      source_name,
       a.msg,
       a.data.sender,
       a.data.text
@@ -110,20 +115,19 @@ trait DialogAgent {
     val (extractions, extracted_doc) = 
       extractor.runExtraction(Option(text).getOrElse(""))
     val timestamp = Clock.systemUTC.instant.toString
-    val version = "0.1"
     DialogAgentMessage(
       CommonHeader(
         timestamp = timestamp,
-        message_type = "event",
-        version = version
+        message_type = DIALOG_AGENT_MESSAGE_TYPE,
+        version = DIALOG_AGENT_VERSION
       ),
       CommonMsg(
         experiment_id = msg.experiment_id,
         trial_id = msg.trial_id,
         timestamp = timestamp,
-        source = "tomcat_textAnalyzer",
-        sub_type = "Event:dialogue_event",
-        version = version,
+        source = DIALOG_AGENT_SOURCE,
+        sub_type = DIALOG_AGENT_SUB_TYPE,
+        version = DIALOG_AGENT_VERSION,
         replay_root_id = msg.replay_root_id,
         replay_id = msg.replay_id
       ),
