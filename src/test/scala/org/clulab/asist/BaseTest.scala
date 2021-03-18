@@ -6,7 +6,8 @@ import org.scalatest.{FlatSpec, Matchers}
 import scala.collection.mutable
 
 class BaseTest extends FlatSpec with Matchers {
-  val extractor = new AsistEngine()
+
+  val extractor = BaseTest.extractor
 
   val failingTest = ignore
   val passingTest = it
@@ -33,18 +34,8 @@ class BaseTest extends FlatSpec with Matchers {
   }
 
   def testMention(ms: Seq[Mention], desiredMention: DesiredMention): Unit = {
-    val matchesText = ms.filter(_.text == desiredMention.text)
-    if (matchesText.isEmpty) {
-      throw new RuntimeException(s"Desired text «${desiredMention.text}≫ not found in " +
-        s"Mentions: \n\t${ms.map(_.text).mkString("\n\t")}")
-    }
-    else if (matchesText.length > 1) {
-      throw new RuntimeException(s"More than one Mention has desired text «${desiredMention.text}≫ in " +
-        s"matching Mentions: \n\t${matchesText.map(_.text).mkString("\n\t")}")
-    }
-    else {
-      testMention(matchesText.head, desiredMention)
-    }
+    val found = ms.map(DesiredMention.fromMention(_))
+    found should contain(desiredMention)
   }
 
   /** Borrowed in spirit from Lum's OdinsonTest
@@ -53,34 +44,8 @@ class BaseTest extends FlatSpec with Matchers {
    * @param desiredMention what you wanted to find, in the local case class
    */
   def testMention(m: Mention, desiredMention: DesiredMention): Unit = {
-
-    // Test the mention type and  text
-    m.labels should contain(desiredMention.label)
-    m.text shouldBe desiredMention.text
-
     val found = DesiredMention.fromMention(m)
-
-    // all desired args should be there, in the right number
-    val groupedMatched = found.arguments.groupBy(_.name)
-    val groupedDesired = desiredMention.arguments.groupBy(_.name)
-
-    // There should be the same number of roles
-    groupedDesired.keySet should have size (groupedMatched.keySet.size)
-
-    // Check for full containment
-    for ((desiredRole, desired) <- groupedDesired) {
-      // there should be arg(s) of the desired label
-      groupedMatched.keySet should contain(desiredRole)
-      // should have the same number of arguments of that label
-      val matchedForThisRole = groupedMatched(desiredRole).toSeq
-      desired should have size matchedForThisRole.length
-      for (d <- desired) {
-        matchedForThisRole should contain(d)
-      }
-      // there shouldn't be any found arguments that we didn't want
-      val unwantedArgs = groupedMatched.keySet.diff(groupedDesired.keySet)
-      unwantedArgs shouldBe size(0)
-    }
+    found should equal(desiredMention)
   }
 
 
@@ -110,4 +75,8 @@ class BaseTest extends FlatSpec with Matchers {
     }
   }
 
+}
+
+object BaseTest {
+  val extractor = new AsistEngine()
 }

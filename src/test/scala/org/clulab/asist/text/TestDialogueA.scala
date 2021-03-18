@@ -47,7 +47,8 @@ class TestDialogueA extends BaseTest {
   }
 
   failingTest should "extract targets with modifiers" in {
-    val modifier = Arg("modifier", Seq(DesiredMention(MODIFIER, "high value")))
+    // high value targets Victim("targets", mod="high value")
+    val modifier = Arg("mod", Seq(DesiredMention(MODIFIER, "high value")))
     val targets = DesiredMention(VICTIM, "targets", Seq(modifier))
     testMention(mentions, targets)
   }
