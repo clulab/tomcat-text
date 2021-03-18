@@ -28,6 +28,12 @@ trait DialogAgentJson {
    */
   def toJson(da: DialogAgentMessage): String = write(da)
 
+  /** Serialize an AsrMessage to a Json string.   Used for testing.
+   *  @param asr A AsrMessage struct
+   *  @return The struct represented as a json string
+   */
+  def toJson(asr: AsrMessage): String = write(asr)
+
   /** Deserialize a DialogAgentMessage from a Json string
    *  @param json a json representation of a DialogAgentMessage struct
    *  @return A DialogAgentMessage struct if the read succeeded, else None
