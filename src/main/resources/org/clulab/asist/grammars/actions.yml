@@ -83,7 +83,7 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ search_triggers })/]
-      person: Anaphor = >nsubj
+      person: Entity = >nsubj
       target: Concept? = >nmod_for
 
   - name: move_nmod_action
@@ -93,7 +93,7 @@ rules:
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
       target: Location = >nmod_into | >nmod_to | >nmod_towards
-      person: Anaphor? = >nsubj
+      person: Entity? = >nsubj
 
   - name: move_deixis_action
     priority: ${ rulepriority }
@@ -102,7 +102,7 @@ rules:
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
       target: Deictic = >nmod_into | >nmod_to | >nmod_towards | >advmod
-      person: Anaphor? = >nsubj
+      person: Entity? = >nsubj
 
   - name: sight_presence
     priority: ${ rulepriority }
@@ -117,7 +117,7 @@ rules:
     label: Continue
     pattern: |
       trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      person: Anaphor = >nsubj
+      person: Entity = >nsubj
 
   - name: change_priority
     priority: ${ rulepriority }
@@ -126,7 +126,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
-      person: Anaphor? = >nsubj
+      person: Entity? = >nsubj
 
   - name: commit_to_something
     priority: 4

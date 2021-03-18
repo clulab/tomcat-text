@@ -70,6 +70,10 @@ search_spec_triggers: "search|service"
 
 engineer_triggers: "hazmat|engineer" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
 
+self_triggers: "i|me"
+
+other_triggers: "you"
+
 alpha_triggers: "alpha"
 
 bravo_triggers: "bravo"

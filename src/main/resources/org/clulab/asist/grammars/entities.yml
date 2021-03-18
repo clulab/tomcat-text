@@ -49,7 +49,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [tag=/PRP/]
+      [lemma=/(?i)^(${ self_triggers }) & tag=/PRP/]
 
   - name: green
     label: Green
