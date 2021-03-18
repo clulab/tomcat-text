@@ -43,13 +43,13 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
-  - name: anaphor
-    label: Anaphor
-    priority: 1
-    type: token
-    keep: false
-    pattern: |
-      [lemma=/(?i)^(${ self_triggers }) & tag=/PRP/]
+  #- name: anaphor
+  #  label: Anaphor
+  #  priority: 1
+  #  type: token
+  #  keep: false
+  #  pattern: |
+  #    [tag=/PRP/]
 
   - name: green
     label: Green
@@ -171,6 +171,14 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)(${ delta_triggers })/]
+
+  - name: charlie
+    priority: ${ rulepriority }
+    label: Charlie
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ charlie_triggers })/]
 
   - name: switch
     priority: ${ rulepriority }

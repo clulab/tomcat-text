@@ -18,7 +18,7 @@ rules:
       label: Move
       trigger: ${ moveto_triggers }
       object_type: Location
-
+# need intransitive movement
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
       name: toggle
