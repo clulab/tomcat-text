@@ -77,7 +77,7 @@ trait DialogAgent {
     toDialogAgentMessage(
       source_type,
       topic,
-      a.msg.experiment_id,
+      a.msg,
       a.data.participant_id,
       a.data.text
     )
@@ -92,7 +92,7 @@ trait DialogAgent {
     toDialogAgentMessage(
       source_type,
       topic,
-      a.msg.experiment_id,
+      a.msg,
       a.data.sender,
       a.data.text
     )
@@ -103,7 +103,7 @@ trait DialogAgent {
   def toDialogAgentMessage(
       source_type: String,
       source_name: String,
-      experiment_id: String,
+      msg: CommonMsg,
       participant_id: String,
       text: String
   ): DialogAgentMessage = {
@@ -112,17 +112,20 @@ trait DialogAgent {
     val timestamp = Clock.systemUTC.instant.toString
     val version = "0.1"
     DialogAgentMessage(
-      MessageHeader(
+      CommonHeader(
         timestamp = timestamp,
         message_type = "event",
         version = version
       ),
-      DialogAgentMessageMsg(
-        source = "tomcat_textAnalyzer",
-        experiment_id = experiment_id,
+      CommonMsg(
+        experiment_id = msg.experiment_id,
+        trial_id = msg.trial_id,
         timestamp = timestamp,
+        source = "tomcat_textAnalyzer",
         sub_type = "Event:dialogue_event",
-        version = version
+        version = version,
+        replay_root_id = msg.replay_root_id,
+        replay_id = msg.replay_id
       ),
       DialogAgentMessageData(
         participant_id = participant_id,

@@ -1,23 +1,12 @@
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Updated:  2021 February
+ *  Updated:  2021 March Hackathon
  *
- *  Observation (Obs) message
- *
- *  ChatMessages are received on the message bus 
+ *  ChatMessages are received on message bus topic 'minecraft/chat'
  */
 package org.clulab.asist
 
-/** Part of the ChatMessage class */
-case class ChatMessageMsg(
-  val experiment_id: String = null,  // "123e4567-e89b-12d3-a456-426655440000"
-  val trial_id: String = null,  // "123e4567-e89b-12d3-a456-426655440000"
-  val timestamp: String = null,  // "2019-12-26T14:05:02.1412Z"
-  val source: String = null,  // "simulator"
-  val sub_type: String = null,  // "Event:Chat"
-  val version: String = null  // "0.4"
-)
 
 /** Part of the ChatMessage class */
 case class ChatMessageData(
@@ -29,7 +18,7 @@ case class ChatMessageData(
 
 /** Contains the full structure of a chat message */
 case class ChatMessage (
-  val header: MessageHeader,
+  val header: CommonHeader,
   val data: ChatMessageData,
-  val msg: ChatMessageMsg
+  val msg: CommonMsg
 )
