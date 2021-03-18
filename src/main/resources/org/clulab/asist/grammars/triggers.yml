@@ -75,3 +75,5 @@ alpha_triggers: "alpha"
 bravo_triggers: "bravo"
 
 delta_triggers: "delta"
+
+charlie_triggers: "charlie"
