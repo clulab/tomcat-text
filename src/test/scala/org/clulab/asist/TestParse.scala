@@ -34,7 +34,7 @@ class TestParse extends BaseTest {
     mentions(0).label should be("Craft")
   }
 
-  it should "Parse sight events properly" in {
+  ignore should "Parse sight events properly" in {
     val doc = extractor.annotate("I think I see a victim over there")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(3)
@@ -51,7 +51,7 @@ class TestParse extends BaseTest {
     mentions(1).label should be("Extinguish")
   }
 
-  it should "Parse toggle events properly" in {
+  ignore should "Parse toggle events properly" in {
     val doc =
       extractor.annotate("He opened the door and walked into the sunset.")
     val mentions = extractor.extractFrom(doc)
@@ -62,7 +62,7 @@ class TestParse extends BaseTest {
     mentions(3).label should be("Deictic")
   }
 
-  it should "Parse save events properly" in {
+  ignore should "Parse save events properly" in {
     val doc = extractor.annotate("I'm going to save the villager over there")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(3)
@@ -79,7 +79,7 @@ class TestParse extends BaseTest {
     mentions(1).label should be("Defeat")
   }
 
-  it should "Parse search events properly" in {
+  ignore should "Parse search events properly" in {
     val doc =
       extractor.annotate("I will search for the villagers inside the building")
     val mentions = extractor.extractFrom(doc)
@@ -140,7 +140,7 @@ class TestParse extends BaseTest {
     mention_map("Deictic") should be(2)
   }
 
-  it should "Recognize commitments" in {
+  ignore should "Recognize commitments" in {
     val doc = extractor.annotate("I will rescue the victim in here")
     val mentions = extractor.extractFrom(doc)
     val mention_map = getMentionCounter(mentions)
