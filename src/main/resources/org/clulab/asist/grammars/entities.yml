@@ -83,8 +83,8 @@ rules:
     pattern: |
       [lemma=/(?i)^(yellow)/]
 
-  - name: ask_question
-    label: Question
+  - name: question_particle
+    label: QuestionParticle
     priority: ${ rulepriority }
     type: token
     keep: true
@@ -203,3 +203,11 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
+
+  - name: north
+    priority: ${ rulepriority }
+    label: North
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ north_triggers })$/]

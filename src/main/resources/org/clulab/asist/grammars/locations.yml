@@ -1,0 +1,11 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: north
+    priority: ${ rulepriority }
+    label: North
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ north_triggers })$/]

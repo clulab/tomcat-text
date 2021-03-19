@@ -85,3 +85,13 @@ bravo_triggers: "bravo"
 delta_triggers: "delta"
 
 charlie_triggers: "charlie"
+
+where_triggers: "where"
+
+north_triggers: "north"
+
+south_triggers: "south"
+
+west_triggers: "west"
+
+east_triggers: "east"
