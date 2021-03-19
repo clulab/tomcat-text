@@ -112,7 +112,7 @@
     - Emerald
     - ItemFrame
     - FlowerPot
-    - Resource:
+    - Tool:
       - Hammer
       - MedKit
       - Stretcher

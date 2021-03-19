@@ -18,6 +18,7 @@ rules:
       label: Move
       trigger: ${ moveto_triggers }
       object_type: Location
+
 # need intransitive movement
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -86,6 +87,15 @@ rules:
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
+  - name: move_impoverished
+    priority: ${ rulepriority }
+    label: Move
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/${ moveto_triggers }/]
+      target: Location? = >nmod_into | >nmod_to | >nmod_towards
+      person: Entity? = >/${agents}/
+
   - name: move_nmod_action
     priority: ${ rulepriority }
     label: Move
@@ -93,7 +103,7 @@ rules:
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
       target: Location = >nmod_into | >nmod_to | >nmod_towards
-      person: Entity? = >nsubj
+      person: Entity? = >/${agents}/
 
   - name: move_deixis_action
     priority: ${ rulepriority }
@@ -102,7 +112,18 @@ rules:
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
       target: Deictic = >nmod_into | >nmod_to | >nmod_towards | >advmod
-      person: Entity? = >nsubj
+      person: Entity? = >/${agents}/
+
+  - name: move_explicit
+    priority: ${ rulepriority }
+    label: Move
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Location = >/nmod_(to|by|over|in_front_of|next_to)/
+
+  # -------------------------------------------------------------------
 
   - name: sight_presence
     priority: ${ rulepriority }
@@ -110,14 +131,14 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Victim = >nsubj
+      target: Victim = >/${agents}/
 
   - name: continue_action
     priority: ${ rulepriority }
     label: Continue
     pattern: |
       trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      person: Entity = >nsubj
+      person: Entity = >/${agents}/
 
   - name: change_priority
     priority: ${ rulepriority }
@@ -126,7 +147,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
-      person: Entity? = >nsubj
+      person: Entity? = >/${agents}/
 
   - name: clear_rubble
     priority: ${ rulepriority }

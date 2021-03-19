@@ -1,6 +1,6 @@
 transpose_triggers: "move|shift"
 
-moveto_triggers: "go|move|run|walk|come"
+moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
 
 close_triggers: "close|shut"
 
