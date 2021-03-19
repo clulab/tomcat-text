@@ -3,7 +3,7 @@ vars: org/clulab/asist/grammars/vars.yml
 rules:
 
   - name: north
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: North
     type: token
     keep: true
@@ -11,7 +11,7 @@ rules:
       [lemma=/(?i)^(${ north_triggers })$/]
 
   - name: north_east
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: NorthEast
     type: token
     keep: true
@@ -19,7 +19,7 @@ rules:
       [lemma=/(?i)^(${ north_triggers })(${ east_triggers })$/]
 
   - name: north_west
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: NorthWest
     type: token
     keep: true
@@ -27,7 +27,7 @@ rules:
       [lemma=/(?i)^(${ north_triggers })(${ west_triggers })$/]
 
   - name: south
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: South
     type: token
     keep: true
@@ -35,7 +35,7 @@ rules:
       [lemma=/(?i)^(${ south_triggers })$/]
 
   - name: south_west
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: SouthWest
     type: token
     keep: true
@@ -43,7 +43,7 @@ rules:
       [lemma=/(?i)^(${ south_triggers })(${ west_triggers })$/]
 
   - name: south_east
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: SouthEast
     type: token
     keep: true
@@ -51,7 +51,7 @@ rules:
       [lemma=/(?i)^(${ south_triggers })(${ east_triggers })$/]
 
   - name: east
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: East
     type: token
     keep: true
@@ -59,7 +59,7 @@ rules:
       [lemma=/(?i)^(${ east_triggers })$/]
 
   - name: west
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: West
     type: token
     keep: true
@@ -67,7 +67,7 @@ rules:
       [lemma=/(?i)^(${ west_triggers })$/]
 
   - name: directions
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: Direction
     type: token
     keep: true
@@ -75,7 +75,7 @@ rules:
       [lemma=/(?i)(up|down|left|right)(ward|most|ish)?/]
 
   - name: relative_location
-    priority: 4
+    priority: ${ second_priority }
     label: Location
     pattern: |
       trigger = @Direction [lemma=/half|part|side/]?
