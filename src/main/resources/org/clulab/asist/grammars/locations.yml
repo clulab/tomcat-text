@@ -8,9 +8,71 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ north_triggers })$|right/]
+      [lemma=/(?i)^(${ north_triggers })$/]
 
+  - name: north_east
+    priority: ${ rulepriority }
+    label: NorthEast
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ north_triggers })(${ east_triggers })$/]
 
+  - name: north_west
+    priority: ${ rulepriority }
+    label: NorthWest
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ north_triggers })(${ west_triggers })$/]
+
+  - name: south
+    priority: ${ rulepriority }
+    label: South
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ south_triggers })$/]
+
+  - name: south_west
+    priority: ${ rulepriority }
+    label: SouthWest
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ south_triggers })(${ west_triggers })$/]
+
+  - name: south_east
+    priority: ${ rulepriority }
+    label: SouthEast
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ south_triggers })(${ east_triggers })$/]
+
+  - name: east
+    priority: ${ rulepriority }
+    label: East
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ east_triggers })$/]
+
+  - name: west
+    priority: ${ rulepriority }
+    label: West
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ west_triggers })$/]
+
+  - name: directions
+    priority: ${ rulepriority }
+    label: Direction
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(up|down|left|right)(ward|most|ish)?/]
 
   - name: relative_location
     priority: 4

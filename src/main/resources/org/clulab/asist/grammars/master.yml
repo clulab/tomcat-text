@@ -13,6 +13,7 @@ rules:
   - import: org/clulab/asist/grammars/locations.yml
     vars:
       rulepriority: "2+"
+
   # Extract the entities
   - import: org/clulab/asist/grammars/base_concepts.yml
     vars:
