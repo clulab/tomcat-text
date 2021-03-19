@@ -72,7 +72,14 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ zone_triggers })$/] [tag=CD]
+      (?<trigger> [lemma=/(?i)^(${ zone_triggers })$/]) @num:Number
+
+  - name: zone_conj
+    priority: ${ first_priority }
+    label: Zone
+    pattern: |
+      trigger = [lemma=/(?i)^(${ zone_triggers })$/]
+      num: Number = >/(conj_(and|or)|nummod)/
 
   - name: directions
     priority: ${ first_priority }
@@ -80,7 +87,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(up|down|left|right)(ward|most|ish)?/]
+      [lemma=/(?i)(up|down|left|right)(ward|most|ish)?/] (?! [word=/(?i)now|away/])
 
   - name: relative_location
     priority: ${ second_priority }
@@ -89,10 +96,17 @@ rules:
       trigger = @Direction [lemma=/half|part|side|section/]?
       target: Concept? = >/nmod_of/
 
-  # minecraft door switch, e.g.
   - name: location_area
     priority: ${ second_priority }
     label: Location
     type: token
     pattern: |
-      @Location [lemma=/(?i)area|surrounding|vicinity|space/]
+      @Location [lemma=/(?i)area|section|surrounding|vicinity|space/]
+
+  - name: location_clumped
+    priority: ${ second_priority }
+    label: Location
+    type: token
+#    action: noRepeats
+    pattern: |
+      [mention=Location]{2,4}

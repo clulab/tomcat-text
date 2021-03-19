@@ -12,8 +12,8 @@ rules:
   # Extract the locations
   - import: org/clulab/asist/grammars/locations.yml
     vars:
-      first_priority: "2+"
-      second_priority: "4"
+      first_priority: "2-3"
+      second_priority: "4+"
 
   # Extract the entities
   - import: org/clulab/asist/grammars/base_concepts.yml

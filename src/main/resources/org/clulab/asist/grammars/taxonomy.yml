@@ -1,7 +1,8 @@
 - Concept:
   - NounPhrase
   - Attribute
-  - Ordinal
+  - Number:
+    - Ordinal
   - Switch
   - EventLike:
     - Time:

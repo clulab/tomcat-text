@@ -104,7 +104,7 @@ rules:
     label: Move
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/${ moveto_triggers }/ & tag=/^V/]
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/]
       target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/
       person: Entity? = >/${agents}/
 
@@ -113,7 +113,7 @@ rules:
     label: Move
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/${ moveto_triggers }/]
+      trigger = [lemma=/(?i)${ moveto_triggers }/]
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
 
@@ -168,6 +168,7 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      agent: Entity? = >/${agents}/
       target: Rubble = >dobj
 
   - name: clear_rubble_token
@@ -176,7 +177,16 @@ rules:
     action: removeResearcher
     type: token
     pattern: |
-      [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
+      @agent:Entity? [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
+
+  - name: clear_location
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      agent: Entity? = >/${agents}/
+      target: Location = >dobj
 
   - name: role_switch
     priority: ${ rulepriority }
@@ -184,7 +194,17 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
-      target: Role? = >/nmod/
+      agent: Entity? = >/(${agents})/
+      target: Role? = >/nmod_to|xcomp/
+
+  - name: role_switch_change_to
+    priority: ${ rulepriority }
+    label: RoleSwitch
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/change/]
+      agent: Entity? = >/(${agents})/
+      target: Role = >/nmod_to/
 
   - name: obstructing
     priority: ${ rulepriority }

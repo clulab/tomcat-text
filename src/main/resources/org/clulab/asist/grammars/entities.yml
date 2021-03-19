@@ -43,6 +43,13 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: numbers
+    priority: ${ rulepriority }
+    label: Number
+    type: token
+    pattern: |
+      [tag=CD]
+
   - name: deictic_detection
     priority: ${ rulepriority }
     label: Deictic

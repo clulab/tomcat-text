@@ -22,7 +22,7 @@ infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|r
 
 switch_triggers: "switch|toggle|lever|door"
 
-role_switch_triggers: "switch"
+role_switch_triggers: "switch|become"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 

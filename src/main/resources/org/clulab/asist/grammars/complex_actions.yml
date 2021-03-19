@@ -12,13 +12,11 @@ rules:
         <advmod
         # traverse the link -- depending on the phrasing, can be any of these
         </ccomp|conj_and|dep/
-        #<conj_and
         # optionally go to an embedded clause
         >/xcomp/?
         # land on a verb
         [tag=/^V/]
       second: EventLike? = <advmod
-
 
   - name: precedence2
     priority: ${ rulepriority }
@@ -36,7 +34,25 @@ rules:
         # land on a verb
         [tag=/^V/]
       second: EventLike? = </mark/
-##still need 1st action for before
+    ##still need 1st action for before
+
+  - name: precedence2_after
+    priority: ${ rulepriority }
+    label: Precedence
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ after_precedence_triggers })/]
+      second: EventLike? =
+        # get to the second action, which is linked to the first
+        </mark/
+        # traverse the link between the actions
+        </advcl_after/
+        # optionally go to an embedded clause
+        >/xcomp/?
+        # land on a verb
+        [tag=/^V/]
+      first: EventLike? = </mark/
+
 
   - name: precedence3_token_after
     priority: ${ rulepriority }
