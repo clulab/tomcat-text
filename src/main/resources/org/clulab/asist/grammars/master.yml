@@ -29,3 +29,8 @@ rules:
     vars:
       rulepriority: "3+"
 
+  # Extract questions
+  - import: org/clulab/asist/grammars/questions.yml
+    vars:
+      rulepriority: "3+"
+

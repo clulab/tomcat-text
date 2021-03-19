@@ -38,7 +38,9 @@
       - Sight
       - Craft
       - Communicate:
-        - Question
+        - Question:
+            - QuestionParticle
+            - LocationQuestion
         - Agreement
         - Disagreement
       - Clear
