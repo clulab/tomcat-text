@@ -28,8 +28,8 @@ observations/state
   "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
   "trial_id": "123e4567-e89b-12d3-a456-426655440000",
   "timestamp": "2019-12-26T14:05:02.1412Z",
-  "source": "simulator",
-  "sub_type": "pickup",
+  "source": "tomcat_textAnalyzer",
+  "sub_type": "tomcat_textAnalyzer",
   "version": "0.5",
   "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
   "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
@@ -38,4 +38,4 @@ observations/state
 ```
 ## Version Change History
  
-0.5 - Current Version 3/1/2021
+0.5 - Current Version 3/19/2021
