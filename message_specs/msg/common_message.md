@@ -36,6 +36,3 @@ observations/state
 }
 
 ```
-## Version Change History
- 
-0.5 - Current Version 3/19/2021
