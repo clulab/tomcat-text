@@ -71,13 +71,14 @@ Message received on this topic are expected to have the following json format:
     "version": "0.4"
   },
   "msg": {
-    "experiment_id": "12345678-9abc-1234-a456-123456780000",
-    "trial_id": "trial 1",
-    "replay_id": "5555555-ab12-ffff-b200-123456az1234",
+    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
+    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
     "timestamp": "2019-12-26T14:05:02.1412Z",
     "source": "simulator",
-    "sub_type": "Event:Chat",
-    "version": "0.4"
+    "sub_type": "chat",
+    "version": "0.5",
+    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
   },
   "data": {
     "mission_timer": "8 : 36",
@@ -113,12 +114,14 @@ expected to have the following format:
     "version": "0.1"
   },
   "msg": {
-    "timestamp": "2021-01-19T23:27:58.633967Z",
-    "experiment_id": "12345678-9abc-1234-a456-123456780000",
-    "trial_id": "trial 1",
-    "version": "0.1",
+    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
+    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
+    "timestamp": "2019-12-26T14:05:02.1412Z",
     "source": "tomcat_asr_agent",
-    "sub_type": "asr"
+    "sub_type": "asr",
+    "version": "0.1",
+    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
   }
 }
 ```
