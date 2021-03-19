@@ -80,3 +80,11 @@ rules:
     pattern: |
       trigger = @Direction [lemma=/half|part|side/]?
       target: Concept? = >/nmod_of/
+
+  # minecraft door switch, e.g.
+  - name: location_area
+    priority: ${ second_priority }
+    label: Location
+    type: token
+    pattern: |
+      @Location [lemma=/(?i)area|surrounding|vicinity|space/]

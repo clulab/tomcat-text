@@ -156,3 +156,21 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
       target: Role? = >/nmod/
+
+  - name: obstructing
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Concept? = >/${agents}/ | <acl [incoming=nsubj]
+      target: Concept? = >/dobj|acl/
+
+  - name: obstructing_in_the_way
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      source: Concept? = </nmod/ >/${agents}/
+      target: Concept? = >nmod_of

@@ -86,4 +86,3 @@ rules:
       trigger = [lemma=/(need)/ & tag=/^V/]
       person: Entity? = >/nsubj*/
       role: SimpleActions = >xcomp
-

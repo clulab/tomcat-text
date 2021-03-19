@@ -18,7 +18,7 @@ attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 fire_triggers: "fire|blaze|flame"
 
-infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance"
+infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony"
 
 switch_triggers: "switch|toggle|lever|door"
 
@@ -32,7 +32,8 @@ sight_triggers: "see|observe|glimpse"
 
 craft_triggers: "craft|make|produce|brew|create"
 
-deixis_triggers: "here|there|back|in|through"
+#deixis_triggers: "here|there|back|in|through"
+deixis_triggers: "here|there"
 
 dem_pron_triggers: "this|that|those|these"
 
@@ -49,6 +50,7 @@ agree_triggers: "yes|yeah|roger|acknowledge"
 disagree_triggers: "no|nah|nope"
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
+block_triggers: "block|obstruct"
 
 clear_triggers: "clear|remove|clear|break"
 

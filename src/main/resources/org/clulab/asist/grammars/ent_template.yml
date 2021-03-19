@@ -8,4 +8,4 @@ rules:
     keep: true
     pattern: |
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ trigger })/ & outgoing=compound]) |
-      [lemma=/(?i)^(${ trigger })/]
+      [lemma=/(?i)^(${ trigger })/]+

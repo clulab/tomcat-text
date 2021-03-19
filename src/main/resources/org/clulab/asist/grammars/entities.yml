@@ -24,13 +24,6 @@ rules:
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: deictic
-      priority: ${ rulepriority }
-      label: Deictic
-      trigger: ${ deixis_triggers }
-
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
       name: person
       priority: ${ rulepriority }
       label: Victim
@@ -42,6 +35,13 @@ rules:
       priority: ${ rulepriority }
       label: Rubble
       trigger: ${ rubble_triggers }
+
+  - name: deictic_detection
+    priority: ${ rulepriority }
+    label: Deictic
+    type: token
+    pattern: |
+      [lemma=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
 
   # minecraft door switch, e.g.
   - name: switch
