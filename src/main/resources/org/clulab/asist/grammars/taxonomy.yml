@@ -20,42 +20,45 @@
       - Button
     - Map:
         - center
-  - Obstacle:
+  - EventLike:
+    - Obstacle:
       - Rubble
       - Fire
       - BuildingCollapse
-  - Action:
-    - SimpleActions:
-      - Move
-      - Open
-      - Close
-      - Push
-      - Toggle
-      - Jump
-      - Extinguish
-      - Save
-      - Defeat
-      - Sight
-      - Craft
-      - Communicate:
-        - Question
-        - Agreement
-        - Disagreement
-      - Clear
-      - RoleSwitch
-    - ComplexActions:
-        - Search         # Seach(Location)
-        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
-        - Commitment:
-          - MakeCommitment
-          - ProposeCommitment
-        - Continue
-        - MoveVictim
-        - Need
-        - Precedence
-        - Planning
-        - OfferHelp
-        - ShareKnowledge
+    - Action:
+      - SimpleActions:
+        - Move
+        - Open
+        - Close
+        - Push
+        - Toggle
+        - Jump
+        - Extinguish
+        - Save
+        - Defeat
+        - Sight
+        - Craft
+        - Communicate:
+          - Question
+          - Agreement
+          - Disagreement
+        - Clear
+        - RoleSwitch
+      - ComplexActions:
+          - Search         # Seach(Location)
+          - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+          - Commitment:
+            - MakeCommitment
+            - ProposeCommitment
+          - Continue
+          - MoveVictim
+          - Need
+          - Precedence
+          - Planning
+          - OfferHelp
+          - ShareKnowledge
+    - Time:
+      - TimeUnit
   - Entity:
     - Other
     - Self
@@ -121,5 +124,4 @@
     - Negative:
       - Anger
       - Worry
-  - Time:
-    - TimeUnit
+

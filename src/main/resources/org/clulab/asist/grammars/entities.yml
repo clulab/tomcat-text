@@ -130,7 +130,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [word=/(?i)(${ search_spec_triggers })/] [word=/(?i)(${ specialist_triggers })/]
+      [word=/(?i)(${ search_spec_triggers })/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: medic
     priority: ${ rulepriority }
@@ -138,7 +138,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/${ medic_triggers }/]
+      [lemma=/(?i)${ medic_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: engineer
     priority: ${ rulepriority }
@@ -146,7 +146,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/${ engineer_triggers }/]
+      [lemma=/(?i)${ engineer_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: alpha
     priority: ${ rulepriority }
