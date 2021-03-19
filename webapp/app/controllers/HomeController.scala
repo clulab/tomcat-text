@@ -139,30 +139,26 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
         "relations" -> mkJsonFromDependencies(doc)
       )
     val eidosJsonObj = mkJsonForEidos(text, sent, mentions)
-    val groundedAdjObj = mkGroundedObj(mentions, causalEvents)
+    val mentionsDetails = mkMentionDetailTextDisplay(mentions, causalEvents)
     val parseObj = mkParseObj(doc)
 
-    // These print the html and it's a mess to look at...
-    // println(s"Grounded Gradable Adj: ")
-    // println(s"$groundedAdjObj")
     Json.obj(
       "syntax" -> syntaxJsonObj,
       "eidosMentions" -> eidosJsonObj,
-      "groundedAdj" -> groundedAdjObj,
+      "mentionDetails" -> mentionsDetails,
       "parse" -> parseObj
     )
   }
 
-  def mkGroundedObj(mentions: Vector[Mention],
-                    causalEvents: Vector[(String, Map[String, String])]): String = {
+  def mkMentionDetailTextDisplay(mentions: Vector[Mention],
+                                 causalEvents: Vector[(String, Map[String, String])]): String = {
     var objectToReturn = ""
 
-    // Entities
-    val entities = mentions
-    if (entities.nonEmpty){
+    // Mention display format
+    if (mentions.nonEmpty){
       objectToReturn += "<h2>Extractions:</h2>"
-      for (entity <- entities) {
-        objectToReturn += s"${DisplayUtils.webAppMention(entity)}"
+      for (m <- mentions) {
+        objectToReturn += s"${DisplayUtils.webAppMention(m)}"
       }
     }
 
@@ -173,6 +169,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def mkJsonForEidos(sentenceText: String, sent: Sentence, mentions: Vector[Mention]): Json.JsValueWrapper = {
     val topLevelTBM = mentions.flatMap {
       case m: TextBoundMention => Some(m)
+      // FIXME: real brat solution for the display
+      case r: RelationMention => Some(new TextBoundMention(r.labels, r.tokenInterval, r.sentence, r.document, r.keep, r.foundBy))
       case _ => None
     }
     // collect event mentions for display
