@@ -67,7 +67,7 @@ rules:
       [lemma=/(?i)^(${ west_triggers })$/]
 
   - name: zone
-    priority: ${ rulepriority }
+    priority: ${ first_priority }
     label: Zone
     type: token
     keep: true
@@ -86,5 +86,8 @@ rules:
     priority: ${ second_priority }
     label: Location
     pattern: |
-      trigger = @Direction [lemma=/half|part|side/]?
+      trigger = @Direction [lemma=/half|part|side|section/]?
       target: Concept? = >/nmod_of/
+
+
+

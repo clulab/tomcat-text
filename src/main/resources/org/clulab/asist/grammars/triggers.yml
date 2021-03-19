@@ -98,4 +98,4 @@ east_triggers: "east"
 
 victim_triggers: "victim|patient"
 
-zone_triggers: "zone|area"
+zone_triggers: "zone|area|side|section"
