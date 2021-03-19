@@ -7,7 +7,7 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ then_precedence_triggers })/]
-      first_action: Action? =
+      first: EventLike? =
         # get to the second action, which is linked to the first
         <advmod
         # traverse the link -- depending on the phrasing, can be any of these
@@ -17,7 +17,7 @@ rules:
         >/xcomp/?
         # land on a verb
         [tag=/^V/]
-      second_action: Action? = <advmod
+      second: EventLike? = <advmod
 
 
   - name: precedence2
@@ -26,7 +26,7 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ before_precedence_triggers })/]
-      first_action: Action? =
+      first: EventLike? =
         # get to the second action, which is linked to the first
         </mark/
         # traverse the link between the actions
@@ -35,8 +35,33 @@ rules:
         >/xcomp/?
         # land on a verb
         [tag=/^V/]
-      second_action: Action? = </mark/
-##still need 1st actrion for before
+      second: EventLike? = </mark/
+##still need 1st action for before
+
+  - name: precedence3_token_after
+    priority: ${ rulepriority }
+    label: Precedence
+    action: removeResearcher
+    type: token
+    pattern: |
+      (?<trigger> [lemma=/(?i)^(${ after_precedence_triggers })/])
+      []{,2}
+      @first:EventLike
+      []? [tag=/PRP/]? []?
+      @second:EventLike
+
+  - name: precedence3_token_before
+    priority: ${ rulepriority }
+    label: Precedence
+    action: removeResearcher
+    type: token
+    pattern: |
+      (?<trigger> [lemma=/(?i)^(${ before_precedence_triggers })/])
+      []{,2}
+      @second:EventLike
+      []? [tag=/PRP/]? []?
+      @first:EventLike
+
 
   - name: prep_need_role
     priority: ${ rulepriority }
@@ -61,3 +86,4 @@ rules:
       trigger = [lemma=/(need)/ & tag=/^V/]
       person: Entity? = >/nsubj*/
       role: SimpleActions = >xcomp
+
