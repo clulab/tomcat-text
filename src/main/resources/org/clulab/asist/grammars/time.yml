@@ -8,4 +8,11 @@ rules:
     priority: 1
     type: token
     pattern: |
-      (?<value> [tag=CD]+ (or [tag=CD]+)?) (?<unit> [lemma=/second|minute|hour|day|year/])
+      (?<value> [tag=CD]+ (or [tag=CD]+)?) (?<trigger> [lemma=/second|minute|hour|day|year/])
+
+  - name: time_underspecified
+    label: TimeUnit
+    priority: 1
+    type: token
+    pattern: |
+      (?<value> [word=/(?i)last|first/ | tag=/^DT/] [word=/(?i)few|several|couple/]) of? (?<trigger> [lemma=/(?i)second|minute|hour|day|year/])

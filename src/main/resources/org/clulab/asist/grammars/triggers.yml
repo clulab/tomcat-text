@@ -56,17 +56,19 @@ then_precedence_triggers: "then"
 
 before_precedence_triggers: "before"
 
+after_precedence_triggers: "after"
+
 hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer"
 
 medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 stretcher_triggers: "stretcher|carrying bed"
 
-medic_triggers: "medic|paramedic|nurse|doctor" #medical specialist|med specialist" <-- these neeed separate rules
+medic_triggers: "medic|paramedic|nurse|doctor|medical"
 
 specialist_triggers: "specialist"
 
-search_spec_triggers: "search|service"
+search_spec_triggers: "search|service|searcher"
 
 engineer_triggers: "hazmat|engineer" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
 
