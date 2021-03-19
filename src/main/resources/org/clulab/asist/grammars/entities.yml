@@ -203,3 +203,11 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
+
+  - name: north
+    priority: ${ rulepriority }
+    label: North
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ north_triggers })$/]

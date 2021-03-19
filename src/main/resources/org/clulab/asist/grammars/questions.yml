@@ -6,12 +6,16 @@ rules:
     label: LocationQuestion
     action: removeResearcher
     pattern: |
-      trigger = [tag=/^W/]
+      trigger = [lemma=/(?i)^(${ where_triggers })/]
+      topic: Entity? =
+        <advmod
+        >/nsubj|dobj|nmod/
+#        [tag=/^N/]
 
 
  #      [lemma=/${ where_triggers }/]
 
-   #   [lemma=/(?i)^(${ where_triggers })/]
+   #
 
 #      first_action: Action? =
         # get to the second action, which is linked to the first
