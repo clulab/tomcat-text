@@ -27,5 +27,5 @@ rules:
   # Extract commitments
   - import: org/clulab/asist/grammars/commitment.yml
     vars:
-      rulepriority: "3+"
+      rulepriority: "4"
 

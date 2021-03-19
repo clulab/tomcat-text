@@ -8,5 +8,5 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [tag=/^MD/]
-      target: SimpleAction = <aux
-      person: Self = <aux? nsubj
+      target: Action = <aux
+      person: Self? = <aux >nsubj
