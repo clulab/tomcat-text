@@ -12,11 +12,10 @@ rules:
         >/nsubj|dobj|nmod/
 #        [tag=/^N/]
 
-
  #      [lemma=/${ where_triggers }/]
 
-   #
 
+#leave this here so I can remember how to do these complex dependencies
 #      first_action: Action? =
         # get to the second action, which is linked to the first
 #        <advmod

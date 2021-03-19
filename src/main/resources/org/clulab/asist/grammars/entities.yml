@@ -26,8 +26,15 @@ rules:
     vars:
       name: person
       priority: ${ rulepriority }
-      label: Victim
+      label: Person
       trigger: ${ person_triggers }
+
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: victim
+      priority: ${ rulepriority }
+      label: Victim
+      trigger: ${ victim_triggers }
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:

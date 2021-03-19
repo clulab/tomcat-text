@@ -37,6 +37,16 @@ rules:
       target: Victim = >dobj
       location: Infrastructure? = >nmod_in
 
+  - name: triage2
+    priority: ${ rulepriority }
+    label: Save
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Person = >dobj
+      location: Infrastructure? = >nmod_in
+###need this because we split "person" from "victim"
+
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
       name: sight
@@ -117,6 +127,15 @@ rules:
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
       target: Victim = >/${agents}/
 
+  - name: sight_presence2
+    priority: ${ rulepriority }
+    label: Sight
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      target: Person = >/${agents}/
+
+
   - name: continue_action
     priority: ${ rulepriority }
     label: Continue
@@ -132,6 +151,16 @@ rules:
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
       person: Entity? = >/${agents}/
+
+  - name: change_priority2
+    priority: ${ rulepriority }
+    label: ChangePriority
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
+      target: Person = >dobj
+      person: Entity? = >/${agents}/
+### split this one too to capture victim and person seperately
 
   - name: clear_rubble
     priority: ${ rulepriority }
@@ -174,3 +203,14 @@ rules:
       trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
       source: Concept? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
+
+  - name: location_report
+    priority: ${ rulepriority }
+    label: ReportLocation
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      location: Location = </cop/
+      person: Entity? =
+        </cop/
+        >/nsubj/

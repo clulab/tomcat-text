@@ -21,6 +21,7 @@
         - Ceiling
         - Lever
         - Button
+        - Zone
       - MapSection:
         - center
     - Obstacle:
@@ -43,12 +44,14 @@
         - Craft
         - Communicate:
           - Question:
-              - QuestionParticle
-              - LocationQuestion
+            - QuestionParticle
+            - LocationQuestion
+            - ModalQuestion
           - Agreement
           - Disagreement
         - Clear
         - RoleSwitch
+        - ReportLocation
       - ComplexActions:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -63,6 +66,7 @@
           - OfferHelp
           - ShareKnowledge
   - Entity:
+    - Person
     - Other
     - Self
     - You

@@ -66,6 +66,14 @@ rules:
     pattern: |
       [lemma=/(?i)^(${ west_triggers })$/]
 
+  - name: zone
+    priority: ${ first_priority }
+    label: Zone
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ zone_triggers })$/] [tag=CD]
+
   - name: directions
     priority: ${ first_priority }
     label: Direction
@@ -78,7 +86,7 @@ rules:
     priority: ${ second_priority }
     label: Location
     pattern: |
-      trigger = @Direction [lemma=/half|part|side/]?
+      trigger = @Direction [lemma=/half|part|side|section/]?
       target: Concept? = >/nmod_of/
 
   # minecraft door switch, e.g.
