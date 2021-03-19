@@ -15,7 +15,7 @@ message_spec/header
 | data| [data][3] | Contains the text being analyzed, the source of the text, and the extractions produced by the analysis.
 
 [1]: https://github.com/clulab/tomcat-text/blob/master/message_specs/header/header.md
-[2]: https://github.com/clulab/tomcat-text/blob/master/message_specs/msg/msg.md
+[2]: https://github.com/clulab/tomcat-text/blob/master/message_specs/msg/common_message.md
 [3]: https://github.com/clulab/tomcat-text/blob/master/message_specs/data/data.md
 
 
@@ -28,11 +28,14 @@ message_spec/header
     "version": "0.1"
   },
   "msg": {
+    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
+    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
+    "timestamp": "2019-12-26T14:05:02.1412Z",
     "source": "tomcat_textAnalyzer",
-    "experiment_id": null,
-    "timestamp": "2021-02-11T19:22:23.494Z",
     "sub_type": "Event:dialogue_event",
-    "version": "0.1"
+    "version": "0.1",
+    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
   },
   "data": {
     "participant_id": "Participant 21",
