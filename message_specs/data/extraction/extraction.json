@@ -40,7 +40,7 @@
       "title": "arguments schema",
       "default": "",
       "examples": [
-        "$ref": "#/definitions/id"
+        "#/definitions/id"
       ],
       "pattern": "^(.*)$"
     },
