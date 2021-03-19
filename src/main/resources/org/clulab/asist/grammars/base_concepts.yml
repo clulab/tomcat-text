@@ -8,7 +8,7 @@ rules:
     keep: true
     pattern: |
       trigger = [lemma=/${ hammer_triggers }/]
-      owner: Entity = >"nmod:poss"
+      owner: Entity? = >"nmod:poss"
 
   - name: medkit
     priority: ${ rulepriority }
@@ -16,7 +16,7 @@ rules:
     keep: true
     pattern: |
       trigger = [lemma=/${ medkit_triggers }/]
-      owner: Entity = >"nmod:poss"
+      owner: Entity? = >"nmod:poss"
 
   - name: stretcher
     priority: ${ rulepriority }
@@ -24,7 +24,7 @@ rules:
     keep: true
     pattern: |
       trigger = [lemma=/${ stretcher_triggers }/]
-      owner: Entity = >"nmod:poss"
+      owner: Entity? = >"nmod:poss"
 
   - name: tool_generic
     priority: ${ rulepriority }
@@ -32,7 +32,15 @@ rules:
     keep: true
     pattern: |
       trigger = [lemma=/tool/]
-      owner: Entity = >"nmod:poss"
+      owner: Entity? = >"nmod:poss"
+
+  - name: map_item
+    priority: ${ rulepriority }
+    label: Map
+    keep: true
+    pattern: |
+      trigger = [lemma=/tool/]
+      owner: Entity? = >"nmod:poss"
 
   # ------------- ROLES --------------------------
 

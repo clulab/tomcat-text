@@ -8,4 +8,13 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ north_triggers })$/]
+      [lemma=/(?i)(${ north_triggers })$|right/]
+
+
+
+  - name: relative_location
+    priority: 4
+    label: Location
+    pattern: |
+      trigger = @Direction [lemma=/half|part|side/]?
+      target: Concept? = >/nmod_of/
