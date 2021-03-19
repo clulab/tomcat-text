@@ -85,8 +85,12 @@
       - Right
     - Cardinal:
       - North
+      - NorthEast
+      - NorthWest
       - East
       - South
+      - SouthEast
+      - SouthWest
       - West
   - Item:
     - Bow
