@@ -9,7 +9,7 @@ Structure of the chat_analysis_message.data.extraction datatype
 | ---              | ---                 | ---
 | label            | String              | The label of the extracted event or mention
 | span             | String              | The substring of text being analyzed
-| arguments        | Map[String, Seq[DialogAgentMessageDataExtraction]] | A mapping of labels and their extractions
+| arguments        | Map[String, Seq[chat_analysis_message.data.extraction]] | A mapping of labels and their extractions
 | start_offset     | Integer             | The start of the span in the dialog text
 | end_offset       | Integer             | The end of the span in the dialog text
 | taxonomy_matches | Seq(String, String) | A list of taxonomy entries (for a given external taxonomy) that the label best aligns with, along with the corresponding alignment scores.
