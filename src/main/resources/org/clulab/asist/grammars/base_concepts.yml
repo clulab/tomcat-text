@@ -37,9 +37,8 @@ rules:
   - name: map_item
     priority: ${ rulepriority }
     label: Map
-    keep: true
     pattern: |
-      trigger = [lemma=/tool/]
+      trigger = [lemma=/map/]
       owner: Entity? = >"nmod:poss"
 
   # ------------- ROLES --------------------------

@@ -87,22 +87,15 @@ rules:
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
-  - name: move_impoverished
-    priority: ${ rulepriority }
-    label: Move
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/${ moveto_triggers }/]
-      target: Location? = >nmod_into | >nmod_to | >nmod_towards
-      person: Entity? = >/${agents}/
+  # -------------------------------------------------------------------
 
   - name: move_nmod_action
     priority: ${ rulepriority }
     label: Move
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/${ moveto_triggers }/]
-      target: Location = >nmod_into | >nmod_to | >nmod_towards
+      trigger = [lemma=/${ moveto_triggers }/ & tag=/^V/]
+      target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/
       person: Entity? = >/${agents}/
 
   - name: move_deixis_action
@@ -111,17 +104,8 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/${ moveto_triggers }/]
-      target: Deictic = >nmod_into | >nmod_to | >nmod_towards | >advmod
+      target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
-
-  - name: move_explicit
-    priority: ${ rulepriority }
-    label: Move
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ moveto_triggers })/ & tag=/^V/]
-      agent: Entity? = >/${agents}/
-      target: Location = >/nmod_(to|by|over|in_front_of|next_to)/
 
   # -------------------------------------------------------------------
 
