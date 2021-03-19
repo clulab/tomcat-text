@@ -18,6 +18,7 @@ rules:
       label: Move
       trigger: ${ moveto_triggers }
       object_type: Location
+
 # need intransitive movement
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -35,6 +36,16 @@ rules:
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Victim = >dobj
       location: Infrastructure? = >nmod_in
+
+  - name: triage2
+    priority: ${ rulepriority }
+    label: Save
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Person = >dobj
+      location: Infrastructure? = >nmod_in
+###need this because we split "person" from "victim"
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -86,23 +97,27 @@ rules:
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
+  # -------------------------------------------------------------------
+
   - name: move_nmod_action
     priority: ${ rulepriority }
     label: Move
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/${ moveto_triggers }/]
-      target: Location = >nmod_into | >nmod_to | >nmod_towards
-      person: Entity? = >nsubj
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/]
+      target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/
+      person: Entity? = >/${agents}/
 
   - name: move_deixis_action
     priority: ${ rulepriority }
     label: Move
     action: removeResearcher
     pattern: |
-      trigger = [lemma=/${ moveto_triggers }/]
-      target: Deictic = >nmod_into | >nmod_to | >nmod_towards | >advmod
-      person: Entity? = >nsubj
+      trigger = [lemma=/(?i)${ moveto_triggers }/]
+      target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
+      person: Entity? = >/${agents}/
+
+  # -------------------------------------------------------------------
 
   - name: sight_presence
     priority: ${ rulepriority }
@@ -110,14 +125,23 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Victim = >nsubj
+      target: Victim = >/${agents}/
+
+  - name: sight_presence2
+    priority: ${ rulepriority }
+    label: Sight
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      target: Person = >/${agents}/
+
 
   - name: continue_action
     priority: ${ rulepriority }
     label: Continue
     pattern: |
       trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      person: Entity = >nsubj
+      person: Entity = >/${agents}/
 
   - name: change_priority
     priority: ${ rulepriority }
@@ -126,7 +150,17 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
-      person: Entity? = >nsubj
+      person: Entity? = >/${agents}/
+
+  - name: change_priority2
+    priority: ${ rulepriority }
+    label: ChangePriority
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
+      target: Person = >dobj
+      person: Entity? = >/${agents}/
+### split this one too to capture victim and person seperately
 
   - name: clear_rubble
     priority: ${ rulepriority }
@@ -134,6 +168,7 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      agent: Entity? = >/${agents}/
       target: Rubble = >dobj
 
   - name: clear_rubble_token
@@ -142,7 +177,16 @@ rules:
     action: removeResearcher
     type: token
     pattern: |
-      [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
+      @agent:Entity? [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
+
+  - name: clear_location
+    priority: ${ rulepriority }
+    label: Clear
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      agent: Entity? = >/${agents}/
+      target: Location = >dobj
 
   - name: role_switch
     priority: ${ rulepriority }
@@ -150,4 +194,43 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
-      target: Role? = >/nmod/
+      agent: Entity? = >/(${agents})/
+      target: Role? = >/nmod_to|xcomp/
+
+  - name: role_switch_change_to
+    priority: ${ rulepriority }
+    label: RoleSwitch
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/change/]
+      agent: Entity? = >/(${agents})/
+      target: Role = >/nmod_to/
+
+  - name: obstructing
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Concept? = >/${agents}/ | <acl [incoming=nsubj]
+      target: Concept? = >/dobj|acl/
+
+  - name: obstructing_in_the_way
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      source: Concept? = </nmod/ >/${agents}/
+      target: Concept? = >nmod_of
+
+  - name: location_report
+    priority: ${ rulepriority }
+    label: ReportLocation
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      location: Location = </cop/
+      person: Entity? =
+        </cop/
+        >/nsubj/

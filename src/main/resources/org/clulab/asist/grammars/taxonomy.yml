@@ -1,32 +1,37 @@
 - Concept:
   - NounPhrase
   - Attribute
-  - Ordinal
+  - Number:
+    - Ordinal
   - Switch
-  - Location:
-    - Inferred:
-      - Deictic
-      - DemPron
-    - Infrastructure:
-      - Room
-      - Door
-      - Building
-      - Hallway
-      - Stairs
-      - Window
-      - Floor
-      - Ceiling
-      - Lever
-      - Button
-    - Map:
-        - center
   - EventLike:
+    - Time:
+      - TimeUnit
+    - Location:
+      - Inferred:
+        - Deictic
+        - DemPron
+      - Infrastructure:
+        - Room
+        - Door
+        - Building
+        - Hallway
+        - Stairs
+        - Window
+        - Floor
+        - Ceiling
+        - Lever
+        - Button
+        - Zone
+      - MapSection:
+        - center
     - Obstacle:
       - Rubble
       - Fire
       - BuildingCollapse
     - Action:
       - SimpleActions:
+        - Block
         - Move
         - Open
         - Close
@@ -39,11 +44,15 @@
         - Sight
         - Craft
         - Communicate:
-          - Question
+          - Question:
+            - QuestionParticle
+            - LocationQuestion
+            - ModalQuestion
           - Agreement
           - Disagreement
         - Clear
         - RoleSwitch
+        - ReportLocation
       - ComplexActions:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -57,9 +66,8 @@
           - Planning
           - OfferHelp
           - ShareKnowledge
-    - Time:
-      - TimeUnit
   - Entity:
+    - Person
     - Other
     - Self
     - You
@@ -86,8 +94,12 @@
       - Right
     - Cardinal:
       - North
+      - NorthEast
+      - NorthWest
       - East
       - South
+      - SouthEast
+      - SouthWest
       - West
   - Item:
     - Bow
@@ -113,10 +125,11 @@
     - Emerald
     - ItemFrame
     - FlowerPot
-    - Resource:
+    - Tool:
       - Hammer
       - MedKit
       - Stretcher
+      - Map
   - Sentiment:
     - Uncertainty  # include the agent
     - Positive:
@@ -125,4 +138,3 @@
     - Negative:
       - Anger
       - Worry
-
