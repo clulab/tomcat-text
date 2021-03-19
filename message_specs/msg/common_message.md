@@ -29,7 +29,7 @@ observations/state
   "trial_id": "123e4567-e89b-12d3-a456-426655440000",
   "timestamp": "2019-12-26T14:05:02.1412Z",
   "source": "tomcat_textAnalyzer",
-  "sub_type": "tomcat_textAnalyzer",
+  "sub_type": "Event:dialogue_event",
   "version": "0.5",
   "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
   "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
