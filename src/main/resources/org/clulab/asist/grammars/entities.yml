@@ -43,13 +43,29 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
-  #- name: anaphor
-  #  label: Anaphor
-  #  priority: 1
-  #  type: token
-  #  keep: false
-  #  pattern: |
-  #    [tag=/PRP/]
+  - name: self_token_capture
+    label: Self
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ self_triggers })/ & tag=/PRP/]
+
+  - name: you_token_capture
+    label: You
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ you_triggers })/ & tag=/PRP/]
+
+  - name: we_token_capture
+    label: Team
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ team_triggers })/ & tag=/PRP/]
 
   - name: green
     label: Green
@@ -81,7 +97,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ agree_triggers })/]
+      [lemma=/(?i)^(${ agree_triggers })$/]
 
   - name: disagree_token_match
     label: Disagreement
@@ -89,7 +105,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ disagree_triggers })/ & !tag=TO]
+      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO]
 
 ### add a tag so we dont parse "na" from "gonna"
   - name: demonstrative_pronoun

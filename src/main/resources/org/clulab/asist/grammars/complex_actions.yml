@@ -37,3 +37,27 @@ rules:
         [tag=/^V/]
       second_action: Action? = </mark/
 ##still need 1st actrion for before
+
+  - name: prep_need_role
+    priority: ${ rulepriority }
+    label: Need
+    pattern: |
+      trigger = [lemma=/(need)/ & tag=/^V/]
+      person: Entity? = >/nsubj*/
+      role: Role = >dobj
+
+  - name: prep_need_item
+    priority: ${ rulepriority }
+    label: Need
+    pattern: |
+      trigger = [lemma=/(need)/ & tag=/^V/]
+      person: Entity? = >/nsubj*/
+      role: Item = >dobj
+
+  - name: prep_need_action
+    priority: ${ rulepriority }
+    label: Need
+    pattern: |
+      trigger = [lemma=/(need)/ & tag=/^V/]
+      person: Entity? = >/nsubj*/
+      role: SimpleActions = >xcomp

@@ -46,7 +46,7 @@ exist_triggers: "be"
 
 agree_triggers: "yes|roger|acknowledge"
 
-disagree_triggers: "no$|won't|nah|na|nope"
+disagree_triggers: "no|nah|nope"
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
 
@@ -72,7 +72,9 @@ engineer_triggers: "hazmat|engineer" # "heavy equipment specialist|equipment spe
 
 self_triggers: "i|me"
 
-other_triggers: "you"
+you_triggers: "you"
+
+team_triggers: "we|us"
 
 alpha_triggers: "alpha"
 

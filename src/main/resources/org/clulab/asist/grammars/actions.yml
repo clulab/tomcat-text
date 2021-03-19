@@ -128,14 +128,6 @@ rules:
       target: Victim = >dobj
       person: Entity? = >nsubj
 
-  - name: commit_to_something
-    priority: 4
-    label: MakeCommitment
-    action: removeResearcher
-    pattern: |
-      trigger = [tag=/^MD/]
-      target: Action = <aux
-
   - name: clear_rubble
     priority: ${ rulepriority }
     label: Clear
