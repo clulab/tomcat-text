@@ -65,3 +65,11 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)^(${ west_triggers })$/]
+
+  - name: zone
+    priority: ${ rulepriority }
+    label: Zone
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ zone_triggers })$/] [tag=CD]
