@@ -49,7 +49,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ self_triggers })/ & tag=/PRP/]
+      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP/]
 
   - name: you_token_capture
     label: You
@@ -57,7 +57,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ you_triggers })/ & tag=/PRP/]
+      [lemma=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
 
   - name: we_token_capture
     label: Team
