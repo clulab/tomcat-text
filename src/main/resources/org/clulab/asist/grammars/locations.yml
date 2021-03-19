@@ -66,6 +66,14 @@ rules:
     pattern: |
       [lemma=/(?i)^(${ west_triggers })$/]
 
+  - name: zone
+    priority: ${ rulepriority }
+    label: Zone
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ zone_triggers })$/] [tag=CD]
+
   - name: directions
     priority: ${ first_priority }
     label: Direction

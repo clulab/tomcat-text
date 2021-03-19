@@ -26,7 +26,7 @@ role_switch_triggers: "switch"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 
-person_triggers: "person|guy|victim|villager|dude|patient"
+person_triggers: "person|guy|villager|dude"
 
 sight_triggers: "see|observe|glimpse"
 
@@ -95,3 +95,7 @@ south_triggers: "south"
 west_triggers: "west"
 
 east_triggers: "east"
+
+victim_triggers: "victim|patient"
+
+zone_triggers: "zone|area"
