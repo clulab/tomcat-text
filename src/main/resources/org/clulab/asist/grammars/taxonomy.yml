@@ -19,8 +19,8 @@
       - Lever
       - Button
       - Zone
-    - Map:
-        - center
+    - MapSection:
+      - center
   - Obstacle:
       - Rubble
       - Fire
@@ -123,6 +123,7 @@
       - Hammer
       - MedKit
       - Stretcher
+      - Map
   - Sentiment:
     - Uncertainty  # include the agent
     - Positive:
