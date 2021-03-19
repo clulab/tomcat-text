@@ -47,6 +47,7 @@
         - Disagreement
       - Clear
       - RoleSwitch
+      - ReportLocation
     - ComplexActions:
         - Search         # Seach(Location)
         - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)

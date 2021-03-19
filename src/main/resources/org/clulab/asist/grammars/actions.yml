@@ -185,3 +185,14 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
       target: Role? = >/nmod/
+
+  - name: location_report
+    priority: ${ rulepriority }
+    label: ReportLocation
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      location: Location = </cop/
+      person: Entity? =
+        </cop/
+        >/nsubj/
