@@ -129,7 +129,7 @@ expected to have the following format:
 
 ### Output 
 
-Message bus topic: `agent/tomcat_chatbot`
+Message bus topic: `agent/dialog`
 
 The Dialog Agent will publish its analysis to the message bus in [chat_analysis_message][1] format.
 
