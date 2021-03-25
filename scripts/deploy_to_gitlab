@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# This script builds the dialog agent image and deploys it to the Aptima Gitlab
+# instance.
+
+docker login gitlab.asist.aptima.com:5050
+docker build -t gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent .
+docker push gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent

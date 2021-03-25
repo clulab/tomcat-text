@@ -22,7 +22,7 @@ object DialogAgentMqttDefaults {
   val TOPIC_INPUT_ASR: String = "agent/asr"
 
   /** publish input analysis to this message bus topic */
-  val TOPIC_OUTPUT: String = "agent/tomcat_chatbot"
+  val TOPIC_OUTPUT: String = "agent/dialog"
 }
 
 /** Message bus connectivity for dialog agents */
