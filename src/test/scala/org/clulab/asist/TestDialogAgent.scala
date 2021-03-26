@@ -31,8 +31,8 @@ class TestDialogAgent
   val test_source_type = "test_source_type"
   val test_source_name = "test_source_name"
 
-  val asrTestArticle: AsrMessage = AsrMessage(
-    AsrMessageData(   // data comes first in ASR message.
+  val asrTestArticle: UazAsrMessage = UazAsrMessage(
+    UazAsrMessageData(   // data comes first in ASR message.
       test_text,
       test_asr_system,
       test_is_final,
@@ -56,9 +56,9 @@ class TestDialogAgent
   )
 
   val asrJson = toJson(asrTestArticle)
-  val asrResult:AsrMessage = toAsrMessage(asrJson).getOrElse(
-    new AsrMessage(
-      new AsrMessageData,
+  val asrResult:UazAsrMessage = toUazAsrMessage(asrJson).getOrElse(
+    new UazAsrMessage(
+      new UazAsrMessageData,
       new CommonHeader,
       new CommonMsg
     )
@@ -83,7 +83,7 @@ class TestDialogAgent
     msg.replay_id should be (test_replay_id)
   }
 
-  it should "create AsrMessageData from ASR json" in {
+  it should "create UazAsrMessageData from json" in {
     val data = asrResult.data
     data.text should be (test_text)
     data.asr_system should be(test_asr_system)
@@ -93,12 +93,12 @@ class TestDialogAgent
 
   val dialogAgentResult = 
     toDialogAgentMessage(asrResult, test_source_type, test_source_name)
-  "DialogAgent" should "create CommonHeader from AsrMessage" in {
+  "DialogAgent" should "create CommonHeader from UazAsrMessage" in {
     val header = dialogAgentResult.header
     header.message_type should be (DIALOG_AGENT_MESSAGE_TYPE)
     header.version should be (DIALOG_AGENT_VERSION)
   }
-  it should "create CommonMsg from AsrMessage" in {
+  it should "create CommonMsg from UazAsrMessage" in {
     val msg = dialogAgentResult.msg
     msg.experiment_id should be (test_experiment_id)
     msg.trial_id should be (test_trial_id)
@@ -108,7 +108,7 @@ class TestDialogAgent
     msg.replay_root_id should be (test_replay_root_id)
     msg.replay_id should be (test_replay_id)
   }
-  it should "create DialogAgentMessageData from AsrMessage" in {
+  it should "create DialogAgentMessageData from UazAsrMessage" in {
     val data = dialogAgentResult.data
     data.participant_id should be (test_participant_id)
     data.text should be (test_text)
