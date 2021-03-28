@@ -73,9 +73,24 @@ trait DialogAgent {
   }
 
 
-  /** Translate an AsrMessage to a DialogAgentMessage */
+  /** Translate an AptimaAsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
-      a: AsrMessage,
+      a: AptimaAsrMessage,
+      source_type: String,
+      source_name: String
+  ): DialogAgentMessage = {
+    toDialogAgentMessage(
+      source_type,
+      source_name,
+      a.msg,
+      a.data.playername,
+      a.data.text
+    )
+  }
+
+  /** Translate an UazAsrMessage to a DialogAgentMessage */
+  def toDialogAgentMessage(
+      a: UazAsrMessage,
       source_type: String,
       source_name: String
   ): DialogAgentMessage = {
