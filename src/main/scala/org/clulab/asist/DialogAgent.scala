@@ -73,9 +73,9 @@ trait DialogAgent {
   }
 
 
-  /** Translate an AdaptAsrMessage to a DialogAgentMessage */
+  /** Translate an AptimaAsrMessage to a DialogAgentMessage */
   def toDialogAgentMessage(
-      a: AdaptAsrMessage,
+      a: AptimaAsrMessage,
       source_type: String,
       source_name: String
   ): DialogAgentMessage = {

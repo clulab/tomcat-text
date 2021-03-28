@@ -32,7 +32,7 @@ class DialogAgentMqtt(
     override val port: String = MqttAgentDefaults.PORT,
     val topicInputChat: String = DialogAgentMqttDefaults.TOPIC_INPUT_CHAT,
     val topicInputUazAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_UAZ_ASR,
-    val topicInputAdaptAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_UAZ_ASR,
+    val topicInputAptimaAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_UAZ_ASR,
     val topicOutput: String = DialogAgentMqttDefaults.TOPIC_OUTPUT
 ) extends MqttAgent(
       host,
@@ -78,12 +78,12 @@ class DialogAgentMqtt(
     publish(toDialogAgentMessage(msg, "message_bus", topicInputUazAsr))
 
 
-  /** Convert a json-serialized AdaptAsrMessage to a DialogAgent message
+  /** Convert a json-serialized AptimaAsrMessage to a DialogAgent message
    *  and publish to the message bus if the 'is_final' flag is set.
    *  @param msg: Input from the Minecraft microphone
    */
-  def processAdaptAsr(msg: AdaptAsrMessage): Unit = 
-    publish(toDialogAgentMessage(msg, "message_bus", topicInputAdaptAsr))
+  def processAptimaAsr(msg: AptimaAsrMessage): Unit = 
+    publish(toDialogAgentMessage(msg, "message_bus", topicInputAptimaAsr))
 
 
   /** Publish analysis of messages received on subscription topics 
@@ -95,7 +95,7 @@ class DialogAgentMqtt(
     topic match {
       case `topicInputChat` => toChatMessage(json).map(a => processChat(a))
       case `topicInputUazAsr` => toUazAsrMessage(json).map(a => processUazAsr(a))
-      case `topicInputAdaptAsr` => toAdaptAsrMessage(json).map(a => processAdaptAsr(a))
+      case `topicInputAptimaAsr` => toAptimaAsrMessage(json).map(a => processAptimaAsr(a))
       case _ =>
     }
   }

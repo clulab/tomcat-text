@@ -28,11 +28,11 @@ trait DialogAgentJson {
    */
   def toJson(data: DialogAgentMessage): String = write(data)
 
-  /** Serialize an AdaptAsrMessage to a Json string.
-   *  @param data the AdaptAsrMessage struct
+  /** Serialize an AptimaAsrMessage to a Json string.
+   *  @param data the AptimaAsrMessage struct
    *  @return The struct represented as a json string
    */
-  def toJson(data: AdaptAsrMessage): String = write(data)
+  def toJson(data: AptimaAsrMessage): String = write(data)
 
   /** Serialize an UazAsrMessage to a Json string.
    *  @param data the UazAsrMessage struct
@@ -63,10 +63,10 @@ trait DialogAgentJson {
   def toUazAsrMessage(json: String): Option[UazAsrMessage] = 
     allCatch.opt(read[UazAsrMessage](json))
 
-  /** Deserialize an AdaptAsrMessage from a Json string
-   *  @param json a json representation of a AdaptAsrMessage struct
-   *  @return An AdaptAsrMessage struct if the read succeeded, else None
+  /** Deserialize an AptimaAsrMessage from a Json string
+   *  @param json a json representation of a AptimaAsrMessage struct
+   *  @return An AptimaAsrMessage struct if the read succeeded, else None
    */
-  def toAdaptAsrMessage(json: String): Option[AdaptAsrMessage] = 
-    allCatch.opt(read[AdaptAsrMessage](json))
+  def toAptimaAsrMessage(json: String): Option[AptimaAsrMessage] = 
+    allCatch.opt(read[AptimaAsrMessage](json))
 }

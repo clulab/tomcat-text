@@ -11,14 +11,14 @@
 package org.clulab.asist
 
 /** Part of the AsrMessage class */
-case class AdaptAsrMessageData(
+case class AptimaAsrMessageData(
   val text: String = null, // "You want me to share my screen?"
   val playername: String = null //"intermonk"
 )
 
 /** Contains the full structure of an ADAPT message */
-case class AdaptAsrMessage (
+case class AptimaAsrMessage (
   val msg: CommonMsg,
-  val data: AdaptAsrMessageData,
+  val data: AptimaAsrMessageData,
   val header: CommonHeader
 )
