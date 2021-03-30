@@ -51,7 +51,7 @@ can be started as follows:
 
     sbt "runMain org.clulab.asist.RunDialogAgent mqtt"
 
-    or 
+or 
 
     sbt "runMain org.clulab.asist.RunDialogAgent"
 
