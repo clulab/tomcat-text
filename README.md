@@ -51,6 +51,10 @@ can be started using "mqtt" as its sole argument.
 
     sbt "runMain org.clulab.asist.RunDialogAgent mqtt"
 
+    or 
+
+    sbt "runMain org.clulab.asist.RunDialogAgent"
+
 
 When run on the message bus, the agent will analyze chat messages and ASR messages.
 
