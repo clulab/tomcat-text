@@ -97,6 +97,7 @@ Message received on this topic are expected to have the following json format:
 
 ### UAZ ASR messages
 
+Message bus topic: `agent/asr`
 
 This topic corresponds to utterances by dialogue participants that are
 automatically transcribed in real-time using an automatic speech recognition
