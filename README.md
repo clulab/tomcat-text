@@ -47,9 +47,13 @@ specifying the host and port that the MQTT message broker is running on.
     sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
 
 To connect to a broker on localhost at the MQTT default port (1883), the agent
-can be started using "mqtt" as its sole argument.
+can be started as follows:
 
     sbt "runMain org.clulab.asist.RunDialogAgent mqtt"
+
+or 
+
+    sbt "runMain org.clulab.asist.RunDialogAgent"
 
 
 When run on the message bus, the agent will analyze chat messages and ASR messages.
@@ -91,7 +95,7 @@ Message received on this topic are expected to have the following json format:
 }
 ```
 
-### ASR messages
+### UAZ ASR messages
 
 Message bus topic: `agent/asr`
 
@@ -122,6 +126,39 @@ expected to have the following format:
     "version": "0.1",
     "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
     "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
+  }
+}
+```
+
+### Aptima ASR messages
+
+Message bus topic: `status/asistdataingester/userspeech`
+
+This topic corresponds to utterances by dialogue participants that are
+automatically transcribed in real-time using an automatic speech recognition
+(ASR) service like Google Cloud Speech. Messages received on this topic are
+expected to have the following format:
+
+```json
+{
+  "msg": {
+    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
+    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
+    "timestamp": "2019-12-26T14:05:02.1412Z",
+    "source": "tomcat_asr_agent",
+    "sub_type": "asr",
+    "version": "0.1",
+    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
+  },
+  "data": {
+    "text": "You want me to share my screen?",
+    "playername": "intermonk"
+  },
+  "header": {
+    "timestamp": "2021-01-19T23:27:58.633076Z",
+    "message_type": "observation",
+    "version": "0.1"
   }
 }
 ```
