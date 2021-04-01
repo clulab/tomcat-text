@@ -114,7 +114,7 @@ abstract class AgentMqtt(
    * @param token the delivery token associated with the message.
    */
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
-    logger.info("deliveryComplete: %s" + token.getMessage)
+    logger.debug("deliveryComplete: %s" + token.getMessage)
 
   /** This method is called when a message arrives on the message bus
    * @param topic The message topic

@@ -50,16 +50,12 @@ class DialogAgentMqtt(
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   // Make sure we're connected to the broker.  Can't run without it.
-  if (mqttConnected) logger.info("Ready.") else System.exit(1)
+  if (mqttConnected) logger.info("Running.") else System.exit(1)
 
   /** Publish a DialogAgentMessage as a Json serialization
    *  @param a:  A compete DialogAgent output message
    */
-  def publish(a: DialogAgentMessage): Unit = {
-    val output = toJson(a)
-    publish(output)
-    logger.info("published on '%s': %s".format(DialogAgentMqttSettings.topicOutput, output))
-  }
+  def publish(a: DialogAgentMessage): Unit = publish(toJson(a))
 
 
   /** Convert a json-serialized ChatMessage to a DialogAgent message
@@ -91,7 +87,6 @@ class DialogAgentMqtt(
    *  @param json:  A json representation of a case class data struct
    */
   override def messageArrived(topic: String, json: String): Unit = {
-    logger.info("Received on '%s': %s".format(topic, json))
     topic match {
       case DialogAgentMqttSettings.topicInputChat => 
         toChatMessage(json).map(a => processChat(a))
