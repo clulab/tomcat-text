@@ -58,7 +58,7 @@ class DialogAgentMqtt(
   def publish(a: DialogAgentMessage): Unit = {
     val output = toJson(a)
     publish(output)
-    logger.info("published on '%s': %s".format(DialogAgentMqttSettings.topicOutput, output))
+    logger.debug("published on '%s': %s".format(DialogAgentMqttSettings.topicOutput, output))
   }
 
 
@@ -91,7 +91,7 @@ class DialogAgentMqtt(
    *  @param json:  A json representation of a case class data struct
    */
   override def messageArrived(topic: String, json: String): Unit = {
-    logger.info("Received on '%s': %s".format(topic, json))
+    logger.debug("Received on '%s': %s".format(topic, json))
     topic match {
       case DialogAgentMqttSettings.topicInputChat => 
         toChatMessage(json).map(a => processChat(a))
