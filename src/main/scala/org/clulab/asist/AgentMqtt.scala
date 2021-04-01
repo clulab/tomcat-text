@@ -1,10 +1,12 @@
-//  MqttAgent
-//
-//  Author:  Joseph Astier, Adarsh Pyarelal
-//  Updated:  2021 January
-//
-//  Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
-//
+/**
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ *  Updated:  2021 March
+ *
+ *  An abstract MQTT agent
+ *
+ *  Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
+ */
 package org.clulab.asist
 
 import org.eclipse.paho.client.mqttv3._
@@ -13,18 +15,10 @@ import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
 
-/** Single point of truth for connection settings for the message bus */
-object MqttAgentDefaults {
-
-  /** Connect to the MQTT broker here */
-  val HOST = "localhost"
-  val PORT = "1883"
-}
-
 /** base class for anything needing connection to the message bus */
-abstract class MqttAgent(
-  val host: String = MqttAgentDefaults.HOST,
-  val port: String = MqttAgentDefaults.PORT,
+abstract class AgentMqtt(
+  val host: String = "",
+  val port: String = "",
   val id: String = "",
   val inputTopics: List[String] = List.empty,
   val outputTopics: List[String] = List.empty) extends MqttCallback {
@@ -67,6 +61,8 @@ abstract class MqttAgent(
     (!publisher.isEmpty && publisher.head.isConnected))
   ) {
     logger.info("Connected to MQTT broker at %s".format(uri))
+    logger.info("Subscribed to: %s".format(inputTopics.mkString(", ")))
+    logger.info("Publishing on: %s".format(outputTopics.mkString(", ")))
     true
   } else {
     logger.error("Could not connect to MQTT broker at %s".format(uri))
@@ -120,7 +116,7 @@ abstract class MqttAgent(
   override def deliveryComplete(token: IMqttDeliveryToken): Unit =
     logger.info("deliveryComplete: %s" + token.getMessage)
 
-  /** This method is called when a message arrives from the server.
+  /** This method is called when a message arrives on the message bus
    * @param topic The message topic
    * @param mm The message
    */
