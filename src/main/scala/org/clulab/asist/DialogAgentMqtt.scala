@@ -31,9 +31,11 @@ object DialogAgentMqttSettings {
 
 /** Message bus connectivity for dialog agents */
 class DialogAgentMqtt(
-    override val host: String = "localhost",
+    override val host: String = DialogAgentMqttSettings.host,
     override val port: String = DialogAgentMqttSettings.port
 ) extends AgentMqtt (
+      host,
+      port,
       id = "dialog_agent",
       inputTopics = List(
         DialogAgentMqttSettings.topicInputChat, 
