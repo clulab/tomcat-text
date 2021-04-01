@@ -1,45 +1,48 @@
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 February
+ * Updated:  2021 March
  *
  * This class reads input from the message bus on subscribed topics,
- * performs analysis on the input, and then publishes it on another
- * topic.
+ * performs analysis on the input, and then publishes the analysis to
+ * the output topic.
  *
  * Input and output are in json format.
- *
  */
 package org.clulab.asist
 
 import org.slf4j.LoggerFactory
 
-/** Single point of truth for DialogAgent topics on the message bus */
-object DialogAgentMqttDefaults {
+/** global settings */
+object DialogAgentMqttSettings {
+  // default message bus broker location
+  val host: String = "localhost"
+  val port: String = "1883"
 
-  /** subscribe to these message bus topics for input */
-  val TOPIC_INPUT_CHAT: String = "minecraft/chat"
-  val TOPIC_INPUT_UAZ_ASR: String = "agent/asr"
-  val TOPIC_INPUT_ADAPT_ASR: String = "status/asistdataingester/userspeech"
+  // subscription from message bus
+  val topicInputChat: String = "minecraft/chat"
+  val topicInputUazAsr: String = "agent/asr"
+  val topicInputAptimaAsr: String = "status/asistdataingester/userspeech"
 
-  /** publish input analysis to this message bus topic */
-  val TOPIC_OUTPUT: String = "agent/dialog"
+  // publication to message bus
+  val topicOutput: String = "agent/dialog"
 }
+
 
 /** Message bus connectivity for dialog agents */
 class DialogAgentMqtt(
-    override val host: String = MqttAgentDefaults.HOST,
-    override val port: String = MqttAgentDefaults.PORT,
-    val topicInputChat: String = DialogAgentMqttDefaults.TOPIC_INPUT_CHAT,
-    val topicInputUazAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_UAZ_ASR,
-    val topicInputAptimaAsr: String = DialogAgentMqttDefaults.TOPIC_INPUT_UAZ_ASR,
-    val topicOutput: String = DialogAgentMqttDefaults.TOPIC_OUTPUT
-) extends MqttAgent(
+    override val host: String = DialogAgentMqttSettings.host,
+    override val port: String = DialogAgentMqttSettings.port
+) extends AgentMqtt (
       host,
       port,
       id = "dialog_agent",
-      inputTopics = List(topicInputUazAsr, topicInputChat),
-      outputTopics = List(topicOutput)
+      inputTopics = List(
+        DialogAgentMqttSettings.topicInputChat, 
+        DialogAgentMqttSettings.topicInputUazAsr,
+        DialogAgentMqttSettings.topicInputAptimaAsr
+      ),
+      outputTopics = List(DialogAgentMqttSettings.topicOutput)
     )
     with DialogAgent
     with DialogAgentJson {
@@ -55,10 +58,7 @@ class DialogAgentMqtt(
   def publish(a: DialogAgentMessage): Unit = {
     val output = toJson(a)
     publish(output)
-    logger.info("published on '%s': %s".format(
-      DialogAgentMqttDefaults.TOPIC_OUTPUT,
-      output)
-    )
+    logger.info("published on '%s': %s".format(DialogAgentMqttSettings.topicOutput, output))
   }
 
 
@@ -67,7 +67,7 @@ class DialogAgentMqtt(
    *  @param msg:  input text from the Minecraft chat textfield
    */
   def processChat(msg: ChatMessage): Unit = 
-    publish(toDialogAgentMessage(msg, "message_bus", topicInputChat))
+    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputChat))
 
 
   /** Convert a json-serialized UazAsrMessage to a DialogAgent message
@@ -75,15 +75,15 @@ class DialogAgentMqtt(
    *  @param msg: Input from the Minecraft microphone
    */
   def processUazAsr(msg: UazAsrMessage): Unit = if(msg.data.is_final)
-    publish(toDialogAgentMessage(msg, "message_bus", topicInputUazAsr))
+    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputUazAsr))
 
 
   /** Convert a json-serialized AptimaAsrMessage to a DialogAgent message
-   *  and publish to the message bus if the 'is_final' flag is set.
+   *  and publish to the message bus 
    *  @param msg: Input from the Minecraft microphone
    */
   def processAptimaAsr(msg: AptimaAsrMessage): Unit = 
-    publish(toDialogAgentMessage(msg, "message_bus", topicInputAptimaAsr))
+    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputAptimaAsr))
 
 
   /** Publish analysis of messages received on subscription topics 
@@ -93,9 +93,12 @@ class DialogAgentMqtt(
   override def messageArrived(topic: String, json: String): Unit = {
     logger.info("Received on '%s': %s".format(topic, json))
     topic match {
-      case `topicInputChat` => toChatMessage(json).map(a => processChat(a))
-      case `topicInputUazAsr` => toUazAsrMessage(json).map(a => processUazAsr(a))
-      case `topicInputAptimaAsr` => toAptimaAsrMessage(json).map(a => processAptimaAsr(a))
+      case DialogAgentMqttSettings.topicInputChat => 
+        toChatMessage(json).map(a => processChat(a))
+      case DialogAgentMqttSettings.topicInputUazAsr => 
+        toUazAsrMessage(json).map(a => processUazAsr(a))
+      case DialogAgentMqttSettings.topicInputAptimaAsr => 
+        toAptimaAsrMessage(json).map(a => processAptimaAsr(a))
       case _ =>
     }
   }
