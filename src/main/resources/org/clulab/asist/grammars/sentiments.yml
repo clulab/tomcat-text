@@ -8,5 +8,5 @@ rules:
     type: token
     keep: true
     pattern: |
-      trigger = [lemma=/(?i)^(${ encouragement_triggers1 })/] [word=/(?i)(${ encouragement_triggers2 })/]
+      [lemma=/(?i)^(${ encouragement_triggers1 })/] [word=/(?i)(${ encouragement_triggers2 })/]
 
