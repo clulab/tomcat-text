@@ -102,6 +102,6 @@ victim_triggers: "victim|patient"
 
 zone_triggers: "zone|area|side|section"
 
-encouragement_triggers1: "good|well|perfect|amazing|excellent"
+encouragement_triggers1: "good|well|perfect|amazing|excellent|great"
 
-encouragement_triggers2: "job|done"
+encouragement_triggers2: "job|done|work"
