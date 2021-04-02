@@ -82,7 +82,7 @@ team_triggers: "we|us"
 
 alpha_triggers: "alpha"
 
-bravo_triggers: "bravo"
+bravo_triggers: "bravo|brother"
 
 delta_triggers: "delta"
 
@@ -101,3 +101,7 @@ east_triggers: "east"
 victim_triggers: "victim|patient"
 
 zone_triggers: "zone|area|side|section"
+
+encouragement_triggers1: "good|well|perfect|amazing|excellent"
+
+encouragement_triggers2: "job|done"

@@ -1,0 +1,12 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: encouragement1
+    label: Encouragement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      trigger = [lemma=/(?i)^(${ encouragement_triggers1 })/] [word=/(?i)(${ encouragement2_triggers2 })/]?
+
