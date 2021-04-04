@@ -45,7 +45,7 @@ change_priority_triggers: "target|prioritize|focus"
 
 exist_triggers: "be"
 
-agree_triggers: "yes|yeah|roger|acknowledge"
+agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree"
 
 disagree_triggers: "no|nah|nope"
 
@@ -102,6 +102,6 @@ victim_triggers: "victim|patient"
 
 zone_triggers: "zone|area|side|section"
 
-encouragement_triggers1: "good|well|perfect|amazing|excellent|great"
+encouragement_triggers1: "good|well|perfect|amazing|excellent|great|awesome"
 
 encouragement_triggers2: "job|done|work"

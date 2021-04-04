@@ -10,3 +10,11 @@ rules:
     pattern: |
       [lemma=/(?i)^(${ encouragement_triggers1 })/] [word=/(?i)(${ encouragement_triggers2 })/]
 
+  - name: agreement2
+    label: Agreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^sound/] [word=/(?i)good/]
+
