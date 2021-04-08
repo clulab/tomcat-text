@@ -23,18 +23,18 @@ object  RunDialogAgent extends App {
   /** Show the usage hints */
   def usage: Unit = List(
     "",
-    "To use %s on the message bus:".format(appName),
+    "To use the %s on the message bus:".format(appName),
     "%s mqtt <host> <port>".format(appName),
     "",
-    "To use %s on the message bus with default args:".format(appName),
+    "To use the %s on the message bus with default args:".format(appName),
     "%s mqtt".format(appName),
     "or",
     "%s".format(appName),
     "",
-    "To use %s for extractions on command line input:".format(appName),
+    "To use the %s for extractions on command line input:".format(appName),
     "%s stdin".format(appName),
     "",
-    "To use %s on a web_vtt file or the first level of a directory:".format(appName),
+    "To use the %s on a web_vtt file or the first level of a directory:".format(appName),
     "%s web_vtt <inputFileOrDir> <outputFile>".format(appName),
     ""
   ).map(println)
