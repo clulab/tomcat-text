@@ -14,6 +14,7 @@ package org.clulab.asist
 import org.slf4j.LoggerFactory
 
 /** global settings */
+
 object DialogAgentMqttSettings {
   // default message bus broker location
   val host: String = "localhost"
@@ -21,7 +22,7 @@ object DialogAgentMqttSettings {
 
   // subscription from message bus
   val topicInputChat: String = "minecraft/chat"
-  val topicInputUazAsr: String = "agent/asr"
+  val topicInputUazAsr: String = "agent/asr/final"
   val topicInputAptimaAsr: String = "status/asistdataingester/userspeech"
 
   // publication to message bus
@@ -70,7 +71,7 @@ class DialogAgentMqtt(
    *  and publish to the message bus if the 'is_final' flag is set.
    *  @param msg: Input from the Minecraft microphone
    */
-  def processUazAsr(msg: UazAsrMessage): Unit = if(msg.data.is_final)
+  def processUazAsr(msg: UazAsrMessage): Unit = 
     publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputUazAsr))
 
 
