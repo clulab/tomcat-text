@@ -10,92 +10,74 @@ package org.clulab.asist
 
 object  RunDialogAgent extends App {
   
-  val appName ="DialogAgent"
-
-  val hintsStdin = List(
-    "'%s stdin' runs the Dialog Agent interactively. ".format(appName)
-  )
-
-  val hintsMqtt = List(
-    "'%s mqtt' runs the Dialog Agent on the Message Bus".format(appName),
-    "  -h   Host machine where the MQTT broker is running.",
-    "       Optional, default is 'localhost'.",
-    "  -p   Port on the host machine for connection to the broker.",
-    "       Optional, default is '1883'.",
-    "  -n   Number of extractions to perform.",
-    "       Optional, if not specified all extractions are performed."
-  )
-
-  val hintsWebVtt = List(
-    "'%s web_vtt' runs the Dialog Agent on an input file in WebVTT format.".format(appName),
-    "  -i   Input filename.  Mandatory argument.",
-    "  -o   Output filename.  Destination for processed input."
-  )
-
-  /** Show the usage hints */
-  val allHints: List[String] = List(
-    hintsMqtt, 
-    List(" "), 
-    hintsStdin,
-    List(" "),
-    hintsWebVtt
-  ).flatten
-
-  // inform the user that you need a little more information
-  def usage(hints: List[String]): Option[DialogAgent] = {
-    hints.map(println)
+  def usage: Option[DialogAgent] = {
+    List(
+      "Running the ToMCAT-text Dialog Agent:",
+      "",
+      "  RunDialogAgent {mqtt [-h host] [-p port ] [-t taxonomy matches]}",
+      "                 {stdin [-t taxonomy matches]}",
+      "                 {web_vtt [-i infile] [-o outfile] [-t taxonomy matches]}",
+      "",
+      " -h : MQTT host to connect to. Default is localhost.",
+      " -p : MQTT network port to connect to. Default is 1883.",
+      " -t : maximum number of taxonomy matches.  Default is no limit.",
+      " -i : WebVTT input filename, mandatory",
+      " -o : output filename, defaults to web_vtt_output.json"
+    ).map(println)
     None
   }
 
-  val agent: Option[DialogAgent] = getAgent(args.toList)
+  val agent: Option[DialogAgent] = run(args.toList)
 
-  /** Create an agent based on the user args */
-  def getAgent(l: List[String]): Option[DialogAgent] = l.head match {
-    case ("mqtt") => parseMqtt(l.tail, "localhost", "1883", None)
-    case ("stdin") => parseStdin(l.tail)
-    case ("web_vtt") => parseWebVtt(l.tail, None, None)
-    case _ => usage(allHints)
+  /** Run an agent based on the user args */
+  def run(argList: List[String]): Option[DialogAgent] = argList match {
+    case ("mqtt"::l) => runMqtt(l, "localhost", "1883", None)
+    case ("stdin"::l) => runStdin(l, None)
+    case ("web_vtt"::l) => runWebVtt(l, None, None, None)
+    case _ => usage
   }
 
-
-  def parseStdin(
-    argList: List[String]
+  // run interactively from the command prompt
+  def runStdin(
+    argList: List[String],
+    nMatches: Option[String]
   ):Option[DialogAgent] = argList match {
-    case ("--help"::l) => usage(hintsStdin)
-    case _ => Some(new DialogAgentStdin)
+    case ("-t"::l) => runStdin(l.tail, Some(l.head))
+    case _ => Some(new DialogAgentStdin(nMatches))
   }
 
 
-  // the Mqtt agent can run on no args at all
-  def parseMqtt(
+  // run on the Message Bus
+  def runMqtt(
     argList: List[String],
     host: String,
     port: String,
     nMatches: Option[String]
   ): Option[DialogAgent] = argList match {
-    case ("--help"::l) => usage(hintsMqtt)
-    case ("-h"::l) => parseMqtt(l.tail, l.head, port, nMatches)
-    case ("-p"::l) => parseMqtt(l.tail, host, l.head, nMatches)
-    case ("-n"::l) => parseMqtt(l.tail, host, port, Some(l.head))
+    case ("-h"::l) => runMqtt(l.tail, l.head, port, nMatches)
+    case ("-p"::l) => runMqtt(l.tail, host, l.head, nMatches)
+    case ("-t"::l) => runMqtt(l.tail, host, port, Some(l.head))
     case List() => Some(new DialogAgentMqtt(host, port, nMatches))
-    case _ => usage(hintsMqtt)
+    case _ => usage
   }
 
 
-  // the WebVtt agent must have input and output args to run.
-  def parseWebVtt(    
+  // run with file input
+  def runWebVtt(    
     argList: List[String],
     infile: Option[String],
-    outfile: Option[String]
+    outfile: Option[String],
+    nMatches: Option[String]
+
   ): Option[DialogAgent] = argList match {
-    case ("--help"::l) => usage(hintsWebVtt)
-    case ("-i"::l) => parseWebVtt(l.tail, Some(l.head), outfile)
-    case ("-o"::l) => parseWebVtt(l.tail, infile, Some(l.head))
+    case ("-i"::l) => runWebVtt(l.tail, Some(l.head), outfile, nMatches)
+    case ("-o"::l) => runWebVtt(l.tail, infile, Some(l.head), nMatches)
+    case ("-t"::l) => runWebVtt(l.tail, infile, outfile, Some(l.head))
     case List() => {
       if(infile.isDefined && outfile.isDefined) 
         Some(new DialogAgentWebVtt(infile.head, outfile.head))
-      else usage(hintsWebVtt)
+      else usage
     }
-    case _ => usage(hintsWebVtt)
+    case _ => usage
   }
 }

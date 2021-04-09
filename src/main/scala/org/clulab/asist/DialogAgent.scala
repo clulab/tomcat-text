@@ -47,6 +47,14 @@ trait DialogAgent {
   }
 
   /** Create a DialogAgent extraction from Extractor data */
+  def extraction(
+    mention: Mention, 
+    nMatches: Int
+  ): DialogAgentMessageDataExtraction = {
+    new DialogAgentMessageDataExtraction
+  }
+
+  /** Create a DialogAgent extraction from Extractor data */
   def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
 
     val originalArgs = mention.arguments.toArray
@@ -54,7 +62,6 @@ trait DialogAgent {
       (role, ms) <- originalArgs
       converted = ms.map(extraction)
     } yield (role, converted)
-
     val taxonomy_matches = taxonomyMatches(mention.label)
     val charOffsets: Tuple2[Int, Int] = mention match {
       case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
@@ -69,7 +76,6 @@ trait DialogAgent {
         charOffsets._2,
         taxonomy_matches
       )
-
   }
 
 
