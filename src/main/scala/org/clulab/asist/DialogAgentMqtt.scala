@@ -15,13 +15,20 @@ import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
 
-/** base class for anything needing connection to the message bus */
-class AgentMqtt(
-  val host: String = "",
-  val port: String = "",
-  val id: String = "",
-  val inputTopics: List[String] = List.empty,
-  val outputTopics: List[String] = List.empty) extends MqttCallback {
+class DialogAgentMqtt(
+    val host: String = "localhost",
+    val port: String = "1883",
+    val nMatches: Option[Int] = None
+  ) extends DialogAgentFoo with DialogAgentJson {
+
+  val id = "dialog_agent",
+    // subscription from message bus
+  val topicInputChat: String = "minecraft/chat"
+  val topicInputUazAsr: String = "agent/asr/final"
+  val topicInputAptimaAsr: String = "status/asistdataingester/userspeech"
+
+  // publication to message bus
+  val topicOutput: String = "agent/dialog"
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -51,23 +58,48 @@ class AgentMqtt(
     val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
     sub.setCallback(this)
     sub.connect(new MqttConnectOptions).waitForCompletion
-    inputTopics.map(topic=> sub.subscribe(topic,qos))
+    sub.subscribe(topicInputChat, qos)
+    sub.subscribe(topicInputUazAsr, qos)
+    sub.subscribe(topicInputAptimaAsr, qos)
     sub
   }
 
-  /** True if publisher and subsriber are connected to the MQTT broker */
-  def mqttConnected: Boolean = if (
-    ((!subscriber.isEmpty && subscriber.head.isConnected) &&
-    (!publisher.isEmpty && publisher.head.isConnected))
-  ) {
+  /** Test connection to the broker, can't run without it */
+  if ((subscriber.isDefined && subscriber.head.isConnected) &&
+      (publisher.isDefined && publisher.head.isConnected))) {
     logger.info("Connected to MQTT broker at %s".format(uri))
     logger.info("Subscribed to: %s".format(inputTopics.mkString(", ")))
     logger.info("Publishing on: %s".format(outputTopics.mkString(", ")))
-    true
+    logger.info("Running.")
   } else {
     logger.error("Could not connect to MQTT broker at %s".format(uri))
-    false
+    System.exit(1)
   }
+
+   /** Convert a json-serialized ChatMessage to a DialogAgent message
+   *  and publish to the message bus.
+   *  @param msg:  input text from the Minecraft chat textfield
+   */
+  def processChat(msg: ChatMessage): Unit =
+    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputChat))
+
+
+  /** Convert a json-serialized UazAsrMessage to a DialogAgent message
+   *  and publish to the message bus if the 'is_final' flag is set.
+   *  @param msg: Input from the Minecraft microphone
+   */
+  def processUazAsr(msg: UazAsrMessage): Unit =
+    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputUazAsr))
+
+
+  /** Convert a json-serialized AptimaAsrMessage to a DialogAgent message
+   *  and publish to the message bus
+   *  @param msg: Input from the Minecraft microphone
+   */
+  def processAptimaAsr(msg: AptimaAsrMessage): Unit =
+    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputAptimaAsr))
+
+
 
   /** Publish a string to all publication topics
    *  @param output string to publish
@@ -129,9 +161,21 @@ class AgentMqtt(
     }
   }
 
-  /** This method is called when a MqttMessage is successfully read
-   * @param topic name of the topic on the message was published to
-   * @param message the string representation of the message
+
+  /** Publish analysis of messages received on subscription topics
+   *  @param topic:  The message bus topic where the input appeared
+   *  @param json:  A json representation of a case class data struct
    */
-  def messageArrived(topic: String, message: String): Unit
+  override def messageArrived(topic: String, json: String): Unit = {
+    topic match {
+      case DialogAgentMqttSettings.topicInputChat =>
+        toChatMessage(json).map(a => processChat(a))
+      case DialogAgentMqttSettings.topicInputUazAsr =>
+        toUazAsrMessage(json).map(a => processUazAsr(a))
+      case DialogAgentMqttSettings.topicInputAptimaAsr =>
+        toAptimaAsrMessage(json).map(a => processAptimaAsr(a))
+      case _ =>
+    }
+  }
+
 }
