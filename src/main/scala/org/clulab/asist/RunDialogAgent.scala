@@ -10,20 +10,22 @@ package org.clulab.asist
 
 object  RunDialogAgent extends App {
   
+  val hints = List(
+    "Running the ToMCAT-text Dialog Agent:",
+    "",
+    "  RunDialogAgent {--mqtt [-h host] [-p port ] [-t taxonomy_matches]}",
+    "                 {--stdin [-t taxonomy_matches]}",
+    "                 {--web_vtt [-i infile] [-o outfile] [-t taxonomy_matches]}",
+    "",
+    " -h : MQTT host to connect to. Default is localhost.",
+    " -p : MQTT network port to connect to. Default is 1883.",
+    " -t : maximum number of taxonomy matches.  Default is no limit.",
+    " -i : WebVTT input filename, mandatory",
+    " -o : output filename, defaults to web_vtt_output.json"
+  )
+
   def usage: Option[DialogAgent] = {
-    List(
-      "Running the ToMCAT-text Dialog Agent:",
-      "",
-      "  RunDialogAgent {--mqtt [-h host] [-p port ] [-t taxoMatches]}",
-      "                 {--stdin [-t taxoMatches]}",
-      "                 {--web_vtt [-i infile] [-o outfile] [-t taxoMatches]}",
-      "",
-      " -h : MQTT host to connect to. Default is localhost.",
-      " -p : MQTT network port to connect to. Default is 1883.",
-      " -t : maximum number of taxonomy matches.  Default is no limit.",
-      " -i : WebVTT input filename, mandatory",
-      " -o : output filename, defaults to web_vtt_output.json"
-    ).map(println)
+    hints.map(println)
     None
   }
 
@@ -51,7 +53,7 @@ object  RunDialogAgent extends App {
       }
       // Run using file input
       case ("--web_vtt"::l) => {
-        val i = value(l, "-i")
+        val i = value(l, "-i")  // mandatory arg
         val o = value(l, "-o").getOrElse("web_vtt_output.json")
         if(i.isDefined) Some(new DialogAgentWebVtt(i.head, o, t))
         else usage
