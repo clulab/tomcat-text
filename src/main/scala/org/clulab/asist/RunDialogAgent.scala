@@ -43,19 +43,22 @@ object  RunDialogAgent extends App {
   def run(argList: List[String]): Option[DialogAgent] = {
     val t = value(argList.tail, "-t")
     argList match {
+      // Run on the Message Bus
       case ("--mqtt"::l) => {
         val h = value(l, "-h").getOrElse("localhost")
         val p = value(l, "-p").getOrElse("1883")
         Some(new DialogAgentMqtt(h, p, t))
       }
+      // Run using file input
       case ("--web_vtt"::l) => {
         val i = value(argList, "-i")
-        val o = value(argList, "-o")
-        if(i.isDefined && o.isDefined) 
-          Some(new DialogAgentWebVtt(i.head, o.head, t))
+        val o = value(argList, "-o").getOrElse("web_vtt_output.json")
+        if(i.isDefined) Some(new DialogAgentWebVtt(i.head, o, t))
         else usage
       }
+      // Run on the command line
       case ("--stdin"::l) => Some(new DialogAgentStdin(t))
+      // Run the help page
       case _ => usage
     }
   }
