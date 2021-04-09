@@ -17,10 +17,8 @@ import spray.json.DefaultJsonProtocol._
 
 import scala.collection.mutable.{ArrayBuffer}
 
-class DialogAgentFoo extends DialogAgent
-
 /** Dialog language processor */
-trait DialogAgent {
+class DialogAgent (val nMatches: Option[Int] = None) {
 
   val DIALOG_AGENT_MESSAGE_TYPE = "event"
   val DIALOG_AGENT_SOURCE = "tomcat_textAnalyzer"

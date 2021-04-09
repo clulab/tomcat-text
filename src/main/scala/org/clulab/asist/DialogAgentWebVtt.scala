@@ -25,8 +25,8 @@ import scala.util.{Failure, Success}
 class DialogAgentWebVtt(
     val inputFilename: String = "",
     val outputFilename: String = "", 
-    val nMatches: Option[Int] = None
-  ) extends DialogAgentFoo with DialogAgentJson {
+    override val nMatches: Option[Int] = None
+  ) extends DialogAgent with DialogAgentJson {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
