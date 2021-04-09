@@ -51,8 +51,8 @@ object  RunDialogAgent extends App {
       }
       // Run using file input
       case ("--web_vtt"::l) => {
-        val i = value(argList, "-i")
-        val o = value(argList, "-o").getOrElse("web_vtt_output.json")
+        val i = value(l, "-i")
+        val o = value(l, "-o").getOrElse("web_vtt_output.json")
         if(i.isDefined) Some(new DialogAgentWebVtt(i.head, o, t))
         else usage
       }
