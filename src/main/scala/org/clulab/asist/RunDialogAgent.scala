@@ -1,63 +1,101 @@
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 February
+ *  updated:  2021 April
  *
- *  This object will run the DialogAgent in either message bus or 
- *  file mode depending on user inputs
- *
+ *  This object will run the DialogAgent on an input file, on the 
+ *  message bus, or interactively depending on user inputs
  */
 package org.clulab.asist
-
-import java.io.File
-import org.slf4j.LoggerFactory
-
-
 
 object  RunDialogAgent extends App {
   
   val appName ="DialogAgent"
 
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+  val hintsStdin = List(
+    "'%s stdin' runs the Dialog Agent interactively. ".format(appName)
+  )
+
+  val hintsMqtt = List(
+    "'%s mqtt' runs the Dialog Agent on the Message Bus".format(appName),
+    "  -h   Host machine where the MQTT broker is running.",
+    "       Optional, default is 'localhost'.",
+    "  -p   Port on the host machine for connection to the broker.",
+    "       Optional, default is '1883'.",
+    "  -n   Number of extractions to perform.",
+    "       Optional, if not specified all extractions are performed."
+  )
+
+  val hintsWebVtt = List(
+    "'%s web_vtt' runs the Dialog Agent on an input file in WebVTT format.".format(appName),
+    "  -i   Input filename.  Mandatory argument.",
+    "  -o   Output filename.  Destination for processed input."
+  )
 
   /** Show the usage hints */
-  def usage: Unit = List(
-    "",
-    "To use the %s on the message bus:".format(appName),
-    "%s mqtt <host> <port>".format(appName),
-    "",
-    "To use the %s on the message bus with default args:".format(appName),
-    "%s mqtt".format(appName),
-    "or",
-    "%s".format(appName),
-    "",
-    "To use the %s for extractions on command line input:".format(appName),
-    "%s stdin".format(appName),
-    "",
-    "To use the %s on a web_vtt file or the first level of a directory:".format(appName),
-    "%s web_vtt <inputFileOrDir> <outputFile>".format(appName),
-    ""
-  ).map(println)
+  val allHints: List[String] = List(
+    hintsMqtt, 
+    List(" "), 
+    hintsStdin,
+    List(" "),
+    hintsWebVtt
+  ).flatten
 
+  // inform the user that you need a little more information
+  def usage(hints: List[String]): Option[DialogAgent] = {
+    hints.map(println)
+    None
+  }
+
+  val agent: Option[DialogAgent] = getAgent(args.toList)
 
   /** Create an agent based on the user args */
-  val agent: Option[DialogAgent] = args match {
-    case Array() =>
-      Some(new DialogAgentMqtt)
-    case Array("mqtt") => 
-      Some(new DialogAgentMqtt)
-    case Array("mqtt", host: String, port: String) => 
-      Some(new DialogAgentMqtt(host, port))
-    case Array("stdin") => 
-      Some(new DialogAgentStdin)
-    case Array("web_vtt", inputFile: String, outputFile: String) => {
-      DialogAgentWebVtt(inputFile, outputFile)
-      None
+  def getAgent(l: List[String]): Option[DialogAgent] = l.head match {
+    case ("mqtt") => parseMqtt(l.tail, "localhost", "1883", None)
+    case ("stdin") => parseStdin(l.tail)
+    case ("web_vtt") => parseWebVtt(l.tail, None, None)
+    case _ => usage(allHints)
+  }
+
+
+  def parseStdin(
+    argList: List[String]
+  ):Option[DialogAgent] = argList match {
+    case ("--help"::l) => usage(hintsStdin)
+    case _ => Some(new DialogAgentStdin)
+  }
+
+
+  // the Mqtt agent can run on no args at all
+  def parseMqtt(
+    argList: List[String],
+    host: String,
+    port: String,
+    nMatches: Option[String]
+  ): Option[DialogAgent] = argList match {
+    case ("--help"::l) => usage(hintsMqtt)
+    case ("-h"::l) => parseMqtt(l.tail, l.head, port, nMatches)
+    case ("-p"::l) => parseMqtt(l.tail, host, l.head, nMatches)
+    case ("-n"::l) => parseMqtt(l.tail, host, port, Some(l.head))
+    case List() => Some(new DialogAgentMqtt(host, port, nMatches))
+    case _ => usage(hintsMqtt)
+  }
+
+
+  // the WebVtt agent must have input and output args to run.
+  def parseWebVtt(    
+    argList: List[String],
+    infile: Option[String],
+    outfile: Option[String]
+  ): Option[DialogAgent] = argList match {
+    case ("--help"::l) => usage(hintsWebVtt)
+    case ("-i"::l) => parseWebVtt(l.tail, Some(l.head), outfile)
+    case ("-o"::l) => parseWebVtt(l.tail, infile, Some(l.head))
+    case List() => {
+      if(infile.isDefined && outfile.isDefined) 
+        Some(new DialogAgentWebVtt(infile.head, outfile.head))
+      else usage(hintsWebVtt)
     }
-    case _ => {
-      logger.error("Arguments not recognized")
-      usage
-      None
-    }
+    case _ => usage(hintsWebVtt)
   }
 }
