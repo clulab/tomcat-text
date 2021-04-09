@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 import scala.util.control.Exception._
 
 
-/** base class for anything needing connection to the message bus */
+/** Message Bus handler class */
 class AgentMqtt(
   val host: String = "",
   val port: String = "",
@@ -57,17 +57,18 @@ class AgentMqtt(
   }
 
   /** True if publisher and subsriber are connected to the MQTT broker */
-  def connected: Boolean = if (
-    ((!subscriber.isEmpty && subscriber.head.isConnected) &&
-    (!publisher.isEmpty && publisher.head.isConnected))
-  ) {
+  if(subscriber.isDefined
+    && subscriber.head.isConnected
+    && publisher.isDefined
+    && publisher.head.isConnected) 
+  {
     logger.info("Connected to MQTT broker at %s".format(uri))
     logger.info("Subscribed to: %s".format(inputTopics.mkString(", ")))
     logger.info("Publishing on: %s".format(outputTopics.mkString(", ")))
-    true
+    logger.info("Running.")
   } else {
     logger.error("Could not connect to MQTT broker at %s".format(uri))
-    false
+    System.exit(1)
   }
 
   /** Publish a string to all publication topics

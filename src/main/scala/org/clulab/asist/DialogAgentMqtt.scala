@@ -21,12 +21,15 @@ class DialogAgentMqtt(
     override val nMatches: Option[Int] = None
   ) extends DialogAgent with DialogAgentJson {
 
-  // message bus
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+
+  // message bus topics
   val topicInputChat: String = "minecraft/chat"
   val topicInputUazAsr: String = "agent/asr/final"
   val topicInputAptimaAsr: String = "status/asistdataingester/userspeech"
   val topicOutput: String = "agent/dialog"
   
+  // message bus handler
   val agentMqtt = new AgentMqtt(
     host,
     port,
@@ -41,12 +44,9 @@ class DialogAgentMqtt(
   )
 
 
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
-
-  // Make sure we're connected to the broker.  Can't run without it.
-  if (agentMqtt.connected) logger.info("Running.") else System.exit(1)
-
-
+  /** Send completed Dialog Agent messages out on the message bus
+   *  @param a A finished DialogAgentMessage to be published
+   */
   def publish(a: DialogAgentMessage): Unit = agentMqtt.publish(toJson(a))
 
 
