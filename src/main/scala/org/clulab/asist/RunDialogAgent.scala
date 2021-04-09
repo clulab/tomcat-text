@@ -14,9 +14,9 @@ object  RunDialogAgent extends App {
     List(
       "Running the ToMCAT-text Dialog Agent:",
       "",
-      "  RunDialogAgent {mqtt [-h host] [-p port ] [-t taxonomy matches]}",
-      "                 {stdin [-t taxonomy matches]}",
-      "                 {web_vtt [-i infile] [-o outfile] [-t taxonomy matches]}",
+      "  RunDialogAgent {--mqtt [-h host] [-p port ] [-t taxoMatches]}",
+      "                 {--stdin [-t taxoMatches]}",
+      "                 {--web_vtt [-i infile] [-o outfile] [-t taxoMatches]}",
       "",
       " -h : MQTT host to connect to. Default is localhost.",
       " -p : MQTT network port to connect to. Default is 1883.",
@@ -27,57 +27,36 @@ object  RunDialogAgent extends App {
     None
   }
 
-  val agent: Option[DialogAgent] = run(args.toList)
 
-  /** Run an agent based on the user args */
-  def run(argList: List[String]): Option[DialogAgent] = argList match {
-    case ("mqtt"::l) => runMqtt(l, "localhost", "1883", None)
-    case ("stdin"::l) => runStdin(l, None)
-    case ("web_vtt"::l) => runWebVtt(l, None, None, None)
-    case _ => usage
+  /**
+   * @param l A list of keys and values as (key value key value ...)
+   * @param key A key to search for in the list
+   * @returns the value for the key, if found, else None
+   */
+  def value(l: List[String], key: String): Option[String] = l match {
+    case (k::v::rest) => if (k == key) Some(v) else value(rest, key)
+    case _ => None
   }
 
-  // run interactively from the command prompt
-  def runStdin(
-    argList: List[String],
-    nMatches: Option[String]
-  ):Option[DialogAgent] = argList match {
-    case ("-t"::l) => runStdin(l.tail, Some(l.head))
-    case _ => Some(new DialogAgentStdin(nMatches))
-  }
+  val agent = run(args.toList)
 
-
-  // run on the Message Bus
-  def runMqtt(
-    argList: List[String],
-    host: String,
-    port: String,
-    nMatches: Option[String]
-  ): Option[DialogAgent] = argList match {
-    case ("-h"::l) => runMqtt(l.tail, l.head, port, nMatches)
-    case ("-p"::l) => runMqtt(l.tail, host, l.head, nMatches)
-    case ("-t"::l) => runMqtt(l.tail, host, port, Some(l.head))
-    case List() => Some(new DialogAgentMqtt(host, port, nMatches))
-    case _ => usage
-  }
-
-
-  // run with file input
-  def runWebVtt(    
-    argList: List[String],
-    infile: Option[String],
-    outfile: Option[String],
-    nMatches: Option[String]
-
-  ): Option[DialogAgent] = argList match {
-    case ("-i"::l) => runWebVtt(l.tail, Some(l.head), outfile, nMatches)
-    case ("-o"::l) => runWebVtt(l.tail, infile, Some(l.head), nMatches)
-    case ("-t"::l) => runWebVtt(l.tail, infile, outfile, Some(l.head))
-    case List() => {
-      if(infile.isDefined && outfile.isDefined) 
-        Some(new DialogAgentWebVtt(infile.head, outfile.head))
-      else usage
+  def run(argList: List[String]): Option[DialogAgent] = {
+    val t = value(argList.tail, "-t")
+    argList match {
+      case ("--mqtt"::l) => {
+        val h = value(l, "-h").getOrElse("localhost")
+        val p = value(l, "-p").getOrElse("1883")
+        Some(new DialogAgentMqtt(h, p, t))
+      }
+      case ("--web_vtt"::l) => {
+        val i = value(argList, "-i")
+        val o = value(argList, "-o")
+        if(i.isDefined && o.isDefined) 
+          Some(new DialogAgentWebVtt(i.head, o.head, t))
+        else usage
+      }
+      case ("--stdin"::l) => Some(new DialogAgentStdin(t))
+      case _ => usage
     }
-    case _ => usage
   }
 }
