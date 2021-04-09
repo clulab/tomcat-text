@@ -16,7 +16,7 @@ import scala.util.control.Exception._
 
 
 /** base class for anything needing connection to the message bus */
-abstract class AgentMqtt(
+class AgentMqtt(
   val host: String = "",
   val port: String = "",
   val id: String = "",

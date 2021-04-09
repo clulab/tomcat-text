@@ -23,10 +23,10 @@ import scala.util.{Failure, Success}
  * @param outputFilename Write results of parsing here
  */
 class DialogAgentWebVtt(
-    val inputFilename: String,
-    val outputFilename: String, 
-    val maxTaxonomyMatches: Option[String]
-  ) extends DialogAgent with DialogAgentJson {
+    val inputFilename: String = "",
+    val outputFilename: String = "", 
+    val nMatches: Option[Int] = None
+  ) extends DialogAgentFoo with DialogAgentJson {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 

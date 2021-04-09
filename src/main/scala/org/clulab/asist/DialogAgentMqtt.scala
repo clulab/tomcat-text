@@ -34,8 +34,8 @@ object DialogAgentMqttSettings {
 class DialogAgentMqtt(
     override val host: String = DialogAgentMqttSettings.host,
     override val port: String = DialogAgentMqttSettings.port,
-    val nMatches: Option[String] = None
-) extends AgentMqtt (
+    val nMatches: Option[Int] = None
+) extends AgentMqtt and DialogAgent(
       host,
       port,
       id = "dialog_agent",
@@ -46,7 +46,6 @@ class DialogAgentMqtt(
       ),
       outputTopics = List(DialogAgentMqttSettings.topicOutput)
     )
-    with DialogAgent
     with DialogAgentJson {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())

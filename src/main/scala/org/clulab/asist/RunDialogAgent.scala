@@ -17,18 +17,16 @@ object  RunDialogAgent extends App {
     "                 {--stdin [-t taxonomy_matches]}",
     "                 {--web_vtt [-i infile] [-o outfile] [-t taxonomy_matches]}",
     "",
-    " -h : MQTT host to connect to. Default is localhost.",
-    " -p : MQTT network port to connect to. Default is 1883.",
-    " -t : maximum number of taxonomy matches.  Default is no limit.",
+    " -h : MQTT host to connect to. Defaults to localhost.",
+    " -p : MQTT network port to connect to. Defaults to 1883.",
+    " -t : maximum number of taxonomy matches.  No limit if not set.",
     " -i : WebVTT input filename, mandatory",
     " -o : output filename, defaults to web_vtt_output.json"
   )
+  
 
-  def usage: Option[DialogAgent] = {
-    hints.map(println)
-    None
-  }
-
+  // a dialog agent kept in global scope
+  val agent = run(args.toList)
 
   /**
    * @param l A list of keys and values as (key value key value ...)
@@ -40,10 +38,23 @@ object  RunDialogAgent extends App {
     case _ => None
   }
 
-  val agent = run(args.toList)
 
+  def intOption(l: List[String], key: String): Option[Int] = {
+    val foo = value(l, "-t")
+    if(foo.isEmpty) None
+    else try {
+      Some(foo.head.toInt)
+    } catch {
+      case e: Exception => None
+    }
+  }
+
+  /**
+   * @param l A list of keys and values as (key value key value ...)
+   * @returns A DialogAgent running in the user-chose mode
+   */
   def run(argList: List[String]): Option[DialogAgent] = {
-    val t = value(argList.tail, "-t")
+    val t: Option[Int] = intOption(argList, "-t")
     argList match {
       // Run on the Message Bus
       case ("--mqtt"::l) => {
@@ -55,13 +66,20 @@ object  RunDialogAgent extends App {
       case ("--web_vtt"::l) => {
         val i = value(l, "-i")  // mandatory arg
         val o = value(l, "-o").getOrElse("web_vtt_output.json")
-        if(i.isDefined) Some(new DialogAgentWebVtt(i.head, o, t))
-        else usage
+        if(i.isDefined) 
+          Some(new DialogAgentWebVtt(i.head, o, t))
+        else {
+          hints.map(println)
+          None
+        }
       }
       // Run on the command line
       case ("--stdin"::l) => Some(new DialogAgentStdin(t))
       // Run the help page
-      case _ => usage
+      case _ => {
+        hints.map(println)
+        None
+      }
     }
   }
 }

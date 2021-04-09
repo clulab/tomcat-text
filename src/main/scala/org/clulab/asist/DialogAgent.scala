@@ -17,6 +17,8 @@ import spray.json.DefaultJsonProtocol._
 
 import scala.collection.mutable.{ArrayBuffer}
 
+class DialogAgentFoo extends DialogAgent
+
 /** Dialog language processor */
 trait DialogAgent {
 
@@ -44,14 +46,6 @@ trait DialogAgent {
   def taxonomyMatches(mentionLabel: String) = {
     val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
     matches.map(x => (x("term") -> x("score"))).toSeq
-  }
-
-  /** Create a DialogAgent extraction from Extractor data */
-  def extraction(
-    mention: Mention, 
-    nMatches: Int
-  ): DialogAgentMessageDataExtraction = {
-    new DialogAgentMessageDataExtraction
   }
 
   /** Create a DialogAgent extraction from Extractor data */

@@ -11,8 +11,8 @@ package org.clulab.asist
 import java.util.Scanner
 
 class DialogAgentStdin (
-    val _nMatches: Option[String]
-  ) extends DialogAgent with DialogAgentJson{
+    val nMatches: Option[Int] = None
+  ) extends DialogAgentFoo with DialogAgentJson{
 
   println
   println("Dialog Agent stdin extractor running.")
