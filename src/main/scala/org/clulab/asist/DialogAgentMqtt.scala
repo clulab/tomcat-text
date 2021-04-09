@@ -1,101 +1,137 @@
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 March
+ *  Updated:  2021 March
  *
- * This class reads input from the message bus on subscribed topics,
- * performs analysis on the input, and then publishes the analysis to
- * the output topic.
+ *  An abstract MQTT agent
  *
- * Input and output are in json format.
+ *  Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  */
 package org.clulab.asist
 
+import org.eclipse.paho.client.mqttv3._
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.slf4j.LoggerFactory
-
-/** global settings */
-
-object DialogAgentMqttSettings {
-  // default message bus broker location
-  val host: String = "localhost"
-  val port: String = "1883"
-
-  // subscription from message bus
-  val topicInputChat: String = "minecraft/chat"
-  val topicInputUazAsr: String = "agent/asr/final"
-  val topicInputAptimaAsr: String = "status/asistdataingester/userspeech"
-
-  // publication to message bus
-  val topicOutput: String = "agent/dialog"
-}
+import scala.util.control.Exception._
 
 
-/** Message bus connectivity for dialog agents */
-class DialogAgentMqtt(
-    override val host: String = DialogAgentMqttSettings.host,
-    override val port: String = DialogAgentMqttSettings.port,
-    val nMatches: Option[Int] = None
-) extends AgentMqtt and DialogAgent(
-      host,
-      port,
-      id = "dialog_agent",
-      inputTopics = List(
-        DialogAgentMqttSettings.topicInputChat, 
-        DialogAgentMqttSettings.topicInputUazAsr,
-        DialogAgentMqttSettings.topicInputAptimaAsr
-      ),
-      outputTopics = List(DialogAgentMqttSettings.topicOutput)
-    )
-    with DialogAgentJson {
+/** base class for anything needing connection to the message bus */
+class AgentMqtt(
+  val host: String = "",
+  val port: String = "",
+  val id: String = "",
+  val inputTopics: List[String] = List.empty,
+  val outputTopics: List[String] = List.empty) extends MqttCallback {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-  // Make sure we're connected to the broker.  Can't run without it.
-  if (mqttConnected) logger.info("Running.") else System.exit(1)
+  /** MQTT broker connection identities */
+  val SUB_ID = "%s_subscriber".format(id)
+  val PUB_ID = "%s_publisher".format(id)
 
-  /** Publish a DialogAgentMessage as a Json serialization
-   *  @param a:  A compete DialogAgent output message
+  /** MQTT broker connection address */
+  val uri = "tcp://%s:%s".format(host,port)
+
+  /** MQTT quality of service */
+  val qos = 2
+
+  /** Publisher for sending messages to the publication topics
+   *  @return an optional MqttClient publisher if successful, else None
    */
-  def publish(a: DialogAgentMessage): Unit = publish(toJson(a))
+  val publisher: Option[MqttClient] = allCatch.opt{
+    val pub = new MqttClient(uri, PUB_ID, new MemoryPersistence())
+    pub.connect(new MqttConnectOptions)
+    pub
+  }
 
-
-  /** Convert a json-serialized ChatMessage to a DialogAgent message
-   *  and publish to the message bus.
-   *  @param msg:  input text from the Minecraft chat textfield
+  /** Subscriber receives messages on the subscription topics 
+   *  @return an optional MqttAsyncClient subscriber if successful, else None
    */
-  def processChat(msg: ChatMessage): Unit = 
-    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputChat))
+  val subscriber: Option[MqttAsyncClient] = allCatch.opt {
+    val sub = new MqttAsyncClient(uri, SUB_ID, new MemoryPersistence())
+    sub.setCallback(this)
+    sub.connect(new MqttConnectOptions).waitForCompletion
+    inputTopics.map(topic=> sub.subscribe(topic,qos))
+    sub
+  }
 
+  /** True if publisher and subsriber are connected to the MQTT broker */
+  def mqttConnected: Boolean = if (
+    ((!subscriber.isEmpty && subscriber.head.isConnected) &&
+    (!publisher.isEmpty && publisher.head.isConnected))
+  ) {
+    logger.info("Connected to MQTT broker at %s".format(uri))
+    logger.info("Subscribed to: %s".format(inputTopics.mkString(", ")))
+    logger.info("Publishing on: %s".format(outputTopics.mkString(", ")))
+    true
+  } else {
+    logger.error("Could not connect to MQTT broker at %s".format(uri))
+    false
+  }
 
-  /** Convert a json-serialized UazAsrMessage to a DialogAgent message
-   *  and publish to the message bus if the 'is_final' flag is set.
-   *  @param msg: Input from the Minecraft microphone
+  /** Publish a string to all publication topics
+   *  @param output string to publish
+   *  @return true if the output was published to all publication topics
    */
-  def processUazAsr(msg: UazAsrMessage): Unit = 
-    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputUazAsr))
+  def publish(output: String): Boolean = publish(output.getBytes)
 
-
-  /** Convert a json-serialized AptimaAsrMessage to a DialogAgent message
-   *  and publish to the message bus 
-   *  @param msg: Input from the Minecraft microphone
+  /** Publish a byte array to all publication topics
+   *  @param output byte array to publish
+   *  @return true if the output was published to all publication topics
    */
-  def processAptimaAsr(msg: AptimaAsrMessage): Unit = 
-    publish(toDialogAgentMessage(msg, "message_bus", DialogAgentMqttSettings.topicInputAptimaAsr))
+  def publish(output: Array[Byte]): Boolean = publish(new MqttMessage(output))
 
-
-  /** Publish analysis of messages received on subscription topics 
-   *  @param topic:  The message bus topic where the input appeared 
-   *  @param json:  A json representation of a case class data struct
+  /** Publish a MQTT message to all publication topics
+   *  @param output MQTT message to publish
+   *  @return true if the output was published to all publication topics
    */
-  override def messageArrived(topic: String, json: String): Unit = {
-    topic match {
-      case DialogAgentMqttSettings.topicInputChat => 
-        toChatMessage(json).map(a => processChat(a))
-      case DialogAgentMqttSettings.topicInputUazAsr => 
-        toUazAsrMessage(json).map(a => processUazAsr(a))
-      case DialogAgentMqttSettings.topicInputAptimaAsr => 
-        toAptimaAsrMessage(json).map(a => processAptimaAsr(a))
-      case _ =>
+  def publish(output: MqttMessage): Boolean = 
+    outputTopics.map(topic => publish(topic, output)).foldLeft(true)(_ && _)
+
+  /** Publish a MQTT message to one topic
+   *  @param topic Destination for MQTT message
+   *  @param output MQTT message to publish
+   *  @return true if the operation succeeded
+   */
+  def publish(topic: String, output: MqttMessage): Boolean = try {
+      publisher.map(pub=>pub.publish(topic, output))
+      true
+    } catch {
+      case t: Throwable => { 
+        logger.error("Could not publish to %s".format(topic))
+        false
+      }
+    } 
+
+  /** Called when the connection to the server is lost.
+   * @param cause The reason behind the loss of connection.
+   */
+  override def connectionLost(cause: Throwable): Unit = {
+    logger.error("Connection to MQTT broker lost.")
+  }
+
+  /** Called when delivery for a message has been completed.
+   * @param token the delivery token associated with the message.
+   */
+  override def deliveryComplete(token: IMqttDeliveryToken): Unit =
+    logger.debug("deliveryComplete: %s" + token.getMessage)
+
+  /** This method is called when a message arrives on the message bus
+   * @param topic The message topic
+   * @param mm The message
+   */
+  override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
+    messageArrived(topic, mm.toString)
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem reading message on %s".format(topic))
+      logger.error(t.toString)
     }
   }
+
+  /** This method is called when a MqttMessage is successfully read
+   * @param topic name of the topic on the message was published to
+   * @param message the string representation of the message
+   */
+  def messageArrived(topic: String, message: String): Unit
 }
