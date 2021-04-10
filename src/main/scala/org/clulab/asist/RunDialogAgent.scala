@@ -19,7 +19,7 @@ object  RunDialogAgent extends App {
     "",
     " -h : MQTT host to connect to. Defaults to localhost.",
     " -p : MQTT network port to connect to. Defaults to 1883.",
-    " -t : maximum number of taxonomy matches.  No limit if not set.",
+    " -t : maximum number of taxonomy matches.  Defaults to 5.",
     " -i : WebVTT input filename, mandatory",
     " -o : output filename, defaults to web_vtt_output.json"
   )
