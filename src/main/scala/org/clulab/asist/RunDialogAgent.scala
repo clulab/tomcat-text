@@ -3,8 +3,20 @@
  *
  *  updated:  2021 April
  *
- *  This object will run the DialogAgent on an input file, on the 
+ *  This application will run the DialogAgent on an input file, on the 
  *  message bus, or interactively depending on user inputs
+ *
+ *  The arguments are expected as an Array of string vaue with the 
+ *  element at index 0 being the run mode, and the remainder 
+ *  as key-value pairs:  
+ *  
+ *    Array("mode","key1","value1","key2","value2")
+ *
+ *  A flat list of key-value pairs is created from array elements 1-n,
+ *  and this is stepped through two elements at a time when searching
+ *  for the value for a specific key:
+ *
+ *    List("key1","value1","key2","value2")
  */
 package org.clulab.asist
 
@@ -28,20 +40,20 @@ object  RunDialogAgent extends App {
   // a dialog agent kept in global scope
   val agent = run(args.toList)
 
-  /**
+  /** Find a String value in the argument list
    * @param l A list of keys and values as (key value key value ...)
    * @param key A key to search for in the list
-   * @returns the string value for the key, if found, else None
+   * @returns the string value for the key, else None
    */
   def stringArg(l: List[String], key: String): Option[String] = l match {
     case (k::v::rest) => if (k == key) Some(v) else stringArg(rest, key)
     case _ => None
   }
 
-  /**
+  /** Find an Int integer value in the argument list
    * @param l A list of keys and values as (key value key value ...)
    * @param key A key to search for in the list
-   * @returns the integer value for the key, if found, else None
+   * @returns the integer value for the key, else None
    */
   def intArg(l: List[String], key: String): Option[Int] = l match {
     case (k::v::rest) => if (k == key) { 

@@ -16,7 +16,8 @@ class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",
     override val nMatches: Option[Int] = None
-  ) extends DialogAgent with DialogAgentJson {
+) extends DialogAgent 
+    with DialogAgentJson {
 
   // message bus topics
   val topicInputChat: String = "minecraft/chat"
@@ -25,25 +26,17 @@ class DialogAgentMqtt(
   val topicOutput: String = "agent/dialog"
   
   // message bus handler
-  val agentMqtt = new AgentMqtt(
+  val bus = new AgentMqtt(
     host,
     port,
-    id = "dialog_agent",
     inputTopics = List(
       topicInputChat, 
       topicInputUazAsr,
       topicInputAptimaAsr
     ),
-    outputTopics = List(topicOutput),
+    topicOutput,
     this
   )
-
-
-  /** Send completed Dialog Agent messages out on the message bus
-   *  @param a A finished DialogAgentMessage to be published
-   */
-  def publish(a: DialogAgentMessage): Unit = agentMqtt.publish(toJson(a))
-
 
   /** Publish analysis of messages received on subscription topics 
    *  @param topic:  The message bus topic where the input appeared 
@@ -52,13 +45,13 @@ class DialogAgentMqtt(
   def messageArrived(topic: String, json: String): Unit = {
     topic match {
       case `topicInputChat` => toChatMessage(json).map(a => 
-        publish(toDialogAgentMessage(a, "message_bus", topic))
+        bus.publish(toJson(toDialogAgentMessage(a, "message_bus", topic)))
       )
-      case `topicInputUazAsr` => toUazAsrMessage(json).map(a => 
-        publish(toDialogAgentMessage(a, "message_bus", topic))
+      case `topicInputUazAsr` => toUazAsrMessage(json).map(b => 
+        bus.publish(toJson(toDialogAgentMessage(b, "message_bus", topic)))
       )
-      case `topicInputAptimaAsr` => toAptimaAsrMessage(json).map(a => 
-        publish(toDialogAgentMessage(a, "message_bus", topic))
+      case `topicInputAptimaAsr` => toAptimaAsrMessage(json).map(c => 
+        bus.publish(toJson(toDialogAgentMessage(c, "message_bus", topic)))
       )
       case _ =>
     }
