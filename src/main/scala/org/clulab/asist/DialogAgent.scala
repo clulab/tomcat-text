@@ -32,18 +32,21 @@ class DialogAgent (val nMatches: Option[Int] = None) {
     Source.fromResource("taxonomy_map.json").mkString
   ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
-  /** Create the extractor using the pipeline and taxonomy map */
+  /** Create the extractor and run it to get lazy init out of the way */
   logger.info("Initializing Extractor (this may take a few seconds) ...")
   val extractor = new Extractor(new AsistEngine(), taxonomy_map)
-  // Kickstart the extractor with this task to get lazy init out of the way
   extractor.runExtraction("green victim")
   logger.info("Extractor initialized.")
 
 
   /** map the mention label to the taxonomy map */
-  def taxonomyMatches(mentionLabel: String) = {
+  def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = {
+
     val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
-    matches.map(x => (x("term") -> x("score"))).toSeq
+    val seq = matches.map(x => (x("term") -> x("score"))).toSeq
+
+    // return only as many as the user may have requested
+    seq.take(nMatches.getOrElse(seq.length))
   }
 
   /** Create a DialogAgent extraction from Extractor data */

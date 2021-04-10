@@ -11,17 +11,12 @@
  */
 package org.clulab.asist
 
-import org.slf4j.LoggerFactory
-
-
 /** Message bus connectivity for dialog agents */
 class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",
     override val nMatches: Option[Int] = None
   ) extends DialogAgent with DialogAgentJson {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   // message bus topics
   val topicInputChat: String = "minecraft/chat"

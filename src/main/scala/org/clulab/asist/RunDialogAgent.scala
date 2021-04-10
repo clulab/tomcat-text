@@ -31,41 +31,46 @@ object  RunDialogAgent extends App {
   /**
    * @param l A list of keys and values as (key value key value ...)
    * @param key A key to search for in the list
-   * @returns the value for the key, if found, else None
+   * @returns the string value for the key, if found, else None
    */
-  def value(l: List[String], key: String): Option[String] = l match {
-    case (k::v::rest) => if (k == key) Some(v) else value(rest, key)
+  def stringArg(l: List[String], key: String): Option[String] = l match {
+    case (k::v::rest) => if (k == key) Some(v) else stringArg(rest, key)
     case _ => None
-  }
-
-
-  def intOption(l: List[String], key: String): Option[Int] = {
-    val foo = value(l, "-t")
-    if(foo.isEmpty) None
-    else try {
-      Some(foo.head.toInt)
-    } catch {
-      case e: Exception => None
-    }
   }
 
   /**
    * @param l A list of keys and values as (key value key value ...)
+   * @param key A key to search for in the list
+   * @returns the integer value for the key, if found, else None
+   */
+  def intArg(l: List[String], key: String): Option[Int] = l match {
+    case (k::v::rest) => if (k == key) { 
+      try Some(v.toInt)
+      catch {
+        case e: Exception => None
+      }
+    } else intArg(rest,key)
+    case _ => None
+  }
+
+
+  /**
+   * @param argList A list of keys and values as (key value key value ...)
    * @returns A DialogAgent running in the user-chose mode
    */
   def run(argList: List[String]): Option[DialogAgent] = {
-    val t: Option[Int] = intOption(argList, "-t")
+    val t: Option[Int] = intArg(argList.tail, "-t")
     argList match {
       // Run on the Message Bus
       case ("--mqtt"::l) => {
-        val h = value(l, "-h").getOrElse("localhost")
-        val p = value(l, "-p").getOrElse("1883")
+        val h = stringArg(l, "-h").getOrElse("localhost")
+        val p = stringArg(l, "-p").getOrElse("1883")
         Some(new DialogAgentMqtt(h, p, t))
       }
       // Run using file input
       case ("--web_vtt"::l) => {
-        val i = value(l, "-i")  // mandatory arg
-        val o = value(l, "-o").getOrElse("web_vtt_output.json")
+        val i = stringArg(l, "-i")  // mandatory arg
+        val o = stringArg(l, "-o").getOrElse("web_vtt_output.json")
         if(i.isDefined) 
           Some(new DialogAgentWebVtt(i.head, o, t))
         else {
@@ -73,9 +78,9 @@ object  RunDialogAgent extends App {
           None
         }
       }
-      // Run on the command line
+      // Run interactively from the command line
       case ("--stdin"::l) => Some(new DialogAgentStdin(t))
-      // Run the help page
+      // Show the help page
       case _ => {
         hints.map(println)
         None
