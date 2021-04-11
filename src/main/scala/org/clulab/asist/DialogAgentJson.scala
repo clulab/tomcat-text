@@ -1,8 +1,9 @@
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
+ *
  * Updated:  2021 March
  *
- * Translator for converting Json strings to data structures
+ * Json serialization and deserialization of messages
  */
 package org.clulab.asist
 
@@ -13,7 +14,7 @@ import scala.util.control.Exception._
 
 trait DialogAgentJson {
 
-  /** Used so Json serializer can recognize case classes */
+  // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 
   /** Serialize a DialogAgentMessageDataExtraction to a Json string 
@@ -39,8 +40,6 @@ trait DialogAgentJson {
    *  @return The struct represented as a json string
    */
   def toJson(data: UazAsrMessage): String = write(data)
-
-
 
   /** Deserialize a DialogAgentMessage from a Json string
    *  @param json a json representation of a DialogAgentMessage struct

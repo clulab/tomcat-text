@@ -1,63 +1,96 @@
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 February
+ *  updated:  2021 April
  *
- *  This object will run the DialogAgent in either message bus or 
- *  file mode depending on user inputs
+ *  This application will run the DialogAgent on an input file, on the
+ *  message bus, or interactively depending on user inputs.
  *
+ *  The arguments are expected as an Array of string vaue with the element
+ *  at index 0 being the run mode, and the remainder as key-value pairs:  
+ *  
+ *    Array("mode","key1","value1","key2","value2", ...)
  */
 package org.clulab.asist
 
-import java.io.File
-import org.slf4j.LoggerFactory
-
-
-
-object  RunDialogAgent extends App {
+object RunDialogAgent extends App {
   
-  val appName ="DialogAgent"
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
-
-  /** Show the usage hints */
-  def usage: Unit = List(
+  // splash page if args are not understood
+  val hints = List(
     "",
-    "To use %s on the message bus:".format(appName),
-    "%s mqtt <host> <port>".format(appName),
+    "Running the ToMCAT-text Dialog Agent:",
     "",
-    "To use %s on the message bus with default args:".format(appName),
-    "%s mqtt".format(appName),
-    "or",
-    "%s".format(appName),
+    "  RunDialogAgent {--mqtt [-h host] [-p port ] [-t taxonomy_matches]}",
+    "                 {--stdin [-t taxonomy_matches]}",
+    "                 {--web_vtt [-i infile] [-o outfile] [-t taxonomy_matches]}",
     "",
-    "To use %s for extractions on command line input:".format(appName),
-    "%s stdin".format(appName),
-    "",
-    "To use %s on a web_vtt file or the first level of a directory:".format(appName),
-    "%s web_vtt <inputFileOrDir> <outputFile>".format(appName),
+    " -h : MQTT host to connect to. Defaults to localhost.",
+    " -p : MQTT network port to connect to. Defaults to 1883.",
+    " -t : maximum number of taxonomy matches, up to 5.  Defaults to 5.",
+    " -i : input filename, mandatory. WebVTT format.",
+    " -o : output filename, defaults to web_vtt_output.json",
     ""
-  ).map(println)
+  )
+  
+  // a dialog agent kept in global scope
+  val agent = run(args.toList)
 
+  /** Find a String value in the argument list
+   * @param l A flat list of key value pairs
+   * @param key A key to search for in the list
+   * @returns the string value for the key, else None
+   */
+  def stringArg(l: List[String], key: String): Option[String] = l match {
+    case (k::v::rest) => if (k == key) Some(v) else stringArg(rest, key)
+    case _ => None
+  }
 
-  /** Create an agent based on the user args */
-  val agent: Option[DialogAgent] = args match {
-    case Array() =>
-      Some(new DialogAgentMqtt)
-    case Array("mqtt") => 
-      Some(new DialogAgentMqtt)
-    case Array("mqtt", host: String, port: String) => 
-      Some(new DialogAgentMqtt(host, port))
-    case Array("stdin") => 
-      Some(new DialogAgentStdin)
-    case Array("web_vtt", inputFile: String, outputFile: String) => {
-      DialogAgentWebVtt(inputFile, outputFile)
-      None
-    }
-    case _ => {
-      logger.error("Arguments not recognized")
-      usage
-      None
+  /** Find an Int integer value in the argument list
+   * @param l A flat list of key value pairs
+   * @param key A key to search for in the list
+   * @returns the integer value for the key, else None
+   */
+  def intArg(l: List[String], key: String): Option[Int] = l match {
+    case (k::v::rest) => if (k == key) { 
+      try Some(v.toInt)
+      catch {
+        case e: Exception => None
+      }
+    } else intArg(rest,key)
+    case _ => None
+  }
+
+  /**
+   * @param argList A flat list of running mode then n key-value pairs
+   * @returns A DialogAgent running in the mode with the args
+   */
+  def run(argList: List[String]): Option[DialogAgent] = {
+    val t: Option[Int] = intArg(argList.tail, "-t")
+    argList match {
+      // Run on the Message Bus
+      case ("--mqtt"::l) => {
+        val h = stringArg(l, "-h").getOrElse("localhost")
+        val p = stringArg(l, "-p").getOrElse("1883")
+        Some(new DialogAgentMqtt(h, p, t))
+      }
+      // Run using file input
+      case ("--web_vtt"::l) => {
+        val i = stringArg(l, "-i")  // mandatory arg
+        val o = stringArg(l, "-o").getOrElse("web_vtt_output.json")
+        if(i.isDefined) 
+          Some(new DialogAgentWebVtt(i.head, o, t))
+        else {
+          hints.map(println)
+          None
+        }
+      }
+      // Run interactively from the command line
+      case ("--stdin"::l) => Some(new DialogAgentStdin(t))
+      // Show the help page
+      case _ => {
+        hints.map(println)
+        None
+      }
     }
   }
 }

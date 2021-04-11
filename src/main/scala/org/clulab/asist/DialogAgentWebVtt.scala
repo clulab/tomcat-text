@@ -6,9 +6,9 @@
  *  A web_vtt DialogAgent that will process files and directories. 
  *  Directories are traversed one level deep.
  *
- *  inputFilename  - A web_vtt file
- *
- *  outputFilename - The concatenated results of processing the input files.
+ *  @param inputFilename a web_vtt file or directory of files
+ *  @param outputFilename Write results of parsing here
+ *  @param nMatches An optional maximum number of taxonomy_matches to return
  */
 package org.clulab.asist
 
@@ -18,45 +18,40 @@ import java.io.{FileInputStream, File, PrintWriter}
 import org.slf4j.LoggerFactory
 import scala.util.{Failure, Success}
 
-
-object DialogAgentWebVtt extends DialogAgent with DialogAgentJson {
+class DialogAgentWebVtt(
+    val inputFilename: String = "",
+    val outputFilename: String = "", 
+    override val nMatches: Option[Int] = None
+) extends DialogAgent 
+    with DialogAgentJson {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-  /** Parse web_vtt input and write the results to an output file
-   * @param inputFilename a web_vtt file or directory of files
-   * @param outputFilename Write results of parsing here
-   * @return true if the operation succeeded
-   */
-  def apply(inputFilename: String, outputFilename: String): Boolean = {
-    logger.info("Using input file '%s'".format(inputFilename))
-    logger.info("Using output file '%s'".format(outputFilename))
+  logger.info("Using input file '%s'".format(inputFilename))
+  logger.info("Using output file '%s'".format(outputFilename))
 
-    // List all the files to be processed.
-    val allFiles: List[String] = {
-      val f = new File(inputFilename)
-      if(f.isDirectory) f.listFiles.toList.map(_.getPath)
-      else List(f.getPath)
+  // List all the files to be processed.
+  val allFiles = getFiles
+
+  def getFiles: List[String] = {
+    val f = new File(inputFilename)
+    if(f.isDirectory) f.listFiles.toList.map(_.getPath)
+    else List(f.getPath)
+  }
+
+  // open the output stream and process the files
+  try {
+    val output = new PrintWriter(new File(outputFilename))
+    val results = allFiles.map(processFile(_, output))
+    output.close
+    if(results.contains(false)) {
+      logger.error("Problems were encountered during this run.")
     }
-    // open the output stream and process the files
-    try {
-      val output = new PrintWriter(new File(outputFilename))
-      val results = allFiles.map(processFile(_, output))
-      output.close
-      if(results.contains(false)) {
-        logger.error("Problems were encountered during this run.")
-        false
-      }
-      else {
-        logger.info("All operations completed successfully.")
-        true
-      }
-    } catch {
-      case t: Throwable => {
-        logger.error("Problem writing to %s".format(outputFilename))
-        logger.error(t.toString)
-        false
-      }
+    else logger.info("All operations completed successfully.")
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem writing to %s".format(outputFilename))
+      logger.error(t.toString)
     }
   }
 
@@ -129,5 +124,3 @@ object DialogAgentWebVtt extends DialogAgent with DialogAgentJson {
     case _ => None
   }
 }
-
-
