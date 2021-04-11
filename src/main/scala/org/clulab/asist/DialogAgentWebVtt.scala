@@ -6,9 +6,9 @@
  *  A web_vtt DialogAgent that will process files and directories. 
  *  Directories are traversed one level deep.
  *
- *  inputFilename  - A web_vtt file
- *
- *  outputFilename - The concatenated results of processing the input files.
+ *  @param inputFilename a web_vtt file or directory of files
+ *  @param outputFilename Write results of parsing here
+ *  @param nMatches An optional maximum number of taxonomy_matches to return
  */
 package org.clulab.asist
 
@@ -18,15 +18,12 @@ import java.io.{FileInputStream, File, PrintWriter}
 import org.slf4j.LoggerFactory
 import scala.util.{Failure, Success}
 
-/** Parse web_vtt input and write the results to an output file
- * @param inputFilename a web_vtt file or directory of files
- * @param outputFilename Write results of parsing here
- */
 class DialogAgentWebVtt(
     val inputFilename: String = "",
     val outputFilename: String = "", 
     override val nMatches: Option[Int] = None
-  ) extends DialogAgent with DialogAgentJson {
+) extends DialogAgent 
+    with DialogAgentJson {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -127,5 +124,3 @@ class DialogAgentWebVtt(
     case _ => None
   }
 }
-
-
