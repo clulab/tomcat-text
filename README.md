@@ -14,17 +14,20 @@ from files.  The results are output in DialogAgentMessage format.
 
 The dialog agent can be run in either 'web_vtt' mode on files, 'mqtt' mode on the Message Bus, or interactively with 'stdin'. 
 
-WebVtt File mode
+File mode
 ---------
 
-The dialog agent can take as individual files or a directory as an argument
-when running in file mode. When a directory path is provided, the agent will
+The dialog agent can process WebVtt files (.vtt)  as individual files or a directory containing them. When a directory path is provided, the agent will
 process all the files in the first level of that directory.
 
     sbt "runMain org.clulab.asist.RunDialogAgent web_vtt inputfile outputfile"
 
 
-The input files are expected to be in WebVTT file (.vtt) format.
+
+The dialog agent can also process metadata from files in the same way it does when it receives messages on the Message Bus.  Specify one file or a directory.
+
+    sbt "runMain org.clulab.asist.RunDialogAgent metadata inputfile outputfile"
+
 
 Web App
 ---------
