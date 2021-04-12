@@ -20,14 +20,14 @@ object RunDialogAgent extends App {
     "",
     "Running the ToMCAT-text Dialog Agent:",
     "",
-    "  RunDialogAgent {mqtt [host] [port ] [-t taxonomy_matches]}",
-    "                 {--mqtt [-h host] [-p port ] [-t taxonomy_matches]}",
-    "                 {--stdin [-t taxonomy_matches]}",
-    "                 {--web_vtt [-i infile] [-o outfile] [-t taxonomy_matches]}",
+    "  RunDialogAgent {mqtt [host] [port] [-m taxonomy_matches]}",
+    "                 {--mqtt [-h host] [-p port ] [-m taxonomy_matches]}",
+    "                 {--stdin [-m taxonomy_matches]}",
+    "                 {--web_vtt [-i infile] [-o outfile] [-m taxonomy_matches]}",
     "",
     " -h : MQTT host to connect to. Defaults to localhost.",
     " -p : MQTT network port to connect to. Defaults to 1883.",
-    " -t : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
+    " -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
     " -i : input filename, mandatory. WebVTT format.",
     " -o : output filename, defaults to web_vtt_output.json",
     ""
@@ -69,21 +69,21 @@ object RunDialogAgent extends App {
     argList match {
       // Run on the Message Bus, old arg set
       case ("mqtt"::host::port::l) => {
-        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
         Some(new DialogAgentMqtt(host, port, t))
       }
       // Run on the Message Bus
       case ("--mqtt"::l) => {
         val h = stringArg(l, "-h").getOrElse("localhost")
         val p = stringArg(l, "-p").getOrElse("1883")
-        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
         Some(new DialogAgentMqtt(h, p, t))
       }
       // Run using file input
       case ("--web_vtt"::l) => {
         val i = stringArg(l, "-i")  // mandatory arg
         val o = stringArg(l, "-o").getOrElse("web_vtt_output.json")
-        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
         if(i.isDefined) 
           Some(new DialogAgentWebVtt(i.head, o, t))
         else {
@@ -93,7 +93,7 @@ object RunDialogAgent extends App {
       }
       // Run interactively from the command line
       case ("--stdin"::l) => {
-        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
         Some(new DialogAgentStdin(t))
       }
       // Show the help page
