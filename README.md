@@ -12,17 +12,17 @@ extracted events of interest for a particular domain.
 The Dialog Agent will analyze text that reads either from the message bus or
 from files.  The results are output in DialogAgentMessage format.
 
-The dialog agent can be run in either 'file' mode or 'mqtt' mode. The modes are
-described below.
+The dialog agent can be run in either 'web_vtt' mode on files, 'mqtt' mode on the Message Bus, or interactively with 'stdin'. 
 
-File mode
+WebVtt File mode
 ---------
 
 The dialog agent can take as individual files or a directory as an argument
 when running in file mode. When a directory path is provided, the agent will
 process all the files in the first level of that directory.
 
-    sbt "runMain org.clulab.asist.RunDialogAgent file {input filename} {output filename}"
+    sbt "runMain org.clulab.asist.RunDialogAgent web_vtt inputfile outputfile"
+
 
 The input files are expected to be in WebVTT file (.vtt) format.
 
@@ -44,17 +44,12 @@ The dialog agent can also be run in 'mqtt' mode to process streaming data from
 an MQTT message bus. The following invocation launches the agent in mqtt mode,
 specifying the host and port that the MQTT message broker is running on.
 
-    sbt "runMain org.clulab.asist.RunDialogAgent mqtt {hostname} {port}"
+    sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 
 To connect to a broker on localhost at the MQTT default port (1883), the agent
 can be started as follows:
 
-    sbt "runMain org.clulab.asist.RunDialogAgent mqtt"
-
-or 
-
-    sbt "runMain org.clulab.asist.RunDialogAgent"
-
+    sbt "runMain org.clulab.asist.RunDialogAgent mqtt localhost 1883"
 
 When run on the message bus, the agent will analyze chat messages and ASR messages.
 

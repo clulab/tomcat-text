@@ -19,7 +19,7 @@ import scala.io.Source
 import spray.json.DefaultJsonProtocol._
 import spray.json.JsonParser
 
-class DialogAgent (val nMatches: Option[Int] = None) {
+class DialogAgent (val nMatches: Int = 0) {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -40,11 +40,14 @@ class DialogAgent (val nMatches: Option[Int] = None) {
   logger.info("Extractor initialized.")
 
   /** map the mention label to the taxonomy map */
-  def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = {
-    val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
-    val seq = matches.map(x => (x("term") -> x("score"))).toSeq
-    seq.take(nMatches.getOrElse(seq.length))
-  }
+  def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = 
+    if(nMatches == 0) Seq() 
+    else {
+      val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
+      val seq = matches.map(x => (x("term") -> x("score"))).toSeq
+      seq.take(nMatches)
+    }
+  
 
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(mention: Mention): DialogAgentMessageDataExtraction = {

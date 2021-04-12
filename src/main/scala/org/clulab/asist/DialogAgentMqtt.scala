@@ -18,7 +18,7 @@ package org.clulab.asist
 class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",
-    override val nMatches: Option[Int] = None
+    override val nMatches: Int = 0
 ) extends DialogAgent 
     with DialogAgentJson {
 

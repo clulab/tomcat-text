@@ -18,17 +18,13 @@ object RunDialogAgent extends App {
   // splash page if args are not understood
   val hints = List(
     "",
-    "Running the ToMCAT-text Dialog Agent:",
+    "usage:",
     "",
-    "  RunDialogAgent {--mqtt [-h host] [-p port ] [-t taxonomy_matches]}",
-    "                 {--stdin [-t taxonomy_matches]}",
-    "                 {--web_vtt [-i infile] [-o outfile] [-t taxonomy_matches]}",
+    "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
+    "                 {stdin [-m taxonomy_matches]}",
+    "                 {web_vtt inputfile outputfile [-m taxonomy_matches]}",
     "",
-    " -h : MQTT host to connect to. Defaults to localhost.",
-    " -p : MQTT network port to connect to. Defaults to 1883.",
-    " -t : maximum number of taxonomy matches, up to 5.  Defaults to 5.",
-    " -i : input filename, mandatory. WebVTT format.",
-    " -o : output filename, defaults to web_vtt_output.json",
+    " -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
     ""
   )
   
@@ -41,7 +37,7 @@ object RunDialogAgent extends App {
    * @returns the string value for the key, else None
    */
   def stringArg(l: List[String], key: String): Option[String] = l match {
-    case (k::v::rest) => if (k == key) Some(v) else stringArg(rest, key)
+    case (k::v::_) => if (k == key) Some(v) else stringArg(l.tail, key)
     case _ => None
   }
 
@@ -51,12 +47,12 @@ object RunDialogAgent extends App {
    * @returns the integer value for the key, else None
    */
   def intArg(l: List[String], key: String): Option[Int] = l match {
-    case (k::v::rest) => if (k == key) { 
+    case (k::v::_) => if (k == key) { 
       try Some(v.toInt)
       catch {
         case e: Exception => None
       }
-    } else intArg(rest,key)
+    } else intArg(l.tail,key)
     case _ => None
   }
 
@@ -65,27 +61,22 @@ object RunDialogAgent extends App {
    * @returns A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
-    val t: Option[Int] = intArg(argList.tail, "-t")
     argList match {
       // Run on the Message Bus
-      case ("--mqtt"::l) => {
-        val h = stringArg(l, "-h").getOrElse("localhost")
-        val p = stringArg(l, "-p").getOrElse("1883")
-        Some(new DialogAgentMqtt(h, p, t))
+      case ("mqtt"::host::port::l) => {
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        Some(new DialogAgentMqtt(host, port, m))
       }
-      // Run using file input
-      case ("--web_vtt"::l) => {
-        val i = stringArg(l, "-i")  // mandatory arg
-        val o = stringArg(l, "-o").getOrElse("web_vtt_output.json")
-        if(i.isDefined) 
-          Some(new DialogAgentWebVtt(i.head, o, t))
-        else {
-          hints.map(println)
-          None
-        }
+      // Run using web_vtt file input
+      case ("web_vtt"::infile::outfile::l) => {
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        Some(new DialogAgentWebVtt(infile, outfile, m))
       }
       // Run interactively from the command line
-      case ("--stdin"::l) => Some(new DialogAgentStdin(t))
+      case ("stdin"::l) => {
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        Some(new DialogAgentStdin(m))
+      }
       // Show the help page
       case _ => {
         hints.map(println)

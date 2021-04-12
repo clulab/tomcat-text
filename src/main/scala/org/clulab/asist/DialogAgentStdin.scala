@@ -13,7 +13,7 @@ package org.clulab.asist
 import java.util.Scanner
 
 class DialogAgentStdin (
-    override val nMatches: Option[Int] = None
+    override val nMatches: Int = 0
 ) extends DialogAgent 
     with DialogAgentJson {
 
