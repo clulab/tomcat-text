@@ -29,7 +29,7 @@ To process metadata files:
     sbt "runMain org.clulab.asist.RunDialogAgent metadata inputfile outputfile"
 
 
-In both cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches.  n can range from 0 to 5, and defaults to 0
+In both cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches, where n can range from 0 to 5, and defaults to 0.
 
     sbt "runMain org.clulab.asist.RunDialogAgent ... inputfile outputfile -m 3"
 
