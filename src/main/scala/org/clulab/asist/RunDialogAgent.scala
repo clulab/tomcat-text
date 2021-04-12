@@ -23,6 +23,7 @@ object RunDialogAgent extends App {
     "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
     "                 {stdin [-m taxonomy_matches]}",
     "                 {web_vtt inputfile outputfile [-m taxonomy_matches]}",
+    "                 {metadata inputfile outputfile [-m taxonomy_matches]}",
     "",
     " -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
     ""
@@ -71,6 +72,11 @@ object RunDialogAgent extends App {
       case ("web_vtt"::infile::outfile::l) => {
         val m: Int = intArg(argList.tail, "-m").getOrElse(0)
         Some(new DialogAgentWebVtt(infile, outfile, m))
+      }
+      // Run using metadata file input
+      case ("metadata"::infile::outfile::l) => {
+        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        Some(new DialogAgentMetadata(infile, outfile, m))
       }
       // Run interactively from the command line
       case ("stdin"::l) => {
