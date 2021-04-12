@@ -1,62 +1,73 @@
 - Concept:
   - NounPhrase
   - Attribute
-  - Ordinal
+  - Number:
+    - Ordinal
   - Switch
-  - Location:
-    - Inferred:
-      - Deictic
-      - DemPron
-    - Infrastructure:
-      - Room
-      - Door
-      - Building
-      - Hallway
-      - Stairs
-      - Window
-      - Floor
-      - Ceiling
-      - Lever
-      - Button
-    - Map:
+  - EventLike:
+    - Time:
+      - TimeUnit
+    - Location:
+      - Inferred:
+        - Deictic
+        - DemPron
+      - Infrastructure:
+        - Room
+        - Door
+        - Building
+        - Hallway
+        - Stairs
+        - Window
+        - Floor
+        - Ceiling
+        - Lever
+        - Button
+        - Zone
+      - MapSection:
         - center
-  - Obstacle:
+    - Obstacle:
       - Rubble
       - Fire
       - BuildingCollapse
-  - Action:
-    - SimpleActions:
-      - Move
-      - Open
-      - Close
-      - Push
-      - Toggle
-      - Jump
-      - Extinguish
-      - Save
-      - Defeat
-      - Sight
-      - Craft
-      - Communicate:
-        - Question
-        - Agreement
-        - Disagreement
-      - Clear
-      - RoleSwitch
-    - ComplexActions:
-        - Search         # Seach(Location)
-        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
-        - Commitment:
-          - MakeCommitment
-          - ProposeCommitment
-        - Continue
-        - MoveVictim
-        - Need
-        - Precedence
-        - Planning
-        - OfferHelp
-        - ShareKnowledge
+    - Action:
+      - SimpleActions:
+        - Block
+        - Move
+        - Open
+        - Close
+        - Push
+        - Toggle
+        - Jump
+        - Extinguish
+        - Save
+        - Defeat
+        - Sight
+        - Craft
+        - Communicate:
+          - Question:
+            - QuestionParticle
+            - LocationQuestion
+            - ModalQuestion
+          - Agreement
+          - Disagreement
+        - Clear
+        - RoleSwitch
+        - ReportLocation
+      - ComplexActions:
+          - Search         # Seach(Location)
+          - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+          - Commitment:
+            - MakeCommitment
+            - ProposeCommitment
+          - Continue
+          - MoveVictim
+          - Need
+          - Precedence
+          - Planning
+          - OfferHelp
+          - ShareKnowledge
   - Entity:
+    - Person
     - Other
     - Self
     - You
@@ -83,8 +94,12 @@
       - Right
     - Cardinal:
       - North
+      - NorthEast
+      - NorthWest
       - East
       - South
+      - SouthEast
+      - SouthWest
       - West
   - Item:
     - Bow
@@ -110,10 +125,11 @@
     - Emerald
     - ItemFrame
     - FlowerPot
-    - Resource:
+    - Tool:
       - Hammer
       - MedKit
       - Stretcher
+      - Map
   - Sentiment:
     - Uncertainty  # include the agent
     - Positive:
@@ -122,5 +138,3 @@
     - Negative:
       - Anger
       - Worry
-  - Time:
-    - TimeUnit

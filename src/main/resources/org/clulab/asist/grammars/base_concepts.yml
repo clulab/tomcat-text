@@ -1,0 +1,101 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  # ------------- TOOLS --------------------------
+  - name: hammer
+    priority: ${ rulepriority }
+    label: Hammer
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ hammer_triggers }/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: medkit
+    priority: ${ rulepriority }
+    label: MedKit
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ medkit_triggers }/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: stretcher
+    priority: ${ rulepriority }
+    label: Stretcher
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ stretcher_triggers }/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: tool_generic
+    priority: ${ rulepriority }
+    label: Tool
+    keep: true
+    pattern: |
+      trigger = [lemma=/tool/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: map_item
+    priority: ${ rulepriority }
+    label: Map
+    pattern: |
+      trigger = [lemma=/map/]
+      owner: Entity? = >"nmod:poss"
+
+  # ------------- ROLES --------------------------
+
+  - name: searcher
+    priority: ${ rulepriority }
+    label: Searcher
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)(${ search_spec_triggers })/] [word=/(?i)(${ specialist_triggers })/]?
+
+  - name: medic
+    priority: ${ rulepriority }
+    label: Medic
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)${ medic_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
+
+  - name: engineer
+    priority: ${ rulepriority }
+    label: Engineer
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)${ engineer_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
+
+  # ------------- CALL SIGNS --------------------------
+  - name: alpha
+    priority: ${ rulepriority }
+    label: Alpha
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ alpha_triggers })/]
+
+  - name: bravo
+    priority: ${ rulepriority }
+    label: Bravo
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ bravo_triggers })/]
+
+  - name: delta
+    priority: ${ rulepriority }
+    label: Delta
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ delta_triggers })/]
+
+  - name: charlie
+    priority: ${ rulepriority }
+    label: Charlie
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ charlie_triggers })/]

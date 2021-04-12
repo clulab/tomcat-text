@@ -26,12 +26,21 @@ class StubActions(
   def keepLongest(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     val mns: Iterable[Mention] = for {
     // find mentions of the same label and sentence overlap
-      (k, v) <- mentions.groupBy(m => (m.sentence, m.label))
+      (k, v) <- mentions.groupBy(m => (m.sentence, m.label, m.tags.get.contains("CC")))
       m <- v
       // for overlapping mentions starting at the same token, keep only the longest
-      longest = v.filter(_.tokenInterval.overlaps(m.tokenInterval)).maxBy(m => m.end - m.start)
+      longest = v.filter(vm => vm.tokenInterval.overlaps(m.tokenInterval)).maxBy(m => m.end - m.start)
     } yield longest
     mns.toVector.distinct
+  }
+
+  def noRepeats(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    for {
+      m <- mentions
+      sameSpan = state.mentionsFor(m.sentence, m.tokenInterval)
+      compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
+      if compatibleLabel.isEmpty
+    } yield m
   }
 
   def removeResearcher(

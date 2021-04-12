@@ -7,6 +7,7 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/]
+      agent: Entity? = >/${agents}/
       target: ${ object_type } = >dobj
 
   - name: passive-${name}
@@ -16,6 +17,7 @@ rules:
     type: dependency
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^VBN/]
+      agent: Entity? = >/${agents}/
       target:  ${ object_type } = nsubjpass
 
   - name: prepnom-${name}
@@ -25,4 +27,5 @@ rules:
     type: dependency
     pattern: |
       trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^N/]
+      agent: Entity? = >/${agents}/
       target:  ${ object_type } = <conj_and*  nmod_of

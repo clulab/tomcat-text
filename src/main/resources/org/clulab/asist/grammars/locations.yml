@@ -1,0 +1,112 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: north
+    priority: ${ first_priority }
+    label: North
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ north_triggers })$/]
+
+  - name: north_east
+    priority: ${ first_priority }
+    label: NorthEast
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ north_triggers })(${ east_triggers })$/]
+
+  - name: north_west
+    priority: ${ first_priority }
+    label: NorthWest
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ north_triggers })(${ west_triggers })$/]
+
+  - name: south
+    priority: ${ first_priority }
+    label: South
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ south_triggers })$/]
+
+  - name: south_west
+    priority: ${ first_priority }
+    label: SouthWest
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ south_triggers })(${ west_triggers })$/]
+
+  - name: south_east
+    priority: ${ first_priority }
+    label: SouthEast
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ south_triggers })(${ east_triggers })$/]
+
+  - name: east
+    priority: ${ first_priority }
+    label: East
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ east_triggers })$/]
+
+  - name: west
+    priority: ${ first_priority }
+    label: West
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ west_triggers })$/]
+
+  - name: zone
+    priority: ${ first_priority }
+    label: Zone
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger> [lemma=/(?i)^(${ zone_triggers })$/]) @num:Number
+
+  - name: zone_conj
+    priority: ${ first_priority }
+    label: Zone
+    pattern: |
+      trigger = [lemma=/(?i)^(${ zone_triggers })$/]
+      num: Number = >/(conj_(and|or)|nummod)/
+
+  - name: directions
+    priority: ${ first_priority }
+    label: Direction
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(up|down|left|right)(ward|most|ish)?/] (?! [word=/(?i)now|away/])
+
+  - name: relative_location
+    priority: ${ second_priority }
+    label: Location
+    pattern: |
+      trigger = @Direction [lemma=/half|part|side|section/]?
+      target: Concept? = >/nmod_of/
+
+  - name: location_area
+    priority: ${ second_priority }
+    label: Location
+    type: token
+    pattern: |
+      @Location [lemma=/(?i)area|section|surrounding|vicinity|space/]
+
+  - name: location_clumped
+    priority: ${ second_priority }
+    label: Location
+    type: token
+#    action: noRepeats
+    pattern: |
+      [mention=Location]{2,4}

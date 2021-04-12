@@ -24,17 +24,17 @@ rules:
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: deictic
+      name: person
       priority: ${ rulepriority }
-      label: Deictic
-      trigger: ${ deixis_triggers }
+      label: Person
+      trigger: ${ person_triggers }
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: person
+      name: victim
       priority: ${ rulepriority }
       label: Victim
-      trigger: ${ person_triggers }
+      trigger: ${ victim_triggers }
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
@@ -43,13 +43,36 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: numbers
+    priority: ${ rulepriority }
+    label: Number
+    type: token
+    pattern: |
+      [tag=CD]
+
+  - name: deictic_detection
+    priority: ${ rulepriority }
+    label: Deictic
+    type: token
+    pattern: |
+      [lemma=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
+
+  # minecraft door switch, e.g.
+  - name: switch
+    priority: ${ rulepriority }
+    label: Switch
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
+
   - name: self_token_capture
     label: Self
     priority: ${ rulepriority }
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ self_triggers })/ & tag=/PRP/]
+      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP/]
 
   - name: you_token_capture
     label: You
@@ -57,7 +80,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ you_triggers })/ & tag=/PRP/]
+      [lemma=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
 
   - name: we_token_capture
     label: Team
@@ -83,29 +106,14 @@ rules:
     pattern: |
       [lemma=/(?i)^(yellow)/]
 
-  - name: ask_question
-    label: Question
+  - name: question_particle
+    label: QuestionParticle
     priority: ${ rulepriority }
     type: token
     keep: true
     pattern: |
       [tag=/^W/]
 
-  - name: agree_token_match
-    label: Agreement
-    priority: ${ rulepriority }
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)^(${ agree_triggers })$/]
-
-  - name: disagree_token_match
-    label: Disagreement
-    priority: ${ rulepriority }
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO]
 
 ### add a tag so we dont parse "na" from "gonna"
   - name: demonstrative_pronoun
@@ -115,91 +123,3 @@ rules:
     keep: false
     pattern: |
       [word=/${ dem_pron_triggers }/]
-
-  - name: hammer
-    priority: ${ rulepriority }
-    label: Hammer
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/${ hammer_triggers }/]
-
-  - name: medkit
-    priority: ${ rulepriority }
-    label: MedKit
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/${ medkit_triggers }/]
-
-  - name: stretcher
-    priority: ${ rulepriority }
-    label: Stretcher
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/${ stretcher_triggers }/]
-
-  - name: searcher
-    priority: ${ rulepriority }
-    label: Searcher
-    type: token
-    keep: true
-    pattern: |
-      [word=/(?i)(${ search_spec_triggers })/] [word=/(?i)(${ specialist_triggers })/]
-
-  - name: medic
-    priority: ${ rulepriority }
-    label: Medic
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/${ medic_triggers }/]
-
-  - name: engineer
-    priority: ${ rulepriority }
-    label: Engineer
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/${ engineer_triggers }/]
-
-  - name: alpha
-    priority: ${ rulepriority }
-    label: Alpha
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ alpha_triggers })/]
-
-  - name: bravo
-    priority: ${ rulepriority }
-    label: Bravo
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ bravo_triggers })/]
-
-  - name: delta
-    priority: ${ rulepriority }
-    label: Delta
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ delta_triggers })/]
-
-  - name: charlie
-    priority: ${ rulepriority }
-    label: Charlie
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ charlie_triggers })/]
-
-  - name: switch
-    priority: ${ rulepriority }
-    label: Switch
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
