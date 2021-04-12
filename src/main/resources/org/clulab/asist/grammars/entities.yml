@@ -114,21 +114,6 @@ rules:
     pattern: |
       [tag=/^W/]
 
-  - name: agree_token_match
-    label: Agreement
-    priority: ${ rulepriority }
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)^(${ agree_triggers })$/]
-
-  - name: disagree_token_match
-    label: Disagreement
-    priority: ${ rulepriority }
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO]
 
 ### add a tag so we dont parse "na" from "gonna"
   - name: demonstrative_pronoun
