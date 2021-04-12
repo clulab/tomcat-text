@@ -18,9 +18,9 @@ object RunDialogAgent extends App {
   // splash page if args are not understood
   val hints = List(
     "",
-    "Running the ToMCAT-text Dialog Agent:",
+    "usage:",
     "",
-    "  RunDialogAgent {mqtt [host] [port] [-m taxonomy_matches]}",
+    "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
     "                 {--mqtt [-h host] [-p port ] [-m taxonomy_matches]}",
     "                 {--stdin [-m taxonomy_matches]}",
     "                 {--web_vtt [-i infile] [-o outfile] [-m taxonomy_matches]}",
