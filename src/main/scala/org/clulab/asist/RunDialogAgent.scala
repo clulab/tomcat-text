@@ -65,18 +65,24 @@ object RunDialogAgent extends App {
    * @returns A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
-    val t: Int = intArg(argList.tail, "-t").getOrElse(0)
     argList match {
+      // Run on the Message Bus, old arg set
+      case ("mqtt"::host::port::l) => {
+        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
+        Some(new DialogAgentMqtt(host, port, t))
+      }
       // Run on the Message Bus
       case ("--mqtt"::l) => {
         val h = stringArg(l, "-h").getOrElse("localhost")
         val p = stringArg(l, "-p").getOrElse("1883")
+        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
         Some(new DialogAgentMqtt(h, p, t))
       }
       // Run using file input
       case ("--web_vtt"::l) => {
         val i = stringArg(l, "-i")  // mandatory arg
         val o = stringArg(l, "-o").getOrElse("web_vtt_output.json")
+        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
         if(i.isDefined) 
           Some(new DialogAgentWebVtt(i.head, o, t))
         else {
@@ -85,7 +91,10 @@ object RunDialogAgent extends App {
         }
       }
       // Run interactively from the command line
-      case ("--stdin"::l) => Some(new DialogAgentStdin(t))
+      case ("--stdin"::l) => {
+        val t: Int = intArg(argList.tail, "-t").getOrElse(0)
+        Some(new DialogAgentStdin(t))
+      }
       // Show the help page
       case _ => {
         hints.map(println)
