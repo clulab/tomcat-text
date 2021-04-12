@@ -37,7 +37,7 @@ object RunDialogAgent extends App {
    * @returns the string value for the key, else None
    */
   def stringArg(l: List[String], key: String): Option[String] = l match {
-    case (k::v::rest) => if (k == key) Some(v) else stringArg(rest, key)
+    case (k::v::_) => if (k == key) Some(v) else stringArg(l.tail, key)
     case _ => None
   }
 
@@ -47,12 +47,12 @@ object RunDialogAgent extends App {
    * @returns the integer value for the key, else None
    */
   def intArg(l: List[String], key: String): Option[Int] = l match {
-    case (k::v::rest) => if (k == key) { 
+    case (k::v::_) => if (k == key) { 
       try Some(v.toInt)
       catch {
         case e: Exception => None
       }
-    } else intArg(rest,key)
+    } else intArg(l.tail,key)
     case _ => None
   }
 
