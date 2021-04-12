@@ -65,7 +65,7 @@ object RunDialogAgent extends App {
    * @returns A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
-    val t: Option[Int] = intArg(argList.tail, "-t")
+    val t: Int = intArg(argList.tail, "-t").getOrElse(0)
     argList match {
       // Run on the Message Bus
       case ("--mqtt"::l) => {
