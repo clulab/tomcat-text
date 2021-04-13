@@ -75,7 +75,6 @@ class TestParse extends BaseTest {
     val deictic_mention = DesiredMention("Deictic", "there")
 
     testMention(mentions, self_mention)
-    testMention(mentions, victim_mention)
     testMention(mentions, save_mention)
     testMention(mentions, deictic_mention)
   }
@@ -102,10 +101,8 @@ class TestParse extends BaseTest {
     val deictic_mention = DesiredMention("Deictic", "inside")
     val infrastructure_mention = DesiredMention("Infrastructure", "building")
 
-    testMention(mentions, self_mention)
-    testMention(mentions, victim_mention)
     testMention(mentions, search_mention)
-    testMention(mentions, deictic_mention)
+//    testMention(mentions, deictic_mention) // todo: we should determine some structure for locations
     testMention(mentions, infrastructure_mention)
   }
 
@@ -161,16 +158,14 @@ class TestParse extends BaseTest {
       extractor.annotate("There's a guy over there, next to the other person")
     val mentions = extractor.extractFrom(doc)
 
-    val first_there_deictic = DesiredMention("Deictic", "There")
-    val guy_victim = DesiredMention("Victim", "guy")
+    val guy_victim = DesiredMention("Person", "guy")
     val guy_arg = Arg("target", Array(guy_victim))
-    val second_there_deictic = DesiredMention("Deictic", "there")
-    val person_victim = DesiredMention("Victim", "person")
+    val there_deictic = DesiredMention("Deictic", "there")
+    val person_victim = DesiredMention("Person", "person")
     val sight_mention = DesiredMention("Sight", "'s a guy", Array(guy_arg))
 
-    testMention(mentions, first_there_deictic)
     testMention(mentions, guy_victim)
-    testMention(mentions, second_there_deictic)
+    testMention(mentions, there_deictic)
     testMention(mentions, person_victim)
     testMention(mentions, sight_mention)
   }
@@ -200,7 +195,7 @@ class TestParse extends BaseTest {
     val doc = extractor.annotate("What's that over there?")
     val mentions = extractor.extractFrom(doc)
 
-    val question_mention = DesiredMention("Question", "What")
+    val question_mention = DesiredMention("QuestionParticle", "What")
     val deictic_mention = DesiredMention("Deictic", "there")
 
     testMention(mentions, question_mention)

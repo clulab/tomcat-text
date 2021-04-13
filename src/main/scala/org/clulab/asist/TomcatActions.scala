@@ -1,17 +1,13 @@
 package org.clulab.asist
 
-import java.util.Date
 
 import com.typesafe.scalalogging.LazyLogging
-import org.clulab.odin.{Actions, EventMention, Mention, State, TextBoundMention}
-import org.clulab.odin.impl.Taxonomy
-import org.clulab.utils.FileUtils
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
+import org.clulab.odin._
+import org.clulab.asist.AsistEngine._
 
 import scala.collection.mutable.ArrayBuffer
 
-class StubActions(
+class TomcatActions(
     val timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
 ) extends Actions
     with LazyLogging {
@@ -75,14 +71,54 @@ class StubActions(
     }
     to_be_returned
   }
+
+  def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    mentions.map(addArgLabel(_, TARGET_ARG, VICTIM, Some(ENTITY)))
+  }
+
+  def addArgLabel(mention: Mention, argName: String, newLabel: String, typeConstraint: Option[String]): Mention = {
+    val newArgs = mention.arguments.toSeq.map { case (name, argMentions) =>
+      name match {
+        case n if n == argName =>
+          val afterAdding = argMentions.map(m => copyWithNewLabel(m, newLabel, typeConstraint))
+          (name, afterAdding)
+        case _ => (name, argMentions)
+      }
+    }
+    copyWithNewArgs(mention, newArgs.toMap)
+  }
+
+  def copyWithNewArgs(m: Mention, newArgs: Map[String, Seq[Mention]]): Mention = {
+    m match {
+      case tb: TextBoundMention => ???
+      case rm: RelationMention => rm.copy(arguments = newArgs)
+      case em: EventMention => em.copy(arguments = newArgs)
+    }
+  }
+
+  def copyWithNewLabel(m: Mention, label: String, typeConstraint: Option[String]): Mention = {
+    if (
+      // If the label is already there, don't add
+      m.labels.contains(label) ||
+        // OR, if the constraint isn't satisfied
+        !typeConstraint.forall(c => m.labels.contains(c))
+    ) return m
+
+    m match {
+      case tb: TextBoundMention => tb.copy(labels = Seq(label) ++ tb.labels)
+      case rm: RelationMention => rm.copy(labels = Seq(label) ++ rm.labels)
+      case em: EventMention => em.copy(labels = Seq(label) ++ em.labels)
+    }
+  }
+
 }
 
-object StubActions {
+object TomcatActions {
 
   def apply(
       timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
   ) =
-    new StubActions(
+    new TomcatActions(
       timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
     )
 }

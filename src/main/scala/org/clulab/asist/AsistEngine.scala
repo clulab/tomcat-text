@@ -1,13 +1,11 @@
 package org.clulab.asist
 
-import java.util.Date
 
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.config.ConfigFactory
 import org.clulab.odin.{ExtractorEngine, Mention, State}
 import org.clulab.processors.{Document, Processor}
 import org.clulab.processors.fastnlp.FastNLPProcessor
-import org.clulab.processors.clu.CluProcessor
 import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.LoggerFactory
 
@@ -16,7 +14,7 @@ import scala.collection.mutable.ArrayBuffer
 class AsistEngine(
     var timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]) =
       (new ArrayBuffer[Int], new ArrayBuffer[Int], new ArrayBuffer[Int]),
-    val config: Config = ConfigFactory.load("stub")
+    val config: Config = ConfigFactory.load()
 ) extends Configured {
 
   val proc: Processor =
@@ -24,7 +22,7 @@ class AsistEngine(
 
   override def getConf: Config = config
 
-  protected def getFullName(name: String) = AsistEngine.PREFIX + "." + name
+  protected def getFullName(name: String): String = AsistEngine.PREFIX + "." + name
 
   protected def getPath(name: String, defaultValue: String): String = {
     val path = getArgString(getFullName(name), Option(defaultValue))
@@ -34,9 +32,9 @@ class AsistEngine(
   }
 
   class LoadableAttributes(
-      // These are the values which can be reloaded.  Query them for current assignments.
-      val actions: StubActions,
-      val engine: ExtractorEngine
+                            // These are the values which can be reloaded.  Query them for current assignments.
+                            val actions: TomcatActions,
+                            val engine: ExtractorEngine
   )
 
   object LoadableAttributes {
@@ -48,7 +46,7 @@ class AsistEngine(
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time based on paths in the config file.
       val masterRules = FileUtils.getTextFromResource(masterRulesPath)
-      val actions = StubActions(timeintervals)
+      val actions = TomcatActions(timeintervals)
 
       new LoadableAttributes(
         actions,
@@ -68,26 +66,16 @@ class AsistEngine(
   // MAIN PIPELINE METHOD
   def extractFromText(text: String, keepText: Boolean = false): Seq[Mention] = {
     val doc = annotate(text, keepText)
-    val odinMentions = extractFrom(doc)
-    //println(s"\nodinMentions() -- entities : \n\t${odinMentions.map(m => m.text).sorted.mkString("\n\t")}")
-
-    odinMentions
+    extractFrom(doc)
   }
 
-  def extractFrom(doc: Document): Vector[Mention] = {
-    val events = engine.extractFrom(doc, new State()).toVector
-    //println(s"In extractFrom() -- res : ${res.map(m => m.text).mkString(",\t")}")
-
-    // todo: some appropriate version of "keepMostComplete"
-    events
-  }
+  def extractFrom(doc: Document): Vector[Mention] = engine.extractFrom(doc, new State()).toVector
 
   // ---------- Helper Methods -----------
 
   // Annotate the text using a Processor and then populate lexicon labels
   def annotate(text: String, keepText: Boolean = false): Document = {
     val doc = proc.annotate(text, keepText)
-    //    doc.sentences.foreach(addLexiconNER)
     doc
   }
 
@@ -97,5 +85,9 @@ object AsistEngine {
 
   val logger = LoggerFactory.getLogger(this.getClass())
   val PREFIX: String = "AsistEngine"
+
+  val ENTITY: String = "Entity"
+  val VICTIM: String = "Victim"
+  val TARGET_ARG: String = "target"
 
 }

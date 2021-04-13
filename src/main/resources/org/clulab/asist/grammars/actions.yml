@@ -40,7 +40,7 @@ rules:
   - name: triage2
     priority: ${ rulepriority }
     label: Save
-    action: removeResearcher
+    action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Person = >dobj
@@ -82,7 +82,7 @@ rules:
   - name: search_infra_action
     priority: ${ rulepriority }
     label: Search
-    action: removeResearcher
+    action: mkVictim
     pattern: |
       trigger = [lemma=/${ search_triggers }/]
       area: Location = ${ search_relations }
@@ -91,7 +91,7 @@ rules:
   - name: i_am_searching
     priority: ${ rulepriority }
     label: Search
-    action: removeResearcher
+    action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ search_triggers })/]
       person: Entity = >nsubj
