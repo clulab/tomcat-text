@@ -1,78 +1,107 @@
 - Concept:
   - NounPhrase
   - Attribute
-  - Ordinal
+  - Number:
+    - Ordinal
   - Switch
-  - Anaphor
-  - Role:
-      - Searcher
-      - Medic
-      - Engineer
-  - Location:
-    - Inferred:
-      - Deictic
-      - DemPron
-    - Infrastructure:
-      - Room
-      - Door
-      - Building
-      - Stairs
-      - Window
-      - Floor
-      - Ceiling
-      - Lever
-      - Button
-  - Obstacle:
+  - EventLike:
+    - Time:
+      - TimeUnit
+    - Location:
+      - Inferred:
+        - Deictic
+        - DemPron
+      - Infrastructure:
+        - Room
+        - Door
+        - Building
+        - Hallway
+        - Stairs
+        - Window
+        - Floor
+        - Ceiling
+        - Lever
+        - Button
+        - Zone
+      - MapSection:
+        - center
+    - Obstacle:
       - Rubble
       - Fire
       - BuildingCollapse
-  - Action:
-    - SimpleActions:
-      - Move
-      - Open
-      - Close
-      - Push
-      - Toggle
-      - Jump
-      - Communicate
-      - Continue
-      - Extinguish
-      - Save
-      - Defeat
-      - Sight
-      - Craft
-      - Question
-      - Agreement
-      - Disagreement
-      - Commit
-      - Clear
-      - RoleSwitch
-    - ComplexActions:
-        - Search         # Seach(Location)
-        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
-        - Precedence
-  - EntityTypes:
+    - Action:
+      - SimpleActions:
+        - Block
+        - Move
+        - Open
+        - Close
+        - Push
+        - Toggle
+        - Jump
+        - Extinguish
+        - Save
+        - Defeat
+        - Sight
+        - Craft
+        - Communicate:
+          - Question:
+            - QuestionParticle
+            - LocationQuestion
+            - ModalQuestion
+          - Agreement
+          - Disagreement
+        - Clear
+        - RoleSwitch
+        - ReportLocation
+      - ComplexActions:
+          - Search         # Seach(Location)
+          - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+          - Commitment:
+            - MakeCommitment
+            - ProposeCommitment
+          - Continue
+          - MoveVictim
+          - Need
+          - Precedence
+          - Planning
+          - OfferHelp
+          - ShareKnowledge
+  - Entity:
+    - Person
+    - Other
+    - Self
+    - You
+    - Team
+    - Role:
+      - Searcher
+      - Medic
+      - Engineer
     - Victim:
         - Yellow
         - Green
     - Friend
     - Foe
     - Player:
-        - Alpha
-        - Bravo
-        - Delta
-  - Facing:
-    - DOWN
-    - UP
-    - NORTH
-    - SOUTH
-    - WEST
-    - EAST
-    - UP_X
-    - DOWN_X
-    - UP_Z
-    - DOWN_Z
-  - ItemType:
+      - Alpha
+      - Bravo
+      - Charlie
+      - Delta
+  - Direction:
+    - Relative:
+      - Up
+      - Down
+      - Left
+      - Right
+    - Cardinal:
+      - North
+      - NorthEast
+      - NorthWest
+      - East
+      - South
+      - SouthEast
+      - SouthWest
+      - West
+  - Item:
     - Bow
     - Arrow
     - Sword
@@ -96,12 +125,16 @@
     - Emerald
     - ItemFrame
     - FlowerPot
-    - Resource:
+    - Tool:
       - Hammer
       - MedKit
       - Stretcher
-- Sentiment:
-    - Positive
+      - Map
+  - Sentiment:
+    - Uncertainty  # include the agent
+    - Positive:
+      - Encouragement
+      - Politeness
     - Negative:
-        - Anger
-        - Worry
+      - Anger
+      - Worry

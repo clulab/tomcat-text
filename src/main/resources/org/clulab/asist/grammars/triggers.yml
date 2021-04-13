@@ -1,6 +1,6 @@
 transpose_triggers: "move|shift"
 
-moveto_triggers: "go|move|run|walk|come"
+moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
 
 close_triggers: "close|shut"
 
@@ -18,21 +18,22 @@ attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 fire_triggers: "fire|blaze|flame"
 
-infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance"
+infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony"
 
 switch_triggers: "switch|toggle|lever|door"
 
-role_switch_triggers: "switch"
+role_switch_triggers: "switch|become"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 
-person_triggers: "person|guy|victim|villager|dude|patient"
+person_triggers: "person|guy|villager|dude"
 
 sight_triggers: "see|observe|glimpse"
 
 craft_triggers: "craft|make|produce|brew|create"
 
-deixis_triggers: "here|there|back|in|through"
+#deixis_triggers: "here|there|back|in|through"
+deixis_triggers: "here|there"
 
 dem_pron_triggers: "this|that|those|these"
 
@@ -44,11 +45,12 @@ change_priority_triggers: "target|prioritize|focus"
 
 exist_triggers: "be"
 
-agree_triggers: "yes|okay|ok|sounds good|will do|roger|acknowledge"
+agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree"
 
-disagree_triggers: "no$|won't|nah|na|nope"
+disagree_triggers: "no|nah|nope|negative"
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
+block_triggers: "block|obstruct"
 
 clear_triggers: "clear|remove|clear|break"
 
@@ -56,22 +58,50 @@ then_precedence_triggers: "then"
 
 before_precedence_triggers: "before"
 
+after_precedence_triggers: "after"
+
 hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer"
 
 medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 stretcher_triggers: "stretcher|carrying bed"
 
-medic_triggers: "medic|paramedic|nurse|doctor" #medical specialist|med specialist" <-- these neeed separate rules
+medic_triggers: "medic|paramedic|nurse|doctor|medical"
 
 specialist_triggers: "specialist"
 
-search_spec_triggers: "search|service"
+search_spec_triggers: "search|service|searcher"
 
 engineer_triggers: "hazmat|engineer" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
 
+self_triggers: "i|me"
+
+you_triggers: "you"
+
+team_triggers: "we|us"
+
 alpha_triggers: "alpha"
 
-bravo_triggers: "bravo"
+bravo_triggers: "bravo|brother"
 
 delta_triggers: "delta"
+
+charlie_triggers: "charlie"
+
+where_triggers: "where"
+
+north_triggers: "north"
+
+south_triggers: "south"
+
+west_triggers: "west"
+
+east_triggers: "east"
+
+victim_triggers: "victim|patient"
+
+zone_triggers: "zone|area|side|section"
+
+encouragement_triggers1: "good|well|perfect|amazing|excellent|great|awesome"
+
+encouragement_triggers2: "job|done|work"

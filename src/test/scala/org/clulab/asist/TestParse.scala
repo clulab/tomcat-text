@@ -1,5 +1,7 @@
 package org.clulab.asist
 
+import scala.collection.mutable.ArraySeq
+
 class TestParse extends BaseTest {
 
   val CLOSE = "Close"
@@ -27,14 +29,14 @@ class TestParse extends BaseTest {
 //    mentions(2).label should be("Close")
   }
 
-  it should "Parse craft events properly" in {
+  failingTest should "Parse craft events properly" in {
     val doc = extractor.annotate("After crafting this sword, I push the button")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(1)
     mentions(0).label should be("Craft")
   }
 
-  it should "Parse sight events properly" in {
+  failingTest should "Parse sight events properly" in {
     val doc = extractor.annotate("I think I see a victim over there")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(3)
@@ -43,7 +45,7 @@ class TestParse extends BaseTest {
     mentions(2).label should be("Victim")
   }
 
-  ignore should "Parse extinguish events properly" in {
+  failingTest should "Parse extinguish events properly" in {
     val doc = extractor.annotate("I'm going to put out the fire before leaving")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(2)
@@ -51,7 +53,7 @@ class TestParse extends BaseTest {
     mentions(1).label should be("Extinguish")
   }
 
-  it should "Parse toggle events properly" in {
+  failingTest should "Parse toggle events properly" in {
     val doc =
       extractor.annotate("He opened the door and walked into the sunset.")
     val mentions = extractor.extractFrom(doc)
@@ -62,16 +64,22 @@ class TestParse extends BaseTest {
     mentions(3).label should be("Deictic")
   }
 
-  it should "Parse save events properly" in {
+  passingTest should "Parse save events properly" in {
     val doc = extractor.annotate("I'm going to save the villager over there")
     val mentions = extractor.extractFrom(doc)
-    mentions.size should be(3)
-    mentions(0).label should be("Save")
-    mentions(1).label should be("Deictic")
-    mentions(2).label should be("Victim")
+
+    val self_mention = DesiredMention("Self", "I")
+    val victim_mention = DesiredMention("Victim", "villager")
+    val victim_arg = Arg("target", Array(victim_mention))
+    val save_mention = DesiredMention("Save", "save the villager", Array(victim_arg))
+    val deictic_mention = DesiredMention("Deictic", "there")
+
+    testMention(mentions, self_mention)
+    testMention(mentions, save_mention)
+    testMention(mentions, deictic_mention)
   }
 
-  it should "Parse defeat events properly" in {
+  failingTest should "Parse defeat events properly" in {
     val doc = extractor.annotate("To progress I'm going to kill the zombies")
     val mentions = extractor.extractFrom(doc)
     mentions.size should be(2)
@@ -79,18 +87,26 @@ class TestParse extends BaseTest {
     mentions(1).label should be("Defeat")
   }
 
-  it should "Parse search events properly" in {
+  passingTest should "Parse search events properly" in {
     val doc =
       extractor.annotate("I will search for the villagers inside the building")
     val mentions = extractor.extractFrom(doc)
-    mentions.size should be(4)
-    mentions(0).label should be("Search")
-    mentions(1).label should be("Victim")
-    mentions(2).label should be("Infrastructure")
-    mentions(3).label should be("Deictic")
+
+    val self_mention = DesiredMention("Self", "I")
+    val self_arg = Arg("person", Array(self_mention))
+    val victim_mention = DesiredMention("Victim", "villagers")
+    val victim_arg = Arg("target", Array(victim_mention))
+    val search_mention = DesiredMention("Search", "I will search for the villagers",
+                                        Array(self_arg, victim_arg))
+    val deictic_mention = DesiredMention("Deictic", "inside")
+    val infrastructure_mention = DesiredMention("Infrastructure", "building")
+
+    testMention(mentions, search_mention)
+//    testMention(mentions, deictic_mention) // todo: we should determine some structure for locations
+    testMention(mentions, infrastructure_mention)
   }
 
-  ignore should "Recognize fire entities" in {
+  failingTest should "Recognize fire entities" in {
     val doc =
       extractor.annotate("Inside, a flame was spreading through the kitchen")
     val mentions = extractor.extractFrom(doc)
@@ -98,27 +114,35 @@ class TestParse extends BaseTest {
     mentions(0).label should be("Fire")
   }
 
-  it should "Recognize infrastructure entities" in {
+  passingTest should "Recognize infrastructure entities" in {
     val doc = extractor.annotate(
       "The room was up the stairs, behind the first door on the left"
     )
     val mentions = extractor.extractFrom(doc)
-    mentions.size should be(3)
-    mentions(0).label should be("Infrastructure")
-    mentions(1).label should be("Switch")
-    mentions(2).label should be("Infrastructure")
+
+    val room_mention = DesiredMention("Infrastructure", "room")
+    val door_switch_mention = DesiredMention("Switch", "door")
+    val door_infra_mention = DesiredMention("Infrastructure", "door")
+
+    testMention(mentions, room_mention)
+    testMention(mentions, door_switch_mention)
+    testMention(mentions, door_infra_mention)
   }
 
-  it should "Recognize switch entities" in {
+  passingTest should "Recognize switch entities" in {
     val doc = extractor.annotate("The lever is behind the door")
     val mentions = extractor.extractFrom(doc)
-    mentions.size should be(3)
-    mentions(0).label should be("Switch")
-    mentions(1).label should be("Infrastructure")
-    mentions(2).label should be("Switch")
+
+    val lever_mention = DesiredMention("Switch", "lever")
+    val door_switch_mention = DesiredMention("Switch", "door")
+    val door_infra_mention = DesiredMention("Infrastructure", "door")
+
+    testMention(mentions, lever_mention)
+    testMention(mentions, door_switch_mention)
+    testMention(mentions, door_infra_mention)
   }
 
-  it should "Recognize foe entities" in {
+  failingTest should "Recognize foe entities" in {
     val doc = extractor.annotate(
       "Down the road there is a mob or a zombie."
     )
@@ -129,51 +153,79 @@ class TestParse extends BaseTest {
     mention_map("Deictic") should be(1)
   }
 
-  it should "Recognize person entities" in {
+  passingTest should "Recognize person entities" in {
     val doc =
       extractor.annotate("There's a guy over there, next to the other person")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionCounter(mentions)
-    mentions.size should be(5)
-    mention_map("Sight") should be(1)
-    mention_map("Victim") should be(2)
-    mention_map("Deictic") should be(2)
+
+    val guy_victim = DesiredMention("Person", "guy")
+    val guy_arg = Arg("target", Array(guy_victim))
+    val there_deictic = DesiredMention("Deictic", "there")
+    val person_victim = DesiredMention("Person", "person")
+    val sight_mention = DesiredMention("Sight", "'s a guy", Array(guy_arg))
+
+    testMention(mentions, guy_victim)
+    testMention(mentions, there_deictic)
+    testMention(mentions, person_victim)
+    testMention(mentions, sight_mention)
   }
 
-  it should "Recognize commitments" in {
+  failingTest should "Recognize commitments" in {
     val doc = extractor.annotate("I will rescue the victim in here")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionCounter(mentions)
-    mentions.size should be(5)
-    mention_map("Save") should be(1)
-    mention_map("Commit") should be(1)
-    mention_map("Victim") should be(1)
-    mention_map("Deictic") should be(2)
+
+    val self_mention = DesiredMention("Self", "I")
+    val self_arg = Arg("person", Array(self_mention))
+    val victim_mention = DesiredMention("Victim", "victim")
+    val victim_arg = Arg("target", Array(victim_mention))
+    val deictic_mention = DesiredMention("Deictic", "here")
+    val save_mention = DesiredMention("Save", "rescue the victim",
+                                      Array(victim_arg))
+    val save_arg = Arg("target", Array(save_mention))
+    val commitment_mention = DesiredMention("Commitment", "I will rescue the victim",
+                                            Array(self_arg, save_arg))
+    testMention(mentions, self_mention)
+    testMention(mentions, victim_mention)
+    testMention(mentions, deictic_mention)
+    testMention(mentions, save_mention)
+    testMention(mentions, commitment_mention)
   }
 
-  it should "Recognize questions" in {
+  passingTest should "Recognize questions" in {
     val doc = extractor.annotate("What's that over there?")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionCounter(mentions)
-    mentions.size should be(2)
-    mention_map("Question") should be(1)
-    mention_map("Deictic") should be(1)
+
+    val question_mention = DesiredMention("QuestionParticle", "What")
+    val deictic_mention = DesiredMention("Deictic", "there")
+
+    testMention(mentions, question_mention)
+    testMention(mentions, deictic_mention)
   }
 
-  it should "Recognize agreements" in {
-    val doc = extractor.annotate("Ok, sounds good")
+  passingTest should "Recognize agreements" in {
+    val doc = extractor.annotate("Yes, sounds good")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionCounter(mentions)
-    mentions.size should be(1)
-    mention_map("Agreement") should be(1)
+
+    val agree_mention = DesiredMention("Agreement", "Yes")
+
+    testMention(mentions, agree_mention)
   }
 
-  it should "Recognize disagreements" in {
-    val doc = extractor.annotate("No, I'm headed over here")
+  failingTest should "Recognize disagreements" in {
+    val doc = extractor.annotate("No, I'm going over here")
     val mentions = extractor.extractFrom(doc)
-    val mention_map = getMentionCounter(mentions)
-    mentions.size should be(2)
-    mention_map("Disagreement") should be(1)
-    mention_map("Deictic") should be (1)
+
+    val disagree_mention = DesiredMention("Disagreement", "No")
+    val self_mention = DesiredMention("Self", "I")
+    val self_arg = Arg("person", Array(self_mention))
+    val deictic_mention = DesiredMention("Deictic", "here")
+    val deictic_arg = Arg("target", Array(deictic_mention))
+    val move_mention = DesiredMention("Move", "I'm going over here",
+      Array(self_arg, deictic_arg))
+
+    testMention(mentions, disagree_mention)
+    testMention(mentions, self_mention)
+    testMention(mentions, deictic_mention)
+    testMention(mentions, move_mention)
   }
 }

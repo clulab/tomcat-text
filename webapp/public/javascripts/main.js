@@ -351,7 +351,7 @@ head.ready(function() {
             console.log(data);
             syntaxLiveDispatcher.post('requestRenderData', [$.extend({}, data.syntax)]);
             eidosMentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.eidosMentions)]);
-            document.getElementById("groundedAdj").innerHTML = data.groundedAdj;
+            document.getElementById("groundedAdj").innerHTML = data.mentionDetails;
             document.getElementById("parse").innerHTML = data.parse;
             // hide spinner
             document.getElementById("overlay").style.display = "none";

@@ -1,0 +1,29 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  - name: location_question
+    priority: ${ rulepriority }
+    label: LocationQuestion
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ where_triggers })/]
+      topic: Entity? =
+        <advmod
+        >/nsubj|dobj|nmod/
+#        [tag=/^N/]
+
+ #      [lemma=/${ where_triggers }/]
+
+
+#leave this here so I can remember how to do these complex dependencies
+#      first_action: Action? =
+        # get to the second action, which is linked to the first
+#        <advmod
+        # traverse the link -- depending on the phrasing, can be any of these
+#        </ccomp|conj_and|dep/
+        #<conj_and
+        # optionally go to an embedded clause
+#        >/xcomp/?
+        # land on a verb
+#        [tag=/^V/]
+#      second_action: Action? = <advmod

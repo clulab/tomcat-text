@@ -1,0 +1,12 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: commit_to_something
+    priority: ${ rulepriority }
+    label: MakeCommitment
+    action: removeResearcher
+    pattern: |
+      trigger = [tag=/^MD/]
+      target: Action = <aux
+      person: Self? = <aux >nsubj
