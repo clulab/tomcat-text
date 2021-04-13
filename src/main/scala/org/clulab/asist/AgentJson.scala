@@ -12,7 +12,7 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 
 
-abstract class AgentJson extends DialogAgent {
+abstract class AgentMetadata extends DialogAgent {
 
   val topicChat: String = "minecraft/chat"
   val topicUazAsr: String = "agent/asr/final"
