@@ -30,7 +30,7 @@ case class MetadataMessageData(
 
 case class MetadataMessage(
   val header: CommonHeader,
-  val topic: String,
+  val topic: String = "",
   val data: MetadataMessageData,
   val msg: CommonMsg
 )
