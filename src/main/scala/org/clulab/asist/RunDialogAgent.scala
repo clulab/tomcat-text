@@ -65,22 +65,22 @@ object RunDialogAgent extends App {
     argList match {
       // Run on the Message Bus
       case ("mqtt"::host::port::l) => {
-        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentMqtt(host, port, m))
       }
       // Run using web_vtt file input
       case ("web_vtt"::infile::outfile::l) => {
-        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentWebVtt(infile, outfile, m))
       }
       // Run using metadata file input
       case ("metadata"::infile::outfile::l) => {
-        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentMetadata(infile, outfile, m))
       }
       // Run interactively from the command line
       case ("stdin"::l) => {
-        val m: Int = intArg(argList.tail, "-m").getOrElse(0)
+        val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentStdin(m))
       }
       // Show the help page
