@@ -36,9 +36,6 @@ abstract class AgentJson extends DialogAgent {
   def toMetadataMessage(json: String): Option[MetadataMessage] = 
     allCatch.opt(read[MetadataMessage](json))
 
-  def toJson(a: DialogAgentMessage): String = write(a)
-
-
   // use the topic we find in the metadata
   def outputJson(
       source_type: String,
