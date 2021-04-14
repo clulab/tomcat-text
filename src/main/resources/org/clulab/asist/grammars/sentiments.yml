@@ -33,3 +33,12 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO]
+
+
+  - name: thank_you
+    label: Gratitude
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ thanking_triggers })$/ & !tag=TO]
