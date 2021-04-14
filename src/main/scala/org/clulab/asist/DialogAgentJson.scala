@@ -22,6 +22,9 @@ class DialogAgentJson
   // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 
+  def participantId(md: MetadataMessage):Option[String] = 
+    participantId(md.topic, md)
+
   /** The participant_id field is in a different place in different structs */
   def participantId(
     topic: String,
@@ -40,9 +43,6 @@ class DialogAgentJson
   def toJson(a: DialogAgentMessageDataExtraction): String = write(a)
 
   def toJson(a: DialogAgentMessage): String = write(a)
-
-  def participantId(md: MetadataMessage):Option[String] = 
-    participantId(md.topic, md)
 
   def toMetadataMessage(json: String): Option[MetadataMessage] = 
     allCatch.opt(read[MetadataMessage](json))

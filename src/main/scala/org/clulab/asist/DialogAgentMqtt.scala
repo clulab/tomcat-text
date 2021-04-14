@@ -33,12 +33,13 @@ class DialogAgentMqtt(
     this
   )
 
-  /** Receive messages and publish analysis 
+  /** Process one line of input at a time
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A json representation of a message struct
+   *  @return A json representation of the Dialog Agent output
    */
-  def messageArrived(topic: String, text: String): Unit = 
-    toMetadataMessage(text).map(md =>
+  def processLine(topic: String, line: String): Unit = 
+    toMetadataMessage(line).map(md =>
       participantId(topic, md).map(id =>  
         bus.publish(
           toOutputJson(
@@ -51,4 +52,11 @@ class DialogAgentMqtt(
         )
       )
     )
+
+  /** Receive a message from the message bus
+   *  @param topic:  The message bus topic where the message was published
+   *  @param json:  A json text string
+   */
+  def messageArrived(topic: String, text: String): Unit = 
+    text.split("\n").map(line => processLine(topic, line))
 }
