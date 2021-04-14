@@ -19,8 +19,6 @@ class DialogAgentJson
   val topicUazAsr: String = "agent/asr/final"
   val topicAptimaAsr: String = "status/asistdataingester/userspeech"
 
-  val topics: List[String] = List(topicChat, topicUazAsr, topicAptimaAsr)
-
   // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 

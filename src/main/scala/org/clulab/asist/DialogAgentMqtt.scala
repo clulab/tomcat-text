@@ -21,7 +21,17 @@ class DialogAgentMqtt(
     override val nMatches: Int = 0
 ) extends DialogAgentJson { 
 
-  val bus = new AgentMqtt(host, port, topics, "agent/dialog", this)
+  val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr)
+  val outputTopic = "agent/dialog"
+  val source_type = "message_bus"
+
+  val bus = new AgentMqtt(
+    host, 
+    port, 
+    inputTopics,
+    outputTopic, 
+    this
+  )
 
   /** Receive messages and publish analysis 
    *  @param topic:  The message bus topic where the message was published
@@ -32,7 +42,7 @@ class DialogAgentMqtt(
       participantId(topic, md).map(id =>  
         bus.publish(
           toOutputJson(
-            "message_bus",
+            source_type,
             topic,
             md.msg,
             id,

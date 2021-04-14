@@ -27,6 +27,8 @@ class DialogAgentWebVtt(
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
+  val source_type = "web_vtt_file"
+
   processFiles(inputFilename, outputFilename)
 
   /** Manage one web_vtt file 
@@ -75,10 +77,10 @@ class DialogAgentWebVtt(
       val msg = new CommonMsg
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        Some(toOutputJson("web_vtt_file", filename, msg, null, text))
+        Some(toOutputJson(source_type, filename, msg, null, text))
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        Some(toOutputJson("web_vtt_file", filename, msg, foo(0), text))
+        Some(toOutputJson(source_type, filename, msg, foo(0), text))
       }
     }
     case _ => None
