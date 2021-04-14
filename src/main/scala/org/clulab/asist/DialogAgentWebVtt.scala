@@ -22,60 +22,23 @@ class DialogAgentWebVtt(
     val inputFilename: String = "",
     val outputFilename: String = "", 
     override val nMatches: Int = 0
-) extends DialogAgent 
-    with DialogAgentJson {
+) extends AgentJson 
+    with AgentFile {
 
+  val source_type = "web_vtt_file"
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-  logger.info("Using input file '%s'".format(inputFilename))
-  logger.info("Using output file '%s'".format(outputFilename))
-
-  // List all the files to be processed.
-  val allFiles = getFiles
-
-  def getFiles: List[String] = {
-    val f = new File(inputFilename)
-    if(f.isDirectory) f.listFiles.toList.map(_.getPath)
-    else List(f.getPath)
-  }
-
-  // open the output stream and process the files
-  try {
-    val output = new PrintWriter(new File(outputFilename))
-    val results = allFiles.map(processFile(_, output))
-    output.close
-    if(results.contains(false)) {
-      logger.error("Problems were encountered during this run.")
-    }
-    else logger.info("All operations completed successfully.")
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem writing to %s".format(outputFilename))
-      logger.error(t.toString)
-    }
-  }
-
+  processFiles(inputFilename, outputFilename)
 
   /** Manage one web_vtt file 
    * @param filename a single input file
    * @param output Printwriter to the output file
-   * @return true if the operation succeeded
    */
-  def processFile(filename: String, output: PrintWriter): Boolean = try {
-    logger.info("Reading input file %s".format(filename))
+  override def processFile(filename: String, output: PrintWriter): Unit = {
     val stream = new FileInputStream(new File(filename))
     parseInputStream(stream, filename, output)
     stream.close
-    logger.info("Closed input file %s".format(filename))
-    true
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem reading input file '%s'".format(filename))
-      logger.error(t.toString)
-      false
-    }
   }
-
 
   /** Run a VttDissector on the contents of one file
    * @param stream The contents of an input file
@@ -89,8 +52,9 @@ class DialogAgentWebVtt(
       output: PrintWriter): Boolean = VttDissector(stream) match {
     case Success(blocks) => {
       val results = blocks.map(block => {
-        val dialogAgentMessage = parse(block.lines.toList, filename)
-        dialogAgentMessage.map(a => output.write("%s\n".format(toJson(a))))
+        toOutputJson(block.lines.toList, filename).map(a =>
+          output.write("%s\n".format(a))
+        )
       })
       !results.contains(false)
     }
@@ -101,24 +65,24 @@ class DialogAgentWebVtt(
     }
   }
 
-
   /** process one web_vtt block
    * @param lines The line sequence from a single SubtitleBlock instance
    * @param filename The name of the input file where the block was read
    * @return A DialogAgentMessage based on the inputs
    */
-  def parse(
+  def toOutputJson(
       lines: List[String],
-      filename: String): Option[DialogAgentMessage] = lines match {
+      filename: String): Option[String] = lines match {
     case head::tail => {
       // if a colon exists in the first line, text to left is participant id
       val foo = head.split(':')
+      val msg = new CommonMsg
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        Some(toDialogAgentMessage("file", filename, new CommonMsg, null, text))
+        outputJson(source_type, filename, msg, null, text)
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        Some(toDialogAgentMessage("file", filename, new CommonMsg, foo(0), text))
+        outputJson(source_type, filename, msg, foo(0), text)
       }
     }
     case _ => None
