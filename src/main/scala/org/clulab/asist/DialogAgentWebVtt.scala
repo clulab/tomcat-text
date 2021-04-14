@@ -22,7 +22,7 @@ class DialogAgentWebVtt(
     val inputFilename: String = "",
     val outputFilename: String = "", 
     override val nMatches: Int = 0
-) extends AgentJson 
+) extends DialogAgentJson 
     with AgentFile {
 
   override val source_type = "web_vtt_file"

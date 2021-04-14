@@ -19,7 +19,7 @@ class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",
     override val nMatches: Int = 0
-) extends AgentJson { 
+) extends DialogAgentJson { 
 
   override val source_type = "message_bus"
 

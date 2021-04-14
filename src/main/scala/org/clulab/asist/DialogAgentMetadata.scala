@@ -23,7 +23,7 @@ class DialogAgentMetadata(
     val inputFilename: String = "",
     val outputFilename: String = "", 
     override val nMatches: Int = 0
-) extends AgentJson 
+) extends DialogAgentJson 
     with AgentFile {
 
   override val source_type = "metadata_file"

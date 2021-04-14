@@ -1,9 +1,8 @@
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 March
+ *  Updated:  2021 April
  *
- * Json serialization and deserialization of messages
  */
 package org.clulab.asist
 
@@ -12,60 +11,60 @@ import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 
-trait DialogAgentJson {
+
+abstract class DialogAgentJson 
+    extends DialogAgent {
+
+  val topicChat: String = "minecraft/chat"
+  val topicUazAsr: String = "agent/asr/final"
+  val topicAptimaAsr: String = "status/asistdataingester/userspeech"
+
+  val topics: List[String] = List(topicChat, topicUazAsr, topicAptimaAsr)
+
+  val source_type: String
 
   // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  /** Serialize a DialogAgentMessageDataExtraction to a Json string 
+  /** The participant_id field is in a different place in different structs */
+  def participantId(
+    topic: String,
+    md: MetadataMessage
+  ): Option[String] = topic match {
+    case `topicChat` => Some(md.data.sender)
+    case `topicUazAsr` => Some(md.data.participant_id)
+    case `topicAptimaAsr` => Some(md.data.playername)
+    case _ => None
+  }
+      
+  /** Serialize a DialogAgentMessageDataExtraction to a Json string
    *  @param data the DialogAgentMessageDataExtraction struct
    *  @return The struct represented as a json string
    */
   def toJson(data: DialogAgentMessageDataExtraction): String = write(data)
 
-  /** Serialize a DialogAgentMessage to a Json string 
-   *  @param data the DialogAgentMessage struct
-   *  @return The struct represented as a json string
-   */
-  def toJson(data: DialogAgentMessage): String = write(data)
 
-  /** Serialize an AptimaAsrMessage to a Json string.
-   *  @param data the AptimaAsrMessage struct
-   *  @return The struct represented as a json string
-   */
-  def toJson(data: AptimaAsrMessage): String = write(data)
+  def participantId(md: MetadataMessage):Option[String] = 
+    participantId(md.topic, md)
 
-  /** Serialize an UazAsrMessage to a Json string.
-   *  @param data the UazAsrMessage struct
-   *  @return The struct represented as a json string
-   */
-  def toJson(data: UazAsrMessage): String = write(data)
+  def toMetadataMessage(json: String): Option[MetadataMessage] = 
+    allCatch.opt(read[MetadataMessage](json))
 
-  /** Deserialize a DialogAgentMessage from a Json string
-   *  @param json a json representation of a DialogAgentMessage struct
-   *  @return A DialogAgentMessage struct if the read succeeded, else None
-   */
-  def toDialogAgentMessage(json: String): Option[DialogAgentMessage] = 
-    allCatch.opt(read[DialogAgentMessage](json))
+  def toOutputJson(
+    source_name: String,
+    msg: CommonMsg,
+    participant_id: String,
+    text: String
+  ): Option[String] = {
+    val message = toDialogAgentMessage(
+      source_type,
+      source_name,
+      msg,
+      participant_id,
+      text
+    )
+    val messageJson = write(message)
+    Some(messageJson)
+  }
 
-  /** Deserialize a ChatMessage from a Json string
-   *  @param json a json representation of a ChatMessage struct
-   *  @return A ChatMessage struct if the read succeeded, else None
-   */
-  def toChatMessage(json: String): Option[ChatMessage] = 
-    allCatch.opt(read[ChatMessage](json))
-
-  /** Deserialize a UazAsrMessage from a Json string
-   *  @param json a json representation of a UazAsrMessage struct
-   *  @return An UazAsrMessage struct if the read succeeded, else None
-   */
-  def toUazAsrMessage(json: String): Option[UazAsrMessage] = 
-    allCatch.opt(read[UazAsrMessage](json))
-
-  /** Deserialize an AptimaAsrMessage from a Json string
-   *  @param json a json representation of a AptimaAsrMessage struct
-   *  @return An AptimaAsrMessage struct if the read succeeded, else None
-   */
-  def toAptimaAsrMessage(json: String): Option[AptimaAsrMessage] = 
-    allCatch.opt(read[AptimaAsrMessage](json))
 }
