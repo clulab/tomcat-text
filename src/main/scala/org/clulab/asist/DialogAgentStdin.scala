@@ -16,7 +16,6 @@ class DialogAgentStdin (
     override val nMatches: Int = 0
 ) extends DialogAgentJson { 
 
-  override val source_type: String = ""
   println("\nDialog Agent stdin extractor running.")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")
 

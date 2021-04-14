@@ -12,7 +12,7 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 
 
-abstract class DialogAgentJson 
+class DialogAgentJson 
     extends DialogAgent {
 
   val topicChat: String = "minecraft/chat"
@@ -20,8 +20,6 @@ abstract class DialogAgentJson
   val topicAptimaAsr: String = "status/asistdataingester/userspeech"
 
   val topics: List[String] = List(topicChat, topicUazAsr, topicAptimaAsr)
-
-  val source_type: String
 
   // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
@@ -41,8 +39,9 @@ abstract class DialogAgentJson
    *  @param data the DialogAgentMessageDataExtraction struct
    *  @return The struct represented as a json string
    */
-  def toJson(data: DialogAgentMessageDataExtraction): String = write(data)
+  def toJson(a: DialogAgentMessageDataExtraction): String = write(a)
 
+  def toJson(a: DialogAgentMessage): String = write(a)
 
   def participantId(md: MetadataMessage):Option[String] = 
     participantId(md.topic, md)
@@ -51,20 +50,19 @@ abstract class DialogAgentJson
     allCatch.opt(read[MetadataMessage](json))
 
   def toOutputJson(
+    source_type: String,
     source_name: String,
     msg: CommonMsg,
     participant_id: String,
     text: String
-  ): Option[String] = {
-    val message = toDialogAgentMessage(
+  ): String = toJson(
+    toDialogAgentMessage(
       source_type,
       source_name,
       msg,
       participant_id,
       text
     )
-    val messageJson = write(message)
-    Some(messageJson)
-  }
+  )
 
 }
