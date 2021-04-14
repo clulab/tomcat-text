@@ -49,15 +49,14 @@ class DialogAgentWebVtt(
   def parseInputStream(
       stream: FileInputStream, 
       filename: String, 
-      output: PrintWriter): Boolean = VttDissector(stream) match {
-    case Success(blocks) => {
-      val results = blocks.map(block => {
+      output: PrintWriter): Unit = VttDissector(stream) match {
+    case Success(blocks) => 
+      blocks.map(block => 
         toOutputJson(block.lines.toList, filename).map(a =>
           output.write("%s\n".format(a))
         )
-      })
-      !results.contains(false)
-    }
+      )
+    )
     case Failure(f) => {
       logger.error("VttDissector could not parse input")
       logger.error(f.toString)
