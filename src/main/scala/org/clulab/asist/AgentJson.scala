@@ -20,63 +20,29 @@ abstract class AgentJson extends DialogAgent {
 
   val topics: List[String] = List(topicChat, topicUazAsr, topicAptimaAsr)
 
+  val source_type: String
+
   // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 
   /** The participant_id field is in a different place in different structs */
-  def participant_id(
+  def participantId(
     topic: String,
-    md: MetadataMessage): Option[String] = topic match {
+    md: MetadataMessage
+  ): Option[String] = topic match {
     case `topicChat` => Some(md.data.sender)
     case `topicUazAsr` => Some(md.data.participant_id)
     case `topicAptimaAsr` => Some(md.data.playername)
     case _ => None
   }
 
+  def participantId(md: MetadataMessage):Option[String] = 
+    participantId(md.topic, md)
+
   def toMetadataMessage(json: String): Option[MetadataMessage] = 
     allCatch.opt(read[MetadataMessage](json))
 
-  // use the topic we find in the metadata
-  def outputJson(
-      source_type: String,
-      source_name: String,
-      json: String
-  ): Option[String] = allCatch.opt(read[MetadataMessage](json)) match {
-    case Some(metadata) => 
-      outputJson(source_type, source_name, metadata.topic, metadata) 
-    case _ => None
-  }
-
-  // use the passed-in topic
-  def outputJson(
-      source_type: String,
-      source_name: String,
-      topic: String,
-      json: String
-  ): Option[String] = allCatch.opt(read[MetadataMessage](json)) match {
-    case Some(metadata) => 
-      outputJson(source_type, source_name, topic, metadata) 
-    case _ => None
-  }
-
-  def outputJson(
-      source_type: String,
-      source_name: String,
-      topic: String,
-      metadata: MetadataMessage
-  ): Option[String] = participant_id(topic, metadata) match {
-    case Some(id) => outputJson(
-      source_type,
-      topic,
-      metadata.msg,
-      id,
-      metadata.data.text
-    )
-    case _ => None
-  }
-
-  def outputJson(
-    source_type: String,
+  def toOutputJson(
     source_name: String,
     msg: CommonMsg,
     participant_id: String,

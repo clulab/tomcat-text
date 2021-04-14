@@ -26,7 +26,7 @@ class DialogAgentMetadata(
 ) extends AgentJson 
     with AgentFile {
 
-  val source_type = "metadata_file"
+  override val source_type = "metadata_file"
 
   processFiles(inputFilename, outputFilename)
 
@@ -38,8 +38,12 @@ class DialogAgentMetadata(
   override def processFile(filename: String, output: PrintWriter): Unit = {
     val bufferedSource = Source.fromFile(filename)
     for (line <- bufferedSource.getLines) {
-      outputJson(source_type, filename, line).map(a =>
-        output.write("%s\n".format(a))
+      toMetadataMessage(line).map(md =>
+        participantId(md).map(id =>
+          toOutputJson(filename, md.msg, id, md.data.text).map(json =>
+            output.write("%s\n".format(json))
+          )
+        )
       )
     }
     bufferedSource.close

@@ -25,7 +25,7 @@ class DialogAgentWebVtt(
 ) extends AgentJson 
     with AgentFile {
 
-  val source_type = "web_vtt_file"
+  override val source_type = "web_vtt_file"
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   processFiles(inputFilename, outputFilename)
@@ -79,10 +79,10 @@ class DialogAgentWebVtt(
       val msg = new CommonMsg
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        outputJson(source_type, filename, msg, null, text)
+        toOutputJson(filename, msg, null, text)
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        outputJson(source_type, filename, msg, foo(0), text)
+        toOutputJson(filename, msg, foo(0), text)
       }
     }
     case _ => None

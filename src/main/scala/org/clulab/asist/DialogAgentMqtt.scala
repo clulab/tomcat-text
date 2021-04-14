@@ -21,18 +21,20 @@ class DialogAgentMqtt(
     override val nMatches: Int = 0
 ) extends AgentJson { 
 
-  // publish to this topic
-  val outputTopic: String = "agent/dialog"
+  override val source_type = "message_bus"
 
-  val source_type = "message_bus"
-  
-  // message bus handler
-  val bus = new AgentMqtt(host, port, topics, outputTopic, this)
+  val bus = new AgentMqtt(host, port, topics, "agent/dialog", this)
 
   /** Receive messages and publish analysis 
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A json representation of a message struct
    */
-  def messageArrived(topic: String, json: String): Unit = 
-    outputJson(source_type, topic, topic, json).map(bus.publish)
+  def messageArrived(topic: String, text: String): Unit = 
+    toMetadataMessage(text).map(md =>
+      participantId(topic, md).map(id =>  
+        toOutputJson(topic, md.msg, id, md.data.text).map(json =>
+          bus.publish(json)
+        )
+      )
+    )
 }
