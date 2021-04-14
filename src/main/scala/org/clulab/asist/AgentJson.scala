@@ -35,6 +35,13 @@ abstract class AgentJson extends DialogAgent {
     case `topicAptimaAsr` => Some(md.data.playername)
     case _ => None
   }
+      
+  /** Serialize a DialogAgentMessageDataExtraction to a Json string
+   *  @param data the DialogAgentMessageDataExtraction struct
+   *  @return The struct represented as a json string
+   */
+  def toJson(data: DialogAgentMessageDataExtraction): String = write(data)
+
 
   def participantId(md: MetadataMessage):Option[String] = 
     participantId(md.topic, md)
