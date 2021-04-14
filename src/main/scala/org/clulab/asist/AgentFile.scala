@@ -21,33 +21,32 @@ trait AgentFile {
     else List(f.getPath)
   }
 
-
-  def processFiles(inputFilename: String, outputFilename: String): Boolean = try {
-    val allFiles = getFiles(inputFilename)
-    val output = new PrintWriter(new File(outputFilename))
-    val results = allFiles.map(processFile(_, output))
-    output.close
-    if(results.contains(false)) {
-      logger.error("Problems were encountered during this run.")
-      false
-    }
-    else {
+  def processFiles(
+    inputFilename: String, 
+    outputFilename: String
+  ): Unit = {
+    logger.info("Using input file '%s'".format(inputFilename))
+    logger.info("Using output file '%s'".format(outputFilename))
+    try {
+      val output = new PrintWriter(new File(outputFilename))
+      getFiles(inputFilename).map(filename => {
+        logger.info("processing %s".format(filename))
+        processFile(filename, output)
+        logger.info("finished processing %s".format(filename))
+      })
+      output.close
       logger.info("All operations completed successfully.")
-      true
-    }
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem writing to %s".format(outputFilename))
-      logger.error(t.toString)
-      false
+    } catch {
+      case t: Throwable => {
+        logger.error("Problem writing to %s".format(outputFilename))
+        logger.error(t.toString)
+      }
     }
   }
-
 
   /** Manage one file
    * @param filename a single input file
    * @param output Printwriter to the output file
-   * @return true if the operation succeeded
    */
-  def processFile(filename: String, output: PrintWriter): Boolean 
+  def processFile(filename: String, output: PrintWriter): Unit
 }
