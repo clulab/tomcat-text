@@ -12,7 +12,7 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 
 
-abstract class AgentMetadata extends DialogAgent {
+abstract class AgentJson extends DialogAgent {
 
   val topicChat: String = "minecraft/chat"
   val topicUazAsr: String = "agent/asr/final"
@@ -23,7 +23,7 @@ abstract class AgentMetadata extends DialogAgent {
   // Used so Json serializer can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  /** The participant_id field is different in each type */
+  /** The participant_id field is in a different place in different structs */
   def participant_id(
     topic: String,
     md: MetadataMessage): Option[String] = topic match {
@@ -33,45 +33,67 @@ abstract class AgentMetadata extends DialogAgent {
     case _ => None
   }
 
+  def toMetadataMessage(json: String): Option[MetadataMessage] = 
+    allCatch.opt(read[MetadataMessage](json))
+
+  def toJson(a: DialogAgentMessage): String = write(a)
 
 
-  /** Serialize a DialogAgentMessage to a Json string
-   *  @param data the DialogAgentMessage struct
-   *  @return The struct represented as a json string
-   */
-  def toJson(data: DialogAgentMessage): String = write(data)
-
-  def toMetadata(json: String): Option[MetadataMessage] = try {
-    Some(read[MetadataMessage](json))
-  } catch {
-    case t: Throwable => {
-      println("AgentJson.toMetadata")
-      println("caught throwable: %s".format(t.toString))
-    }
-    None
+  // use the topic we find in the metadata
+  def outputJson(
+      source_type: String,
+      source_name: String,
+      json: String
+  ): Option[String] = allCatch.opt(read[MetadataMessage](json)) match {
+    case Some(metadata) => 
+      outputJson(source_type, source_name, metadata.topic, metadata) 
+    case _ => None
   }
 
-  def foo(
+  // use the passed-in topic
+  def outputJson(
+      source_type: String,
+      source_name: String,
+      topic: String,
+      json: String
+  ): Option[String] = allCatch.opt(read[MetadataMessage](json)) match {
+    case Some(metadata) => 
+      outputJson(source_type, source_name, topic, metadata) 
+    case _ => None
+  }
+
+  def outputJson(
       source_type: String,
       source_name: String,
       topic: String,
       metadata: MetadataMessage
-  ): Option[DialogAgentMessage] = {
-
-    println("AgentJson.bar with metadata")
-    println("  topic: %s".format(metadata.topic))
-
-    participant_id(topic, metadata) match {
-      case Some(id) => Some(
-        toDialogAgentMessage(
-          source_type,
-          topic,
-          metadata.msg,
-          id,
-          metadata.data.text
-        )
-      )
-      case _ => None
-    }
+  ): Option[String] = participant_id(topic, metadata) match {
+    case Some(id) => outputJson(
+      source_type,
+      topic,
+      metadata.msg,
+      id,
+      metadata.data.text
+    )
+    case _ => None
   }
+
+  def outputJson(
+    source_type: String,
+    source_name: String,
+    msg: CommonMsg,
+    participant_id: String,
+    text: String
+  ): Option[String] = {
+    val message = toDialogAgentMessage(
+      source_type,
+      source_name,
+      msg,
+      participant_id,
+      text
+    )
+    val messageJson = write(message)
+    Some(messageJson)
+  }
+
 }
