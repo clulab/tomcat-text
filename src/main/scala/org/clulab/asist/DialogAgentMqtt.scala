@@ -19,64 +19,20 @@ class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",
     override val nMatches: Int = 0
-) extends DialogAgent 
-    with DialogAgentJson {
+) extends AgentJson { 
 
-  // message bus topics
-  val topicInputChat: String = "minecraft/chat"
-  val topicInputUazAsr: String = "agent/asr/final"
-  val topicInputAptimaAsr: String = "status/asistdataingester/userspeech"
-  val topicOutput: String = "agent/dialog"
+  // publish to this topic
+  val outputTopic: String = "agent/dialog"
+
+  val source_type = "message_bus"
   
   // message bus handler
-  val bus = new AgentMqtt(
-    host,
-    port,
-    inputTopics = List(
-      topicInputChat, 
-      topicInputUazAsr,
-      topicInputAptimaAsr
-    ),
-    topicOutput,
-    this
-  )
-
-  /** publish the Dialog Agent analysis of message data 
-   *  @param topic: The message bus topic where the message was published
-   *  @param msg: CommonMsg struct from the message data
-   *  @param participant_id: Subject who is speaking
-   *  @param text: Spoken text that will be processed
-   */
-  def publish(
-    topic: String, 
-    msg: CommonMsg, 
-    participant_id: String, 
-    text: String): Unit = bus.publish(
-      toJson(
-        toDialogAgentMessage(
-          "message_bus",
-          topic,
-          msg,
-          participant_id,
-          text
-        )
-      )
-    )
+  val bus = new AgentMqtt(host, port, topics, outputTopic, this)
 
   /** Receive messages and publish analysis 
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A json representation of a message struct
    */
-  def messageArrived(topic: String, json: String): Unit = topic match {
-    case `topicInputChat` => toChatMessage(json).map(a =>
-      publish(topic, a.msg, a.data.sender, a.data.text)
-    )
-    case `topicInputUazAsr` => toUazAsrMessage(json).map(a =>
-      publish(topic,a.msg, a.data.participant_id, a.data.text)
-    )
-    case `topicInputAptimaAsr` => toAptimaAsrMessage(json).map(a =>
-      publish(topic, a.msg, a.data.playername, a.data.text)
-    )
-    case _ => 
-  }
+  def messageArrived(topic: String, json: String): Unit = 
+    outputJson(source_type, topic, topic, json).map(bus.publish)
 }
