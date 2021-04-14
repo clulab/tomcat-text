@@ -68,11 +68,4 @@ trait DialogAgentJson {
    */
   def toAptimaAsrMessage(json: String): Option[AptimaAsrMessage] = 
     allCatch.opt(read[AptimaAsrMessage](json))
-
-  /** Deserialize Metadata from a Json string
-   *  @param json a json representation of a Metadata struct
-   *  @return A Metadata struct if the read succeeded, else None
-   */
-  def toMetadataMessage(json: String): Option[MetadataMessage] = 
-    allCatch.opt(read[MetadataMessage](json))
 }
