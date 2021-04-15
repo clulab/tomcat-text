@@ -25,9 +25,7 @@ object RunDialogAgent extends App {
     "                 {file inputfile outputfile [-m taxonomy_matches]}",
     "",
     " -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
-    " inputfile : types are .vtt      - WebVTT format",
-    "                       .metadata - same json as on Message Bus",
-    "                       .json     - same as on Message Bus",
+    "inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)",
     ""
   )
   
