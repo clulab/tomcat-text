@@ -22,10 +22,12 @@ object RunDialogAgent extends App {
     "",
     "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
     "                 {stdin [-m taxonomy_matches]}",
-    "                 {web_vtt inputfile outputfile [-m taxonomy_matches]}",
-    "                 {metadata inputfile outputfile [-m taxonomy_matches]}",
+    "                 {file inputfile outputfile [-m taxonomy_matches]}",
     "",
     " -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
+    " inputfile : types are .vtt      - WebVTT format",
+    "                       .metadata - same json as on Message Bus",
+    "                       .json     - same as on Message Bus",
     ""
   )
   
@@ -57,37 +59,46 @@ object RunDialogAgent extends App {
     case _ => None
   }
 
-  /**
+  /** Run the Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
    * @returns A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {
-      // Run on the Message Bus
       case ("mqtt"::host::port::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentMqtt(host, port, m))
       }
-      // Run using web_vtt file input
-      case ("web_vtt"::infile::outfile::l) => {
+      case ("file"::infile::outfile::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentWebVtt(infile, outfile, m))
+        runFile(infile, outfile, m)
       }
-      // Run using metadata file input
-      case ("metadata"::infile::outfile::l) => {
-        val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentMetadata(infile, outfile, m))
-      }
-      // Run interactively from the command line
       case ("stdin"::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentStdin(m))
       }
-      // Show the help page
       case _ => {
         hints.map(println)
         None
       }
     }
   }
+
+  /**  Run the Dialog Agent from file input
+   * @param infile  Either WebVTT or Message Bus Json format
+   * @param outfile Write analysis here
+   * @param m Maximum number of taxonomy matches
+   * @returns A DialogAgent running in the mode with the args
+   */
+  def runFile(infile: String, outfile: String, m: Int): Option[DialogAgent] = 
+    infile.substring(infile.lastIndexOf(".")) match {
+      case ".vtt" =>  
+        Some(new DialogAgentWebVtt(infile, outfile, m))
+      case ".json" | ".metadata" => 
+        Some(new DialogAgentMetadata(infile, outfile, m))
+      case _ => {
+        hints.map(println)
+        None
+      }
+    }
 }
