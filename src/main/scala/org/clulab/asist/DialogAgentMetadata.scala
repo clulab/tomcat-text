@@ -26,7 +26,9 @@ class DialogAgentMetadata(
 ) extends DialogAgentJson 
     with AgentFile {
 
-  val source_type = "metadata_file"
+  // metadata is Message Bus data
+  val source_type = "message_bus"
+
   processFiles(inputFilename, outputFilename)
 
   /** Wrangle one metadata file 
