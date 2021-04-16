@@ -69,7 +69,7 @@ object RunDialogAgent extends App {
       }
       case ("file"::infile::outfile::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
-        runFile(infile, outfile, m)
+        Some(new DialogAgentFile(infile, outfile, m))
       }
       case ("stdin"::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
@@ -81,22 +81,4 @@ object RunDialogAgent extends App {
       }
     }
   }
-
-  /**  Run the Dialog Agent from file input
-   * @param infile  Either WebVTT or Message Bus Json format
-   * @param outfile Write analysis here
-   * @param m Maximum number of taxonomy matches
-   * @returns A DialogAgent running in the mode with the args
-   */
-  def runFile(infile: String, outfile: String, m: Int): Option[DialogAgent] = 
-    infile.substring(infile.lastIndexOf(".")) match {
-      case ".vtt" =>  
-        Some(new DialogAgentWebVtt(infile, outfile, m))
-      case ".json" | ".metadata" => 
-        Some(new DialogAgentMetadata(infile, outfile, m))
-      case _ => {
-        hints.map(println)
-        None
-      }
-    }
 }
