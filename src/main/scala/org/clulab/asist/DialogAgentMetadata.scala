@@ -19,35 +19,53 @@ package org.clulab.asist
 import scala.io.Source
 import java.io.PrintWriter
 
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
+import scala.util.control.Exception._
+import org.slf4j.LoggerFactory
+
+
 class DialogAgentMetadata(
     val inputFilename: String = "",
     val outputFilename: String = "", 
     override val nMatches: Int = 0
-) extends DialogAgentJson 
+) extends DialogAgent
     with AgentFile {
 
-  // metadata is Message Bus data
   val source_type = "message_bus"
+    private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-  processFiles(inputFilename, outputFilename)
 
   /** Wrangle one metadata file 
    * @param filename a single input file
    * @param output Printwriter to the output file
    * @return true if the operation succeeded
    */
-  override def processFile(filename: String, output: PrintWriter): Unit = {
+  def processFile(filename: String, output: PrintWriter): Unit = {
     val bufferedSource = Source.fromFile(filename)
-    for (line <- bufferedSource.getLines) {
-      toMetadataMessage(line).map(md =>
-        participantId(md).map(id =>
-          output.write(
-            toOutputJson(
-              source_type,
-              filename, 
-              md.msg,
-              id,
-              md.data.text
+    val lines = bufferedSource.getLines
+    while(lines.hasNext) {
+      val line = lines.next
+      allCatch.opt(read[MetadataLookahead](line)).map(lookahead => 
+        if(inputTopics.contains(lookahead.topic)) 
+          allCatch.opt(read[MetadataMessage](line)).map(metadata =>
+            (lookahead.topic match {
+            case `topicChat` => Some(metadata.data.sender)
+            case `topicUazAsr` => Some(metadata.data.participant_id)
+            case `topicAptimaAsr` => Some(metadata.data.playername)
+            case _ => None
+          }).map(participant_id =>
+            output.write( // to file
+              write( // to json
+                toDialogAgentMessage( // to struct
+                  source_type,
+                  filename,
+                  metadata.msg,
+                  participant_id,
+                  metadata.data.text
+                )
+              )
             )
           )
         )
@@ -55,4 +73,6 @@ class DialogAgentMetadata(
     }
     bufferedSource.close
   } 
+
+  processFiles(inputFilename, outputFilename)
 }

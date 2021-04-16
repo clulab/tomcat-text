@@ -15,14 +15,22 @@
  */
 package org.clulab.asist
 
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
+import scala.util.control.Exception._
+import org.slf4j.LoggerFactory
+
+
+
 class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",
     override val nMatches: Int = 0
-) extends DialogAgentJson { 
+) extends DialogAgent { 
 
-  val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr)
-  val outputTopic = "agent/dialog"
+  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+
   val source_type = "message_bus"
 
   val bus = new AgentMqtt(
@@ -33,30 +41,32 @@ class DialogAgentMqtt(
     this
   )
 
-  /** Process one line of input at a time
-   *  @param topic:  The message bus topic where the message was published
-   *  @param json:  A json representation of a message struct
-   *  @return A json representation of the Dialog Agent output
-   */
-  def processLine(topic: String, line: String): Unit = 
-    toMetadataMessage(line).map(md =>
-      participantId(topic, md).map(id =>  
-        bus.publish(
-          toOutputJson(
-            source_type,
-            topic,
-            md.msg,
-            id,
-            md.data.text
-          )
-        )
-      )
-    )
-
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A json text string
    */
-  def messageArrived(topic: String, text: String): Unit = 
-    text.split("\n").map(line => processLine(topic, line))
+  def messageArrived(
+    topic: String,
+    text: String
+  ): Unit = text.split("\n").map(line => 
+      allCatch.opt(read[MetadataMessage](line)).map(metadata => {
+        logger.info("messageArrived")
+        bus.publish(  // to Message Bus
+          write( // to json
+            toDialogAgentMessage( // to struct
+              source_type,
+              topic,
+              metadata.msg,
+              topic match {
+                case `topicChat` => metadata.data.sender
+                case `topicUazAsr` => metadata.data.participant_id
+                case `topicAptimaAsr` => metadata.data.playername
+              },
+              metadata.data.text
+            )
+          )
+        )
+      }
+      )
+    )
 }

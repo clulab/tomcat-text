@@ -13,6 +13,8 @@ package org.clulab.asist
 
 import java.time.Clock
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
+import org.json4s._
+import org.json4s.jackson.Serialization
 import org.slf4j.LoggerFactory
 import scala.collection.immutable
 import scala.io.Source
@@ -27,6 +29,16 @@ class DialogAgent (val nMatches: Int = 0) {
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
   val dialogAgentVersion = "1.0"
+
+  val topicChat: String = "minecraft/chat"
+  val topicUazAsr: String = "agent/asr/final"
+  val topicAptimaAsr: String = "status/asistdataingester/userspeech"
+
+  val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr)
+  val outputTopic = "agent/dialog"
+
+  // Used so Json serializers can recognize case classes
+  implicit val formats = Serialization.formats(NoTypeHints)
 
   // Load the taxonomy map from resource file
   val taxonomy_map = JsonParser(
@@ -48,7 +60,6 @@ class DialogAgent (val nMatches: Int = 0) {
       seq.take(nMatches)
     }
   
-
   /** Create a DialogAgent extraction from Extractor data */
   def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
     val originalArgs = mention.arguments.toArray

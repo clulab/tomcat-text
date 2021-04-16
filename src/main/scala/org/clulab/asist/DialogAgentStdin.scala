@@ -11,10 +11,15 @@
 package org.clulab.asist
 
 import java.util.Scanner
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
+import scala.util.control.Exception._
+
 
 class DialogAgentStdin (
     override val nMatches: Int = 0
-) extends DialogAgentJson { 
+) extends DialogAgent { 
 
   println("\nDialog Agent stdin extractor running.")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")
@@ -25,7 +30,7 @@ class DialogAgentStdin (
 
   while (input.hasNextLine){
     val (extractions, extracted_doc) = extractor.runExtraction(input.nextLine)
-    extractions.map(extraction).map(f => println(toJson(f)))
+    extractions.map(extraction).map(f => println(write(f)))
     print("\n> ")
   }
 }

@@ -17,12 +17,17 @@ import com.crowdscriber.caption.vttdissector.VttDissector
 import java.io.{FileInputStream, File, PrintWriter}
 import org.slf4j.LoggerFactory
 import scala.util.{Failure, Success}
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
+import scala.util.control.Exception._
+
 
 class DialogAgentWebVtt(
     val inputFilename: String = "",
     val outputFilename: String = "", 
     override val nMatches: Int = 0
-) extends DialogAgentJson 
+) extends DialogAgent
     with AgentFile {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
@@ -53,8 +58,8 @@ class DialogAgentWebVtt(
       output: PrintWriter): Unit = VttDissector(stream) match {
     case Success(blocks) =>
       blocks.map(block => 
-        toOutputJson(block.lines.toList, filename).map(a =>
-          output.write("%s\n".format(a))
+        toOutputJson(block.lines.toList, filename).map(json =>
+          output.write("%s\n".format(json))
         )
       )
     case Failure(f) => {
@@ -77,10 +82,10 @@ class DialogAgentWebVtt(
       val msg = new CommonMsg
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        Some(toOutputJson(source_type, filename, msg, null, text))
+        Some(write(toDialogAgentMessage(source_type, filename, msg, null, text)))
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        Some(toOutputJson(source_type, filename, msg, foo(0), text))
+        Some(write(toDialogAgentMessage(source_type, filename, msg, foo(0), text)))
       }
     }
     case _ => None
