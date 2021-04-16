@@ -28,12 +28,6 @@ class DialogAgentFile(
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-  def getFiles(filename: String): List[String] = {
-    val f = new File(filename)
-    if(f.isDirectory) f.listFiles.toList.map(_.getPath)
-    else List(f.getPath)
-  }
-
 
   /** Manage one file
    * @param filename a single input file
@@ -41,180 +35,51 @@ class DialogAgentFile(
    */
   def processFile(filename: String, output: PrintWriter): Unit = 
     filename.substring(filename.lastIndexOf(".")) match {
-      case ".vtt" => processWebVttFile(filename, output)
-      case ".metadata" => processMetadataFile(filename, output)
-      case _ => logger.error("Can't process unknown file type %s".format(filename))
-    }
-
-
-  /** Manage one web_vtt file
-   * @param filename a single input file
-   * @param output Printwriter to the output file
-   */
-  def processWebVttFile(filename: String, output: PrintWriter): Unit = {
-    val stream = new FileInputStream(new File(filename))
-    VttDissector(stream) match {
-      case Success(blocks) =>
-        blocks.map(block =>
-          processWebVttElement(block.lines.toList, filename).map(json =>
-            output.write("%s\n".format(json))
-          )
-        )
-      case Failure(f) => {
-        logger.error("VttDissector could not parse input")
-        logger.error(f.toString)
+      case ".vtt" => {
+        logger.info("processing WebVTT file '%s' ...".format(filename))
+        AgentFileWebVtt(filename, this, output)
+        logger.info("finished processing %s".format(filename))
+      }
+      case ".metadata" =>  {
+        logger.info("processing Metadata file: '%s' ...".format(filename))
+        AgentFileMetadata(filename, this, output)
+        logger.info("finished processing '%s'".format(filename))
+      }
+      case _ => {
+        logger.error("Can't process file '%s'".format(filename))
+        RunDialogAgent.usageText.map(line => (logger.error(line)))
       }
     }
-    stream.close
-  }
 
 
-   /** process one web_vtt block
-   * @param lines The line sequence from a single SubtitleBlock instance
-   * @param filename The name of the input file where the block was read
-   * @return A DialogAgentMessage based on the inputs
-   */
-  def processWebVttElement(
-      lines: List[String],
-      filename: String): Option[String] = {
-    val source_type = "web_vtt_file"
-      lines match {
-      case head::tail => {
-        // if a colon exists in the first line, text to left is participant id
-        val foo = head.split(':')
-        val msg = new CommonMsg
-        if(foo.length == 1) {
-          val text = lines.mkString(" ")
-          Some(
-            write(
-              toDialogAgentMessage(
-                source_type, 
-                filename,
-                msg,
-                null,
-                text
-              )
-            )
-          )
-        } else {
-          val text = (foo(1)::tail).mkString(" ")
-          Some(
-            write(
-              toDialogAgentMessage(
-                source_type,
-                filename,
-                msg,
-                foo(0),
-                text
-              )
-            )
-          )
-        }
-      }
-      case _ => None
-    }
-  }
-
-
-  /** Wrangle one metadata file
-   * @param filename a single input file
-   * @param output Printwriter to the output file
-   * @return true if the operation succeeded
-   */
-  def processMetadataFile(filename: String, output: PrintWriter): Unit = {
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines
-    while(lines.hasNext) {
-      val line = lines.next
-      allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
-        if(inputTopics.contains(lookahead.topic)) {
-          allCatch.opt(read[MetadataMessage](line)).map(metadata =>
-            processMedataElement(filename, lookahead.topic, metadata, output)
-          )
-        }
-      )
-    }
-    bufferedSource.close
-  }
-
-
-  def processMedataElement(
-    filename: String,
-    topic: String,
-    metadata: MetadataMessage,
-    output: PrintWriter
-  ): Unit = {
-    val source_type = "message_bus"
-    (topic match {
-      case `topicChat` => Some(metadata.data.sender)
-      case `topicUazAsr` => Some(metadata.data.participant_id)
-      case `topicAptimaAsr` => Some(metadata.data.playername)
-      case _ => None
-    }).map(participant_id =>
-        output.write( // to file
-          write( // to json
-            toDialogAgentMessage( // to struct
-              source_type,
-              filename,
-              metadata.msg,
-              participant_id,
-              metadata.data.text
-            )
-          )
-        )
-      )
-  }
-
-
-  def foobar(filename: String, output: PrintWriter): Unit = {
-    val source_type = "message_bus"
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines
-    while(lines.hasNext) {
-      val line = lines.next
-      allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
-        if(inputTopics.contains(lookahead.topic))
-          allCatch.opt(read[MetadataMessage](line)).map(metadata =>
-            (lookahead.topic match {
-            case `topicChat` => Some(metadata.data.sender)
-            case `topicUazAsr` => Some(metadata.data.participant_id)
-            case `topicAptimaAsr` => Some(metadata.data.playername)
-            case _ => None
-          }).map(participant_id =>
-            output.write( // to file
-              write( // to json
-                toDialogAgentMessage( // to struct
-                  source_type,
-                  filename,
-                  metadata.msg,
-                  participant_id,
-                  metadata.data.text
-                )
-              )
-            )
-          )
-        )
-      )
-    }
-    bufferedSource.close
-  }
-  
-
-  logger.info("Using input file '%s'".format(inputFilename))
-  logger.info("Using output file '%s'".format(outputFilename))
-  try {
-    val output = new PrintWriter(new File(outputFilename))
-    getFiles(inputFilename).sorted.map(filename => {
-      logger.info("processing %s".format(filename))
-      processFile(filename, output)
-      logger.info("finished processing %s".format(filename))
-    })
-    output.close
-    logger.info("All operations completed successfully.")
-  } catch {
-    case t: Throwable => {
-      logger.error("Problem writing to %s".format(outputFilename))
+  def processFiles(filenames: List[String]): Unit = {
+    logger.info("Using output file '%s'".format(outputFilename))
+    try {
+      val output = new PrintWriter(new File(outputFilename))
+      filenames.map(processFile(_, output))
+      output.close
+      logger.info("All operations completed successfully.")
+    } catch {
+      case t: Throwable => {
+        logger.error("Problem writing to '%s'".format(outputFilename))
       logger.error(t.toString)
+      }
     }
+  }
+
+  val input = new File(inputFilename)
+
+  if(input.exists) {
+    if(input.isDirectory) {
+      logger.info("Using input directory '%s'".format(inputFilename))
+      processFiles(input.listFiles.toList.map(_.getPath).sorted)
+    }
+    else {
+      logger.info("Using input file '%s'".format(inputFilename))
+      processFiles(List(input.getPath))
+    }
+  } 
+  else {
+    logger.error("File not found '%s'".format(inputFilename))
   }
 }

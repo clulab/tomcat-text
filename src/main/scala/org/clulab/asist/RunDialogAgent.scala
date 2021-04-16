@@ -16,7 +16,7 @@ package org.clulab.asist
 object RunDialogAgent extends App {
   
   // splash page if args are not understood
-  val hints = List(
+  val usageText = List(
     "",
     "usage:",
     "",
@@ -28,6 +28,7 @@ object RunDialogAgent extends App {
     "inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)",
     ""
   )
+
   
   // a dialog agent kept in global scope
   val agent = run(args.toList)
@@ -71,20 +72,12 @@ object RunDialogAgent extends App {
         val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentFile(infile, outfile, m))
       }
-      case ("webvtt"::infile::outfile::l) => { // debugging
-        val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentWebVtt(infile, outfile, m))
-      }
-      case ("metadata"::infile::outfile::l) => { // debugging
-        val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentMetadata(infile, outfile, m))
-      }
       case ("stdin"::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentStdin(m))
       }
       case _ => {
-        hints.map(println)
+        usageText.map(println)
         None
       }
     }
