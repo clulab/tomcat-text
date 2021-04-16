@@ -11,7 +11,7 @@
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
- * @param nMatches An optional maximum number of taxonomy_matches to return
+ * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
 package org.clulab.asist
 
@@ -19,18 +19,16 @@ import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
-import org.slf4j.LoggerFactory
 
 class DialogAgentMqtt(
-    val host: String = "",
-    val port: String = "",
-    override val nMatches: Int = 0
+  val host: String = "",
+  val port: String = "",
+  override val nMatches: Int = 0
 ) extends DialogAgent { 
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
   val source_type = "message_bus"
 
+  // this handles the message bus operations.  
   val bus = new AgentMqtt(
     host, 
     port, 
@@ -41,30 +39,28 @@ class DialogAgentMqtt(
 
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
-   *  @param json:  A json text string
+   *  @param json:  A metadata text string
    */
   def messageArrived(
     topic: String,
-    text: String
-  ): Unit = text.split("\n").map(line => 
-      allCatch.opt(read[MetadataMessage](line)).map(metadata => {
-        logger.info("messageArrived")
-        bus.publish(  // to Message Bus
-          write( // to json
-            toDialogAgentMessage( // to struct
-              source_type,
-              topic,
-              metadata.msg,
-              topic match {
-                case `topicChat` => metadata.data.sender
-                case `topicUazAsr` => metadata.data.participant_id
-                case `topicAptimaAsr` => metadata.data.playername
-              },
-              metadata.data.text
-            )
+    json: String
+  ): Unit = json.split("\n").map(line => 
+    allCatch.opt(read[Metadata](line)).map(metadata => 
+      bus.publish(  // to Message Bus
+        write( // to json
+          toDialogAgentMessage( // to struct
+            source_type,
+            topic,
+            metadata.msg,
+            topic match {
+              case `topicChat` => metadata.data.sender
+              case `topicUazAsr` => metadata.data.participant_id
+              case `topicAptimaAsr` => metadata.data.playername
+            },
+            metadata.data.text
           )
         )
-      }
       )
     )
+  ) 
 }

@@ -29,7 +29,6 @@ object RunDialogAgent extends App {
     ""
   )
 
-  
   // a dialog agent kept in global scope
   val agent = run(args.toList)
 

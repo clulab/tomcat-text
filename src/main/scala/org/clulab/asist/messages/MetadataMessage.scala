@@ -3,38 +3,44 @@
  *
  *  Updated:  2021 April
  *
- *  This is a structure that has the "speaker" field present in:
+ *  This metadata structure will overlay the discrete structures produced by 
+ *  Chat, University of Arizona ASR, and Aptima ASR sources, eliminating the
+ *  need for discrete message types.
  *
- *    ChatMessageData
- *    AptimaAsrMessageData
- *    UazAsrMessageData
- *
- *  It can read any of them as input
  */
 package org.clulab.asist
 
-case class MetadataMessageData(
+case class MetadataData(
 
-  // from UazAsrMessageData
-  val sender: String = null, // "Aptiminer1"
+  // From Chat metadata
+  val sender: String = null, // "player_1"
 
-  // from UazAsrMessageData
-  val participant_id: String = null,  // "participant_1"
+  // From University of Arizona ASR metadata
+  val participant_id: String = null, // "player_1"
 
-  // from AptimaAsrMessageData
-  val playername: String = null, // "intermonk"
+  // From Aptima ASR metadata
+  val playername: String = null, // "player_1"
 
-  // from all
+  // From all metadata
   val text: String = null // "You want me to share my screen?"
 )
 
-// topic gets read first
+/* This is an abbreviation of the CommonMsg type with only the fields we use
+ */
+case class MetadataMsg (
+  val experiment_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"
+  val trial_id: String = null, //  "123e4567-e89b-12d3-a456-426655440000"
+  val replay_root_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"
+  val replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
+)
+
+// topic gets read first.  If it's one we recognize then we process Metadata
 case class MetadataLookahead(
   val topic: String = "",
 )
 
-case class MetadataMessage(
+case class Metadata(
   val header: CommonHeader,
-  val data: MetadataMessageData,
-  val msg: CommonMsg
+  val data: MetadataData,
+  val msg: MetadataMsg
 )

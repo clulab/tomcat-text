@@ -1,16 +1,16 @@
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Updated:  2021 April
+ * Updated:  2021 April
  *
- *  Message Bus agent for the Dialog Agent
- *  Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
+ * Message Bus agent for the Dialog Agent
+ * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
- *  @param host MQTT host to connect to.
- *  @param port MQTT network port to connect to.
- *  @param inputTopics MQTT topics from which messages to process are read.
- *  @param outputTopic MQTT topic for publishing processed messages
- *  @param owner A DialogAgentMQTT that will process input messages
+ * @param host MQTT host to connect to.
+ * @param port MQTT network port to connect to.
+ * @param inputTopics MQTT topics from which messages to process are read.
+ * @param outputTopic MQTT topic for publishing processed messages
+ * @param owner A DialogAgentMQTT that will process input messages
  */
 package org.clulab.asist
 
@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory
 
 /** Message Bus handler class */
 class AgentMqtt(
-    val host: String = "",
-    val port: String = "",
-    val inputTopics: List[String] = List.empty,
-    val outputTopic: String = "",
-    val owner: DialogAgentMqtt
+  val host: String = "",
+  val port: String = "",
+  val inputTopics: List[String] = List.empty,
+  val outputTopic: String = "",
+  val owner: DialogAgentMqtt
 ) extends MqttCallback {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
@@ -81,7 +81,7 @@ class AgentMqtt(
 
   /** This method is called when a message arrives on the message bus
    * @param topic The message topic
-   * @param mm Contains text in Json format
+   * @param mm Contains metadata in Json format
    */
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
     owner.messageArrived(topic, mm.toString)
