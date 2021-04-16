@@ -71,6 +71,14 @@ object RunDialogAgent extends App {
         val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentFile(infile, outfile, m))
       }
+      case ("webvtt"::infile::outfile::l) => { // debugging
+        val m: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentWebVtt(infile, outfile, m))
+      }
+      case ("metadata"::infile::outfile::l) => { // debugging
+        val m: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentMetadata(infile, outfile, m))
+      }
       case ("stdin"::l) => {
         val m: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentStdin(m))

@@ -8,11 +8,23 @@
  */
 package org.clulab.asist
 
+import com.crowdscriber.caption.common.Vocabulary.SubtitleBlock
+import com.crowdscriber.caption.vttdissector.VttDissector
 import java.io.{FileInputStream, File, PrintWriter}
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
 import org.slf4j.LoggerFactory
+import scala.io.Source
+import scala.util.control.Exception._
+import scala.util.{Failure, Success}
 
-class DialogAgentFile
- extends DialogAgent {
+
+class DialogAgentFile(
+    val inputFilename: String = "",
+    val outputFilename: String = "",
+    override val nMatches: Int = 0
+  ) extends DialogAgent {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -50,10 +62,10 @@ class DialogAgentFile
    * @param output Printwriter to the output file
    */
   def processFile(filename: String, output: PrintWriter): Unit = 
-    filename.substring(infile.lastIndexOf(".")) match {
+    filename.substring(filename.lastIndexOf(".")) match {
       case ".vtt" => processWebVttFile(filename, output)
-      case ".metadata" => processMetadataFile(fileame, output)
-      case _ => Logger.error("Can't process unknown file type %s".format(filename))
+      case ".metadata" => processMetadataFile(filename, output)
+      case _ => logger.error("Can't process unknown file type %s".format(filename))
     }
 
 
@@ -78,6 +90,32 @@ class DialogAgentFile
     stream.close
   }
 
+
+   /** process one web_vtt block
+   * @param lines The line sequence from a single SubtitleBlock instance
+   * @param filename The name of the input file where the block was read
+   * @return A DialogAgentMessage based on the inputs
+   */
+  def toOutputJson(
+      lines: List[String],
+      filename: String): Option[String] = {
+    val source_type = "web_vtt_file"
+      lines match {
+      case head::tail => {
+        // if a colon exists in the first line, text to left is participant id
+        val foo = head.split(':')
+        val msg = new CommonMsg
+        if(foo.length == 1) {
+          val text = lines.mkString(" ")
+          Some(write(toDialogAgentMessage(source_type, filename, msg, null, text)))
+        } else {
+          val text = (foo(1)::tail).mkString(" ")
+          Some(write(toDialogAgentMessage(source_type, filename, msg, foo(0), text)))
+        }
+      }
+      case _ => None
+    }
+  }
 
 
   /** Wrangle one metadata file
@@ -117,5 +155,4 @@ class DialogAgentFile
     }
     bufferedSource.close
   }
-
 }
