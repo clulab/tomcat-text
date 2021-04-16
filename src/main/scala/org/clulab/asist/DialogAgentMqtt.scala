@@ -21,8 +21,6 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 import org.slf4j.LoggerFactory
 
-
-
 class DialogAgentMqtt(
     val host: String = "",
     val port: String = "",

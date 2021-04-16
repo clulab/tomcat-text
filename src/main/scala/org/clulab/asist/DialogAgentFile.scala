@@ -34,28 +34,6 @@ class DialogAgentFile(
     else List(f.getPath)
   }
 
-  def processFiles(
-    inputFilename: String, 
-    outputFilename: String
-  ): Unit = {
-    logger.info("Using input file '%s'".format(inputFilename))
-    logger.info("Using output file '%s'".format(outputFilename))
-    try {
-      val output = new PrintWriter(new File(outputFilename))
-      getFiles(inputFilename).sorted.map(filename => {
-        logger.info("processing %s".format(filename))
-        processFile(filename, output)
-        logger.info("finished processing %s".format(filename))
-      })
-      output.close
-      logger.info("All operations completed successfully.")
-    } catch {
-      case t: Throwable => {
-        logger.error("Problem writing to %s".format(outputFilename))
-        logger.error(t.toString)
-      }
-    }
-  }
 
   /** Manage one file
    * @param filename a single input file
@@ -78,7 +56,7 @@ class DialogAgentFile(
     VttDissector(stream) match {
       case Success(blocks) =>
         blocks.map(block =>
-          toOutputJson(block.lines.toList, filename).map(json =>
+          processWebVttElement(block.lines.toList, filename).map(json =>
             output.write("%s\n".format(json))
           )
         )
@@ -96,7 +74,7 @@ class DialogAgentFile(
    * @param filename The name of the input file where the block was read
    * @return A DialogAgentMessage based on the inputs
    */
-  def toOutputJson(
+  def processWebVttElement(
       lines: List[String],
       filename: String): Option[String] = {
     val source_type = "web_vtt_file"
@@ -107,10 +85,30 @@ class DialogAgentFile(
         val msg = new CommonMsg
         if(foo.length == 1) {
           val text = lines.mkString(" ")
-          Some(write(toDialogAgentMessage(source_type, filename, msg, null, text)))
+          Some(
+            write(
+              toDialogAgentMessage(
+                source_type, 
+                filename,
+                msg,
+                null,
+                text
+              )
+            )
+          )
         } else {
           val text = (foo(1)::tail).mkString(" ")
-          Some(write(toDialogAgentMessage(source_type, filename, msg, foo(0), text)))
+          Some(
+            write(
+              toDialogAgentMessage(
+                source_type,
+                filename,
+                msg,
+                foo(0),
+                text
+              )
+            )
+          )
         }
       }
       case _ => None
@@ -124,6 +122,51 @@ class DialogAgentFile(
    * @return true if the operation succeeded
    */
   def processMetadataFile(filename: String, output: PrintWriter): Unit = {
+    val bufferedSource = Source.fromFile(filename)
+    val lines = bufferedSource.getLines
+    while(lines.hasNext) {
+      val line = lines.next
+      allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
+        if(inputTopics.contains(lookahead.topic)) {
+          allCatch.opt(read[MetadataMessage](line)).map(metadata =>
+            processMedataElement(filename, lookahead.topic, metadata, output)
+          )
+        }
+      )
+    }
+    bufferedSource.close
+  }
+
+
+  def processMedataElement(
+    filename: String,
+    topic: String,
+    metadata: MetadataMessage,
+    output: PrintWriter
+  ): Unit = {
+    val source_type = "message_bus"
+    (topic match {
+      case `topicChat` => Some(metadata.data.sender)
+      case `topicUazAsr` => Some(metadata.data.participant_id)
+      case `topicAptimaAsr` => Some(metadata.data.playername)
+      case _ => None
+    }).map(participant_id =>
+        output.write( // to file
+          write( // to json
+            toDialogAgentMessage( // to struct
+              source_type,
+              filename,
+              metadata.msg,
+              participant_id,
+              metadata.data.text
+            )
+          )
+        )
+      )
+  }
+
+
+  def foobar(filename: String, output: PrintWriter): Unit = {
     val source_type = "message_bus"
     val bufferedSource = Source.fromFile(filename)
     val lines = bufferedSource.getLines
@@ -154,5 +197,24 @@ class DialogAgentFile(
       )
     }
     bufferedSource.close
+  }
+  
+
+  logger.info("Using input file '%s'".format(inputFilename))
+  logger.info("Using output file '%s'".format(outputFilename))
+  try {
+    val output = new PrintWriter(new File(outputFilename))
+    getFiles(inputFilename).sorted.map(filename => {
+      logger.info("processing %s".format(filename))
+      processFile(filename, output)
+      logger.info("finished processing %s".format(filename))
+    })
+    output.close
+    logger.info("All operations completed successfully.")
+  } catch {
+    case t: Throwable => {
+      logger.error("Problem writing to %s".format(outputFilename))
+      logger.error(t.toString)
+    }
   }
 }
