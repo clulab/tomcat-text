@@ -28,9 +28,13 @@ case class MetadataMessageData(
   val text: String = null // "You want me to share my screen?"
 )
 
+// topic gets read first
+case class MetadataLookahead(
+  val topic: String = "",
+)
+
 case class MetadataMessage(
   val header: CommonHeader,
-  val topic: String = "",
   val data: MetadataMessageData,
   val msg: CommonMsg
 )
