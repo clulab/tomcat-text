@@ -1,7 +1,9 @@
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 February
+ *  updated:  2021 Hackathon
+ *
+ *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/hackathon2021/MessageSpecs/Common_Message/common_message.md
  *
  *  Components used by more than one message class.
  */
@@ -13,8 +15,7 @@ case class CommonHeader(
   val version: String = null // "1.0"
 )
 
-/** based on:
- *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/hackathon2021/MessageSpecs/Common_Message/common_message.md
+/* This is not the complete CommonMsg struct, it only contains the fields we use
  */
 case class CommonMsg (
   val experiment_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"

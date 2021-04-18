@@ -7,12 +7,14 @@
  *
  *  https://github.com/clulab/tomcat-text/blob/master/README.md
  *
- *  @param nMatches An optional maximum number of taxonomy_matches to return
+ *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 package org.clulab.asist
 
 import java.time.Clock
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
+import org.json4s._
+import org.json4s.jackson.Serialization
 import org.slf4j.LoggerFactory
 import scala.collection.immutable
 import scala.io.Source
@@ -28,6 +30,16 @@ class DialogAgent (val nMatches: Int = 0) {
   val dialogAgentSubType = "Event:dialogue_event"
   val dialogAgentVersion = "1.0"
 
+  // metadata topics
+  val topicChat: String = "minecraft/chat"
+  val topicUazAsr: String = "agent/asr/final"
+  val topicAptimaAsr: String = "status/asistdataingester/userspeech"
+  val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr)
+  val outputTopic = "agent/dialog"
+
+  // Used so Json serializers can recognize case classes
+  implicit val formats = Serialization.formats(NoTypeHints)
+
   // Load the taxonomy map from resource file
   val taxonomy_map = JsonParser(
     Source.fromResource("taxonomy_map.json").mkString
@@ -39,7 +51,9 @@ class DialogAgent (val nMatches: Int = 0) {
   extractor.runExtraction("green victim")
   logger.info("Extractor initialized.")
 
-  /** map the mention label to the taxonomy map */
+  /** map the mention label to the taxonomy map
+   * @param mentionLabel For taxonomy mapping
+   */
   def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = 
     if(nMatches == 0) Seq() 
     else {
@@ -48,8 +62,9 @@ class DialogAgent (val nMatches: Int = 0) {
       seq.take(nMatches)
     }
   
-
-  /** Create a DialogAgent extraction from Extractor data */
+  /** Create a DialogAgent extraction from Extractor data 
+   *  @param mention Contains text to analyze
+   */
   def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
     val originalArgs = mention.arguments.toArray
     val extractionArguments = for {
@@ -72,11 +87,17 @@ class DialogAgent (val nMatches: Int = 0) {
     )
   }
 
-  /** create a DialogAgentMessage from text */
+  /** create a DialogAgentMessage 
+   *  @param source_type Source of message data, either message_bus or a file
+   *  @param source_name Name of message bus topic or filename
+   *  @param msg Contains the relevant subset of CommonMsg fields in Metadata
+   *  @param participant_id The individual who has spoken
+   *  @param text Spoken text to be analyzed
+   */
   def toDialogAgentMessage(
     source_type: String,
     source_name: String,
-    msg: CommonMsg,
+    msg: MetadataMsg,
     participant_id: String,
     text: String
   ): DialogAgentMessage = {
