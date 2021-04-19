@@ -1,13 +1,16 @@
-The tomcat-text Dialog Agent
+tomcat-text
 ===========
 
-This repository contains natural language text processing code for the DARPA Artificial Social Intelligence for Successful Teams (ASIST) program. See the main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
+This repository contains natural language text processing code for the DARPA
+Artificial Social Intelligence for Successful Teams (ASIST) program. See the
+main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
 
-The main program in this repository is a 'dialog agent' program that can ingest text from a number of sources (files, MQTT message bus topics) and output extracted events of interest for a particular domain.
+The main program in this repository is a 'dialog agent' program that can ingest
+text from a number of sources (files, MQTT message bus topics) and output
+extracted events of interest for a particular domain.
 
-The Dialog Agent will analyze text and return output in DialogAgentMessage format.
-
-
+The Dialog Agent will analyze text that reads either from the message bus or
+from files.  The results are output in DialogAgentMessage format.
 
 The dialog agent can be run with file input.  Specify either a single file or a directory of them.   In the case of a directory, the agent will process all of the files in the first level of the directory.   Output is a single file of concatenated DialogAgentMessage Json structures.
 
@@ -26,9 +29,16 @@ inputfile : supported file extensions are .vtt and .metadata (also handles direc
 File mode
 ---------
 
-To process files:
+To process files in WebVtt (.vtt) format:
 
     sbt "runMain org.clulab.asist.RunDialogAgent web_vtt inputfile outputfile"
+
+
+
+To process metadata files:
+
+    sbt "runMain org.clulab.asist.RunDialogAgent metadata inputfile outputfile"
+
 
 In both cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches, where n can range from 0 to 5, and defaults to 0.
 
