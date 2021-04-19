@@ -14,6 +14,17 @@ from files.  The results are output in DialogAgentMessage format.
 
 The dialog agent can be run with file input.  Specify either a single file or a directory of them.   In the case of a directory, the agent will process all of the files in the first level of the directory.   Output is a single file of concatenated DialogAgentMessage Json structures.
 
+Usage:
+
+```
+  RunDialogAgent {mqtt host port [-m taxonomy_matches]}
+                 {stdin [-m taxonomy_matches]}
+                 {file inputfile outputfile [-m taxonomy_matches]}
+
+       -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.
+inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)
+
+```
 
 File mode
 ---------
