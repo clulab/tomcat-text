@@ -35,25 +35,17 @@ object AgentFileMetadata {
       allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
         if(agent.inputTopics.contains(lookahead.topic))
           allCatch.opt(read[Metadata](line)).map(metadata =>
-            (lookahead.topic match {
-            case agent.topicChat => Some(metadata.data.sender)
-            case agent.topicUazAsr => Some(metadata.data.participant_id)
-            case agent.topicAptimaAsr => Some(metadata.data.playername)
-            case _ => None
-          }).map(participant_id =>
             output.write( // to file
               write( // to json
                 agent.toDialogAgentMessage( // to struct
                   source_type,
                   filename,
-                  metadata.msg,
-                  participant_id,
-                  metadata.data.text
+                  lookahead.topic,
+                  metadata
                 )
               )
             )
           )
-        )
       )
     }
     bufferedSource.close

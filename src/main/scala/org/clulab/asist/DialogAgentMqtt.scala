@@ -29,7 +29,7 @@ class DialogAgentMqtt(
   val source_type = "message_bus"
 
   // this handles the message bus operations.  
-  val bus = new AgentMqtt(
+  val busDriver = new AgentMqtt(
     host, 
     port, 
     inputTopics,
@@ -46,18 +46,13 @@ class DialogAgentMqtt(
     json: String
   ): Unit = json.split("\n").map(line => 
     allCatch.opt(read[Metadata](line)).map(metadata => 
-      bus.publish(  // to Message Bus
+      busDriver.publish(  // to Message Bus
         write( // to json
           toDialogAgentMessage( // to struct
             source_type,
             topic,
-            metadata.msg,
-            topic match {
-              case `topicChat` => metadata.data.sender
-              case `topicUazAsr` => metadata.data.participant_id
-              case `topicAptimaAsr` => metadata.data.playername
-            },
-            metadata.data.text
+            topic,
+            metadata
           )
         )
       )
