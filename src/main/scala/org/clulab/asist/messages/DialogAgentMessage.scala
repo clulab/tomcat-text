@@ -14,6 +14,7 @@ package org.clulab.asist
 /** Part of the DialogAgentMessage class */
 case class DialogAgentMessageData(
   val participant_id: String = null,
+  val asr_msg_id: String = null,
   val text: String = null,
   val source: DialogAgentMessageDataSource,
   val extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty

@@ -87,17 +87,64 @@ class DialogAgent (val nMatches: Int = 0) {
     )
   }
 
-  /** create a DialogAgentMessage 
+  /** create a DialogAgentMessage with metadata
    *  @param source_type Source of message data, either message_bus or a file
    *  @param source_name Name of message bus topic or filename
-   *  @param msg Contains the relevant subset of CommonMsg fields in Metadata
+   *  @param topic Originating process for message
+   *  @param metadata The individual who has spoken
+   */
+  def toDialogAgentMessage(
+    source_type: String,
+    source_name: String,
+    topic: String,
+    metadata: Metadata
+  ): DialogAgentMessage = {
+    val (extractions, extracted_doc) = 
+      extractor.runExtraction(Option(metadata.data.text).getOrElse(""))
+    val timestamp = Clock.systemUTC.instant.toString
+    DialogAgentMessage(
+      CommonHeader(
+        timestamp = timestamp,
+        message_type = dialogAgentMessageType,
+        version = dialogAgentVersion
+      ),
+      CommonMsg(
+        experiment_id = metadata.msg.experiment_id,
+        trial_id = metadata.msg.trial_id,
+        timestamp = timestamp,
+        source = dialogAgentSource,
+        sub_type = dialogAgentSubType,
+        version = dialogAgentVersion,
+        replay_root_id = metadata.msg.replay_root_id,
+        replay_id = metadata.msg.replay_id
+      ),
+      DialogAgentMessageData(
+        participant_id = topic match {
+          case `topicChat` => (metadata.data.sender)
+          case `topicUazAsr` => (metadata.data.participant_id)
+          case `topicAptimaAsr` => (metadata.data.playername)
+          case _ => null 
+        },
+        asr_msg_id = metadata.data.uuid,
+        text = metadata.data.text,
+        DialogAgentMessageDataSource(
+          source_type = source_type,
+          source_name = source_name
+        ),
+        extractions.map(extraction)
+      )
+    )
+  }
+
+  /** create a DialogAgentMessage without metadata
+   *  @param source_type Source of message data, either message_bus or a file
+   *  @param source_name Name of message bus topic or filename
    *  @param participant_id The individual who has spoken
    *  @param text Spoken text to be analyzed
    */
   def toDialogAgentMessage(
     source_type: String,
     source_name: String,
-    msg: MetadataMsg,
     participant_id: String,
     text: String
   ): DialogAgentMessage = {
@@ -111,17 +158,18 @@ class DialogAgent (val nMatches: Int = 0) {
         version = dialogAgentVersion
       ),
       CommonMsg(
-        experiment_id = msg.experiment_id,
-        trial_id = msg.trial_id,
+        experiment_id = null,
+        trial_id = null,
         timestamp = timestamp,
         source = dialogAgentSource,
         sub_type = dialogAgentSubType,
         version = dialogAgentVersion,
-        replay_root_id = msg.replay_root_id,
-        replay_id = msg.replay_id
+        replay_root_id = null,
+        replay_id = null
       ),
       DialogAgentMessageData(
         participant_id = participant_id,
+        asr_msg_id = null,
         text = text,
         DialogAgentMessageDataSource(
           source_type = source_type,

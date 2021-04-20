@@ -25,7 +25,6 @@ object AgentFileWebVtt {
   // Used so Json serializers can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
 
-  val msg = new MetadataMsg
   val source_type = "web_vtt_file"
 
   /** Manage one file
@@ -66,10 +65,10 @@ object AgentFileWebVtt {
       val foo = head.split(':')
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        Some(agent.toDialogAgentMessage(source_type, filename, msg, null, text))
+        Some(agent.toDialogAgentMessage(source_type, filename, null, text))
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        Some(agent.toDialogAgentMessage(source_type, filename, msg, foo(0), text))
+        Some(agent.toDialogAgentMessage(source_type, filename, foo(0), text))
       }
     }
     case _ => None

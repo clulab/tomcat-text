@@ -17,6 +17,7 @@ case class MetadataData(
 
   // From University of Arizona ASR metadata
   val participant_id: String = null, // "player_1"
+  val uuid: String = null,
 
   // From Aptima ASR metadata
   val playername: String = null, // "player_1"
@@ -36,7 +37,7 @@ case class MetadataMsg (
 
 // topic gets read first.  If it's one we recognize then we process Metadata
 case class MetadataLookahead(
-  val topic: String = "",
+  val topic: String = ""
 )
 
 case class Metadata(
