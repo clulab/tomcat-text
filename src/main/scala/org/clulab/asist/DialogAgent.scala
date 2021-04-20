@@ -87,11 +87,12 @@ class DialogAgent (val nMatches: Int = 0) {
     )
   }
 
+
   /** create a DialogAgentMessage with metadata
    *  @param source_type Source of message data, either message_bus or a file
    *  @param source_name Name of message bus topic or filename
    *  @param topic Originating process for message
-   *  @param metadata The individual who has spoken
+   *  @param metadata Experiment data 
    */
   def toDialogAgentMessage(
     source_type: String,
