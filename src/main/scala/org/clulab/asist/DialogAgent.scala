@@ -126,7 +126,7 @@ class DialogAgent (val nMatches: Int = 0) {
           case `topicAptimaAsr` => (metadata.data.playername)
           case _ => null 
         },
-        asr_msg_id = metadata.data.uuid,
+        asr_msg_id = metadata.data.id,
         text = metadata.data.text,
         DialogAgentMessageDataSource(
           source_type = source_type,

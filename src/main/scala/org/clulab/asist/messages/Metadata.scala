@@ -17,7 +17,7 @@ case class MetadataData(
 
   // From University of Arizona ASR metadata
   val participant_id: String = null, // "player_1"
-  val uuid: String = null,
+  val id: String = null,
 
   // From Aptima ASR metadata
   val playername: String = null, // "player_1"
