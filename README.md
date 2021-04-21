@@ -1,52 +1,10 @@
-tomcat-text
-===========
+# tomcat-text
 
-This repository contains natural language text processing code for the DARPA
-Artificial Social Intelligence for Successful Teams (ASIST) program. See the
-main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
-
-The main program in this repository is a 'dialog agent' program that can ingest
-text from a number of sources (files, MQTT message bus topics) and output
-extracted events of interest for a particular domain.
-
-The Dialog Agent will analyze text that reads either from the message bus or
-from files.  The results are output in DialogAgentMessage format.
-
-The dialog agent can be run with file input.  Specify either a single file or a directory of them.   In the case of a directory, the agent will process all of the files in the first level of the directory.   Output is a single file of concatenated DialogAgentMessage Json structures.
-
-Usage:
-
-```
-  RunDialogAgent {mqtt host port [-m taxonomy_matches]}
-                 {stdin [-m taxonomy_matches]}
-                 {file inputfile outputfile [-m taxonomy_matches]}
-
-       -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.
-inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)
-
-```
-
-File mode
----------
-
-To process files in WebVtt (.vtt) format:
-
-    sbt "runMain org.clulab.asist.RunDialogAgent web_vtt inputfile outputfile"
+This repository contains natural language text processing code for the DARPA Artificial Social Intelligence for Successful Teams (ASIST) program. See the main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
 
 
+# Web App
 
-To process metadata files:
-
-    sbt "runMain org.clulab.asist.RunDialogAgent metadata inputfile outputfile"
-
-
-In both cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches, where n can range from 0 to 5, and defaults to 0.
-
-    sbt "runMain org.clulab.asist.RunDialogAgent ... inputfile outputfile -m 3"
-
-
-Web App
----------
 The repo includes a webapp you can use to debug ODIN rules. When you input a piece of text, it will run the text through the system and visually display any mentions extracted by the system. The app will reload if it detects any changes to the rule files, so you can easily jump back and forth between writing rules and testing them. It also includes a syntax parse and specifies which rule generated each mention. 
 
 To open the webapp run the following command from the top level directory:
@@ -56,28 +14,98 @@ sbt webapp/run
 Then navigate to the specified port using your web browser.
 
 
-MQTT mode
----------
 
-The dialog agent can also be run in 'mqtt' mode to process streaming data from
-an MQTT message bus. The following invocation launches the agent in mqtt mode,
-specifying the host and port that the MQTT message broker is running on.
+# Dialog Agent
 
-    sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
+The repo also includes a Dialog Agent application that will ingest text and output extracted events of interest for a particular domain.
 
-To connect to a broker on localhost at the MQTT default port (1883), the agent
-can be started as follows:
+Sources of Dialog Agent input text are files, the MQTT message bus, and interactively from a terminal.
 
+In all cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches, where n can range from 0 to 5, and defaults to 0.
+
+
+
+## Stdin mode
+
+```
+  sbt "runMain org.clulab.asist.RunDialogAgent stdin"
+```
+
+In this mode, the Dialog Agent will prompt the user for text, and return the extractions directly.  
+
+
+An example of the agent running in stdin mode, with the number of taxonomy matches at the default setting of zero
+
+```
+
+Dialog Agent stdin extractor running.
+Enter plaintext for extraction, [CTRL-D] to exit.
+
+> I see a green victim!
+{"label":"Self","span":"I","arguments":{},"start_offset":0,"end_offset":1,"taxonomy_matches":[]}
+{"label":"Victim","span":"victim","arguments":{},"start_offset":14,"end_offset":20,"taxonomy_matches":[]}
+
+> There is rubble here.
+{"label":"Rubble","span":"rubble","arguments":{},"start_offset":9,"end_offset":15,"taxonomy_matches":[]}
+{"label":"Deictic","span":"here","arguments":{},"start_offset":16,"end_offset":20,"taxonomy_matches":[]}
+
+>
+
+```
+
+
+To exit the program, press [CTRL+D].  It will take several seconds for sbt to gracefully shut down the agent.
+
+
+
+## File mode
+
+To run the Dialog Agent with files, the user specifies the input and output filenames, and optionally the number of taxonomy matches to return.  
+
+```
+  sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
+```
+
+  Supported input file types are WebVtt(.vtt), and TomCAT metadata (.metadata).  A directory can be specified as input.  Directories are traversed one level deep, and only the .vtt and .metadata files are processed.  Input files are processed in alphabetical order.
+
+  The ouput from the file(s) written to a singe output file in the order of processing.  The output is in [chat_analysis_message][1] Json format.
+   
+
+### MQTT mode
+
+To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then the host and port that the MQTT message broker is running on.
+
+```
+  sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
+```
+
+To connect to a broker on localhost at the MQTT default port (1883), the agent can be started as follows:
+
+```
     sbt "runMain org.clulab.asist.RunDialogAgent mqtt localhost 1883"
+```
 
-When run on the message bus, the agent will analyze chat messages and ASR messages.
+Once connected to the Message Bus broker, the Dialog Agent subscribes to three Message Bus topics:
+
+
+  * "minecraft/chat"
+  * "agent/asr/final"
+  * "status/asistdataingester/userspeech"
+
+
+
+
+
+
+
+When run on the message bus, the agent will run the same way it does with .metadata file input, writing the analysis to the 'agent/dialog' topic.
+
 
 ### Chat messages
 
 Message bus topic: `observations/chat`
 
-This topic represents text chat messages that players send to each other in
-Minecraft.
+This topic represents text chat messages that players send to each other in Minecraft.
 
 Message received on this topic are expected to have the following json format:
 
