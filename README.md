@@ -81,14 +81,15 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
 
 ### Input
 
-Messages read by the Dialog Agent, either from files or the Message Bus, are expected to include a Json structure with name "msg", and a  CommonMsg structure with the variable name "msg", and the following fields:
+Messages read by the Dialog Agent, either from files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json
 
+```
 "msg"
   "experiment_id"
   "trial_id"
   "replay_root_id"
   "replay_id"
-  
+```  
 
 
 There are specific fields expected for the following topics:
@@ -104,6 +105,7 @@ The Dialog Agent currently processes three metadata topics, from either files or
 
 topic:  minecraft/chat
 
+```
 "msg"
   "experiment_id"
   "trial_id"
@@ -112,13 +114,14 @@ topic:  minecraft/chat
 "data"
   "sender"
   "text"
-  
+```  
 
 
 #### UAZ ASR
 
 topic: "agent/asr/final"
 
+```
 "msg"
   "experiment_id"
   "trial_id"
@@ -128,11 +131,13 @@ topic: "agent/asr/final"
   "participant_id"
   "id"
   "text"
+```
 
 #### Aptima ASR
 
 topic: "status/asistdataingester/userspeech"
 
+```
 "msg"
   "experiment_id"
   "trial_id"
@@ -141,7 +146,7 @@ topic: "status/asistdataingester/userspeech"
 "data"
   "playername"
   "text"
-
+```
 
 
 ### Output 
