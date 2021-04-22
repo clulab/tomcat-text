@@ -86,15 +86,9 @@ The Dialog Agent currently subscribes to three topics on the Message Bus:
   * "status/asistdataingester/userspeech"
 
 
-### Metadata
+### Input
 
 Messages read by the Dialog Agent, either from files or the Message Bus, are expected to consist of a CommonHeader structure, a CommonMsg structure, and a Data structure specific to the application generating the message.  Extra fields and structures in Metadata are ignored.   Missing expected data are replaced with null values in the Json output. 
-
-Message bus topic: `observations/chat`
-
-This topic represents text chat messages that players send to each other in Minecraft.
-
-Message received on this topic are expected to have the following json format:
 
 
 ### Output 
