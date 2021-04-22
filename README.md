@@ -25,7 +25,7 @@ In all cases, a final optional argument of "-m n" can be used to control the num
 
 
 
-## Stdin mode
+### Stdin mode
 
 ```
   sbt "runMain org.clulab.asist.RunDialogAgent stdin"
@@ -58,7 +58,7 @@ To exit the program, press [CTRL+D].  It will take several seconds for sbt to gr
 
 
 
-## File mode
+### File mode
 
 To run the Dialog Agent with files, the user specifies the input and output filenames, and optionally the number of taxonomy matches to return.  
 
@@ -79,7 +79,7 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
   sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 ```
 
-### Input
+## Input
 
 Messages read by the Dialog Agent, either from files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json
 
