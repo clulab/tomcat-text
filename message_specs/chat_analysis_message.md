@@ -34,11 +34,11 @@ data.extractions | Seq[Extraction] | Analysis of message text
 Field Name              | Type   | Description
 ---                     | ---    | ---
 label |string | The type of text in the span
-span |string | A substring of the text to be analyzed.
+span |string | A substring of the data text to be analyzed.
 arguments |map[string, extractions]| Map the Mention label to the taxonomy map
-start_offset | int | the starting index of the span in the text
-end_offset | int | The ending index of the span in the text
-taxonomy_matches | Seq[(string, string)] | Mapped span text extractions
+start_offset | int | the starting index of the span in the data text
+end_offset | int | The ending index of the span in the data text
+taxonomy_matches | Seq[(string, string)] | arguments mapping to the span
 
 
 ## Example
