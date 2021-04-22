@@ -88,7 +88,7 @@ The Dialog Agent currently subscribes to three topics on the Message Bus:
 
 ### Metadata
 
-The Dialog Agent is a text processor, and as such does not use all of the fields in file or Message Bus messages.  The subset of fields that it does use are 
+The Dialog Agent does not use all of the fields in file or Message Bus messages.   
 
 
 
@@ -172,7 +172,7 @@ expected to have the following format:
 
 ### Output 
 
-The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message format
+The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message Json format:
 
 ```json
 {
