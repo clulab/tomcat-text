@@ -92,7 +92,7 @@ Metadata read by the Dialog Agent, either from .metadata files or the Message Bu
     "experiment_id": string,
     "trial_id": string,
     "replay_root_id": string,
-    "replay_id": string,
+    "replay_id": string
   },
   "data": {
     "sender": string,
@@ -110,7 +110,7 @@ Metadata read by the Dialog Agent, either from .metadata files or the Message Bu
     "experiment_id": string,
     "trial_id": string,
     "replay_root_id": string,
-    "replay_id": string,
+    "replay_id": string
   },
   "data": {
     "participant_id": string,
@@ -129,7 +129,7 @@ Metadata read by the Dialog Agent, either from .metadata files or the Message Bu
     "experiment_id": string,
     "trial_id": string,
     "replay_root_id": string,
-    "replay_id": string,
+    "replay_id": string
   },
   "data": {
     "playername": string,
