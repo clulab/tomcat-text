@@ -13,14 +13,14 @@ agent/dialog
 Field Name              | Type   | Description
 ---                     | ---    | ---
 header.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
-header.message_type | string | Message type, e.g. "event"
-header.version | string | Dialog Agent software version
+header.message_type | string | Message type.  Hardcoded to "event"
+header.version | string | Dialog Agent software version.  Hardcoded to "1.0"
 msg.experiment_id | string | The experiment id this message is associated with
 msg.trial_id | string | The trial id this message is associated with
-msg.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
-msg.source | string | The name of the testbed component that published this data
-msg.sub_type | string | The subtype of the data.  This field describes the format of this particular type of data
-msg.version | string | The version of the sub_type format
+msg.timestamp | string | same as header.timestamp
+msg.source | string | The name of the testbed component that published this data.  Hardcoded to "tomcat_textAnalyzer"
+msg.sub_type | string | The subtype of the data.  Hardcoded to "Event:dialogue_event"
+msg.version | string | Same as header.version
 msg.replay_root_id | string | The replay_root_id if being used for the root of a replay.
 msg.replay_id | string | The replay_id if being used for a replay.
 data.participant_id | string | The participant who generated the message text
