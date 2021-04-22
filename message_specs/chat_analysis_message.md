@@ -16,16 +16,16 @@ agent/dialog
 
 Field Name              | Type   | Description
 ---                     | ---    | ---
-header.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
-header.message_type | string | Message type, e.g. "event"
-header.version | string | Dialog Agent software version
+timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
+message_type | string | Message type, e.g. "event"
+version | string | Dialog Agent software version
 
 ## Msg Fields
 Field Name              | Type   | Description
 ---                     | ---    | ---
 experiment_id | string | The experiment id this message is associated with
 trial_id | string | The trial id this message is associated with
-timestamp | string | Timestamp of when the data was generated in ISO 8601 format: YYYY-MM-DDThh:mm:ss.ssssZ
+timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
 source | string | The name of the testbed component that published this data
 sub_type | string | The subtype of the data.  This field describes the format of this particular type of data
 version | string | The version of the sub_type format
