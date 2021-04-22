@@ -78,9 +78,9 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
   sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 ```
 
-## Input
+## Metadata Input
 
-Messages read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json.
+Metadata read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json.
 
 
 #### Chat 
