@@ -79,29 +79,19 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
   sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 ```
 
-To connect to a broker on localhost at the MQTT default port (1883), the agent can be started as follows:
-
-```
-    sbt "runMain org.clulab.asist.RunDialogAgent mqtt localhost 1883"
-```
-
-Once connected to the Message Bus broker, the Dialog Agent subscribes to three Message Bus topics:
-
+The Dialog Agent currently subscribes to three topics on the Message Bus:
 
   * "minecraft/chat"
   * "agent/asr/final"
   * "status/asistdataingester/userspeech"
 
 
+### Metadata
+
+The Dialog Agent is a text processor, and as such does not use all of the fields in file or Message Bus messages.  The subset of fields that it does use are 
 
 
 
-
-
-When run on the message bus, the agent will run the same way it does with .metadata file input, writing the analysis to the 'agent/dialog' topic.
-
-
-### Chat messages
 
 Message bus topic: `observations/chat`
 
@@ -109,33 +99,7 @@ This topic represents text chat messages that players send to each other in Mine
 
 Message received on this topic are expected to have the following json format:
 
-```json
-{
-  "header": {
-    "timestamp": "2019-12-26T12:47:23.1234Z",
-    "message_type": "chat",
-    "version": "0.4"
-  },
-  "msg": {
-    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "simulator",
-    "sub_type": "chat",
-    "version": "0.5",
-    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
-  },
-  "data": {
-    "mission_timer": "8 : 36",
-    "sender": "Miner9",
-    "addressees": [
-      "Player123"
-    ],
-    "text": "I'm in room 210"
-  }
-}
-```
+
 
 ### UAZ ASR messages
 
@@ -208,8 +172,65 @@ expected to have the following format:
 
 ### Output 
 
-Message bus topic: `agent/dialog`
+The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message format
 
-The Dialog Agent will publish its analysis to the message bus in [chat_analysis_message][1] format.
-
-[1]: https://github.com/clulab/tomcat-text/blob/master/message_specs/chat_analysis_message.md
+```json
+{
+  "header": {
+    "timestamp": "2021-02-11T19:22:23.494Z",
+    "message_type": "event",
+    "version": "0.1"
+  },
+  "msg": {
+    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
+    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
+    "timestamp": "2019-12-26T14:05:02.1412Z",
+    "source": "tomcat_textAnalyzer",
+    "sub_type": "Event:dialogue_event",
+    "version": "0.1",
+    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234"
+  },
+  "data": {
+    "participant_id": "Participant 21",
+    "asr_msg_id": "59678a5f-9c5b-451f-8506-04bc020f2cf3",
+    "text": "Five because at least I know there was one yellow victim that died so",
+    "source": {
+      "source_type": "vtt_file",
+      "source_name": "AudioTranscript.vtt"
+    },
+    "extractions": [
+      {
+        "label": "Sight",
+        "span": "was one yellow victim",
+        "arguments": "Victim",
+        "start_offset": 20,
+        "end_offset": 25,
+        "taxonomy_matches": [
+          {
+            "stop-triaging": "11.709686762798679"
+          },
+          {
+            "no-victims-spotted": "10.767969549025242"
+          }
+        ]
+      },
+      {
+        "label": "Victim",
+        "span": "victim",
+        "arguments": "",
+        "start_offset": 60,
+        "end_offset": 75,
+        "taxonomy_matches": [
+          {
+            "stop-triaging-victim": "18.593763750341402"
+          },
+          {
+            "start-triaging-victim": "17.326888048081006"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
