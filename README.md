@@ -57,7 +57,6 @@ Enter plaintext for extraction, [CTRL-D] to exit.
 To exit the program, press [CTRL+D].  It will take several seconds for sbt to gracefully shut down the agent.
 
 
-
 ### File mode
 
 To run the Dialog Agent with files, the user specifies the input and output filenames, and optionally the number of taxonomy matches to return.  
@@ -68,7 +67,7 @@ To run the Dialog Agent with files, the user specifies the input and output file
 
   Supported input file types are WebVtt(.vtt), and TomCAT metadata (.metadata).  A directory can be specified as input.  Directories are traversed one level deep, and only the .vtt and .metadata files are processed.  Input files are processed in alphabetical order.
 
-  The ouput from the file(s) written to a singe output file in the order of processing.  The output is in [chat_analysis_message][1] Json format.
+  The ouput from the file(s) written to a singe output file in the order of processing.  
    
 
 ### MQTT mode
@@ -81,7 +80,7 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
 
 ## Input
 
-Messages read by the Dialog Agent, either from files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json
+Messages read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json.
 
 
 #### Chat 
@@ -142,7 +141,7 @@ Messages read by the Dialog Agent, either from files or the Message Bus, are exp
 When using the Message Bus, it is not necessary to include a "topic" json element.
 
 
-### Output 
+## Output 
 
 The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message Json format:
 
