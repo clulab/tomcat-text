@@ -12,32 +12,40 @@ agent/dialog
 ```
 
 
-## Message Fields
+## Header Fields
 
 Field Name              | Type   | Description
 ---                     | ---    | ---
 header.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
 header.message_type | string | Message type, e.g. "event"
 header.version | string | Dialog Agent software version
-msg.experiment_id | string | The experiment id this message is associated with
-msg.trial_id | string | The trial id this message is associated with
-msg.timestamp | string | Timestamp of when the data was generated in ISO 8601 format: YYYY-MM-DDThh:mm:ss.ssssZ
-msg.source | string | The name of the testbed component that published this data
-msg.sub_type | string | The subtype of the data.  This field describes the format of this particular type of data
-msg.version | string | The version of the sub_type format
-msg.replay_root_id | string | The replay_root_id if being used for the root of a replay.
-msg.replay_id | string | The replay_id if being used for a replay.
-data.participant_id | string | The participant who generated the message text
-data.asr_msg_id | string | A version 4 UUID associated with this message
-data.text | string | The text to be processed by the Dialog Agent
-data.source.source_type | string | File or Message Bus
-data.source.source_name |string | A filename or Message Bus topic
-data.extractions.label |string | The type of text in the span
-data.extractions.span |string | A substring of the text to be analyzed.
-data.extractions.arguments |map[string, extractions]| Map the Mention label to the taxonomy map
-data.extractions.start_offset | int | the starting index of the span in the text
-data.extractions.end_offset | int | The ending index of the span in the text
-data.extractions.taxonomy_matches | Seq[(string, string)] | Mapped span text extractions
+
+## Msg Fields
+Field Name              | Type   | Description
+---                     | ---    | ---
+experiment_id | string | The experiment id this message is associated with
+trial_id | string | The trial id this message is associated with
+timestamp | string | Timestamp of when the data was generated in ISO 8601 format: YYYY-MM-DDThh:mm:ss.ssssZ
+source | string | The name of the testbed component that published this data
+sub_type | string | The subtype of the data.  This field describes the format of this particular type of data
+version | string | The version of the sub_type format
+replay_root_id | string | The replay_root_id if being used for the root of a replay.
+replay_id | string | The replay_id if being used for a replay.
+
+## Data Fields
+Field Name              | Type   | Description
+---                     | ---    | ---
+participant_id | string | The participant who generated the message text
+asr_msg_id | string | A version 4 UUID associated with this message
+text | string | The text to be processed by the Dialog Agent
+source.source_type | string | File or Message Bus
+source.source_name |string | A filename or Message Bus topic
+extractions.label |string | The type of text in the span
+extractions.span |string | A substring of the text to be analyzed.
+extractions.arguments |map[string, extractions]| Map the Mention label to the taxonomy map
+extractions.start_offset | int | the starting index of the span in the text
+extractions.end_offset | int | The ending index of the span in the text
+extractions.taxonomy_matches | Seq[(string, string)] | Mapped span text extractions
 
 
 ## Example
