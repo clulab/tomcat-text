@@ -18,7 +18,7 @@ header.version | string | Dialog Agent software version.  Hardcoded to "1.0"
 msg.experiment_id | string | The experiment id this message is associated with
 msg.trial_id | string | The trial id this message is associated with
 msg.timestamp | string | same as header.timestamp
-msg.source | string | The name of the testbed component that published this data.  Hardcoded to "tomcat_textAnalyzer"
+msg.source | string | The name of this testbed component. Hardcoded to "tomcat_textAnalyzer"
 msg.sub_type | string | The subtype of the data.  Hardcoded to "Event:dialogue_event"
 msg.version | string | Same as header.version
 msg.replay_root_id | string | The replay_root_id if being used for the root of a replay.
