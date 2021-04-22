@@ -9,7 +9,7 @@ Analysis of Message Bus messages is published on the Message Bus topic:
 agent/dialog
 ```
 
-## Message Fields
+## Fields
 Field Name              | Type   | Description
 ---                     | ---    | ---
 header.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
