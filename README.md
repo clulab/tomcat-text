@@ -83,23 +83,6 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
 
 Messages read by the Dialog Agent, either from files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json
 
-```
-"msg"
-  "experiment_id"
-  "trial_id"
-  "replay_root_id"
-  "replay_id"
-```  
-
-
-There are specific fields expected for the following topics:
-
-
-
-, and a Data structure specific to the application generating the message.  Extra fields and structures in Metadata are ignored.   Missing expected data are replaced with null values in the Json output. 
-
-The Dialog Agent currently processes three metadata topics, from either files or the Message Bus:
-
 
 #### In-game chat 
 
