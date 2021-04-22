@@ -84,7 +84,7 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
 Messages read by the Dialog Agent, either from files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json
 
 
-#### In-game chat 
+#### Chat 
 
 topic:  minecraft/chat
 
@@ -102,7 +102,7 @@ topic:  minecraft/chat
 
 #### UAZ ASR
 
-topic: "agent/asr/final"
+topic: agent/asr/final
 
 ```
 "msg"
@@ -118,7 +118,7 @@ topic: "agent/asr/final"
 
 #### Aptima ASR
 
-topic: "status/asistdataingester/userspeech"
+topic: status/asistdataingester/userspeech
 
 ```
 "msg"
