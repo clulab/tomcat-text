@@ -139,6 +139,9 @@ Messages read by the Dialog Agent, either from files or the Message Bus, are exp
 }
 ```
 
+When using the Message Bus, it is not necessary to include a "topic" json element.
+
+
 ### Output 
 
 The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message Json format:
