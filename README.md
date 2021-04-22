@@ -86,51 +86,58 @@ Messages read by the Dialog Agent, either from files or the Message Bus, are exp
 
 #### Chat 
 
-topic:  minecraft/chat
-
 ```
-"msg"
-  "experiment_id"
-  "trial_id"
-  "replay_root_id"
-  "replay_id"
-"data"
-  "sender"
-  "text"
+{
+  "topic": "minecraft/chat",
+  "msg": {
+    "experiment_id": string,
+    "trial_id": string,
+    "replay_root_id": string,
+    "replay_id": string,
+  },
+  "data": {
+    "sender": string,
+    "text": string
+  }
+}
 ```  
-
 
 #### UAZ ASR
 
-topic: agent/asr/final
-
 ```
-"msg"
-  "experiment_id"
-  "trial_id"
-  "replay_root_id"
-  "replay_id"
-"data"
-  "participant_id"
-  "id"
-  "text"
+{
+  "topic": "agent/asr/final",
+  "msg": {
+    "experiment_id": string,
+    "trial_id": string,
+    "replay_root_id": string,
+    "replay_id": string,
+  },
+  "data": {
+    "participant_id": string,
+    "id": string,
+    "text": string
+  }
+}
 ```
 
 #### Aptima ASR
 
-topic: status/asistdataingester/userspeech
-
 ```
-"msg"
-  "experiment_id"
-  "trial_id"
-  "replay_root_id"
-  "replay_id"
-"data"
-  "playername"
-  "text"
+{
+  "topic": "status/asistdataingester/userspeech",
+  "msg": {
+    "experiment_id": string,
+    "trial_id": string,
+    "replay_root_id": string,
+    "replay_id": string,
+  },
+  "data": {
+    "playername": string,
+    "text": string
+  }
+}
 ```
-
 
 ### Output 
 
