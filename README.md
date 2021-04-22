@@ -88,86 +88,13 @@ The Dialog Agent currently subscribes to three topics on the Message Bus:
 
 ### Metadata
 
-The Dialog Agent does not use all of the fields in file or Message Bus messages.   
-
-
-
+Messages read by the Dialog Agent, either from files or the Message Bus, are expected to consist of a CommonHeader structure, a CommonMsg structure, and a Data structure specific to the application generating the message.  Extra fields and structures in Metadata are ignored.   Missing expected data are replaced with null values in the Json output. 
 
 Message bus topic: `observations/chat`
 
 This topic represents text chat messages that players send to each other in Minecraft.
 
 Message received on this topic are expected to have the following json format:
-
-
-
-### UAZ ASR messages
-
-Message bus topic: `agent/asr`
-
-This topic corresponds to utterances by dialogue participants that are
-automatically transcribed in real-time using an automatic speech recognition
-(ASR) service like Google Cloud Speech. Messages received on this topic are
-expected to have the following format:
-
-```json
-{
-  "data": {
-    "text": "I am going to save a green victim.",
-    "asr_system": "Google",
-    "is_final": true,
-    "participant_id": "participant_1"
-  },
-  "header": {
-    "timestamp": "2021-01-19T23:27:58.633076Z",
-    "message_type": "observation",
-    "version": "0.1"
-  },
-  "msg": {
-    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "tomcat_asr_agent",
-    "sub_type": "asr",
-    "version": "0.1",
-    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
-  }
-}
-```
-
-### Aptima ASR messages
-
-Message bus topic: `status/asistdataingester/userspeech`
-
-This topic corresponds to utterances by dialogue participants that are
-automatically transcribed in real-time using an automatic speech recognition
-(ASR) service like Google Cloud Speech. Messages received on this topic are
-expected to have the following format:
-
-```json
-{
-  "msg": {
-    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "tomcat_asr_agent",
-    "sub_type": "asr",
-    "version": "0.1",
-    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
-  },
-  "data": {
-    "text": "You want me to share my screen?",
-    "playername": "intermonk"
-  },
-  "header": {
-    "timestamp": "2021-01-19T23:27:58.633076Z",
-    "message_type": "observation",
-    "version": "0.1"
-  }
-}
-```
 
 
 ### Output 
