@@ -87,7 +87,7 @@ Metadata read by the Dialog Agent, either from .metadata files or the Message Bu
 
 ```
 {
-  "topic": "minecraft/chat",   // only needed if using metadata file input
+  "topic": "minecraft/chat",
   "msg": {
     "experiment_id": string,
     "trial_id": string,
