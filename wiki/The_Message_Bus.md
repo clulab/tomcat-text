@@ -12,14 +12,10 @@ mosquitto | Broker | Coordinator for subscription and publication.  This *is* th
 mosquitto_sub  |  Reader | Subscribes to topics on the Message Bus.  Prints to stdout any messages it receives on the subscribed topics.  n instances may be run.
 mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.  n instances may be run.
 
-
 #### Configuration
-
 
 * ToMCAT uses the MQTT default host '**localhost**', and the MQTT default port '**1883**'.  
 * No password is used.
-
-
 
 
 ## Linux 
@@ -30,11 +26,18 @@ sudo apt-get update
 sudo apt-get install -y mosquitto mosquitto-clients
 ```
 
-Start the Message Bus by starting the broker:
+To start the Message Bus:
 
 ```
-xxx
+sudo service mosquitto start
 ```
+
+To stop the Message Bus:
+```
+sudo service mosquitto stop
+```
+
+
 
 
 ## MacOS 
