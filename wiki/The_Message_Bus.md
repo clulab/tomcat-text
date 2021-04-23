@@ -33,23 +33,31 @@ mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.
 
 
 
-## Linux installation
+## Linux 
 
+Installation
+```
 sudo apt-get update
 sudo apt-get install -y mosquitto mosquitto-clients
-
-
-
-## MacOS installation
-
-Macports
-```
-Sudo port install mosquitto mosquitto-clients
 ```
 
-Homebrew
+
+## MacOS 
+
+Installation
+
 ```
-brew install mosquitto mosquitto-clients
+Sudo port install mosquitto
+```
+or
+```
+brew install mosquitto
+```
+
+Starting the broker
+
+```
+/usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
 ```
 
 #### Configuration
