@@ -25,7 +25,7 @@ In all cases, a final optional argument of "-m n" can be used to control the num
 
 
 
-## Stdin mode
+### Stdin mode
 
 ```
   sbt "runMain org.clulab.asist.RunDialogAgent stdin"
@@ -57,8 +57,7 @@ Enter plaintext for extraction, [CTRL-D] to exit.
 To exit the program, press [CTRL+D].  It will take several seconds for sbt to gracefully shut down the agent.
 
 
-
-## File mode
+### File mode
 
 To run the Dialog Agent with files, the user specifies the input and output filenames, and optionally the number of taxonomy matches to return.  
 
@@ -68,7 +67,7 @@ To run the Dialog Agent with files, the user specifies the input and output file
 
   Supported input file types are WebVtt(.vtt), and TomCAT metadata (.metadata).  A directory can be specified as input.  Directories are traversed one level deep, and only the .vtt and .metadata files are processed.  Input files are processed in alphabetical order.
 
-  The ouput from the file(s) written to a singe output file in the order of processing.  The output is in [chat_analysis_message][1] Json format.
+  The ouput from the file(s) written to a singe output file in the order of processing.  
    
 
 ### MQTT mode
@@ -79,137 +78,130 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
   sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 ```
 
-To connect to a broker on localhost at the MQTT default port (1883), the agent can be started as follows:
+## Metadata Input
+
+Metadata read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json.
+
+
+#### Chat 
 
 ```
-    sbt "runMain org.clulab.asist.RunDialogAgent mqtt localhost 1883"
-```
-
-Once connected to the Message Bus broker, the Dialog Agent subscribes to three Message Bus topics:
-
-
-  * "minecraft/chat"
-  * "agent/asr/final"
-  * "status/asistdataingester/userspeech"
-
-
-
-
-
-
-
-When run on the message bus, the agent will run the same way it does with .metadata file input, writing the analysis to the 'agent/dialog' topic.
-
-
-### Chat messages
-
-Message bus topic: `observations/chat`
-
-This topic represents text chat messages that players send to each other in Minecraft.
-
-Message received on this topic are expected to have the following json format:
-
-```json
 {
-  "header": {
-    "timestamp": "2019-12-26T12:47:23.1234Z",
-    "message_type": "chat",
-    "version": "0.4"
-  },
+  "topic": "minecraft/chat",   // only needed if using metadata file input
   "msg": {
-    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "simulator",
-    "sub_type": "chat",
-    "version": "0.5",
-    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
+    "experiment_id": string,
+    "trial_id": string,
+    "replay_root_id": string,
+    "replay_id": string
   },
   "data": {
-    "mission_timer": "8 : 36",
-    "sender": "Miner9",
-    "addressees": [
-      "Player123"
-    ],
-    "text": "I'm in room 210"
+    "sender": string,
+    "text": string
+  }
+}
+```  
+
+#### UAZ ASR
+
+```
+{
+  "topic": "agent/asr/final",
+  "msg": {
+    "experiment_id": string,
+    "trial_id": string,
+    "replay_root_id": string,
+    "replay_id": string
+  },
+  "data": {
+    "participant_id": string,
+    "id": string,
+    "text": string
   }
 }
 ```
 
-### UAZ ASR messages
+#### Aptima ASR
 
-Message bus topic: `agent/asr`
+```
+{
+  "topic": "status/asistdataingester/userspeech",
+  "msg": {
+    "experiment_id": string,
+    "trial_id": string,
+    "replay_root_id": string,
+    "replay_id": string
+  },
+  "data": {
+    "playername": string,
+    "text": string
+  }
+}
+```
 
-This topic corresponds to utterances by dialogue participants that are
-automatically transcribed in real-time using an automatic speech recognition
-(ASR) service like Google Cloud Speech. Messages received on this topic are
-expected to have the following format:
+When using the Message Bus, it is not necessary to include a "topic" json element.
+
+
+## Output 
+
+The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message Json format:
 
 ```json
 {
-  "data": {
-    "text": "I am going to save a green victim.",
-    "asr_system": "Google",
-    "is_final": true,
-    "participant_id": "participant_1"
-  },
   "header": {
-    "timestamp": "2021-01-19T23:27:58.633076Z",
-    "message_type": "observation",
+    "timestamp": "2021-02-11T19:22:23.494Z",
+    "message_type": "event",
     "version": "0.1"
   },
   "msg": {
     "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
     "trial_id": "123e4567-e89b-12d3-a456-426655440000",
     "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "tomcat_asr_agent",
-    "sub_type": "asr",
+    "source": "tomcat_textAnalyzer",
+    "sub_type": "Event:dialogue_event",
     "version": "0.1",
     "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
-  }
-}
-```
-
-### Aptima ASR messages
-
-Message bus topic: `status/asistdataingester/userspeech`
-
-This topic corresponds to utterances by dialogue participants that are
-automatically transcribed in real-time using an automatic speech recognition
-(ASR) service like Google Cloud Speech. Messages received on this topic are
-expected to have the following format:
-
-```json
-{
-  "msg": {
-    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "tomcat_asr_agent",
-    "sub_type": "asr",
-    "version": "0.1",
-    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234",
+    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234"
   },
   "data": {
-    "text": "You want me to share my screen?",
-    "playername": "intermonk"
-  },
-  "header": {
-    "timestamp": "2021-01-19T23:27:58.633076Z",
-    "message_type": "observation",
-    "version": "0.1"
+    "participant_id": "Participant 21",
+    "asr_msg_id": "59678a5f-9c5b-451f-8506-04bc020f2cf3",
+    "text": "Five because at least I know there was one yellow victim that died so",
+    "source": {
+      "source_type": "vtt_file",
+      "source_name": "AudioTranscript.vtt"
+    },
+    "extractions": [
+      {
+        "label": "Sight",
+        "span": "was one yellow victim",
+        "arguments": "Victim",
+        "start_offset": 20,
+        "end_offset": 25,
+        "taxonomy_matches": [
+          {
+            "stop-triaging": "11.709686762798679"
+          },
+          {
+            "no-victims-spotted": "10.767969549025242"
+          }
+        ]
+      },
+      {
+        "label": "Victim",
+        "span": "victim",
+        "arguments": "",
+        "start_offset": 60,
+        "end_offset": 75,
+        "taxonomy_matches": [
+          {
+            "stop-triaging-victim": "18.593763750341402"
+          },
+          {
+            "start-triaging-victim": "17.326888048081006"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
-
-
-### Output 
-
-Message bus topic: `agent/dialog`
-
-The Dialog Agent will publish its analysis to the message bus in [chat_analysis_message][1] format.
-
-[1]: https://github.com/clulab/tomcat-text/blob/master/message_specs/chat_analysis_message.md
