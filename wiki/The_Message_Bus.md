@@ -23,6 +23,8 @@ Default port: 1883
 ```
 
 
+
+
 There are three components to the MQTT system.    
 
 Application name | Role | Description
@@ -47,7 +49,7 @@ sudo apt-get install -y mosquitto mosquitto-clients
 Installation
 
 ```
-Sudo port install mosquitto
+sudo port install mosquitto
 ```
 or
 ```
