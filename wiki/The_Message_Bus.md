@@ -1,8 +1,8 @@
 
-# The ToMCAT Message Bus 
+# The ToMCAT Testbed Message Bus 
 
 
-ToMCAT implements the Message Bus using Mosquitto (MQTT) software.   The system works over TCP/IP, given a host machine and port.  Mosquitto provides a lightweight, robust infrastructure for interprocess communication.  Messages are written to the Message Bus by publishing them to topics.   Messages are read by subscribing to topics.  Message arrival is handled by asynchronous callback.
+ToMCAT implements the Testbed Message Bus using the Mosquitto (MQTT) application.   The system works over TCP/IP and provides a lightweight, robust infrastructure for interprocess communication.  Messages are written to the Message Bus by publishing them to topics.   Messages are read by subscribing to topics.  Message arrival is handled by asynchronous callback.
 
 There are three components to the MQTT system.    
 
@@ -15,11 +15,9 @@ mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.  n i
 
 #### Configuration
 
-Default host | Default port
----- | ----
-localhost | 1883
 
-
+* ToMCAT uses the MQTT default host '**localhost**', and the MQTT default port '**1883**'.  
+* No password is used.
 
 
 
