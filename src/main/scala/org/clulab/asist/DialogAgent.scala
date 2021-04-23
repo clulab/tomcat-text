@@ -124,7 +124,7 @@ class DialogAgent (val nMatches: Int = 0) {
           case `topicChat` => (metadata.data.sender)
           case `topicUazAsr` => (metadata.data.participant_id)
           case `topicAptimaAsr` => (metadata.data.playername)
-          case _ => null 
+          case _ => null
         },
         asr_msg_id = metadata.data.id,
         text = metadata.data.text,
@@ -159,14 +159,10 @@ class DialogAgent (val nMatches: Int = 0) {
         version = dialogAgentVersion
       ),
       CommonMsg(
-        experiment_id = null,
-        trial_id = null,
         timestamp = timestamp,
         source = dialogAgentSource,
         sub_type = dialogAgentSubType,
         version = dialogAgentVersion,
-        replay_root_id = null,
-        replay_id = null
       ),
       DialogAgentMessageData(
         participant_id = participant_id,
