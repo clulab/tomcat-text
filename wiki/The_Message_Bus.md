@@ -47,7 +47,7 @@ or
 brew install mosquitto
 ```
 
-Starting the broker
+Start the Message Bus by starting the broker:
 
 ```
 /usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
