@@ -30,8 +30,8 @@ There are three components to the MQTT system.
 Application name | Role | Description
 ---- | ----  |  ----
 mosquitto | Broker | Coordinator for subscription and publication.  This *is* the “Message Bus”.   A single instance is run.
-mosquitto_sub  |  Reader | Subscribes to topics on the Message Bus.  Prints to stdout any messages it receives on the subscribed topics.
-mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus. 
+mosquitto_sub  |  Reader | Subscribes to topics on the Message Bus.  Prints to stdout any messages it receives on the subscribed topics.  n instances may be run.
+mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.  n instances may be run.
 
 
 
