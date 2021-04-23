@@ -1,7 +1,7 @@
 
-The ToMCAT Message Bus 
+#The ToMCAT Message Bus 
 
-Installing and running the Mosquitto (MQTT) applications.   
+###Installing and running the Mosquitto (MQTT) applications.   
 
 Linux installation
 MacOS installation
