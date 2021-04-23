@@ -17,10 +17,10 @@
 
 ToMCAT implements the Message Bus using Mosquitto (MQTT) software.   The system works over TCP/IP, given a host machine and port.  ToMCAT uses the MQTT default host and port:
    
-
-Default host:   **localhost**
-Default port:   **1883**
-
+```
+Default host: localhost
+Default port: 1883
+```
 
 
 There are three components to the MQTT system.    
@@ -33,23 +33,26 @@ mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.
 
 
 
-### Linux installation
+## Linux installation
 
 sudo apt-get update
 sudo apt-get install -y mosquitto mosquitto-clients
 
 
 
-### MacOS installation
+## MacOS installation
 
 Macports
-TODO
+```
+Sudo port install mosquitto mosquitto-clients
+```
 
 Homebrew
+```
 brew install mosquitto mosquitto-clients
+```
 
-
-### Configuration
+#### Configuration
 
 The default MQTT URI is used at ToMCAT:    tcp://localhost:1883
 
