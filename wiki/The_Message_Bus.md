@@ -2,9 +2,7 @@
 # The ToMCAT Message Bus 
 
 
-ToMCAT implements the Message Bus using Mosquitto (MQTT) software.   The system works over TCP/IP, given a host machine and port.  Mosquitto provides a lightweight, robust infrastructure for interprocess communication.
-
-
+ToMCAT implements the Message Bus using Mosquitto (MQTT) software.   The system works over TCP/IP, given a host machine and port.  Mosquitto provides a lightweight, robust infrastructure for interprocess communication.  Messages are written to the Message Bus by publishing them to topics.   Messages are read by subscribing to topics.  Message arrival is handled by asynchronous callback.
 
 There are three components to the MQTT system.    
 
@@ -15,7 +13,7 @@ mosquitto_sub  |  Reader | Subscribes to topics on the Message Bus.  Prints to s
 mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.  n instances may be run.
 
 
-Configuration
+#### Configuration
 
 Default host | Default port
 ---- | ----
