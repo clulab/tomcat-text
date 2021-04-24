@@ -74,15 +74,15 @@ Stop the broker by killing its process ID.
 
 ## Using the Message Bus
 
-First start the Message bus using the previously described procedure for your operationg system.
+First start the Message bus using the previously described procedure for your operating system.
 
-Next, subscribe to a Message Bus topic
+Next, subscribe to a Message Bus topic:
 
 ```
 mosquitto_sub -t my_test_topic
 ```
 
-Then publish a message on that topic
+Then publish a message on that topic:
 
 ```
 mosquitto_pub -t my_test_topic -m "Hello world!"
