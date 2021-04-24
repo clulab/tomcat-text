@@ -72,7 +72,7 @@ To Stop the Message Bus, find the process ID of the broker instance...
 
 ```
 ps -aux | grep mosquitto
-mosquit+     866  0.0  0.0  28112  4164 ?        Ssl  16:13   0:05 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+mosquit+     866  0.0  0.0  28112  4164 ?        Ssl  16:13   0:05 /opt/local/sbin/mosquitto -c /opt/local/etc/mosquitto/mosquitto.conf
 ```
 
 ...and kill it:
