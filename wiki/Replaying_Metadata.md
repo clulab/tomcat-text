@@ -50,16 +50,20 @@ INFO  org.clulab.asist.AgentMqtt - Running.
 
 ### Mosquitto subscriber
 
-When the Message Bus version of the Dialog Agent receives a message, it will publish the processing results back to the Message Bus.   It does this on topic 'agent/dialog'.  In order to capture this data, 
+The Dialog Agent will publish its text analysis on Message Bus topic **agent/dialog**.
+
+To capture this data, start a mosquitto subcriber on this topic, and redirect its output to a file:
+
+```
+mosquitto_sub -t agent/dialog > my_output_file.json
+```
+
+The analysis is in a compact json format.  This can be made human-readable using the jq program:
+
+```
+jq < my_output_file.json > my_pretty_output_file.json
+```
 
 
 
-If the Dialog Agent gets this far, you have a working "testbed" ready for the replay of metadata.
-
-## Replaying Metadata
-
-
-
-
-In the tomcat/tools directory, you will find the elkless_replayer script.
 
