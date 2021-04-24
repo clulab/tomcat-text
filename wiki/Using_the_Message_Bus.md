@@ -17,14 +17,27 @@ mosquitto_pub |  Writer  | Publishes messages to topics on the Message Bus.  n i
 * ToMCAT uses the MQTT default host '**localhost**', and the MQTT default port '**1883**'.  
 * No password is used.
 
+## Installation
 
-## Linux 
-
-Installation
+### Linux
 ```
 sudo apt-get update
 sudo apt-get install -y mosquitto mosquitto-clients
 ```
+
+### MacOs
+```
+sudo port install mosquitto
+```
+or
+```
+sudo brew install mosquitto
+```
+
+
+## Running the Message Bus
+
+### Linux
 
 To start the Message Bus:
 
@@ -38,21 +51,9 @@ sudo service mosquitto stop
 ```
 
 
+### MacOS 
 
-
-## MacOS 
-
-Installation
-
-```
-sudo port install mosquitto
-```
-or
-```
-brew install mosquitto
-```
-
-Start the Message Bus by starting the broker:
+To Start the Message Bus
 
 ```
 /opt/local/sbin/mosquitto -c /opt/local/etc/mosquitto//mosquitto.conf 
