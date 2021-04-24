@@ -31,17 +31,6 @@ git pull
 
 ### Dialog Agent
 
-The Message Bus version of the Dialog Agent subscribes to the following Message Bus topics:
-
-Topic | Publisher
---- | ---
-minecraft/chat | In-game Minecraft chat text
-agent/asr/final | University of Arizona ASR 
-status/asistdataingester/userspeech | Aptima ASR
-
-And will publish message text analysis to **agent/dialog**
-
-
 With the Message Bus running, cd into the tomcat-text repo and start the Message Bus version of the Dialog Agent:
 
 ```
