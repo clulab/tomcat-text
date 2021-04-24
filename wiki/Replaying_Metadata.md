@@ -45,9 +45,12 @@ INFO  org.clulab.asist.AgentMqtt - Running.
 
 The Dialog Agent subscribes to the following Message Bus topics:
 
-* xxx
-* xxx
-* xxx
+Topic | Publisher
+--- | ---
+minecraft/chat | In-game Minecraft chat text
+agent/asr/final | University of Arizona ASR 
+status/asistdataingester/userspeech | Aptima ASR
+
 
 And will publish analysis to
 
