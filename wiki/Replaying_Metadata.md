@@ -30,8 +30,19 @@ git pull
 
 
 ### Dialog Agent
-With the Message Bus running, cd into the tomcat-text repo and start the Message Bus version of the Dialog Agent:
 
+The Message Bus version of the Dialog Agent subscribes to the following Message Bus topics:
+
+Topic | Publisher
+--- | ---
+minecraft/chat | In-game Minecraft chat text
+agent/asr/final | University of Arizona ASR 
+status/asistdataingester/userspeech | Aptima ASR
+
+And will publish message text analysis to **agent/dialog**
+
+
+With the Message Bus running, cd into the tomcat-text repo and start the Message Bus version of the Dialog Agent:
 
 ```
 cd tomcat-text
@@ -40,22 +51,11 @@ sbt "runMain org.clulab.asist.RunDialogAgent mqtt localhost 1883"
 
 The Dialog Agent will take a minute or more to initialize, finishing with  
 ```
+INFO  org.clulab.asist.DialogAgentMqtt - Extractor initialized.
+INFO  org.clulab.asist.AgentMqtt - Connected to MQTT broker at tcp://localhost:1883
+INFO  org.clulab.asist.AgentMqtt - Subscribed to: minecraft/chat, agent/asr/final, status/asistdataingester/userspeech
+INFO  org.clulab.asist.AgentMqtt - Publishing on: agent/dialog
 INFO  org.clulab.asist.AgentMqtt - Running.
-```
-
-The Dialog Agent subscribes to the following Message Bus topics:
-
-Topic | Publisher
---- | ---
-minecraft/chat | In-game Minecraft chat text
-agent/asr/final | University of Arizona ASR 
-status/asistdataingester/userspeech | Aptima ASR
-
-
-And will publish message text analysis to
-
-```
-agent/dialog
 ```
 
 
