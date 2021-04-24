@@ -12,7 +12,7 @@ git clone https://github.com/ml4ai/tomcat
 git clone https://github.com/clulab/tomcat-text
 ```
 
-If you have the repos already installed, make sure you have the latest version of the master branch:
+If you have the repos already installed, make sure you have the latest version of the master branch in each with:
 
 ```
 git checkout master
