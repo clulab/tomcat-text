@@ -1,9 +1,7 @@
 
 # Replaying Metadata 
 
-Metadata recorded during testbed runs can be reprocessed using the Dialog Agent by publishing it on the Message Bus.
-
-This is done using the elkless_replayer script in the tomcat/tools directory.
+Metadata recorded during testbed runs can be reprocessed using the Dialog Agent at any time.  This is accomplished by running the Dialog Agent on the Message Bus and then using the elkless_replayer script.   The elkless_replayer will publish the metadata to the Message Bus, and the Dialog Agent will process it just as if it were running on the testbed.
 
 ### Preparation
 
@@ -27,8 +25,6 @@ The Dialog Agent will take a minute or more to initialize, finishing with
 ```
 INFO  org.clulab.asist.AgentMqtt - Running.
 ```
-
-
 
 
 ### Publishing Metadata on the Message Bus
