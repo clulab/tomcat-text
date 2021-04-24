@@ -55,8 +55,22 @@ brew install mosquitto
 Start the Message Bus by starting the broker:
 
 ```
-/usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
+/opt/local/sbin/mosquitto -c /opt/local/etc/mosquitto//mosquitto.conf 
 ```
+
+If the broker starts correctly it will output some status information:
+
+```
+1619221743: mosquitto version 1.5.8 starting
+1619221743: Config loaded from /opt/local/etc/mosquitto//mosquitto.conf.
+1619221743: Opening ipv6 listen socket on port 1883.
+1619221743: Opening ipv4 listen socket on port 1883.
+```
+
+Stop the broker by killing its process ID.
+
+
+
 
 #### Configuration
 
