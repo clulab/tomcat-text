@@ -75,4 +75,4 @@ jq < my_output_file.json > my_pretty_output_file.json
 
 Shut down the Dialog Agent, mosquitto_sub, and tail processes with [CTRL C] in their respective terminal windows.
 
-If you wish, [Shut down the Message Bus](Using_the_Message_Bus.md#stopping-the-message-bus)as appropriate for your operating system.
+If you wish, [Shut down the Message Bus](Using_the_Message_Bus.md#stopping-the-message-bus) as appropriate for your operating system.
