@@ -68,7 +68,18 @@ If the broker starts correctly it will output some status information:
 1619221743: Opening ipv4 listen socket on port 1883.
 ```
 
-Stop the broker by killing its process ID.
+To Stop the Message Bus, find the process ID of the broker instance...
+
+```
+ps -aux | grep mosquitto
+mosquit+     866  0.0  0.0  28112  4164 ?        Ssl  16:13   0:05 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+```
+
+...and kill it:
+
+```
+kill 866
+```
 
 
 
