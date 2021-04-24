@@ -52,7 +52,7 @@ agent/asr/final | University of Arizona ASR
 status/asistdataingester/userspeech | Aptima ASR
 
 
-And will publish analysis to
+And will publish message text analysis to
 
 ```
 agent/dialog
