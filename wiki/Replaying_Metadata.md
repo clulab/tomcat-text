@@ -19,14 +19,13 @@ git checkout master
 git pull
 ```
 
-[Install the MQTT mosquitto software](Using_the_Message_Bus.md#installation) if it is not already installed on your machine.
+[Install the MQTT mosquitto software](Using_the_Message_Bus.md#installing-the-message-bus-software) if it is not already installed on your machine.
 
 
 ## Starting the software
 
-
 ### Message Bus
-[Start the Message Bus](Using_the_Message_Bus.md#running-the-message-bus) if it is not already running on your machine.
+[Start the Message Bus](Using_the_Message_Bus.md#starting-the-message-bus) if it is not already running on your machine.
 
 
 ### Dialog Agent
@@ -58,12 +57,22 @@ To capture this data, start a mosquitto subcriber on this topic, and redirect it
 mosquitto_sub -t agent/dialog > my_output_file.json
 ```
 
-The analysis is in a compact json format.  This can be made human-readable using the jq program:
+To see the processed data as it arrives from the Dialog Agent, open another terminal window and tail the output file with:
+
+```
+tail -f my_output_file.json
+```
+
+Use [CTRL-C] to kill the mosquitto_sub and tail processes when all of the metadata has been run. 
+
+Finally, the compact json format of the oputput can be made human-readable using the jq program:
 
 ```
 jq < my_output_file.json > my_pretty_output_file.json
 ```
 
+### Stopping the software
 
+Shut down the Dialog Agent, mosquitto_sub, and tail processes with [CTRL C] in their respective terminal windows.
 
-
+If you wish, [Shut down the Message Bus](Using_the_Message_Bus.md#stopping-the-message-bus)as appropriate for your operating system.
