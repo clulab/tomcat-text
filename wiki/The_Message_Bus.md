@@ -72,43 +72,21 @@ Stop the broker by killing its process ID.
 
 
 
-#### Configuration
+## Using the Message Bus
 
-The default MQTT URI is used at ToMCAT:    tcp://localhost:1883
+First start the Message bus using the previously described procedure for your operationg system.
 
-Password setting, or not
+Next, subscribe to a Message Bus topic
 
-Port forwarding
+```
+mosquitto_sub -t my_test_topic
+```
 
-Starting MQTT
+Then publish a message on that topic
 
-#### Service start
+```
+mosquitto_pub -t my_test_topic -m "Hello world!"
+```
 
-sudo service mosquitto start / stop
-
-
-#### Manual start
-
-/usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
-
-
-Testing the installation
-
-Subscribe to a test topic
-
-mosquitto_sub -t "test"
-
-
-Publish to a test topic:
-
-mosquitto_pub -t "test" -m "message from mosquitto_pub client"
-
-
-If the installation has been successful, the mosquitto_sub instance will print the test message.
-
-
-
-Show two-computer interaction using forwarded port
-
-
+If the mosquitto_sub process displays the message, you have set up your Message Bus correctly.
 
