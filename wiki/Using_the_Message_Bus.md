@@ -37,6 +37,7 @@ sudo brew install mosquitto
 * No password is used.
 
 
+
 ## Starting the Message Bus
 
 ### Linux
@@ -46,7 +47,6 @@ sudo service mosquitto start
 ```
 
 No output is show on screen 
-
 
 
 ### MacOS 
@@ -63,7 +63,6 @@ If the broker starts correctly it will output some status information:
 1619221743: Opening ipv6 listen socket on port 1883.
 1619221743: Opening ipv4 listen socket on port 1883.
 ```
-
 
 
 
@@ -84,6 +83,7 @@ mosquitto_pub -t my_test_topic -m "Hello world!"
 ```
 
 If the mosquitto_sub process displays the message, your message bus is running correctly.
+
 
 
 ## Stopping the Message Bus
