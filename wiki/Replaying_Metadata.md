@@ -19,14 +19,14 @@ git checkout master
 git pull
 ```
 
-[Install the MQTT mosquitto software](Using_the_Message_Bus.md#installation) if is not already on your machine.
+[Install the MQTT mosquitto software](Using_the_Message_Bus.md#installation) if it is not already installed on your machine.
 
 
 ## Starting the software
 
 
 ### Message Bus
-[Start the Message Bus](Using_the_Message_Bus.md#running-the-message-bus) 
+[Start the Message Bus](Using_the_Message_Bus.md#running-the-message-bus) if it is not already running on your machine.
 
 
 ### Dialog Agent
