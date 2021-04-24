@@ -54,7 +54,9 @@ status/asistdataingester/userspeech | Aptima ASR
 
 And will publish analysis to
 
-* agent/dialog
+```
+agent/dialog
+```
 
 
 ### Mosquitto subscriber
