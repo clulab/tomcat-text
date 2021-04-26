@@ -65,7 +65,7 @@ tail -f my_output_file.json
 
 Use [CTRL-C] to kill the mosquitto_sub and tail processes when all of the metadata has been run. 
 
-Finally, the compact json format of the oputput can be made human-readable using the jq program:
+Finally, the compact JSON format of the oputput can be made human-readable using the jq program:
 
 ```
 jq < my_output_file.json > my_pretty_output_file.json
