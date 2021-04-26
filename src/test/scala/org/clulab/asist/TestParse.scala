@@ -15,8 +15,7 @@ class TestParse extends BaseTest {
     val mentions = extractor.extractFrom(doc)
 
     val door = DesiredMention(INFRASTRUCTURE, "door")
-    val doorArg = Arg("theme", Seq(door))
-    val close = DesiredMention(CLOSE, "closing the door", Seq(doorArg))
+    val close = DesiredMention(CLOSE, "closing the door", Map("theme" -> Seq(door)))
 
     val found = getMentionsWithLabel(mentions, CLOSE)
     found should have size(1)
@@ -70,8 +69,8 @@ class TestParse extends BaseTest {
 
     val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villager")
-    val victim_arg = Arg("target", Array(victim_mention))
-    val save_mention = DesiredMention("Save", "save the villager", Array(victim_arg))
+    val save_mention = DesiredMention("Save", "save the villager",
+                        Map("target" -> Seq(victim_mention)))
     val deictic_mention = DesiredMention("Deictic", "there")
 
     testMention(mentions, self_mention)
@@ -93,11 +92,10 @@ class TestParse extends BaseTest {
     val mentions = extractor.extractFrom(doc)
 
     val self_mention = DesiredMention("Self", "I")
-    val self_arg = Arg("person", Array(self_mention))
     val victim_mention = DesiredMention("Victim", "villagers")
-    val victim_arg = Arg("target", Array(victim_mention))
     val search_mention = DesiredMention("Search", "I will search for the villagers",
-                                        Array(self_arg, victim_arg))
+                                        Map("person" -> Seq(self_mention),
+                                          "target" -> Seq(victim_mention)))
     val deictic_mention = DesiredMention("Deictic", "inside")
     val infrastructure_mention = DesiredMention("Infrastructure", "building")
 
@@ -159,10 +157,10 @@ class TestParse extends BaseTest {
     val mentions = extractor.extractFrom(doc)
 
     val guy_victim = DesiredMention("Person", "guy")
-    val guy_arg = Arg("target", Array(guy_victim))
     val there_deictic = DesiredMention("Deictic", "there")
     val person_victim = DesiredMention("Person", "person")
-    val sight_mention = DesiredMention("Sight", "'s a guy", Array(guy_arg))
+    val sight_mention = DesiredMention("Sight", "'s a guy",
+                          Map("target" -> Seq(guy_victim)))
 
     testMention(mentions, guy_victim)
     testMention(mentions, there_deictic)
@@ -170,20 +168,18 @@ class TestParse extends BaseTest {
     testMention(mentions, sight_mention)
   }
 
-  failingTest should "Recognize commitments" in {
+  passingTest should "Recognize commitments" in {
     val doc = extractor.annotate("I will rescue the victim in here")
     val mentions = extractor.extractFrom(doc)
 
     val self_mention = DesiredMention("Self", "I")
-    val self_arg = Arg("person", Array(self_mention))
     val victim_mention = DesiredMention("Victim", "victim")
-    val victim_arg = Arg("target", Array(victim_mention))
     val deictic_mention = DesiredMention("Deictic", "here")
     val save_mention = DesiredMention("Save", "rescue the victim",
-                                      Array(victim_arg))
-    val save_arg = Arg("target", Array(save_mention))
-    val commitment_mention = DesiredMention("Commitment", "I will rescue the victim",
-                                            Array(self_arg, save_arg))
+      Map("target"-> Seq(victim_mention)))
+    val commitment_mention = DesiredMention("MakeCommitment", "I will rescue the victim",
+                                            Map("person" -> Seq(self_mention),
+                                                "target" -> Seq(save_mention)))
     testMention(mentions, self_mention)
     testMention(mentions, victim_mention)
     testMention(mentions, deictic_mention)
@@ -211,17 +207,16 @@ class TestParse extends BaseTest {
     testMention(mentions, agree_mention)
   }
 
-  failingTest should "Recognize disagreements" in {
+  passingTest should "Recognize disagreements" in {
     val doc = extractor.annotate("No, I'm going over here")
     val mentions = extractor.extractFrom(doc)
 
     val disagree_mention = DesiredMention("Disagreement", "No")
     val self_mention = DesiredMention("Self", "I")
-    val self_arg = Arg("person", Array(self_mention))
     val deictic_mention = DesiredMention("Deictic", "here")
-    val deictic_arg = Arg("target", Array(deictic_mention))
     val move_mention = DesiredMention("Move", "I'm going over here",
-      Array(self_arg, deictic_arg))
+      Map("person" -> Seq(self_mention),
+          "target" -> Seq(deictic_mention)))
 
     testMention(mentions, disagree_mention)
     testMention(mentions, self_mention)
