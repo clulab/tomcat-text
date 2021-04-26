@@ -21,7 +21,7 @@ The repo also includes a Dialog Agent application that will ingest text and outp
 
 Sources of Dialog Agent input text are files, the MQTT message bus, and interactively from a terminal.
 
-In all cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches, where n can range from 0 to 5, and defaults to 0.
+In all cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches in extractions, where n can range from 0 to 5, and defaults to 0.
 
 
 
@@ -143,7 +143,7 @@ When using the Message Bus, it is not necessary to include a "topic" JSON elemen
 
 ## Output 
 
-The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message JSON format:
+The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message JSON format.
 
 ```json
 {
