@@ -50,6 +50,7 @@ agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree"
 disagree_triggers: "no|nah|nope|negative"
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
+
 block_triggers: "block|obstruct"
 
 clear_triggers: "clear|remove|clear|break"
