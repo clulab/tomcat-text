@@ -105,3 +105,5 @@ zone_triggers: "zone|area|side|section"
 encouragement_triggers1: "good|well|perfect|amazing|excellent|great|awesome"
 
 encouragement_triggers2: "job|done|work"
+
+thanking_triggers: "thank|thanks"
