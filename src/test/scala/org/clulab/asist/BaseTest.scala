@@ -48,30 +48,21 @@ class BaseTest extends FlatSpec with Matchers {
     found should equal(desiredMention)
   }
 
-
-  case class Arg(name: String, mentions: Seq[DesiredMention]) {
+  case class DesiredMention(label: String, text: String, arguments: Map[String, Seq[DesiredMention]] = Map.empty) {
     override def toString: String = {
-      s"TestArgument(name=$name, mentions=${mentions.sortBy(m => (m.label, m.text)).map(_.toString)})"
-    }
-  }
-  object Arg {
-    def fromArguments(args: Map[String, Seq[Mention]]): Seq[Arg] = {
-      for {
-        (argName, argMentions) <- args.toSeq
-        recastMentions = argMentions.map(DesiredMention.fromMention)
-      } yield Arg(argName, recastMentions)
-    }
-  }
-
-
-  case class DesiredMention(label: String, text: String, arguments: Seq[Arg] = Seq.empty) {
-    override def toString: String = {
-      s"TestMention(label=$label, $text, arguments=${arguments.map(_.toString).sorted})"
+      s"TestMention(label=$label, $text, arguments=${arguments.map(_.toString)})"
     }
   }
   object DesiredMention {
     def fromMention(m: Mention): DesiredMention = {
-      DesiredMention(m.label, m.text, Arg.fromArguments(m.arguments))
+      DesiredMention(m.label, m.text, m.arguments.map(arg =>
+          (
+            arg._1,
+            arg._2.map(one_mention => DesiredMention.fromMention(one_mention))
+          )
+        )
+      )
+
     }
   }
 
