@@ -80,7 +80,7 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
 
 ## Metadata Input
 
-Metadata read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following Json fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output Json.
+Metadata read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following JSON fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output JSON.
 
 
 #### Chat 
@@ -138,12 +138,12 @@ Metadata read by the Dialog Agent, either from .metadata files or the Message Bu
 }
 ```
 
-When using the Message Bus, it is not necessary to include a "topic" json element.
+When using the Message Bus, it is not necessary to include a "topic" JSON element.
 
 
 ## Output 
 
-The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message Json format:
+The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message JSON format:
 
 ```json
 {
