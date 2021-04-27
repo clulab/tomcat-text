@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# metadata2csv
+# ============
+# This script processes one or more .metadata files (corresponding to dumps of
+# message data from the message bus) and prints a tabular (CSV) representation
+# of the ASR messages published on the 'agent/asr/topic' contained in  the
+# files.
+
+# Prerequisites
+# -------------
+# You will need the 'jq' program (https://stedolan.github.io/jq/) to run this
+# script. You can install it using your OS package manager.
+# 
+# - macOS
+#   - MacPorts: port install jq
+#   - Homebrew: brew install jq
+# - Ubuntu
+#   - apt-get install jq
+#
+# Example usage
+# -------------
+#
+#   ./metadata2csv myDirectory/*.metadata > output.csv
+#
+# The invocation above will process all the files ending with .metadata in
+# 'myDirectory', and create a CSV file named 'output.csv'.
+
+grep -h "agent/asr/final" $@ \
+    | jq -r '[.msg.trial_id, .msg.timestamp, .data.participant_id, .data.text] | @csv'
