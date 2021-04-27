@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# metadata2csv
+# metadata2tsv
 # ============
 # This script processes one or more .metadata files (corresponding to dumps of
-# message data from the message bus) and prints a tabular (CSV) representation
+# message data from the message bus) and prints a tabular (TSV) representation
 # of the ASR messages published on the 'agent/asr/topic' contained in  the
 # files.
 
@@ -21,10 +21,15 @@
 # Example usage
 # -------------
 #
-#   ./metadata2csv myDirectory/*.metadata > output.csv
+#   ./metadata2tsv myDirectory/*.metadata > output.tsv
 #
 # The invocation above will process all the files ending with .metadata in
-# 'myDirectory', and create a CSV file named 'output.csv'.
+# 'myDirectory', and create a TSV file named 'output.tsv', with the following
+# four columns:
+# - Trial ID
+# - ISO-8601 Timestamp
+# - Participant ID
+# - Text of the message
 
 grep -h "agent/asr/final" $@ \
-    | jq -r '[.msg.trial_id, .msg.timestamp, .data.participant_id, .data.text] | @csv'
+    | jq -r '[.msg.trial_id, .msg.timestamp, .data.participant_id, .data.text] | @tsv'
