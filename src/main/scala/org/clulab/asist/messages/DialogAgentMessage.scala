@@ -1,7 +1,7 @@
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 February
+ *  updated:  2021 April
  *
  *  Dialog Agent Message
  *
@@ -30,7 +30,7 @@ case class DialogAgentMessageDataSource(
 case class DialogAgentMessageDataExtraction(
   val label: String = null,
   val span: String = null,
-  val arguments: Map[String, Seq[DialogAgentMessageDataExtraction]] = null,
+  val arguments: Map[String, Seq[DialogAgentMessageDataExtraction]] = Map.empty,
   val start_offset: Int = 0,
   val end_offset: Int = 0,
   val taxonomy_matches: Seq[(String, String)] = Seq.empty
