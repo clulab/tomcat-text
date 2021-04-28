@@ -1,11 +1,18 @@
 # tomcat-text
 
-This repository contains natural language text processing code for the DARPA Artificial Social Intelligence for Successful Teams (ASIST) program. See the main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
+This repository contains natural language text processing code for the DARPA
+Artificial Social Intelligence for Successful Teams (ASIST) program. See the
+main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
 
 
 # Web App
 
-The repo includes a webapp you can use to debug ODIN rules. When you input a piece of text, it will run the text through the system and visually display any mentions extracted by the system. The app will reload if it detects any changes to the rule files, so you can easily jump back and forth between writing rules and testing them. It also includes a syntax parse and specifies which rule generated each mention. 
+The repo includes a webapp you can use to debug ODIN rules. When you input a
+piece of text, it will run the text through the system and visually display any
+mentions extracted by the system. The app will reload if it detects any changes
+to the rule files, so you can easily jump back and forth between writing rules
+and testing them. It also includes a syntax parse and specifies which rule
+generated each mention. 
 
 To open the webapp run the following command from the top level directory:
 ```
@@ -17,11 +24,14 @@ Then navigate to the specified port using your web browser.
 
 # Dialog Agent
 
-The repo also includes a Dialog Agent application that will ingest text and output extracted events of interest for a particular domain.
+The repo also includes a Dialog Agent application that will ingest text and
+output extracted events of interest for a particular domain.  Sources of Dialog
+Agent input text are files, the MQTT message bus, and interactively from a
+terminal.
 
-Sources of Dialog Agent input text are files, the MQTT message bus, and interactively from a terminal.
-
-In all cases, a final optional argument of "-m n" can be used to control the number of taxonomy matches in extractions, where n can range from 0 to 5, and defaults to 0.
+In all cases, a final optional argument of "-m n" can be used to control the
+number of taxonomy matches in extractions, where n can range from 0 to 5, and
+defaults to 0.
 
 
 
@@ -31,10 +41,12 @@ In all cases, a final optional argument of "-m n" can be used to control the num
   sbt "runMain org.clulab.asist.RunDialogAgent stdin"
 ```
 
-In this mode, the Dialog Agent will prompt the user for text, and return the extractions directly.  
+In this mode, the Dialog Agent will prompt the user for text, and return the
+extractions directly.  
 
 
-An example of the agent running in stdin mode, with the number of taxonomy matches at the default setting of zero
+An example of the agent running in stdin mode, with the number of taxonomy
+matches at the default setting of zero
 
 ```
 
@@ -54,25 +66,32 @@ Enter plaintext for extraction, [CTRL-D] to exit.
 ```
 
 
-To exit the program, press [CTRL+D].  It will take several seconds for sbt to gracefully shut down the agent.
+To exit the program, press [CTRL+D].  It will take several seconds for sbt to
+gracefully shut down the agent.
 
 
 ### File mode
 
-To run the Dialog Agent with files, the user specifies the input and output filenames, and optionally the number of taxonomy matches to return.  
+To run the Dialog Agent with files, the user specifies the input and output
+filenames, and optionally the number of taxonomy matches to return.  
 
 ```
   sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
 ```
 
-  Supported input file types are WebVtt(.vtt), and TomCAT metadata (.metadata).  A directory can be specified as input.  Directories are traversed one level deep, and only the .vtt and .metadata files are processed.  Input files are processed in alphabetical order.
+Supported input file types are WebVtt(.vtt), and TomCAT metadata (.metadata).
+A directory can be specified as input.  Directories are traversed one level
+deep, and only the .vtt and .metadata files are processed.  Input files are
+processed in alphabetical order.
 
-  The ouput from the file(s) written to a singe output file in the order of processing.  
+The ouput from the file(s) written to a singe output file in the order of
+processing.  
    
 
 ### MQTT mode
 
-To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then the host and port that the MQTT message broker is running on.
+To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode,
+then the host and port that the MQTT message broker is running on.
 
 ```
   sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
@@ -80,7 +99,10 @@ To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode, then
 
 ## Metadata Input
 
-Metadata read by the Dialog Agent, either from .metadata files or the Message Bus, are expected to include the following JSON fields.  Extra structures and fields are ignored.  Missing data are replaced with null values in the output JSON.
+Metadata read by the Dialog Agent, either from .metadata files or the Message
+Bus, are expected to include the following JSON fields.  Extra structures and
+fields are ignored.  Missing data are replaced with null values in the output
+JSON.
 
 
 #### Chat 
@@ -138,12 +160,14 @@ Metadata read by the Dialog Agent, either from .metadata files or the Message Bu
 }
 ```
 
-When using the Message Bus, it is not necessary to include a "topic" JSON element.
+When using the Message Bus, it is not necessary to include a "topic" JSON
+element.
 
 
 ## Output 
 
-The Dialog Agent will publish its analysis to the message bus in Chat Analysis Message JSON format.
+The Dialog Agent will publish its analysis to the message bus in Chat Analysis
+Message JSON format.
 
 ```json
 {
