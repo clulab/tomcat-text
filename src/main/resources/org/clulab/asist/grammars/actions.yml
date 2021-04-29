@@ -136,31 +136,6 @@ rules:
       target: Person = >/${agents}/
 
 
-  - name: continue_action
-    priority: ${ rulepriority }
-    label: Continue
-    pattern: |
-      trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      person: Entity = >/${agents}/
-
-  - name: change_priority
-    priority: ${ rulepriority }
-    label: ChangePriority
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
-      target: Victim = >dobj
-      person: Entity? = >/${agents}/
-
-  - name: change_priority2
-    priority: ${ rulepriority }
-    label: ChangePriority
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
-      target: Person = >dobj
-      person: Entity? = >/${agents}/
-### split this one too to capture victim and person seperately
 
   - name: clear_rubble
     priority: ${ rulepriority }
@@ -188,23 +163,6 @@ rules:
       agent: Entity? = >/${agents}/
       target: Location = >dobj
 
-  - name: role_switch
-    priority: ${ rulepriority }
-    label: RoleSwitch
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
-      agent: Entity? = >/(${agents})/
-      target: Role? = >/nmod_to|xcomp/
-
-  - name: role_switch_change_to
-    priority: ${ rulepriority }
-    label: RoleSwitch
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/change/]
-      agent: Entity? = >/(${agents})/
-      target: Role = >/nmod_to/
 
   - name: obstructing
     priority: ${ rulepriority }
@@ -224,13 +182,3 @@ rules:
       source: Concept? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
 
-  - name: location_report
-    priority: ${ rulepriority }
-    label: ReportLocation
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      location: Location = </cop/
-      person: Entity? =
-        </cop/
-        >/nsubj/

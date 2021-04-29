@@ -2,6 +2,15 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
+  - name: infrastructure_detection
+    priority: ${ first_priority }
+    label: Infrastructure
+    type: token
+    keep: true
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ infrastructure_triggers })/ & outgoing=compound]) |
+      [lemma=/(?i)^(${ infrastructure_triggers })/]+
+
   - name: north
     priority: ${ first_priority }
     label: North

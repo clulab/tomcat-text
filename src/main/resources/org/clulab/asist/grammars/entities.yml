@@ -10,13 +10,6 @@ rules:
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: infrastructure
-      priority: ${ rulepriority }
-      label: Infrastructure
-      trigger: ${ infrastructure_triggers }
-
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
       name: foe
       priority: ${ rulepriority }
       label: Foe
@@ -115,7 +108,6 @@ rules:
       [tag=/^W/]
 
 
-### add a tag so we dont parse "na" from "gonna"
   - name: demonstrative_pronoun
     priority: ${ rulepriority }
     label: DemPron
