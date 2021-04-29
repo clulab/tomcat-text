@@ -10,6 +10,11 @@ rules:
     vars:
       rulepriority: "1"
 
+  # Extract the items
+  - import: org/clulab/asist/grammars/items.yml
+    vars:
+      rulepriority: "1"
+
   # Extract the sentiments
   - import: org/clulab/asist/grammars/sentiments.yml
     vars:
@@ -51,3 +56,12 @@ rules:
     vars:
       rulepriority: "3+"
 
+  # Extract team_comms
+  - import: org/clulab/asist/grammars/team_communication.yml
+    vars:
+      rulepriority: "3+"
+
+  # Extract temporal extractions
+  - import: org/clulab/asist/grammars/temporal_extractions.yml
+    vars:
+      rulepriority: "7+"
