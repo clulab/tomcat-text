@@ -41,10 +41,10 @@ rules:
     vars:
       rulepriority: "5"
 
-  # Extract the complex events
-  - import: org/clulab/asist/grammars/complex_actions.yml
-    vars:
-      rulepriority: "7+"
+  # Extract the complex events, COMMENTED OUT WHILE FILE IS EMPTY
+  #- import: org/clulab/asist/grammars/complex_actions.yml
+  #  vars:
+  #    rulepriority: "7+"
 
   # Extract commitments
   - import: org/clulab/asist/grammars/commitment.yml
