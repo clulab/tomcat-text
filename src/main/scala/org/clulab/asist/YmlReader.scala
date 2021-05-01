@@ -12,7 +12,11 @@ package org.clulab.asist
 
 import java.io.File
 import java.io.PrintWriter
+import java.util.Collection
 import org.slf4j.LoggerFactory
+import scala.io.Source
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
 
 class YmlReader(
   val inputFilename: String = "",
@@ -27,18 +31,34 @@ class YmlReader(
    */
   override def processFile(filename: String, output: PrintWriter): Unit = 
     filename.substring(filename.lastIndexOf(".")) match {
-      case ".yml" => {
-        logger.info("processing .yml file '%s' ...".format(filename))
-      }
-      case ".yaml" =>  {
-        logger.info("processing .yaml file '%s' ...".format(filename))
+      case ".yml" | ".yaml" => {
+        logger.info("processing '%s' ...".format(filename))
+        val file: File = new File(filename)
+        if(file.exists) 
+          processYaml(toYaml(file), output)
+        else 
+          logger.error("File not found '%s'".format(filename))
+
       }
       case _ => {
-        logger.error("Can't process file '%s'".format(filename))
+        logger.error("Can't process this type of file '%s'".format(filename))
         RunYmlReader.usageText.map(line => (logger.error(line)))
       }
     }
 
-  this(inputFilename, outputFilename)
 
+  def toYaml(file: File): Yaml = {
+    val source = Source.fromFile(file)
+    val string = source.mkString
+    val yaml = new Yaml(new Constructor(classOf[Collection[Any]]))
+    yaml.load(string).asInstanceOf[Collection[Any]]
+    yaml
+  }
+
+  def processYaml(yaml: Yaml, output: PrintWriter): Unit = {
+    output.write(yaml.toString)
+  }
+
+
+  this(inputFilename, outputFilename)
 }
