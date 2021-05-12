@@ -10,7 +10,6 @@
     - Location:
       - Inferred:
         - Deictic
-        - DemPron
       - Infrastructure:
         - Room
         - Door
@@ -72,6 +71,7 @@
     - Self
     - You
     - Team
+    - DemPron
     - Role:
       - Searcher
       - Medic

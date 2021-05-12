@@ -2,18 +2,23 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
   - name: location_question
+    example: "Where are they? Where is the victim?"
     priority: ${ rulepriority }
     label: LocationQuestion
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ where_triggers })/]
-      topic: Entity? =
-        <advmod
+      topic: Entity =
+        <advmod [lemma=be]
         >/nsubj|dobj|nmod/
-#        [tag=/^N/]
 
- #      [lemma=/${ where_triggers }/]
-
+  - name: location_moving_question
+    priority: ${ rulepriority }
+    label: LocationQuestion
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ where_triggers })/]
+      topic: Move = <advmod
 
 #leave this here so I can remember how to do these complex dependencies
 #      first_action: Action? =
