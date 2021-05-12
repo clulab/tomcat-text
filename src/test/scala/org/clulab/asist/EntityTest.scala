@@ -9,9 +9,7 @@ class EntityTest extends BaseTest {
 
     val person1_mention = DesiredMention("Person", "dude")
     val person2_mention = DesiredMention("Person", "guy")
-    val victim_mention = DesiredMention("Victim", "victim")
-
-
+    val victim_mention = DesiredMention("Victim", "victims")
 
     testMention(mentions, person1_mention)
     testMention(mentions, person2_mention)

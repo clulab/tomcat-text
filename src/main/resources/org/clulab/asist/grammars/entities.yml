@@ -22,12 +22,13 @@ rules:
       label: Person
       trigger: ${ person_triggers }
 
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: victim
-      priority: ${ rulepriority }
-      label: Victim
-      trigger: ${ victim_triggers }
+  - name: victim
+    priority: ${ rulepriority }
+    label: Victim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ victim_triggers })/]
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
