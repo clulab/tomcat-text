@@ -38,6 +38,7 @@ if __name__ == "__main__":
             (
                 "Team",
                 "Trial",
+                "trial_uuid",
                 "CondBtwn",
                 "CondWin",
                 "timestamp",
@@ -50,20 +51,18 @@ if __name__ == "__main__":
 
     for filepath in args.input:
 
+        # Parse the filename components
+        path = Path(filepath)
+        components = Path(filepath).stem.split("_")
         try:
-            # Parse the filename components
-            path = Path(filepath)
-
-            # We replace double underscores with single underscores to deal
-            # with a naming error by TA3 (that will be fixed soon).
-            components = Path(filepath).stem.replace("__", "_").split("_")
-            trial = components[2].split("-")[1]
             team = str(int(components[3].split("-")[1][2:]))
+            trial = components[2].split("-")[1]
             condbtwn = components[4].split("-")[1]
             condwin = components[5].split("-")[1]
-        except ValueError:
+        except:
             warning(f"Could not parse filename: {filepath}")
             continue
+
 
 
         # Process the file
@@ -83,10 +82,12 @@ if __name__ == "__main__":
                     relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
                     text = data["text"]
                     participant_id = data["participant_id"]
+                    trial_uuid = message["msg"]["trial_id"]
                     line = "\t".join(
                         (
                             team,
                             trial,
+                            trial_uuid,
                             condbtwn,
                             condwin,
                             timestamp,
