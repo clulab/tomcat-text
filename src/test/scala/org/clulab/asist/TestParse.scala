@@ -187,17 +187,6 @@ class TestParse extends BaseTest {
     testMention(mentions, commitment_mention)
   }
 
-  passingTest should "Recognize questions" in {
-    val doc = extractor.annotate("What's that over there?")
-    val mentions = extractor.extractFrom(doc)
-
-    val question_mention = DesiredMention("QuestionParticle", "What")
-    val deictic_mention = DesiredMention("Deictic", "there")
-
-    testMention(mentions, question_mention)
-    testMention(mentions, deictic_mention)
-  }
-
   passingTest should "Recognize agreements" in {
     val doc = extractor.annotate("Yes, sounds good")
     val mentions = extractor.extractFrom(doc)

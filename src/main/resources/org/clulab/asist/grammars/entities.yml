@@ -36,12 +36,20 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: all_nps
+    priority: ${ rulepriority }
+    label: Concept
+    type: token
+    keep: false
+    pattern: |
+      [chunk=/B-NP/ & !tag=DT] [chunk=/I-NP/]*
+
   - name: numbers
     priority: ${ rulepriority }
     label: Number
     type: token
     pattern: |
-      [tag=CD]
+      (?<! other) [tag=CD]
 
   - name: deictic_detection
     priority: ${ rulepriority }
@@ -83,6 +91,15 @@ rules:
     pattern: |
       [lemma=/(?i)^(${ team_triggers })/ & tag=/PRP/]
 
+  - name: them_token_capture
+    label: Entity
+    examples: "it, they, them"
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^it\b|they|them/ & tag=/PRP/]
+
   - name: green
     label: Green
     priority: ${ rulepriority }
@@ -103,10 +120,9 @@ rules:
     label: QuestionParticle
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [tag=/^W/]
-
 
   - name: demonstrative_pronoun
     priority: ${ rulepriority }
@@ -115,3 +131,12 @@ rules:
     keep: false
     pattern: |
       [word=/${ dem_pron_triggers }/]
+
+  - name: pro-form-etc
+    priority: ${ rulepriority }
+    label: Entity
+    type: token
+    keep: false
+    pattern: |
+      others | other (?! [tag=/^N|CD/]) | (?<= other) [tag=/CD|^N/]
+

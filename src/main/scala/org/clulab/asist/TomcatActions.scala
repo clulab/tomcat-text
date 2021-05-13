@@ -11,12 +11,19 @@ class TomcatActions(
     val timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
 ) extends Actions
     with LazyLogging {
+
   def passThrough(
       mentions: Seq[Mention],
       state: State = new State()
   ): Seq[Mention] = {
     mentions
   }
+
+  def globalAction(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    val notSubsumed = mostSpecificOnly(mentions, state)
+    keepLongest(notSubsumed, state)
+  }
+
 
 /** Keeps the longest mention for each group of overlapping mentions **/
   def keepLongest(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
@@ -37,6 +44,19 @@ class TomcatActions(
       compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
       if compatibleLabel.isEmpty
     } yield m
+  }
+
+  def mostSpecificOnly(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    var localState = new State()
+    for(m <- mentions.sortBy(-_.labels.length)) {
+      val sameSpan = localState.mentionsFor(m.sentence, m.tokenInterval).filter(_.tokenInterval == m.tokenInterval)
+      val compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
+      if (compatibleLabel.isEmpty) {
+        localState = localState.updated(Seq(m))
+      }
+    }
+    // the almost equivalent of `allMentions` but not filtering for _.keep
+    localState.lookUpTable.values.toStream.flatten.distinct.toVector
   }
 
   def removeResearcher(
