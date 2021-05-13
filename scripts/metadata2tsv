@@ -53,17 +53,10 @@ if __name__ == "__main__":
 
         # Parse the filename components
         path = Path(filepath)
-        components = Path(filepath).stem.split("_")
-        try:
-            team = str(int(components[3].split("-")[1][2:]))
-            trial = components[2].split("-")[1]
-            condbtwn = components[4].split("-")[1]
-            condwin = components[5].split("-")[1]
-        except:
-            warning(f"Could not parse filename: {filepath}")
-            continue
-
-
+        trial=filepath.rpartition("Trial-")[2].split("_")[0]
+        team=str(int(filepath.rpartition("Team-")[2].split("_")[0][2:]))
+        condbtwn=filepath.rpartition("CondBtwn-")[2].split("_")[0]
+        condwin=filepath.rpartition("CondWin-")[2].split("_")[0]
 
         # Process the file
         with open(filepath) as f:
