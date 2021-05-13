@@ -1,35 +1,99 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python
 
 # metadata2tsv
 # ============
 # This script processes one or more .metadata files (corresponding to dumps of
 # message data from the message bus) and prints a tabular (TSV) representation
-# of the ASR messages published on the 'agent/asr/topic' contained in  the
+# of the ASR messages published on the 'agent/asr/final' topic contained in the
 # files.
 
-# Prerequisites
-# -------------
-# You will need the 'jq' program (https://stedolan.github.io/jq/) to run this
-# script. You can install it using your OS package manager.
-# 
-# - macOS
-#   - MacPorts: port install jq
-#   - Homebrew: brew install jq
-# - Ubuntu
-#   - apt-get install jq
-#
 # Example usage
 # -------------
 #
 #   ./metadata2tsv myDirectory/*.metadata > output.tsv
-#
-# The invocation above will process all the files ending with .metadata in
-# 'myDirectory', and create a TSV file named 'output.tsv', with the following
-# four columns:
-# - Trial ID
-# - ISO-8601 Timestamp
-# - Participant ID
-# - Text of the message
 
-grep -h "agent/asr/final" $@ \
-    | jq -r '[.msg.trial_id, .msg.timestamp, .data.participant_id, .data.text] | @tsv'
+
+import sys
+import json
+from pathlib import Path
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
+from logging import warning
+
+if __name__ == "__main__":
+    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+
+    parser = ArgumentParser(
+        description="metadata2tsv",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "input", type=str, nargs="+", help="Input .metadata files"
+    )
+    args = parser.parse_args()
+
+    print(
+        "\t".join(
+            (
+                "Team",
+                "Trial",
+                "trial_uuid",
+                "CondBtwn",
+                "CondWin",
+                "timestamp",
+                "relative_timestamp (mm:ss)",
+                "participant_id",
+                "text",
+            )
+        )
+    )
+
+    for filepath in args.input:
+
+        # Parse the filename components
+        path = Path(filepath)
+        components = Path(filepath).stem.split("_")
+        try:
+            team = str(int(components[3].split("-")[1][2:]))
+            trial = components[2].split("-")[1]
+            condbtwn = components[4].split("-")[1]
+            condwin = components[5].split("-")[1]
+        except:
+            warning(f"Could not parse filename: {filepath}")
+            continue
+
+
+
+        # Process the file
+        with open(filepath) as f:
+            initial_timestamp = None
+            for line in f:
+                # We are only interested in the final transcriptions, not the
+                # intermediate ones.
+                if '"sub_type":"start"' in line:
+                    initial_timestamp = json.loads(line)["msg"]["timestamp"]
+
+                if "asr/final" in line:
+                    message = json.loads(line)
+                    data = message["data"]
+                    timestamp = message["msg"]["timestamp"]
+                    timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+                    relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
+                    text = data["text"]
+                    participant_id = data["participant_id"]
+                    trial_uuid = message["msg"]["trial_id"]
+                    line = "\t".join(
+                        (
+                            team,
+                            trial,
+                            trial_uuid,
+                            condbtwn,
+                            condwin,
+                            timestamp,
+                            relative_timestamp,
+                            participant_id,
+                            text,
+                        )
+                    )
+                    print(line)
