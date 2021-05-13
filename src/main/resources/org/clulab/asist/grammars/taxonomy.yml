@@ -5,6 +5,7 @@
     - Ordinal
   - Switch
   - EventLike:
+    - Plan
     - Time:
       - TimeUnit
     - Location:

@@ -60,3 +60,10 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)(${ charlie_triggers })/]
+
+  - name: plan_base
+    label: Plan
+    priority: ${ rulepriority }
+    type: token
+    pattern: |
+      [lemma=/(?i)plan|strategy/]

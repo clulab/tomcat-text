@@ -25,6 +25,7 @@ rules:
     vars:
       first_priority: "2-3"
       second_priority: "4+"
+      third_priority: "5"
 
   # Extract the base_concepts
   - import: org/clulab/asist/grammars/base_concepts.yml
@@ -39,7 +40,7 @@ rules:
   # Extract the simple events
   - import: org/clulab/asist/grammars/actions.yml
     vars:
-      rulepriority: "5"
+      rulepriority: "6"
 
   # Extract the complex events, COMMENTED OUT WHILE FILE IS EMPTY
   #- import: org/clulab/asist/grammars/complex_actions.yml

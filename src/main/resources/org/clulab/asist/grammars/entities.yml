@@ -36,6 +36,14 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: all_nps
+    priority: ${ rulepriority }
+    label: Concept
+    type: token
+    keep: false
+    pattern: |
+      [chunk=/B-NP/ & !tag=DT] [chunk=/I-NP/]*
+
   - name: numbers
     priority: ${ rulepriority }
     label: Number
