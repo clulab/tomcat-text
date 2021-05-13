@@ -32,7 +32,8 @@ def sync_asist_data(gcs_dir):
     }
 
     if gcs_dir=="study-2_pilot-2_2021.02":
-        extensions_to_exclude.remove("metadata")
+        extensions_to_exclude-={"metadata"}
+        extensions_to_exclude|={"vtt", "flv", "wav", "mkv"}
 
     # Construct a regex for gsutil rsync exclusion
     exclusion_regex = (
