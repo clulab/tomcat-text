@@ -31,6 +31,7 @@ rules:
   - name: triage
     priority: ${ rulepriority }
     label: Save
+    example: "I will save the victim"
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
@@ -40,12 +41,27 @@ rules:
   - name: triage2
     priority: ${ rulepriority }
     label: Save
+    example: "I will save this guy"
     action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Person = >dobj
       location: Infrastructure? = >nmod_in
 ###need this because we split "person" from "victim"
+
+  - name: triage3
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save him"
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Entity=
+      >dobj
+      [tag=/PRP/]
+      location: Infrastructure? = >nmod_in
+## This one is not working right now, working on it -Remo
+
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
