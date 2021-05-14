@@ -9,4 +9,4 @@ rules:
     pattern: |
       trigger = [tag=/^MD/]
       target: Action = <aux
-      person: Self? = <aux >nsubj
+      person: Entity? = <aux >nsubj
