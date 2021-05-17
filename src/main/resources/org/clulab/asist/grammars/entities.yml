@@ -88,9 +88,25 @@ rules:
     label: Green
     priority: ${ rulepriority }
     type: token
-    keep: false
+    keep: true
     pattern: |
       [lemma=/(?i)^(green)/]
+
+  - name: red
+    label: Red
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(red)/]
+
+  - name: blue
+    label: Blue
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(blue)/]
 
   - name: yellow
     label: Yellow

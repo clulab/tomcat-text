@@ -78,7 +78,6 @@
       - Engineer
     - Victim:
         - Yellow
-        - Green
     - Friend
     - Foe
     - Player:
@@ -86,6 +85,9 @@
       - Bravo
       - Charlie
       - Delta
+      - Red
+      - Blue
+      - Green
   - Direction:
     - Relative:
       - Up
