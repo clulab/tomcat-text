@@ -27,8 +27,6 @@ libraryDependencies ++= {
     "org.clulab"    %% "processors-odin"          % procVer,
     "org.clulab"    %% "processors-modelsmain"    % procVer,
     "org.clulab"    %% "processors-modelscorenlp" % procVer,
-    "org.clulab"    %% "factuality"               % "1.0.0",
-    "org.clulab"    %  "factuality-models"        % "0.2.0",
     "ai.lum"        %% "common"                   % "0.0.9",
     "org.scalatest" %% "scalatest"                % "3.0.4" % "test",
     "com.typesafe"  %  "config"                   % "1.3.1",

@@ -35,13 +35,13 @@ case class MetadataMsg (
   val replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
 )
 
-// topic gets read first.  If it's one we recognize then we process Metadata
+// If we recognize the topic we will process the message.
 case class MetadataLookahead(
   val topic: String = ""
 )
 
+// 
 case class Metadata(
-  val header: CommonHeader,
   val data: MetadataData,
   val msg: MetadataMsg
 )

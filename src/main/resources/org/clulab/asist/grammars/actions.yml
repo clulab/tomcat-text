@@ -31,6 +31,7 @@ rules:
   - name: triage
     priority: ${ rulepriority }
     label: Save
+    example: "I will save the victim"
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
@@ -40,6 +41,7 @@ rules:
   - name: triage2
     priority: ${ rulepriority }
     label: Save
+    example: "I will save this guy"
     action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
@@ -47,13 +49,20 @@ rules:
       location: Infrastructure? = >nmod_in
 ###need this because we split "person" from "victim"
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: sight
-      template_priority: ${ rulepriority }
-      label: Sight
-      trigger: ${ sight_triggers }
-      object_type: EntityTypes
+  - name: triage3
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save him"
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Entity=
+      >dobj
+      [tag=/PRP/]
+      location: Infrastructure? = >nmod_in
+## This one is not working right now, working on it -Remo
+
+
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -97,7 +106,7 @@ rules:
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
-  # -------------------------------------------------------------------
+  # ------------------------------------------------------------------
 
   - name: move_nmod_action
     priority: ${ rulepriority }
@@ -117,7 +126,33 @@ rules:
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
 
-  # -------------------------------------------------------------------
+  # ------------------------------------------------------------------- sight
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_entity
+      example: "I see the victim"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Entity
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_item
+      example: "I see the medkit"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Item
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_event_like
+      example: "I see the rubble"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: EventLike
 
   - name: sight_presence
     priority: ${ rulepriority }
@@ -135,32 +170,7 @@ rules:
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
       target: Person = >/${agents}/
 
-
-  - name: continue_action
-    priority: ${ rulepriority }
-    label: Continue
-    pattern: |
-      trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      person: Entity = >/${agents}/
-
-  - name: change_priority
-    priority: ${ rulepriority }
-    label: ChangePriority
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
-      target: Victim = >dobj
-      person: Entity? = >/${agents}/
-
-  - name: change_priority2
-    priority: ${ rulepriority }
-    label: ChangePriority
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
-      target: Person = >dobj
-      person: Entity? = >/${agents}/
-### split this one too to capture victim and person seperately
+##----------------------------------------------------------------------------------------- clear
 
   - name: clear_rubble
     priority: ${ rulepriority }
@@ -188,23 +198,6 @@ rules:
       agent: Entity? = >/${agents}/
       target: Location = >dobj
 
-  - name: role_switch
-    priority: ${ rulepriority }
-    label: RoleSwitch
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
-      agent: Entity? = >/(${agents})/
-      target: Role? = >/nmod_to|xcomp/
-
-  - name: role_switch_change_to
-    priority: ${ rulepriority }
-    label: RoleSwitch
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/change/]
-      agent: Entity? = >/(${agents})/
-      target: Role = >/nmod_to/
 
   - name: obstructing
     priority: ${ rulepriority }
@@ -224,13 +217,3 @@ rules:
       source: Concept? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
 
-  - name: location_report
-    priority: ${ rulepriority }
-    label: ReportLocation
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      location: Location = </cop/
-      person: Entity? =
-        </cop/
-        >/nsubj/

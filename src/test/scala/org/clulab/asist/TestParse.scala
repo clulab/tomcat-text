@@ -28,12 +28,7 @@ class TestParse extends BaseTest {
 //    mentions(2).label should be("Close")
   }
 
-  failingTest should "Parse craft events properly" in {
-    val doc = extractor.annotate("After crafting this sword, I push the button")
-    val mentions = extractor.extractFrom(doc)
-    mentions.size should be(1)
-    mentions(0).label should be("Craft")
-  }
+
 
   failingTest should "Parse sight events properly" in {
     val doc = extractor.annotate("I think I see a victim over there")
@@ -168,35 +163,6 @@ class TestParse extends BaseTest {
     testMention(mentions, sight_mention)
   }
 
-  passingTest should "Recognize commitments" in {
-    val doc = extractor.annotate("I will rescue the victim in here")
-    val mentions = extractor.extractFrom(doc)
-
-    val self_mention = DesiredMention("Self", "I")
-    val victim_mention = DesiredMention("Victim", "victim")
-    val deictic_mention = DesiredMention("Deictic", "here")
-    val save_mention = DesiredMention("Save", "rescue the victim",
-      Map("target"-> Seq(victim_mention)))
-    val commitment_mention = DesiredMention("MakeCommitment", "I will rescue the victim",
-                                            Map("person" -> Seq(self_mention),
-                                                "target" -> Seq(save_mention)))
-    testMention(mentions, self_mention)
-    testMention(mentions, victim_mention)
-    testMention(mentions, deictic_mention)
-    testMention(mentions, save_mention)
-    testMention(mentions, commitment_mention)
-  }
-
-  passingTest should "Recognize questions" in {
-    val doc = extractor.annotate("What's that over there?")
-    val mentions = extractor.extractFrom(doc)
-
-    val question_mention = DesiredMention("QuestionParticle", "What")
-    val deictic_mention = DesiredMention("Deictic", "there")
-
-    testMention(mentions, question_mention)
-    testMention(mentions, deictic_mention)
-  }
 
   passingTest should "Recognize agreements" in {
     val doc = extractor.annotate("Yes, sounds good")
