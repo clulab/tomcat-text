@@ -106,7 +106,7 @@ rules:
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
-  # -------------------------------------------------------------------
+  # ------------------------------------------------------------------
 
   - name: move_nmod_action
     priority: ${ rulepriority }
