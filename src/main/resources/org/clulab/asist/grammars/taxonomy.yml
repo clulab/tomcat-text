@@ -79,7 +79,6 @@
       - Engineer
     - Victim:
         - Yellow
-        - Green
     - Friend
     - Foe
     - Player:
@@ -87,6 +86,9 @@
       - Bravo
       - Charlie
       - Delta
+      - Red
+      - Blue
+      - Green
   - Direction:
     - Relative:
       - Up
@@ -103,29 +105,11 @@
       - SouthWest
       - West
   - Item:
-    - Bow
-    - Arrow
     - Sword
     - Shovel
-    - Pickaxe
-    - Axe
-    - Flint
-    - Painting
     - Sign
     - WoodenDoor
-    - Bucket
-    - WaterBucket
-    - LavaBucket
-    - Minecart
-    - Saddle
     - IronDoor
-    - Redstone
-    - Boat
-    - Clock
-    - Bed
-    - Emerald
-    - ItemFrame
-    - FlowerPot
     - Tool:
       - Hammer
       - MedKit

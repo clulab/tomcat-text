@@ -22,12 +22,13 @@ rules:
       label: Person
       trigger: ${ person_triggers }
 
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: victim
-      priority: ${ rulepriority }
-      label: Victim
-      trigger: ${ victim_triggers }
+  - name: victim
+    priority: ${ rulepriority }
+    label: Victim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ victim_triggers })/]
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
@@ -104,9 +105,25 @@ rules:
     label: Green
     priority: ${ rulepriority }
     type: token
-    keep: false
+    keep: true
     pattern: |
       [lemma=/(?i)^(green)/]
+
+  - name: red
+    label: Red
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(red)/]
+
+  - name: blue
+    label: Blue
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(blue)/]
 
   - name: yellow
     label: Yellow
