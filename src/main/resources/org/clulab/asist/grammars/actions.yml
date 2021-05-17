@@ -63,13 +63,6 @@ rules:
 ## This one is not working right now, working on it -Remo
 
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: sight
-      template_priority: ${ rulepriority }
-      label: Sight
-      trigger: ${ sight_triggers }
-      object_type: EntityTypes
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -133,7 +126,33 @@ rules:
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
 
-  # -------------------------------------------------------------------
+  # ------------------------------------------------------------------- sight
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_entity
+      example: "I see the victim"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Entity
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_item
+      example: "I see the medkit"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Item
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_event_like
+      example: "I see the rubble"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: EventLike
 
   - name: sight_presence
     priority: ${ rulepriority }
@@ -151,7 +170,7 @@ rules:
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
       target: Person = >/${agents}/
 
-
+##----------------------------------------------------------------------------------------- clear
 
   - name: clear_rubble
     priority: ${ rulepriority }
