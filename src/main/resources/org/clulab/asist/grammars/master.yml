@@ -36,6 +36,12 @@ rules:
     vars:
       rulepriority: "5"
 
+  # Extract the planning terms
+  - import: org/clulab/asist/grammars/planning.yml
+    vars:
+      rulepriority: "5"
+
+
   # Extract the complex events
   - import: org/clulab/asist/grammars/complex_actions.yml
     vars:
