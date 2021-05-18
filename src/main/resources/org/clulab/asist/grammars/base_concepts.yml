@@ -1,6 +1,15 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
+  # ------------- CONCEPT --------------------------
+  - name: base_concept
+    priority: ${ rulepriority }
+    label: Concept
+    keep: false
+    type: token
+    pattern: |
+      ([tag=/^NN/ | tag=/^VB/])
+
   # ------------- TOOLS --------------------------
   - name: hammer
     priority: ${ rulepriority }

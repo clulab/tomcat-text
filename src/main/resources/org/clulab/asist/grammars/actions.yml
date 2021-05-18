@@ -13,15 +13,6 @@ rules:
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
-      name: move
-      template_priority: ${ rulepriority }
-      label: Move
-      trigger: ${ moveto_triggers }
-      object_type: Location
-
-# need intransitive movement
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
       name: toggle
       template_priority: ${ rulepriority }
       label: Toggle
@@ -55,6 +46,7 @@ rules:
       trigger: ${ sight_triggers }
       object_type: EntityTypes
 
+# Can't we remove 'Craft'. Are there any craft events?
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
       name: craft
@@ -63,6 +55,7 @@ rules:
       trigger: ${ craft_triggers }
       object_type: Concept?
 
+# Can't we remove 'Defeat'. Are there any defeat events?
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
       name: defeat
@@ -98,6 +91,13 @@ rules:
       target: Concept? = >nmod_for
 
   # -------------------------------------------------------------------
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: move
+      template_priority: ${ rulepriority }
+      label: Move
+      trigger: ${ moveto_triggers }
+      object_type: Location
 
   - name: move_nmod_action
     priority: ${ rulepriority }

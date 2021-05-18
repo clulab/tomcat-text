@@ -4,7 +4,7 @@ rules:
 
   - name: planning_after
     label: Planning
-    priority: 1
-    type: event
+    priority: ${ rulepriority }
+    type: token
     pattern: |
-      trigger = [lemma=/(?i)after|before/]
+      [lemma=/(?i)^(after|before)/]
