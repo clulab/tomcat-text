@@ -46,24 +46,6 @@ rules:
       trigger: ${ sight_triggers }
       object_type: EntityTypes
 
-# Can't we remove 'Craft'. Are there any craft events?
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: craft
-      template_priority: ${ rulepriority }
-      label: Craft
-      trigger: ${ craft_triggers }
-      object_type: Concept?
-
-# Can't we remove 'Defeat'. Are there any defeat events?
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: defeat
-      template_priority: ${ rulepriority }
-      label: Defeat
-      trigger: ${ attack_triggers }
-      object_type: Foe
-
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
       name: search

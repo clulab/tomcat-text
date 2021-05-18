@@ -70,21 +70,6 @@ class TestActions extends BaseTest {
     testMention(mentions, sight_mention)
   }
 
-  passingTest should "Parse defeat events properly" in {
-    val doc = extractor.annotate("To progress I'm going to kill the zombies")
-    val mentions = extractor.extractFrom(doc)
-
-    val self_mention = DesiredMention("Self", "I")
-    val foe_mention = DesiredMention("Foe", "zombies")
-    val defeat_mention = DesiredMention("Defeat", "I'm going to kill the zombies",
-      Map("agent" -> Seq(self_mention),
-        "target" -> Seq(foe_mention)))
-
-    testMention(mentions, self_mention)
-    testMention(mentions, foe_mention)
-    testMention(mentions, defeat_mention)
-  }
-
   passingTest should "Parse search events properly" in {
     val doc =
       extractor.annotate("I will search for the villagers inside the building")
