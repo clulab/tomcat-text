@@ -6,7 +6,8 @@ class TestPlanning extends BaseTest {
 
   behavior of "AsistEngine"
 
-   // Target: close
+ /*
+   // Target: planning
    passingTest should "Parse planning tokens properly" in {
 
     val doc = extractor.annotate("Before that, we should continue.")
@@ -20,4 +21,5 @@ class TestPlanning extends BaseTest {
     testMention(mentions, team_mention)
     testMention(mentions, precedence_mention)
   }
+  */
 }
