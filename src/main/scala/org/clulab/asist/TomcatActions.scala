@@ -4,6 +4,8 @@ package org.clulab.asist
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.odin._
 import org.clulab.asist.AsistEngine._
+import org.clulab.asist.attachments.{Agent, AgentType}
+import org.clulab.struct.Interval
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -20,8 +22,63 @@ class TomcatActions(
   }
 
   def globalAction(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    val notSubsumed = mostSpecificOnly(mentions, state)
+    // convert any agent argument to an attachment
+    val agentResolved = convertAgents(mentions, state)
+    val notSubsumed = mostSpecificOnly(agentResolved, state)
     keepLongest(notSubsumed, state)
+  }
+
+  def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    mentions.map(convertAgent)
+  }
+
+  def convertAgent(mention: Mention): Mention = {
+    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG)
+    val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty)
+    val agents = agentMentions.map(mkAgent).toSet
+
+    val copy = mention match {
+      case tb: TextBoundMention => mention
+      case rm: RelationMention =>
+        val newSpan = mkInterval(mention, nonAgentArgs)
+        rm.copy(arguments = nonAgentArgs, attachments = agents, tokenInterval = newSpan)
+      case em: EventMention =>
+        val newSpan = mkInterval(mention, nonAgentArgs)
+        em.copy(arguments = nonAgentArgs, attachments = agents, tokenInterval = newSpan)
+      case _ => ???
+    }
+
+    copy
+  }
+
+  def mkInterval(m: Mention, args: Map[String, Seq[Mention]]): Interval = {
+    val triggerOffsets = m match {
+      case em: EventMention => Seq(em.trigger.start, em.trigger.end)
+      case _ => Seq.empty
+    }
+    val argOffsets = args.toSeq.flatMap(_._2)
+      .map(_.tokenInterval)
+      .flatMap(t => Seq(t.start, t.end))
+    val allOffsets = triggerOffsets ++ argOffsets
+    val start = allOffsets.min
+    val end = allOffsets.max
+    Interval(start, end)
+  }
+
+  def mkAgent(m: Mention): Attachment = {
+    // from taxonomy, we have...
+    //    - Other
+    //    - Self
+    //    - You
+    //    - Team
+    val agentType = m.label match {
+      case "Other" => AgentType.Other
+      case "Self" => AgentType.Self
+      case "You" => AgentType.You
+      case "Team" => AgentType.Team
+      case _ => ??? // fixme?
+    }
+    Agent(m.text, agentType)
   }
 
 
