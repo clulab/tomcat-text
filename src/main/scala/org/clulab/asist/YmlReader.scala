@@ -1,9 +1,11 @@
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 April
+ * Updated:  2021 May
  *
- * Process a file or the first level of a directory of files.
+ * Read .yml or .yaml rules and generate .md output
+ *
+ * Based on:  https://www.baeldung.com/java-snake-yaml
  *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
@@ -11,16 +13,28 @@
 package org.clulab.asist
 
 import java.io.File
+import java.io.InputStream
 import java.io.PrintWriter
+
+import org.clulab.asist.AsistEngine._
+
 import java.util.Collection
 import org.slf4j.LoggerFactory
 import scala.io.Source
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
+import org.clulab.utils.{Configured, FileUtils}
+
+
+// for now 
+case class Rule(
+  name: String = "",
+  label: String = ""
+)
 
 class YmlReader(
   val inputFilename: String = "",
-  val outputFilename: String = "",
+  val outputFilename: String = ""
 ) extends FileHandler {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
@@ -55,10 +69,28 @@ class YmlReader(
     yaml
   }
 
+
   def processYaml(yaml: Yaml, output: PrintWriter): Unit = {
     output.write(yaml.toString)
   }
 
 
   this(inputFilename, outputFilename)
+
+
+
+  val asistEngine = new AsistEngine
+
+  // master rules
+  val mrp = asistEngine.LoadableAttributes.masterRulesPath
+  val masterRules = FileUtils.getTextFromResource(mrp)
+  System.out.println("masterRules:")
+  System.out.print(masterRules)
+
+  // taxonomy
+  val tp = asistEngine.LoadableAttributes.taxonomyPath
+  val taxonomy = FileUtils.getTextFromResource(tp)
+  System.out.println("taxonomy:")
+  System.out.print(taxonomy)
+
 }
