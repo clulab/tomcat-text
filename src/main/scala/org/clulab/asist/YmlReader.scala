@@ -77,8 +77,14 @@ class YmlReader(
       yaml.load(document).asInstanceOf[LinkedHashMap[String, Any]]
 
     val keys = map.keySet
-
     System.out.println("number of keys found: %d".format(keys.size))
+
+    val keyIter = keys.iterator
+
+    while(keyIter.hasNext) {
+      System.out.println("KEY: %s".format(keyIter.next))
+    }
+
     yaml
   }
 
