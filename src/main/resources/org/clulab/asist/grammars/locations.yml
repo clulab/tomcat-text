@@ -2,6 +2,24 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
+  - name: infrastructure_detection
+    priority: ${ first_priority }
+    label: Infrastructure
+    type: token
+    keep: true
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ infrastructure_triggers })/ & outgoing=compound]) |
+      [lemma=/(?i)^(${ infrastructure_triggers })/]+
+
+  - name: rooms_mwe_surface
+    priority: ${ first_priority }
+    label: Infrastructure
+    type: token
+    keep: true
+    pattern: |
+      /${room_singleword_surface_regex}/ |
+      /${room_twoword_first_word_regex}/ room
+
   - name: north
     priority: ${ first_priority }
     label: North
@@ -107,6 +125,5 @@ rules:
     priority: ${ second_priority }
     label: Location
     type: token
-#    action: noRepeats
     pattern: |
       [mention=Location]{2,4}

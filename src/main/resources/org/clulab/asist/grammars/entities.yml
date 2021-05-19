@@ -3,24 +3,18 @@ vars: org/clulab/asist/grammars/vars.yml
 rules:
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: infrastructure
-      priority: ${ rulepriority }
-      label: Infrastructure
-      trigger: ${ infrastructure_triggers }
-
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
       name: person
       priority: ${ rulepriority }
       label: Person
       trigger: ${ person_triggers }
 
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: victim
-      priority: ${ rulepriority }
-      label: Victim
-      trigger: ${ victim_triggers }
+  - name: victim
+    priority: ${ rulepriority }
+    label: Victim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ victim_triggers })/]
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
@@ -29,12 +23,20 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: all_nps
+    priority: ${ rulepriority }
+    label: Concept
+    type: token
+    keep: false
+    pattern: |
+      [chunk=/B-NP/ & !tag=DT] [chunk=/I-NP/]*
+
   - name: numbers
     priority: ${ rulepriority }
     label: Number
     type: token
     pattern: |
-      [tag=CD]
+      (?<! other) [tag=CD]
 
   - name: deictic_detection
     priority: ${ rulepriority }
@@ -76,13 +78,38 @@ rules:
     pattern: |
       [lemma=/(?i)^(${ team_triggers })/ & tag=/PRP/]
 
+  - name: them_token_capture
+    label: Entity
+    examples: "it, they, them"
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^it\b|they|them/ & tag=/PRP/]
+
   - name: green
     label: Green
     priority: ${ rulepriority }
     type: token
-    keep: false
+    keep: true
     pattern: |
       [lemma=/(?i)^(green)/]
+
+  - name: red
+    label: Red
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(red)/]
+
+  - name: blue
+    label: Blue
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(blue)/]
 
   - name: yellow
     label: Yellow
@@ -96,12 +123,10 @@ rules:
     label: QuestionParticle
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [tag=/^W/]
 
-
-### add a tag so we dont parse "na" from "gonna"
   - name: demonstrative_pronoun
     priority: ${ rulepriority }
     label: DemPron
@@ -109,3 +134,12 @@ rules:
     keep: false
     pattern: |
       [word=/${ dem_pron_triggers }/]
+
+  - name: pro-form-etc
+    priority: ${ rulepriority }
+    label: Entity
+    type: token
+    keep: false
+    pattern: |
+      others | other (?! [tag=/^N|CD/]) | (?<= other) [tag=/CD|^N/]
+

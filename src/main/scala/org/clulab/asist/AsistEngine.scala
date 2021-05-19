@@ -50,7 +50,7 @@ class AsistEngine(
 
       new LoadableAttributes(
         actions,
-        ExtractorEngine(masterRules, actions, actions.keepLongest) // ODIN component
+        ExtractorEngine(masterRules, actions, actions.globalAction) // ODIN component
       )
     }
   }

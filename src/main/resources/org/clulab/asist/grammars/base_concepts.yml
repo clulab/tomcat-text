@@ -1,54 +1,6 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-  # ------------- CONCEPT --------------------------
-  - name: base_concept
-    priority: ${ rulepriority }
-    label: Concept
-    keep: false
-    type: token
-    pattern: |
-      ([tag=/^NN/ | tag=/^VB/])
-
-  # ------------- TOOLS --------------------------
-  - name: hammer
-    priority: ${ rulepriority }
-    label: Hammer
-    keep: true
-    pattern: |
-      trigger = [lemma=/${ hammer_triggers }/]
-      owner: Entity? = >"nmod:poss"
-
-  - name: medkit
-    priority: ${ rulepriority }
-    label: MedKit
-    keep: true
-    pattern: |
-      trigger = [lemma=/${ medkit_triggers }/]
-      owner: Entity? = >"nmod:poss"
-
-  - name: stretcher
-    priority: ${ rulepriority }
-    label: Stretcher
-    keep: true
-    pattern: |
-      trigger = [lemma=/${ stretcher_triggers }/]
-      owner: Entity? = >"nmod:poss"
-
-  - name: tool_generic
-    priority: ${ rulepriority }
-    label: Tool
-    keep: true
-    pattern: |
-      trigger = [lemma=/tool/]
-      owner: Entity? = >"nmod:poss"
-
-  - name: map_item
-    priority: ${ rulepriority }
-    label: Map
-    pattern: |
-      trigger = [lemma=/map/]
-      owner: Entity? = >"nmod:poss"
 
   # ------------- ROLES --------------------------
 
@@ -58,7 +10,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [word=/(?i)(${ search_spec_triggers })/] [word=/(?i)(${ specialist_triggers })/]?
+      [word=/(?i)(${ search_spec_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: medic
     priority: ${ rulepriority }
@@ -108,3 +60,10 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)(${ charlie_triggers })/]
+
+  - name: plan_base
+    label: Plan
+    priority: ${ rulepriority }
+    type: token
+    pattern: |
+      [lemma=/(?i)plan|strategy/]

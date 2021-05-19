@@ -2,9 +2,3 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
-  - name: planning_after
-    label: Planning
-    priority: ${ rulepriority }
-    type: token
-    pattern: |
-      [lemma=/(?i)^(after|before)/]
