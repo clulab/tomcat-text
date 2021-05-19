@@ -5,7 +5,11 @@
  *
  * Read .yml or .yaml rules and generate .md output
  *
- * Based on:  https://www.baeldung.com/java-snake-yaml
+ * Snake YAML implementation based on: 
+ *    https://www.baeldung.com/java-snake-yaml
+ *
+ * Additional documentation from:
+ *    https://bitbucket.org/asomov/snakeyaml/wiki/Documentation
  *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
@@ -19,6 +23,7 @@ import java.io.PrintWriter
 import org.clulab.asist.AsistEngine._
 
 import java.util.Collection
+import java.util.LinkedHashMap
 import org.slf4j.LoggerFactory
 import scala.io.Source
 import org.yaml.snakeyaml.Yaml
@@ -27,10 +32,10 @@ import org.clulab.utils.{Configured, FileUtils}
 
 
 // for now 
-case class Rule(
-  name: String = "",
-  label: String = ""
-)
+class Rule{
+  val name: String = ""
+  val label: String = ""
+}
 
 class YmlReader(
   val inputFilename: String = "",
@@ -63,34 +68,25 @@ class YmlReader(
 
   def toYaml(file: File): Yaml = {
     val source = Source.fromFile(file)
-    val string = source.mkString
-    val yaml = new Yaml(new Constructor(classOf[Collection[Any]]))
-    yaml.load(string).asInstanceOf[Collection[Any]]
+    val document = source.mkString
+    System.out.println("YAML source document:")
+    System.out.print(document)
+
+    val yaml = new Yaml
+    val map: LinkedHashMap[String, Any] = 
+      yaml.load(document).asInstanceOf[LinkedHashMap[String, Any]]
+
+    val keys = map.keySet
+
+    System.out.println("number of keys found: %d".format(keys.size))
     yaml
   }
 
 
   def processYaml(yaml: Yaml, output: PrintWriter): Unit = {
-    output.write(yaml.toString)
   }
 
 
   this(inputFilename, outputFilename)
-
-
-
-  val asistEngine = new AsistEngine
-
-  // master rules
-  val mrp = asistEngine.LoadableAttributes.masterRulesPath
-  val masterRules = FileUtils.getTextFromResource(mrp)
-  System.out.println("masterRules:")
-  System.out.print(masterRules)
-
-  // taxonomy
-  val tp = asistEngine.LoadableAttributes.taxonomyPath
-  val taxonomy = FileUtils.getTextFromResource(tp)
-  System.out.println("taxonomy:")
-  System.out.print(taxonomy)
 
 }
