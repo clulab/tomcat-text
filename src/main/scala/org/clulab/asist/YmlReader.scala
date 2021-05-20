@@ -24,6 +24,7 @@ import org.clulab.asist.AsistEngine._
 
 import java.util.Collection
 import java.util.LinkedHashMap
+import java.util.ArrayList
 import org.slf4j.LoggerFactory
 import scala.io.Source
 import org.yaml.snakeyaml.Yaml
@@ -32,9 +33,15 @@ import org.clulab.utils.{Configured, FileUtils}
 
 
 // for now 
-class Rule{
+class Vars {
   val name: String = ""
   val label: String = ""
+}
+
+// for now 
+class Rule {
+  val _import: String = ""
+  val vars: LinkedHashMap[String, String] = new LinkedHashMap
 }
 
 class YmlReader(
@@ -73,8 +80,8 @@ class YmlReader(
     System.out.print(document)
 
     val yaml = new Yaml
-    val map: LinkedHashMap[String, Any] = 
-      yaml.load(document).asInstanceOf[LinkedHashMap[String, Any]]
+    val map: LinkedHashMap[String, ArrayList[Rule]] = 
+      yaml.load(document).asInstanceOf[LinkedHashMap[String, ArrayList[Rule]]]
 
     val keys = map.keySet
     System.out.println("number of keys found: %d".format(keys.size))
@@ -85,8 +92,29 @@ class YmlReader(
       System.out.println("KEY: %s".format(keyIter.next))
     }
 
+    val rules: ArrayList[Rule] = 
+      Option(map.get("rules")).getOrElse(new ArrayList[Rule])
+
+    System.out.println("number of rules found: %d".format(rules.size))
+    val ruleIter = rules.iterator
+    while(ruleIter.hasNext) {
+      val rule = ruleIter.next.asInstanceOf[Rule]
+      System.out.println("RULE:")
+      System.out.println("  %s".format(rule.getClass.getCanonicalName))
+      System.out.println
+      showRule(rule)
+    }
+    
     yaml
   }
+
+  def showRule(rule: Any): Unit = {
+//    System.out.println(" import: %s".format(rule.get("_import")))
+    System.out.println(" vars:")
+//    System.out.println("   name: %s".format(rule.vars.name))
+//    System.out.println("   label: %s".format(rule.vars.label))
+  }
+
 
 
   def processYaml(yaml: Yaml, output: PrintWriter): Unit = {
