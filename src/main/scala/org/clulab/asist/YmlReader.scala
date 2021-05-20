@@ -16,6 +16,7 @@
  */
 package org.clulab.asist
 
+//import shapeless.syntax.typeable._
 import java.io.File
 import java.io.InputStream
 import java.io.FileInputStream
@@ -80,7 +81,7 @@ class YmlReader(
     val yaml = new Yaml
     val javaMap = yaml
       .load(inputStream)
-      .asInstanceOf[java.util.LinkedHashMap[String, Any]]
+      .asInstanceOf[java.util.LinkedHashMap[String, ArrayList[Any]]]
 
     val map = javaMap.asScala
     val keys = map.keySet
@@ -92,14 +93,22 @@ class YmlReader(
       System.out.println("KEY: %s".format(keyIter.next))
     }
 
-    val rules = map.get("rules")
+    showRules(map.getOrElse("rules", new ArrayList[Any]))
 
+  }
+
+  def showRules(rules: ArrayList[Any]): Unit = {
+    System.out.println ("RULES:")
     System.out.println("number of rules found: %d".format(rules.size))
     val ruleIter = rules.iterator
     while(ruleIter.hasNext) showRule(ruleIter.next)
   }
 
+
   def showRule(rule: Any): Unit = {
+    System.out.println ("RULE:")
+    System.out.println (rule.toString)
+    System.out.println
     /*
     val map: LinkedHashMap[String, ArrayList[Any]] = 
       yaml.load(rule).asInstanceOf[LinkedHashMap[String, ArrayList[Any]]]
