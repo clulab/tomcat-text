@@ -96,22 +96,14 @@ class YmlReader(
 
     System.out.println("number of rules found: %d".format(rules.size))
     val ruleIter = rules.iterator
-    while(ruleIter.hasNext) {
-      val rule = ruleIter.next
-      System.out.println("RULE:")
-      System.out.println("  %s".format(rule.toString))
-      System.out.println
-      showRule(rule)
-    }
+    while(ruleIter.hasNext) showRule(ruleIter.next)
     
     yaml
   }
 
   def showRule(rule: Any): Unit = {
-//    System.out.println(" import: %s".format(rule.get("_import")))
-    System.out.println(" vars:")
-//    System.out.println("   name: %s".format(rule.vars.name))
-//    System.out.println("   label: %s".format(rule.vars.label))
+      System.out.println("RULE:")
+      System.out.println("  %s".format(rule.toString))
   }
 
 
