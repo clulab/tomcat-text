@@ -76,12 +76,12 @@ class YmlReader(
   def toYaml(file: File): Yaml = {
     val source = Source.fromFile(file)
     val document = source.mkString
-    System.out.println("YAML source document:")
-    System.out.print(document)
+//    System.out.println("YAML source document:")
+//    System.out.print(document)
 
     val yaml = new Yaml
-    val map: LinkedHashMap[String, ArrayList[Rule]] = 
-      yaml.load(document).asInstanceOf[LinkedHashMap[String, ArrayList[Rule]]]
+    val map: LinkedHashMap[String, ArrayList[Any]] = 
+      yaml.load(document).asInstanceOf[LinkedHashMap[String, ArrayList[Any]]]
 
     val keys = map.keySet
     System.out.println("number of keys found: %d".format(keys.size))
@@ -92,15 +92,14 @@ class YmlReader(
       System.out.println("KEY: %s".format(keyIter.next))
     }
 
-    val rules: ArrayList[Rule] = 
-      Option(map.get("rules")).getOrElse(new ArrayList[Rule])
+    val rules = map.get("rules")
 
     System.out.println("number of rules found: %d".format(rules.size))
     val ruleIter = rules.iterator
     while(ruleIter.hasNext) {
-      val rule = ruleIter.next.asInstanceOf[Rule]
+      val rule = ruleIter.next
       System.out.println("RULE:")
-      System.out.println("  %s".format(rule.getClass.getCanonicalName))
+      System.out.println("  %s".format(rule.toString))
       System.out.println
       showRule(rule)
     }
