@@ -79,10 +79,8 @@ class YmlReader(
   def processYaml(file: File): Unit = {
     val inputStream = new FileInputStream(file)
     val yaml = new Yaml
-    val javaMap = yaml
-      .load(inputStream)
-      .asInstanceOf[java.util.LinkedHashMap[String, ArrayList[Any]]]
-
+    val javaIterable = yaml.load(inputStream)
+    val javaMap = javaIterable.asInstanceOf[java.util.Map[String, ArrayList[Any]]]
     val map = javaMap.asScala
     val keys = map.keySet
     System.out.println("number of keys found: %d".format(keys.size))
@@ -94,18 +92,17 @@ class YmlReader(
     }
 
     showRules(map.getOrElse("rules", new ArrayList[Any]))
-
   }
 
   def showRules(rules: ArrayList[Any]): Unit = {
     System.out.println ("RULES:")
     System.out.println("number of rules found: %d".format(rules.size))
     val ruleIter = rules.iterator
-    while(ruleIter.hasNext) showRule(ruleIter.next)
+    while(ruleIter.hasNext) showRule(ruleIter.next.toString)
   }
 
 
-  def showRule(rule: Any): Unit = {
+  def showRule(rule: String): Unit = {
     System.out.println ("RULE:")
     System.out.println (rule.toString)
     System.out.println
