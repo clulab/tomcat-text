@@ -125,21 +125,6 @@ rules:
       trigger: ${ sight_triggers }
       object_type: EventLike
 
-  - name: sight_presence
-    priority: ${ rulepriority }
-    label: Sight
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Victim = >/${agents}/
-
-  - name: sight_presence2
-    priority: ${ rulepriority }
-    label: Sight
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Person = >/${agents}/
 
 ##----------------------------------------------------------------------------------------- clear
 

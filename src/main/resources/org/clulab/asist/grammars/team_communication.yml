@@ -82,3 +82,54 @@ rules:
       person: Entity? =
         </cop/
         >/nsubj/
+
+
+##--------------------------------- knowledge sharing
+
+  - name: existential
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is a victim here"
+    action: removeResearcher
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: Victim = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
+
+  - name: existential2
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is a guy here"
+    action: removeResearcher
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: Person = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
+
+  - name: existential3
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is some rubble here"
+    action: removeResearcher
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: EventLike = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
+
+  - name: existential4
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is a medkit in this room"
+    action: removeResearcher
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: Item = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
