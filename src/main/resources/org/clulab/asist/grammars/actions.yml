@@ -125,21 +125,6 @@ rules:
       trigger: ${ sight_triggers }
       object_type: EventLike
 
-  - name: sight_presence
-    priority: ${ rulepriority }
-    label: Sight
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Victim = >/${agents}/
-
-  - name: sight_presence2
-    priority: ${ rulepriority }
-    label: Sight
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Person = >/${agents}/
 
 ##----------------------------------------------------------------------------------------- clear
 
@@ -173,11 +158,22 @@ rules:
   - name: obstructing
     priority: ${ rulepriority }
     label: Block
+    example: "Some rubble is blocking this door"
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
-      source: Concept? = >/${agents}/ | <acl [incoming=nsubj]
+      source: Concept? = >/${agents}/
       target: Concept? = >/dobj|acl/
+
+  - name: obstructing2
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Obstacle? =  <acl
+      target: Concept? = >/dobj|acl/
+
 
   - name: obstructing_in_the_way
     priority: ${ rulepriority }
@@ -185,6 +181,15 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
-      source: Concept? = </nmod/ >/${agents}/
+      source: Obstacle? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
 
+  - name: obstructing_in_the_way2
+    priority: ${ rulepriority }
+    example: "There is a fire in the way of this door"
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      source: Concept? = >/${agents}/
+      target: Concept? = >nmod_of
