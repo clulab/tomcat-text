@@ -23,6 +23,13 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: fire
+      priority: ${ rulepriority }
+      label: Fire
+      trigger: fire
+
   - name: all_nps
     priority: ${ rulepriority }
     label: Concept

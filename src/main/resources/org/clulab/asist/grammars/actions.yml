@@ -158,6 +158,7 @@ rules:
   - name: obstructing
     priority: ${ rulepriority }
     label: Block
+    example: "Some rubble is blocking this door"
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
@@ -185,6 +186,7 @@ rules:
 
   - name: obstructing_in_the_way2
     priority: ${ rulepriority }
+    example: "There is a fire in the way of this door"
     label: Block
     action: removeResearcher
     pattern: |
