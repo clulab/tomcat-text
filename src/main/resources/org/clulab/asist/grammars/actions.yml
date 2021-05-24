@@ -161,8 +161,18 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
-      source: Concept? = >/${agents}/ | <acl [incoming=nsubj]
+      source: Concept? = >/${agents}/
       target: Concept? = >/dobj|acl/
+
+  - name: obstructing2
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Obstacle? =  <acl
+      target: Concept? = >/dobj|acl/
+
 
   - name: obstructing_in_the_way
     priority: ${ rulepriority }
@@ -170,6 +180,14 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
-      source: Concept? = </nmod/ >/${agents}/
+      source: Obstacle? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
 
+  - name: obstructing_in_the_way2
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      source: Concept? = >/${agents}/
+      target: Concept? = >nmod_of
