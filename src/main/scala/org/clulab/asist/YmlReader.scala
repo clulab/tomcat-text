@@ -97,20 +97,18 @@ class YmlReader(
     val map = javaMap.asScala
     val keys = map.keySet
 
-    val keyIter = keys.iterator
-    while(keyIter.hasNext) {
-      System.out.println("KEY: %s".format(keyIter.next))
-    }
-
-    // show the rules if there are rules to be shown
-    map.get("rules").foreach(a => processYamlRules(a))
+    keys.foreach(k => k match {
+      case "rules" => map.get(k).foreach(v => processYamlRules(v))
+      case _ => map.get(k).foreach(v => {
+        System.out.println("%s = %s".format(k, v))
+      })
+    })
   }
 
 
   // YAML rules are an ArrayList of maps
   def processYamlRules(obj: Any): Unit = {
     val rules = obj.asInstanceOf[java.util.ArrayList[java.util.Map[String, Any]]]
-    System.out.println("RULES FOUND: %d".format(rules.size))
     val iterator = rules.iterator
     while(iterator.hasNext) processYamlRule(iterator.next)
   }
@@ -118,7 +116,7 @@ class YmlReader(
 
   // Each YAML rule is a map.   Presumably of arbitrary depth.
   def processYamlRule(rule: java.util.Map[String, Any]): Unit = {
-    System.out.println("RULE:")
+    System.out.println("rule:")
     val map = rule.asScala
     val keys = map.keySet
 
@@ -127,7 +125,7 @@ class YmlReader(
     while(keyIter.hasNext) {
       val key = keyIter.next 
       val value = map.getOrElse(key, "(empty)")
-      System.out.println("  %s  %s".format(key,value))
+      System.out.println("  %s = %s".format(key,value))
     }
   }
 
