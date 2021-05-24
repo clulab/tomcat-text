@@ -62,12 +62,18 @@ class YmlReader(
     filename.substring(filename.lastIndexOf(".")) match {
       case ".yml" | ".yaml" => {
         logger.info("processing '%s' ...".format(filename))
-        val file: File = new File(filename)
-        if(file.exists) 
-          processYaml(file)
-        else 
-          logger.error("File not found '%s'".format(filename))
 
+        try {
+          val source = scala.io.Source.fromFile(filename)
+          val lines = source.getLines.mkString("\n")
+          processYaml(lines)
+          source.close
+        }
+        catch {
+          case t: Throwable => {
+            logger.error("File not found '%s'".format(filename))
+          }
+        }
       }
       case _ => {
         logger.error("Can't process this type of file '%s'".format(filename))
@@ -76,10 +82,9 @@ class YmlReader(
     }
 
 
-  def processYaml(file: File): Unit = {
-    val inputStream = new FileInputStream(file)
+  def processYaml(str: String): Unit = {
     val yaml = new Yaml
-    val javaIterable = yaml.load(inputStream)
+    val javaIterable = yaml.load(str)
     val javaMap = javaIterable.asInstanceOf[java.util.Map[String, ArrayList[Any]]]
     val map = javaMap.asScala
     val keys = map.keySet
@@ -91,20 +96,29 @@ class YmlReader(
       System.out.println("KEY: %s".format(keyIter.next))
     }
 
-    showRules(map.getOrElse("rules", new ArrayList[Any]))
+    showRules(map.getOrElse("rules", ""))
   }
 
-  def showRules(rules: ArrayList[Any]): Unit = {
+
+  def showRules(rules: java.io.Serializable): Unit = {
     System.out.println ("RULES:")
+    System.out.println (rules)
+
+    /*
     System.out.println("number of rules found: %d".format(rules.size))
     val ruleIter = rules.iterator
-    while(ruleIter.hasNext) showRule(ruleIter.next.toString)
+    while(ruleIter.hasNext){
+      val element = ruleIter.next
+      val rule = element.asInstanceOf[java.util.Map[String, ArrayList[Any]]]
+      showRule(rule)
+    }
+    */
   }
 
 
-  def showRule(rule: String): Unit = {
+  def showRule(map: java.util.Map[String, ArrayList[Any]]) {
     System.out.println ("RULE:")
-    System.out.println (rule.toString)
+    System.out.println (map.toString)
     System.out.println
     /*
     val map: LinkedHashMap[String, ArrayList[Any]] = 
