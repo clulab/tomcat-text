@@ -10,48 +10,38 @@
  */
 package org.clulab.asist
 
-import java.io.File
-import java.io.InputStream
-import java.io.FileInputStream
-import java.io.PrintWriter
-
-import org.clulab.asist.AsistEngine._
-
-import java.util.Collection
-import java.util.LinkedHashMap
-import java.util.ArrayList
-import org.slf4j.LoggerFactory
-import scala.io.Source
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.clulab.utils.{Configured, FileUtils}
-
-import scala.collection.JavaConverters._
 
 import java.io._
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
+import java.io.PrintWriter
+import java.net.URL
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
-
-import scala.io.{ Codec, Source }
-import scala.reflect.ClassTag
-import org.clulab.processors.Document
-import org.clulab.odin.{Actions, ExtractorEngine}
-import org.clulab.odin.impl.RuleReader
-
-import java.net.URL
+import java.util.ArrayList
+import java.util.Collection
 import java.util.{ Collection, Map => JMap }
-import java.nio.charset.Charset
-
+import java.util.LinkedHashMap
 import org.apache.commons.text.StrSubstitutor
-
+import org.clulab.asist.AsistEngine._
+import org.clulab.odin._
+import org.clulab.odin.{Actions, ExtractorEngine}
+import org.clulab.odin.impl._
+import org.clulab.odin.impl.RuleReader
+import org.clulab.odin.impl.RuleReader._
+import org.clulab.processors.Document
+import org.clulab.utils.{Configured, FileUtils}
+import org.slf4j.LoggerFactory
+import org.yaml.snakeyaml.constructor.Constructor
+import org.yaml.snakeyaml.constructor.{ Constructor, ConstructorException }
+import org.yaml.snakeyaml.Yaml
 import scala.collection.JavaConverters._
 import scala.io.{ Codec, Source }
+import scala.io.Source
+import scala.reflect.ClassTag
+import scala.util.Sorting
 
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.{ Constructor, ConstructorException }
-import org.clulab.odin._
-import org.clulab.odin.impl._
-import org.clulab.odin.impl.RuleReader.Rule
 
 class OdinRuleDemo (
   override val inputFilename: String = "",
@@ -77,23 +67,38 @@ class OdinRuleDemo (
 
   }
 
+  def sortByName(rules:  Seq[RuleReader.Rule]): Seq[RuleReader.Rule] = {
+    object NameOrdering extends Ordering[RuleReader.Rule] {
+      def compare(a: RuleReader.Rule, b: RuleReader.Rule) = a.name compare b.name
+    }
+    val ruleArray = rules.toArray
+    Sorting.quickSort(ruleArray)(NameOrdering)
+    ruleArray.toList
+  }
+
   def showRules(rules:  Seq[RuleReader.Rule] , output: PrintWriter): Unit = {
-    rules.foreach(rule => showRule(rule, output))
+    val sortedRules = sortByName(rules)
+    sortedRules.foreach(rule => showRule(rule, output))
+  }
+
+  def formatLabels(labels: Seq[String]): String = {
+    val foo = labels.map(str => List("\"",str,"\"").mkString)
+    foo.mkString(", ")
   }
 
   def showRule(rule: RuleReader.Rule, output: PrintWriter): Unit = {
-    output.write("\n ## RULE:\n")
+    output.write("## %s:\n".format(rule.name))
     output.write("Key  |  Type  |  Value\n")
     output.write("-----  |  -----  |  ----\n")
-    output.write(" name | String | %s\n".format(rule.name))
-    output.write(" labels | String | %s\n".format(rule.labels))
-    output.write(" ruleType | String | %s\n".format(rule.ruleType))
-    output.write(" unit | String | %s\n".format(rule.unit))
-    output.write(" priority | String | %s\n".format(rule.priority))
-    output.write(" keep | String | %s\n".format(rule.keep))
-    output.write(" action | String | %s\n".format(rule.action))
-    output.write(" pattern | String | %s\n".format(rule.pattern))
-    output.write(" config | OdinConfig | %s\n".format(rule.config))
+    output.write("name | String | %s\n".format(rule.name))
+    output.write("labels | Seq[String] | %s\n".format(formatLabels(rule.labels)))
+    output.write("ruleType | String | %s\n".format(rule.ruleType))
+    output.write("unit | String | %s\n".format(rule.unit))
+    output.write("priority | String | %s\n".format(rule.priority))
+    output.write("keep | String | %s\n".format(rule.keep))
+    output.write("action | String | %s\n".format(rule.action))
+//    output.write(" pattern | String | %s\n".format(rule.pattern))
+//    output.write(" config | OdinConfig | %s\n".format(rule.config))
   }
 
 

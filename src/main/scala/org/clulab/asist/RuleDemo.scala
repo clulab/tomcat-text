@@ -64,7 +64,6 @@ abstract class RuleDemo(
   val actions: Actions = new Actions
   val reader = new RuleReaderDemo(actions, charset)
 
-
   /** process one input file
    * @param filename a single input file
    * @param output Printwriter to the output file
