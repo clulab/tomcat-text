@@ -19,6 +19,15 @@ trait FileHandler {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
+
+  // override to write to the very start of the output file
+  def preamble(output: PrintWriter): Unit = {}
+
+
+  // override to write to the very end of the output file
+  def postamble(output: PrintWriter): Unit = {}
+
+
   /** process one input file
    * @param filename a single input file
    * @param output Printwriter to the output file
@@ -33,7 +42,10 @@ trait FileHandler {
     try {
       val output = new PrintWriter(new File(outputFilename))
       val filenames = getFiles(inputFilename)
+      preamble(output)
       filenames.map(processFile(_, output))
+      postamble(output)
+      output.flush
       output.close
       logger.info("All operations completed successfully.")
     } catch {

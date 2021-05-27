@@ -1,8 +1,11 @@
+
+# PREAMBLE
+# grammars/actions.yml rules:
 ## clear_location:
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | clear_location
-labels | Seq[String] | "Clear"
+labels | Seq[String] | Clear
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -12,7 +15,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | clear_rubble
-labels | Seq[String] | "Clear"
+labels | Seq[String] | Clear
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -22,7 +25,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | clear_rubble_token
-labels | Seq[String] | "Clear"
+labels | Seq[String] | Clear
 ruleType | String | token
 unit | String | word
 priority | String | ${rulepriority}
@@ -32,7 +35,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | close
-labels | Seq[String] | "Close"
+labels | Seq[String] | Close
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -42,7 +45,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | i_am_searching
-labels | Seq[String] | "Search"
+labels | Seq[String] | Search
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -52,7 +55,7 @@ action | String | mkVictim
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | lemma_verb_dobj-craft
-labels | Seq[String] | "Craft"
+labels | Seq[String] | Craft
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -62,7 +65,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | lemma_verb_dobj-defeat
-labels | Seq[String] | "Defeat"
+labels | Seq[String] | Defeat
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -72,7 +75,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | lemma_verb_dobj-move
-labels | Seq[String] | "Move"
+labels | Seq[String] | Move
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -82,7 +85,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | lemma_verb_dobj-search
-labels | Seq[String] | "Search"
+labels | Seq[String] | Search
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -92,7 +95,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | lemma_verb_dobj-sight
-labels | Seq[String] | "Sight"
+labels | Seq[String] | Sight
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -102,7 +105,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | lemma_verb_dobj-toggle
-labels | Seq[String] | "Toggle"
+labels | Seq[String] | Toggle
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -112,7 +115,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | move_deixis_action
-labels | Seq[String] | "Move"
+labels | Seq[String] | Move
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -122,7 +125,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | move_nmod_action
-labels | Seq[String] | "Move"
+labels | Seq[String] | Move
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -132,7 +135,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | obstructing
-labels | Seq[String] | "Block"
+labels | Seq[String] | Block
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -142,7 +145,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | obstructing_in_the_way
-labels | Seq[String] | "Block"
+labels | Seq[String] | Block
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -152,7 +155,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | passive-craft
-labels | Seq[String] | "Craft"
+labels | Seq[String] | Craft
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -162,7 +165,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | passive-defeat
-labels | Seq[String] | "Defeat"
+labels | Seq[String] | Defeat
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -172,7 +175,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | passive-move
-labels | Seq[String] | "Move"
+labels | Seq[String] | Move
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -182,7 +185,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | passive-search
-labels | Seq[String] | "Search"
+labels | Seq[String] | Search
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -192,7 +195,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | passive-sight
-labels | Seq[String] | "Sight"
+labels | Seq[String] | Sight
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -202,7 +205,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | passive-toggle
-labels | Seq[String] | "Toggle"
+labels | Seq[String] | Toggle
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -212,7 +215,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | prepnom-craft
-labels | Seq[String] | "Craft"
+labels | Seq[String] | Craft
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -222,7 +225,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | prepnom-defeat
-labels | Seq[String] | "Defeat"
+labels | Seq[String] | Defeat
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -232,7 +235,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | prepnom-move
-labels | Seq[String] | "Move"
+labels | Seq[String] | Move
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -242,7 +245,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | prepnom-search
-labels | Seq[String] | "Search"
+labels | Seq[String] | Search
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -252,7 +255,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | prepnom-sight
-labels | Seq[String] | "Sight"
+labels | Seq[String] | Sight
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -262,7 +265,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | prepnom-toggle
-labels | Seq[String] | "Toggle"
+labels | Seq[String] | Toggle
 ruleType | String | dependency
 unit | String | word
 priority | String | ${rulepriority}
@@ -272,7 +275,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | search_infra_action
-labels | Seq[String] | "Search"
+labels | Seq[String] | Search
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -282,7 +285,7 @@ action | String | mkVictim
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | sight_presence
-labels | Seq[String] | "Sight"
+labels | Seq[String] | Sight
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -292,7 +295,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | sight_presence2
-labels | Seq[String] | "Sight"
+labels | Seq[String] | Sight
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -302,7 +305,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | triage
-labels | Seq[String] | "Save"
+labels | Seq[String] | Save
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}
@@ -312,7 +315,7 @@ action | String | removeResearcher
 Key  |  Type  |  Value
 -----  |  -----  |  ----
 name | String | triage2
-labels | Seq[String] | "Save"
+labels | Seq[String] | Save
 ruleType | String | graph
 unit | String | word
 priority | String | ${rulepriority}

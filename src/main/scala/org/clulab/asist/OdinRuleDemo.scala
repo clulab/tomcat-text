@@ -50,8 +50,6 @@ class OdinRuleDemo (
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-
-
   // String input from one YAML file.
   override def process(
     filename: String, 
@@ -59,10 +57,11 @@ class OdinRuleDemo (
     output: PrintWriter
   ): Unit = {
     logger.info("Processing %s\n".format(filename))
+      output.write("# %s rules:\n".format(filename))
 
 //    if (filename.endsWith("master.yml")) 
       val rules = reader.demoReadMasterFile(str)
-      showRules(rules, output)
+      showRules(filename, rules, output)
 //    else reader.demoReadSimpleFile(str)
 
   }
@@ -76,22 +75,21 @@ class OdinRuleDemo (
     ruleArray.toList
   }
 
-  def showRules(rules:  Seq[RuleReader.Rule] , output: PrintWriter): Unit = {
+  def showRules(filename: String, rules:  Seq[RuleReader.Rule] , output: PrintWriter): Unit = {
     val sortedRules = sortByName(rules)
-    sortedRules.foreach(rule => showRule(rule, output))
+    sortedRules.foreach(rule => showRule(filename, rule, output))
   }
 
-  def formatLabels(labels: Seq[String]): String = {
-    val foo = labels.map(str => List("\"",str,"\"").mkString)
-    foo.mkString(", ")
-  }
-
-  def showRule(rule: RuleReader.Rule, output: PrintWriter): Unit = {
+  def showRule(
+    filename: String,
+    rule: RuleReader.Rule,
+    output: PrintWriter
+  ): Unit = {
     output.write("## %s:\n".format(rule.name))
     output.write("Key  |  Type  |  Value\n")
     output.write("-----  |  -----  |  ----\n")
     output.write("name | String | %s\n".format(rule.name))
-    output.write("labels | Seq[String] | %s\n".format(formatLabels(rule.labels)))
+    output.write("labels | Seq[String] | %s\n".format(rule.labels.mkString(", ")))
     output.write("ruleType | String | %s\n".format(rule.ruleType))
     output.write("unit | String | %s\n".format(rule.unit))
     output.write("priority | String | %s\n".format(rule.priority))

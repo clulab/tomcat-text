@@ -64,6 +64,17 @@ abstract class RuleDemo(
   val actions: Actions = new Actions
   val reader = new RuleReaderDemo(actions, charset)
 
+  // 
+  override def preamble(output: PrintWriter): Unit = {
+    output.write("\n# PREAMBLE\n")
+  }
+
+  // override to write to the very end of the output file
+  override def postamble(output: PrintWriter): Unit = {
+    output.write("\n# POSTAMBLE\n")
+  }
+
+
   /** process one input file
    * @param filename a single input file
    * @param output Printwriter to the output file
