@@ -95,7 +95,7 @@ rules:
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: Victim = >/${agents}/
       location: Location? = >/advmod/|
-               >/${agents}/
+               (>/${agents}/)?
                >/${preps}/
 
   - name: existential2
@@ -107,7 +107,7 @@ rules:
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: Person = >/${agents}/
       location: Location? = >/advmod/|
-               >/${agents}/
+               (>/${agents}/)?
                >/${preps}/
 
   - name: existential3
@@ -118,8 +118,8 @@ rules:
     pattern: |
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: EventLike = >/${agents}/
-      location: Location? = >/advmod/|
-               >/${agents}/
+      location: Location? = >/advmod/ |
+               (>/${agents}/)?
                >/${preps}/
 
   - name: existential4
@@ -131,5 +131,5 @@ rules:
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: Item = >/${agents}/
       location: Location? = >/advmod/|
-               >/${agents}/
+               (>/${agents}/)?
                >/${preps}/

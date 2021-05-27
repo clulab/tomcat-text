@@ -20,7 +20,7 @@ class TestCommunications extends BaseTest {
 
   }
 
-  failingTest should "Parse existential constructions 2" in {
+  passingTest should "Parse existential constructions 2" in {
     val text =  "There is a victim in here."
     // fixme:{I dont know why this one fails! Help}
     val mentions = extractor.extractFromText(text)
