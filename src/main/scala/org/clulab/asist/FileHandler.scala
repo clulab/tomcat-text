@@ -45,7 +45,6 @@ trait FileHandler {
       preamble(output)
       filenames.map(processFile(_, output))
       postamble(output)
-      output.flush
       output.close
       logger.info("All operations completed successfully.")
     } catch {
