@@ -16,27 +16,11 @@
  */
 package org.clulab.asist
 
-//import shapeless.syntax.typeable._
-import java.io.File
-import java.io.InputStream
-import java.io.FileInputStream
 import java.io.PrintWriter
-
-import org.clulab.asist.AsistEngine._
-
-import java.util.Collection
-import java.util.LinkedHashMap
 import java.util.ArrayList
 import org.slf4j.LoggerFactory
-import scala.io.Source
 import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.clulab.utils.{Configured, FileUtils}
-
 import scala.collection.JavaConverters._
-
-import org.clulab.odin.impl._
-import org.clulab.odin.impl.RuleReader._
 
 
 // for now 
@@ -55,10 +39,10 @@ class Rule {
 */
 
 
-class YmlRuleDemo(
-  override val inputFilename: String = "",
-  override val outputFilename: String = ""
-) extends RuleDemo (inputFilename, outputFilename) {
+class YmlRuleDemo (
+  val inputFile: String,
+  val outputFile: String
+) extends RuleDemo {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -116,5 +100,5 @@ class YmlRuleDemo(
     */
   }
 
-  this(inputFilename, outputFilename)
+  start(inputFile, outputFile)
 }

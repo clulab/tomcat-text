@@ -55,6 +55,10 @@ trait FileHandler {
     }
   }
 
+  def start(inputFile: String, outputFile: String): Unit = 
+    apply(inputFile, outputFile)
+
+
   /** Determine the list of input files to process
    * @param filename User input arg, may be a file or directory of files
    * @returns A list of zero or more filenames to process

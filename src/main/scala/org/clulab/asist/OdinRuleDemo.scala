@@ -10,45 +10,39 @@
  */
 package org.clulab.asist
 
-
-import java.io._
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
 import java.io.PrintWriter
-import java.net.URL
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
-import java.util.ArrayList
-import java.util.Collection
-import java.util.{ Collection, Map => JMap }
-import java.util.LinkedHashMap
-import org.apache.commons.text.StrSubstitutor
-import org.clulab.asist.AsistEngine._
-import org.clulab.odin._
-import org.clulab.odin.{Actions, ExtractorEngine}
-import org.clulab.odin.impl._
+import org.clulab.odin.Actions
 import org.clulab.odin.impl.RuleReader
-import org.clulab.odin.impl.RuleReader._
-import org.clulab.processors.Document
-import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.LoggerFactory
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.constructor.{ Constructor, ConstructorException }
-import org.yaml.snakeyaml.Yaml
-import scala.collection.JavaConverters._
-import scala.io.{ Codec, Source }
-import scala.io.Source
-import scala.reflect.ClassTag
 import scala.util.Sorting
 
 
 class OdinRuleDemo (
-  override val inputFilename: String = "",
-  override val outputFilename: String = ""
-) extends RuleDemo (inputFilename,outputFilename) {
+  val inputFile: String,
+  val outputFile: String
+) extends RuleDemo {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
+
+  val charset: Charset = UTF_8
+  val actions: Actions = new Actions
+  val reader = new org.clulab.odin.impl.RuleReader(actions, charset)
+
+//  if(reader == null) logger.error("Null reader")
+//  else logger.info("Non-null reader")
+
+  //
+  override def preamble(output: PrintWriter): Unit = {
+    output.write("# ODIN Grammar \n")
+    output.write("--- \n")
+  }
+
+  // override to write to the very end of the output file
+  override def postamble(output: PrintWriter): Unit = {
+    output.write("\n# POSTAMBLE\n")
+  }
 
   // String input from one YAML file.
   override def process(
@@ -56,12 +50,26 @@ class OdinRuleDemo (
     str: String, 
     output: PrintWriter
   ): Unit = {
-    logger.info("Processing %s\n".format(filename))
-      output.write("# %s rules:\n".format(filename))
+    val foo = "**File:** %s\n".format(filename)
+    logger.info(foo)
+    output.write(foo)
+
+//    Option(reader.read(str)).foreach(extractors: Vector[org.clulab.odin.impl.Extractor] => {
+
+    Option(str).foreach(safeStr => {
+      logger.info("Safe str")
+      Option(reader).foreach(safeReader => {
+        logger.info("Safe reader")
+        Option(safeReader.read(safeStr)).foreach(extractors => {
+          logger.info("Number of extractors = %s\n".format(extractors.length))
+          // extractors.foreach(e => output.write(e.toString))
+        })
+      })
+    })
 
 //    if (filename.endsWith("master.yml")) 
-      val rules = reader.demoReadMasterFile(str)
-      showRules(filename, rules, output)
+//      val rules = reader.demoReadMasterFile(str)
+//      showRules(filename, rules, output)
 //    else reader.demoReadSimpleFile(str)
 
   }
@@ -99,6 +107,5 @@ class OdinRuleDemo (
 //    output.write(" config | OdinConfig | %s\n".format(rule.config))
   }
 
-
-  this(inputFilename, outputFilename)
+  start(inputFile, outputFile)
 }
