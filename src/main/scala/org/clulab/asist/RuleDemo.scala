@@ -66,7 +66,7 @@ abstract class RuleDemo(
 
   // 
   override def preamble(output: PrintWriter): Unit = {
-    output.write("\n# PREAMBLE\n")
+    output.write("\n# ODIN Grammar\n")
   }
 
   // override to write to the very end of the output file
