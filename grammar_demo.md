@@ -7,7 +7,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Agreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## agreement2
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -15,7 +14,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Agreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## alpha
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -23,7 +21,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Alpha, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## bravo
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -31,7 +28,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Bravo, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## change_priority
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -39,7 +35,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ChangePriority, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@7dc2ef60
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -129,7 +125,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ChangePriority, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@487b54f1
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -219,7 +215,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Charlie, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## clear_location
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -227,7 +222,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@54152f88
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -317,7 +312,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@3879e911
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -407,7 +402,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@6a8bc19e
 ## close
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -415,7 +409,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Close, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@7845dce2
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -505,7 +499,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [MakeCommitment, Commitment, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@551c50d
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -595,7 +589,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Continue, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -685,7 +679,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Deictic, Inferred, Location, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## delta
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -693,7 +686,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Delta, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## demonstrative_pronoun
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -701,7 +693,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [DemPron, Inferred, Location, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## directions
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -709,7 +700,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## disagree_token_match
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -717,7 +707,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Disagreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -725,7 +714,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [East, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## encouragement1
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -733,7 +721,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Encouragement, Positive, Sentiment, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## engineer
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -741,7 +728,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Engineer, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## fire_detection
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -749,7 +735,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Fire, Obstacle, EventLike, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## foe_detection
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -757,7 +742,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Foe, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## green
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -765,7 +749,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Green, Victim, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## hammer
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -773,7 +756,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Hammer, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -863,7 +846,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@729785d7
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -953,7 +936,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## lemma_verb_dobj-craft
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -961,7 +943,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@46a43d2a
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1056,7 +1038,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@10d04bd0
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1151,7 +1133,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@1ba29d6a
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1246,7 +1228,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@55d51af4
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1341,7 +1323,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@327f2009
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1436,7 +1418,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@2063635d
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1531,7 +1513,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## location_clumped
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1539,7 +1520,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## location_question
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1547,7 +1527,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [LocationQuestion, Question, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@2f25f3f6
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1637,7 +1617,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ReportLocation, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@525a5e5c
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -1727,7 +1707,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Map, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -1817,7 +1797,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Medic, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## medkit
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1825,7 +1804,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [MedKit, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -1915,7 +1894,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@19ee5376
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2005,7 +1984,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@222ca29d
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2095,7 +2074,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [North, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## north_east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2103,7 +2081,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [NorthEast, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## north_west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2111,7 +2088,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [NorthWest, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## numbers
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2119,7 +2095,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Number, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## obstructing
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2127,7 +2102,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Block, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@22164f6d
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2217,7 +2192,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Block, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@22be5dcd
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2307,7 +2282,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@49a0cf0f
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2402,7 +2377,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@e5fb4ec
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2497,7 +2472,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@1ea2ef6d
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2592,7 +2567,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@4e228941
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2687,7 +2662,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@1b5ff3d
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2782,7 +2757,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@723ec333
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2877,7 +2852,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Person, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## precedence1
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2885,7 +2859,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@7bee839e
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -2975,7 +2949,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@215c7523
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3065,7 +3039,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@f3e2a22
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3155,7 +3129,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@b1d57ad
 ## precedence3_token_before
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3163,7 +3136,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@460d723
 ## prep_need_action
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3171,7 +3143,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -3261,7 +3233,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -3351,7 +3323,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -3441,7 +3413,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@46575fe1
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3536,7 +3508,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@38c60233
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3631,7 +3603,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@59878ab9
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3726,7 +3698,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@5bdc9765
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3821,7 +3793,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@278873a8
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -3916,7 +3888,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@2fd73af0
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4011,7 +3983,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [QuestionParticle, Question, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## relative_location
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4019,7 +3990,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -4110,7 +4081,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [RoleSwitch, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@4a60bff1
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4200,7 +4171,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [RoleSwitch, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@75387e67
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4290,7 +4261,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Rubble, Obstacle, EventLike, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## search_infra_action
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4298,7 +4268,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@1149465b
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4388,7 +4358,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Searcher, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## self_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4396,7 +4365,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Self, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## sight_presence
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4404,7 +4372,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@75fee38
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4494,7 +4462,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@480f5615
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4584,7 +4552,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [South, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## south_east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4592,7 +4559,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [SouthEast, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## south_west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4600,7 +4566,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [SouthWest, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## stretcher
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4608,7 +4573,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Stretcher, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -4698,7 +4663,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Switch, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## thank_you
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4706,7 +4670,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Gratitude, Positive, Sentiment, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## time
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4714,7 +4677,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [TimeUnit, Time, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## time_underspecified
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4722,7 +4684,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [TimeUnit, Time, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## tool_generic
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4730,7 +4691,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
@@ -4820,7 +4781,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Save, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@7ef2d235
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -4910,7 +4871,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Save, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4018/996171708@2552382e
+action | Action | ActionMirror$$Lambda$5662/1177165589
 
 <details>
 <summary>Config variables</summary>
@@ -5000,7 +4961,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Victim, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## we_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5008,7 +4968,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Team, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5016,7 +4975,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [West, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## yellow
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5024,7 +4982,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Yellow, Victim, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## you_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5032,7 +4989,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [You, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## zone
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5040,7 +4996,6 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Zone, Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
 ## zone_conj
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5048,7 +5003,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Zone, Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3546/1281245004@391f2d7d
+action | Action | Actions$$Lambda$5190/369843546
 
 <details>
 <summary>Config variables</summary>
