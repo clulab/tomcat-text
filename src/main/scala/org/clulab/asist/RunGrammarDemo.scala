@@ -8,7 +8,7 @@
  */
 package org.clulab.asist
 
-object RunRuleDemo extends App {
+object RunMarkdownDemo extends App {
   
   // splash page if args are not understood
   val usageText = List(
@@ -28,7 +28,7 @@ object RunRuleDemo extends App {
    * @returns A RuleDemo running in the mode with the args
    */
   def run(argList: List[String]): Option[Any] = argList match {
-    case (outfile::l) => Some(new RuleDemo(outfile))
+    case (outfile::l) => Some(new GrammarDemo(outfile))
     case _ => {
       usageText.map(println)
       None

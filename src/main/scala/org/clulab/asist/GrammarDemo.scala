@@ -4,7 +4,7 @@
  * Updated:  2021 May
  *
  * Use the ODIN infrastructure to list the Extractors, and write them
- * to the output file
+ * to the output file in Markdown language format.
  *
  * @param outputFile The results of all file processing are written here
  */
@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import scala.util.Sorting
 
 
-class RuleDemo (val outputFile: String){ 
+class GrammarDemo (val outputFile: String){ 
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
