@@ -28,7 +28,7 @@ class GrammarDemo (val outputFile: String){
 
   val extractorEngine = asistEngine.engine
 
-  val extractors = sortByName(extractorEngine.extractors)
+  val extractors = sortExtractors(extractorEngine.extractors)
 
   logger.info("Number of extractors = %s\n".format(extractors.size))
     
@@ -43,7 +43,7 @@ class GrammarDemo (val outputFile: String){
     case _ => logger.error("Could not open file '%s' for writing".format(outputFile))
   }
 
-  def sortByName(extractors:  Seq[OdinExtractor]): List[OdinExtractor] = {
+  def sortExtractors(extractors:  Seq[OdinExtractor]): List[OdinExtractor] = {
     object NameOrdering extends Ordering[OdinExtractor] {
       def compare(a:OdinExtractor , b:OdinExtractor ) = a.name compare b.name
     }
@@ -110,7 +110,7 @@ class GrammarDemo (val outputFile: String){
       "labels | Seq[String] | [%s]".format(x.labels.mkString(", ")),
       "priority | Prority | %s".format(x.priority),
       "keep | Boolean | %s".format(x.keep),
-      "action | Action | %s".format(x.action.toString),
+      "action | Action | %s".format(x.action),
       ""
     )
     val configSummary = mapSummary(x.config.variables)
@@ -127,7 +127,7 @@ class GrammarDemo (val outputFile: String){
       "Atribute | Type | Value",
       "----|----|----",
     )
-    val keys = map.keys
+    val keys = map.keys.toList.sortWith(_ < _) // alphasort
     val body = keys.map(key => {
       "%s | String | %s".format(key, map(key))
     }).toList
