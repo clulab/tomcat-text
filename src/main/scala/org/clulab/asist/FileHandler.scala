@@ -11,8 +11,7 @@
  */
 package org.clulab.asist
 
-import java.io.File
-import java.io.PrintWriter
+import java.io.{File, PrintWriter}
 import org.slf4j.LoggerFactory
 
 trait FileHandler {
@@ -20,19 +19,11 @@ trait FileHandler {
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
 
-  // override to write to the very start of the output file
-  def preamble(output: PrintWriter): Unit = {}
-
-
-  // override to write to the very end of the output file
-  def postamble(output: PrintWriter): Unit = {}
-
-
   /** process one input file
    * @param filename a single input file
    * @param output Printwriter to the output file
    */
-  def processFile(filename: String, output: PrintWriter): Unit
+  def processFile(filename: String, output: PrintWriter): Unit = {}
 
   /** process all of the input files
    * @param filenames the input files as determined by the inputFilename
@@ -42,9 +33,7 @@ trait FileHandler {
     try {
       val output = new PrintWriter(new File(outputFilename))
       val filenames = getFiles(inputFilename)
-      preamble(output)
       filenames.map(processFile(_, output))
-      postamble(output)
       output.close
       logger.info("All operations completed successfully.")
     } catch {
@@ -54,9 +43,6 @@ trait FileHandler {
       }
     }
   }
-
-  def start(inputFile: String, outputFile: String): Unit = 
-    apply(inputFile, outputFile)
 
 
   /** Determine the list of input files to process

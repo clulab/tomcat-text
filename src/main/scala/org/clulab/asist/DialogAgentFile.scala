@@ -27,7 +27,7 @@ class DialogAgentFile(
    * @param filename a single input file
    * @param output Printwriter to the output file
    */
-  def processFile(filename: String, output: PrintWriter): Unit = 
+  override def processFile(filename: String, output: PrintWriter): Unit = 
     filename.substring(filename.lastIndexOf(".")) match {
       case ".vtt" => {
         logger.info("processing WebVTT file '%s' ...".format(filename))
