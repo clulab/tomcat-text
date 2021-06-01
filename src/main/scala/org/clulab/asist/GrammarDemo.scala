@@ -18,6 +18,7 @@ import org.clulab.odin.impl._
 import org.clulab.odin.impl.{Extractor => OdinExtractor}
 import org.slf4j.LoggerFactory
 import scala.util.Sorting
+import scala.reflect.runtime.universe._
 
 
 class GrammarDemo (val outputFile: String){ 
@@ -30,6 +31,11 @@ class GrammarDemo (val outputFile: String){
 
   val extractors = sortExtractors(extractorEngine.extractors)
 
+  val actions = asistEngine.loadableAttributes.actions
+
+//  val ruleReader = extractorEngine.reader
+
+  
   logger.info("Number of extractors = %s\n".format(extractors.size))
     
   // Open the print stream and write the extractors as markdown text.
@@ -80,37 +86,39 @@ class GrammarDemo (val outputFile: String){
     "action | Action | %s".format(x.action.toString),
     "leftWindow | Int | %s".format(x.leftWindow),
     "rightWindow | Int | %s".format(x.rightWindow),
-    "anchorPattern | TokenExtractor | %s".format(x.anchorPattern),
-    "neighborPattern | TokenExtractor | %s".format(x.neighborPattern),
     "anchorRole | String | %s".format(x.anchorRole),
     "neighborRole | String | %s".format(x.neighborRole),
     ""
   )
 
 
-  def tokenExtractor(x: TokenExtractor): List[String] = List(
-    "type | Extractor | TokenExtractor",
-    "labels | Seq[String] | [%s]".format(x.labels.mkString(", ")),
-    "priority | Prority | %s".format(x.priority),
-    "keep | Boolean | %s".format(x.keep),
-    "action | Action | %s".format(x.action.toString),
-    ""
-  )
+  def tokenExtractor(x: TokenExtractor): List[String] = {
+    val action = x.action  // class org.clulab.odin.Actions$$Lambda$3541/696062520
+//    val instanceMirror = runtimeMirror(action.getClass.getClassLoader).reflect(org.clulab.odin.Actions)
+//    val methodSymbol = instanceMirror.symbol.typeSignature.member(action).asMethod
+//    val actionName = TermName(x.action.toString)
+
+    List(
+      "type | Extractor | TokenExtractor",
+      "labels | Seq[String] | [%s]".format(x.labels.mkString(", ")),
+      "priority | Prority | %s".format(x.priority),
+      "keep | Boolean | %s".format(x.keep),
+      "action | Action | %s".format(action),
+      ""
+    )
+  }
 
 
   def graphExtractor(
     x: GraphExtractor
   ): List[String] = {
-    val taxonomy: String = x.config.taxonomy match {
-      case Some(t: Taxonomy) => "Some"
-      case _ => "None"
-    }
+    val action = x.action // class org.clulab.odin.impl.ActionMirror$$Lambda$4013/445526917
     val table = List(
       "type | Extractor | GraphExtractor",
       "labels | Seq[String] | [%s]".format(x.labels.mkString(", ")),
       "priority | Prority | %s".format(x.priority),
       "keep | Boolean | %s".format(x.keep),
-      "action | Action | %s".format(x.action),
+      "action | Action | %s".format(action.toString),
       ""
     )
     val configSummary = mapSummary(x.config.variables)
