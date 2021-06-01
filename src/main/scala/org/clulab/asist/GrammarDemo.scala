@@ -94,7 +94,6 @@ class GrammarDemo (val outputFile: String){
     "priority | Prority | %s".format(x.priority),
     "keep | Boolean | %s".format(x.keep),
     "action | Action | %s".format(x.action.toString),
-    "pattern | TokenPattern | %s".format(x.pattern.toString),
     ""
   )
 
@@ -112,10 +111,6 @@ class GrammarDemo (val outputFile: String){
       "priority | Prority | %s".format(x.priority),
       "keep | Boolean | %s".format(x.keep),
       "action | Action | %s".format(x.action.toString),
-      "pattern | GraphPattern | %s".format(x.pattern.toString),
-      "taxonomy | Option[Taxonomy] | %s".format(taxonomy),
-      "graph | String | %s".format(x.config.graph),
-      "resources | OdinResourceManager | %s".format(x.config.resources),
       ""
     )
     val configSummary = mapSummary(x.config.variables)

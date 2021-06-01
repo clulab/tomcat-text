@@ -7,8 +7,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Agreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@5b5dde32
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## agreement2
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -16,8 +15,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Agreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@71d46d6b
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## alpha
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -25,8 +23,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Alpha, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@3bbd58d6
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## bravo
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -34,8 +31,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Bravo, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@4e51f814
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## change_priority
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -43,11 +39,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ChangePriority, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@7b4813a2
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@29258695
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@1417c6c1
 
 <details>
 <summary>Config variables</summary>
@@ -137,11 +129,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ChangePriority, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@2311748
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@72528b5
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@3b9e9d61
 
 <details>
 <summary>Config variables</summary>
@@ -231,8 +219,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Charlie, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@7aecbb6
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## clear_location
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -240,11 +227,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@4000e447
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@4a013058
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@4abf42b4
 
 <details>
 <summary>Config variables</summary>
@@ -334,11 +317,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@644fc92d
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@15cd5d69
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@6034b4ec
 
 <details>
 <summary>Config variables</summary>
@@ -428,8 +407,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@52a8b14b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@11e8d8b6
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@5b111530
 ## close
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -437,11 +415,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Close, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@b747d07
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@74ad5f15
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@142beea6
 
 <details>
 <summary>Config variables</summary>
@@ -531,11 +505,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [MakeCommitment, Commitment, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@63189a22
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@3462c39f
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@24b1b475
 
 <details>
 <summary>Config variables</summary>
@@ -625,11 +595,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Continue, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@1cd60c51
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -719,8 +685,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Deictic, Inferred, Location, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@29dbd29
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## delta
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -728,8 +693,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Delta, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@2573eed2
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## demonstrative_pronoun
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -737,8 +701,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [DemPron, Inferred, Location, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@7afbfd8
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## directions
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -746,8 +709,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@2b378ff8
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## disagree_token_match
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -755,8 +717,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Disagreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@442c0b42
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -764,8 +725,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [East, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@7e13786b
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## encouragement1
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -773,8 +733,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Encouragement, Positive, Sentiment, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@438590e
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## engineer
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -782,8 +741,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Engineer, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@13e75e3e
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## fire_detection
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -791,8 +749,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Fire, Obstacle, EventLike, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@37b5211b
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## foe_detection
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -800,8 +757,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Foe, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@5280c7a6
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## green
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -809,8 +765,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Green, Victim, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@14b614d1
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## hammer
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -818,11 +773,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Hammer, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@3d09bed7
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -912,11 +863,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@23aafd94
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@7743b3b0
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@61e7e7db
 
 <details>
 <summary>Config variables</summary>
@@ -1006,8 +953,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@53773115
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## lemma_verb_dobj-craft
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1015,11 +961,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@23f8c2aa
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@57cadd1c
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@320cc642
 
 <details>
 <summary>Config variables</summary>
@@ -1114,11 +1056,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@3d7e3a66
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@576b5b45
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@7999407b
 
 <details>
 <summary>Config variables</summary>
@@ -1213,11 +1151,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@32633e90
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@334027fd
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@50a25121
 
 <details>
 <summary>Config variables</summary>
@@ -1312,11 +1246,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@7f2186f9
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@721d5b2b
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@e25add1
 
 <details>
 <summary>Config variables</summary>
@@ -1411,11 +1341,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@59a17c46
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@6becc740
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@5a4f5481
 
 <details>
 <summary>Config variables</summary>
@@ -1510,11 +1436,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@1809928a
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@5546a3
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@69e64d2b
 
 <details>
 <summary>Config variables</summary>
@@ -1609,8 +1531,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@524449a3
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## location_clumped
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1618,8 +1539,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@5f9f526c
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## location_question
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1627,11 +1547,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [LocationQuestion, Question, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@bd606d7
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@211c2950
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@2b0f226f
 
 <details>
 <summary>Config variables</summary>
@@ -1721,11 +1637,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ReportLocation, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@51657581
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@74cc41f3
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@8e749fa
 
 <details>
 <summary>Config variables</summary>
@@ -1815,11 +1727,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Map, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@4f170103
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -1909,8 +1817,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Medic, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@f81e718
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## medkit
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1918,11 +1825,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [MedKit, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@75325214
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -2012,11 +1915,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@63674698
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@140f5cee
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@28acef3b
 
 <details>
 <summary>Config variables</summary>
@@ -2106,11 +2005,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@14b6d050
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@73f39220
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@73f87010
 
 <details>
 <summary>Config variables</summary>
@@ -2200,8 +2095,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [North, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@2a794940
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## north_east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2209,8 +2103,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [NorthEast, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@447f98cd
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## north_west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2218,8 +2111,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [NorthWest, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@6669f442
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## numbers
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2227,8 +2119,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Number, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@9e4083d
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## obstructing
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2236,11 +2127,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Block, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@69b76308
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@51b63703
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@21b6285a
 
 <details>
 <summary>Config variables</summary>
@@ -2330,11 +2217,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Block, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@78541293
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@51585844
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@13ac0d0f
 
 <details>
 <summary>Config variables</summary>
@@ -2424,11 +2307,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@3a5ce44
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@634bff1c
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@5c36ed76
 
 <details>
 <summary>Config variables</summary>
@@ -2523,11 +2402,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@3b53b96c
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@28da4c3a
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@6c7e6e10
 
 <details>
 <summary>Config variables</summary>
@@ -2622,11 +2497,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@5a0608b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@392fcc3c
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@7c9a6f3d
 
 <details>
 <summary>Config variables</summary>
@@ -2721,11 +2592,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@1f918aac
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@6550aef8
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@f2dd1d4
 
 <details>
 <summary>Config variables</summary>
@@ -2820,11 +2687,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@63f23ee1
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@24fb508f
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@649bd01a
 
 <details>
 <summary>Config variables</summary>
@@ -2919,11 +2782,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@37ac7a56
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@576b2535
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@7b0a2c77
 
 <details>
 <summary>Config variables</summary>
@@ -3018,8 +2877,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Person, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@259c1c0f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## precedence1
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3027,11 +2885,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@5b1d5f1b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@fb7e0e4
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@544647ac
 
 <details>
 <summary>Config variables</summary>
@@ -3121,11 +2975,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@1fb3eaa
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@44c236fe
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@35848f81
 
 <details>
 <summary>Config variables</summary>
@@ -3215,11 +3065,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@75964cfa
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@4516326c
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@fa5822b
 
 <details>
 <summary>Config variables</summary>
@@ -3309,8 +3155,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@1d405a0a
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@48e0ea9a
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@25e66e3c
 ## precedence3_token_before
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3318,8 +3163,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@fd69ee0
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@7ba74824
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@437b260b
 ## prep_need_action
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3327,11 +3171,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@6428cd50
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -3421,11 +3261,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@2b535f75
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -3515,11 +3351,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@10c9e561
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -3609,11 +3441,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@51ee7934
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@730e7c14
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@52125162
 
 <details>
 <summary>Config variables</summary>
@@ -3708,11 +3536,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@42173df7
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@1d2a3a39
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@710525d1
 
 <details>
 <summary>Config variables</summary>
@@ -3807,11 +3631,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@3f2fd771
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@3f41f25c
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@67043243
 
 <details>
 <summary>Config variables</summary>
@@ -3906,11 +3726,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@444288c6
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@8759985
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@7dd51bd6
 
 <details>
 <summary>Config variables</summary>
@@ -4005,11 +3821,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@492053a5
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@79c38bcf
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@3d0ccc4f
 
 <details>
 <summary>Config variables</summary>
@@ -4104,11 +3916,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@29172889
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@d0a259f
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@657f4d92
 
 <details>
 <summary>Config variables</summary>
@@ -4203,8 +4011,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [QuestionParticle, Question, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@467cf2e0
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## relative_location
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4212,11 +4019,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@23049413
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -4307,11 +4110,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [RoleSwitch, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@33c7b39a
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@6f3d4ea0
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@232ffd54
 
 <details>
 <summary>Config variables</summary>
@@ -4401,11 +4200,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [RoleSwitch, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@4e774a55
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@4954eb84
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@76f1494c
 
 <details>
 <summary>Config variables</summary>
@@ -4495,8 +4290,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Rubble, Obstacle, EventLike, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@4701ca57
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## search_infra_action
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4504,11 +4298,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@424cd459
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@369d0ba7
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@2dc49d69
 
 <details>
 <summary>Config variables</summary>
@@ -4598,8 +4388,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Searcher, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@58fbce3b
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## self_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4607,8 +4396,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Self, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@1161e401
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## sight_presence
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4616,11 +4404,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@352b0468
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@6b35f159
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@3248569e
 
 <details>
 <summary>Config variables</summary>
@@ -4710,11 +4494,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@6d397012
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@73e6d058
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@6e51d8de
 
 <details>
 <summary>Config variables</summary>
@@ -4804,8 +4584,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [South, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@1e838208
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## south_east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4813,8 +4592,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [SouthEast, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@5a7817b8
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## south_west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4822,8 +4600,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [SouthWest, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@7c675505
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## stretcher
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4831,11 +4608,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Stretcher, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@39c62ec1
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -4925,8 +4698,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Switch, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@3bd76833
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## thank_you
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4934,8 +4706,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Gratitude, Positive, Sentiment, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@21087d26
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## time
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4943,8 +4714,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [TimeUnit, Time, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@6781cb7f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## time_underspecified
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4952,8 +4722,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [TimeUnit, Time, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@6fb95168
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## tool_generic
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4961,11 +4730,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@6faf2a5c
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
@@ -5055,11 +4820,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Save, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@d2c8bc2
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@649f632b
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@12164771
 
 <details>
 <summary>Config variables</summary>
@@ -5149,11 +4910,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Save, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$4017/74314172@41884cc1
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@57637366
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.impl.ActionMirror$$Lambda$5680/1788324490@1b30af8f
 
 <details>
 <summary>Config variables</summary>
@@ -5243,8 +5000,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Victim, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@3e7890d3
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## we_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5252,8 +5008,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Team, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@21612a0c
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5261,8 +5016,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [West, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@228c94a5
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## yellow
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5270,8 +5024,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Yellow, Victim, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@6e383bd1
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## you_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5279,8 +5032,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [You, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@143cd0cd
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## zone
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5288,8 +5040,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Zone, Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | TokenPattern | org.clulab.odin.impl.TokenPattern@3ca5a90c
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 ## zone_conj
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5297,11 +5048,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Zone, Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | org.clulab.odin.Actions$$Lambda$3545/1037787640@3ea9761b
-pattern | GraphPattern | org.clulab.odin.impl.TriggerPatternGraphPattern@7a4a2b81
-taxonomy | Option[Taxonomy] | Some
-graph | String | universal-enhanced
-resources | OdinResourceManager | org.clulab.odin.impl.OdinResourceManager@780f108f
+action | Action | org.clulab.odin.Actions$$Lambda$5208/781188475@7a11683e
 
 <details>
 <summary>Config variables</summary>
