@@ -15,13 +15,8 @@ object RunRuleDemo extends App {
     "",
     "usage:",
     "",
-    "  RunRuleDemo odin inputfile outputfile",
+    "  RunRuleDemo outputfile",
     "",
-    "  or",
-    "",
-    "  RunRuleDemo yml inputfile outputfile",
-    "",
-    "inputfile : supported file extensions are .yml and .yaml (also handles directories containing files with those extensions)",
     ""
   )
 
@@ -32,9 +27,8 @@ object RunRuleDemo extends App {
    * @param argList A flat list of running mode then n key-value pairs
    * @returns A RuleDemo running in the mode with the args
    */
-  def run(argList: List[String]): Option[RuleDemo] = argList match {
-    case ("odin"::infile::outfile::l) => Some(new OdinRuleDemo(infile, outfile))
-    case ("yml"::infile::outfile::l) => Some(new YmlRuleDemo(infile, outfile))
+  def run(argList: List[String]): Option[Any] = argList match {
+    case (outfile::l) => Some(new RuleDemo(outfile))
     case _ => {
       usageText.map(println)
       None
