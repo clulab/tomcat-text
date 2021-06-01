@@ -7,6 +7,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Agreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## agreement2
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -14,6 +15,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Agreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## alpha
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -21,6 +23,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Alpha, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## bravo
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -28,6 +31,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Bravo, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## change_priority
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -35,7 +39,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ChangePriority, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -125,7 +129,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ChangePriority, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -215,6 +219,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Charlie, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## clear_location
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -222,7 +227,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -312,7 +317,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -402,6 +407,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Clear, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
+action | Action | ActionMirror$$Lambda$5622/860201116
 ## close
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -409,7 +415,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Close, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -499,7 +505,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [MakeCommitment, Commitment, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -589,7 +595,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Continue, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -679,6 +685,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Deictic, Inferred, Location, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## delta
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -686,6 +693,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Delta, Player, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## demonstrative_pronoun
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -693,6 +701,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [DemPron, Inferred, Location, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
+action | Action | Actions$$Lambda$5150/178788738
 ## directions
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -700,6 +709,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## disagree_token_match
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -707,6 +717,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Disagreement, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -714,6 +725,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [East, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## encouragement1
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -721,6 +733,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Encouragement, Positive, Sentiment, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## engineer
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -728,6 +741,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Engineer, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## fire_detection
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -735,6 +749,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Fire, Obstacle, EventLike, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## foe_detection
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -742,6 +757,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Foe, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## green
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -749,6 +765,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Green, Victim, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
+action | Action | Actions$$Lambda$5150/178788738
 ## hammer
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -756,7 +773,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Hammer, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -846,7 +863,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -936,6 +953,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## lemma_verb_dobj-craft
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -943,7 +961,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1038,7 +1056,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1133,7 +1151,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1228,7 +1246,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1323,7 +1341,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1418,7 +1436,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1513,6 +1531,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## location_clumped
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1520,6 +1539,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## location_question
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1527,7 +1547,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [LocationQuestion, Question, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1617,7 +1637,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [ReportLocation, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1707,7 +1727,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Map, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -1797,6 +1817,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Medic, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## medkit
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -1804,7 +1825,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [MedKit, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -1894,7 +1915,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -1984,7 +2005,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2074,6 +2095,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [North, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## north_east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2081,6 +2103,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [NorthEast, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## north_west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2088,6 +2111,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [NorthWest, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## numbers
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2095,6 +2119,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Number, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## obstructing
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2102,7 +2127,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Block, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2192,7 +2217,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Block, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2282,7 +2307,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2377,7 +2402,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2472,7 +2497,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2567,7 +2592,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2662,7 +2687,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2757,7 +2782,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2852,6 +2877,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Person, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## precedence1
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -2859,7 +2885,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -2949,7 +2975,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3039,7 +3065,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3129,6 +3155,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
+action | Action | ActionMirror$$Lambda$5622/860201116
 ## precedence3_token_before
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3136,6 +3163,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Precedence, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(7)
 keep | Boolean | true
+action | Action | ActionMirror$$Lambda$5622/860201116
 ## prep_need_action
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3143,7 +3171,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -3233,7 +3261,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -3323,7 +3351,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Need, ComplexActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -3413,7 +3441,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Craft, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3508,7 +3536,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Defeat, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3603,7 +3631,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Move, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3698,7 +3726,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3793,7 +3821,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3888,7 +3916,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Toggle, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -3983,6 +4011,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [QuestionParticle, Question, Communicate, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## relative_location
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -3990,7 +4019,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Location, EventLike, Concept]
 priority | Prority | LowerBoundPriority(4)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -4081,7 +4110,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [RoleSwitch, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4171,7 +4200,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [RoleSwitch, SimpleActions, Action, EventLike, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4261,6 +4290,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Rubble, Obstacle, EventLike, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## search_infra_action
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4268,7 +4298,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Search, ComplexActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4358,6 +4388,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Searcher, Role, Entity, Concept]
 priority | Prority | LowerBoundPriority(3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## self_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4365,6 +4396,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Self, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## sight_presence
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4372,7 +4404,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4462,7 +4494,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Sight, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4552,6 +4584,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [South, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## south_east
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4559,6 +4592,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [SouthEast, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## south_west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4566,6 +4600,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [SouthWest, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## stretcher
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4573,7 +4608,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Stretcher, Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -4663,6 +4698,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Switch, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## thank_you
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4670,6 +4706,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Gratitude, Positive, Sentiment, Concept]
 priority | Prority | ExactPriority(2)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## time
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4677,6 +4714,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [TimeUnit, Time, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## time_underspecified
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4684,6 +4722,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [TimeUnit, Time, EventLike, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## tool_generic
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4691,7 +4730,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Tool, Item, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
@@ -4781,7 +4820,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Save, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4871,7 +4910,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Save, SimpleActions, Action, EventLike, Concept]
 priority | Prority | ExactPriority(5)
 keep | Boolean | true
-action | Action | ActionMirror$$Lambda$5662/1177165589
+action | Action | ActionMirror$$Lambda$5622/860201116
 
 <details>
 <summary>Config variables</summary>
@@ -4961,6 +5000,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Victim, Entity, Concept]
 priority | Prority | LowerBoundPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## we_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4968,6 +5008,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Team, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## west
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4975,6 +5016,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [West, Cardinal, Direction, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## yellow
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4982,6 +5024,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Yellow, Victim, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | false
+action | Action | Actions$$Lambda$5150/178788738
 ## you_token_capture
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4989,6 +5032,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [You, Entity, Concept]
 priority | Prority | ExactPriority(1)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## zone
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -4996,6 +5040,7 @@ type | Extractor | TokenExtractor
 labels | Seq[String] | [Zone, Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
+action | Action | Actions$$Lambda$5150/178788738
 ## zone_conj
 Attribute  |  Type  |  Value
 -----  |  -----  |  ----
@@ -5003,7 +5048,7 @@ type | Extractor | GraphExtractor
 labels | Seq[String] | [Zone, Infrastructure, Location, EventLike, Concept]
 priority | Prority | IntervalPriority(2,3)
 keep | Boolean | true
-action | Action | Actions$$Lambda$5190/369843546
+action | Action | Actions$$Lambda$5150/178788738
 
 <details>
 <summary>Config variables</summary>
