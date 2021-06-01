@@ -8,14 +8,14 @@
  */
 package org.clulab.asist
 
-object RunMarkdownDemo extends App {
+object RunGrammarDemo extends App {
   
   // splash page if args are not understood
   val usageText = List(
     "",
     "usage:",
     "",
-    "  RunRuleDemo outputfile",
+    "  RunGrammarDemo outputfile",
     "",
     ""
   )
