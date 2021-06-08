@@ -1,0 +1,136 @@
+<View>
+  <View className="transcription">
+    <Header name="transcription_header" value="Transcription:" size="2"/>
+    <Table name="transcription" value="$transcription_data">
+    </Table>
+  </View>
+  <View className="audio_waveforms">
+    <Header name="audio_header" value="Audio:" size="2"/>
+    <Header name="participant_1_header" value="Participant 1:" size="3"/>
+    <AudioPlus name="audio_participant_1" value="$audio_url"/>
+    <Header name="participant_2_header" value="Participant 2:" size="3"/>
+    <AudioPlus name="audio_participant_2" value="$audio_url"/>
+    <Header name="participant_3_header" value="Participant 3:" size="3"/>
+    <AudioPlus name="audio_participant_3" value="$audio_url"/>
+    <Header name="participant_4_header" value="Participant 4:" size="3"/>
+    <AudioPlus name="audio_participant_4" value="$audio_url"/>
+  </View>
+  <Style>
+.label_group { background: block; width:100% }            </Style>
+  <Labels name="labels_tag" toName="transcription" choice="single">
+    <Header name="labels_header" value="General Labels:" size="2"/>
+    <View className="label_group">
+      <Header name="Statement" value="Statement" size="5"/>
+      <Label alias="1" value="s"/>
+    </View>
+    <View className="label_group">
+      <Header name="Questions" value="Questions" size="5"/>
+      <Label alias="3" value="qy"/>
+      <Label alias="4" value="qw"/>
+      <Label alias="5" value="qr"/>
+      <Label alias="6" value="qrr"/>
+      <Label alias="7" value="qo"/>
+      <Label alias="8" value="qh"/>
+    </View>
+    <View className="label_group">
+      <Header name="Floor Mechanisms" value="Floor Mechanisms" size="5"/>
+      <Label alias="10" value="fg"/>
+      <Label alias="11" value="fh"/>
+      <Label alias="12" value="h"/>
+    </View>
+    <View className="label_group">
+      <Header name="Backchannel" value="BackChannel" size="5"/>
+      <Label alias="14" value="b"/>
+    </View>
+  </Labels>
+  <Labels name="specific_labels" toName="audio_participant_1" choice="multiple">
+    <Header name="labels_header_specific" value="Specific Labels:" size="2"/>
+    <View classname="label_group">
+      <Header name="Responses-positive" value="Responses-positive" size="5"/>
+      <Label alias="1" value="aa"/>
+      <Label alias="2" value="aap"/>
+      <Label alias="3" value="na"/>
+    </View>
+    <View className="label_group">
+      <Header name="Responses-negative" value="Responses-negative" size="5"/>
+      <Label alias="5" value="ar"/>
+      <Label alias="6" value="arp"/>
+      <Label alias="7" value="nd"/>
+      <Label alias="8" value="ng"/>
+    </View>
+    <View className="label_group">
+      <Header name="Responses-uncertain" value="Responses-uncertain" size="5"/>
+      <Label alias="10" value="am"/>
+      <Label alias="11" value="no"/>
+    </View>
+    <View className="label_group">
+      <Header name="Action Motivators" value="Action Motivators" size="5"/>
+      <Label alias="13" value="co"/>
+      <Label alias="14" value="cs"/>
+      <Label alias="15" value="cc"/>
+    </View>
+    <View className="label_group">
+      <Header name="Acknowledgment" value="Acknowledgment" size="5"/>
+      <Label alias="17" value="bk"/>
+      <Label alias="18" value="ba"/>
+      <Label alias="19" value="bh"/>
+    </View>
+    <View className="label_group">
+      <Header name="Checks" value="Checks" size="5"/>
+      <Label alias="21" value="f"/>
+      <Label alias="22" value="br"/>
+      <Label alias="23" value="bu"/>
+    </View>
+    <View className="label_group">
+      <Header name="Repetition" value="Repetition" size="5"/>
+      <Label alias="25" value="r"/>
+      <Label alias="26" value="m"/>
+      <Label alias="27" value="bs"/>
+    </View>
+    <View className="label_group">
+      <Header name="Correction" value="Correction" size="5"/>
+      <Label alias="29" value="bc"/>
+      <Label alias="30" value="bsc"/>
+    </View>
+    <View className="label_group">
+      <Header name="Supportive Functions" value="Supportive Functions" size="5"/>
+      <Label alias="32" value="df"/>
+      <Label alias="33" value="e"/>
+      <Label alias="34" value="2"/>
+    </View>
+    <View className="label_group">
+      <Header name="Politeness Mechanisms" value="Politeness Mechanisms" size="5"/>
+      <Label alias="36" value="bd"/>
+      <Label alias="37" value="by"/>
+      <Label alias="38" value="fa"/>
+      <Label alias="39" value="ft"/>
+      <Label alias="40" value="fw"/>
+    </View>
+    <View className="label_group">
+      <Header name="Further Descriptions" value="Further Descriptions" size="5"/>
+      <Label alias="42" value="fe"/>
+      <Label alias="43" value="t"/>
+      <Label alias="44" value="tc"/>
+      <Label alias="45" value="j"/>
+      <Label alias="46" value="t1"/>
+      <Label alias="47" value="t3"/>
+      <Label alias="48" value="g"/>
+    </View>
+    <View className="label_group">
+      <Header name="Disruption" value="Disruption" size="5"/>
+      <Label alias="50" value="%"/>
+    </View>
+    <View className="label_group">
+      <Header name="Nonspeech" value="Nonspeech" size="5"/>
+      <Label alias="52" value="x"/>
+    </View>
+    <View className="label_group">
+      <Header name="Nonlabeled" value="Nonlabeled" size="5"/>
+      <Label alias="54" value="z"/>
+    </View>
+  </Labels>
+  <Header name="annotations_header" value="Annotations:" size="5"/>
+  <TextArea name="annotations" rows="2">
+  </TextArea>
+</View>
+
