@@ -1,3 +1,9 @@
+package org.clulab.asist
+
+import java.io.File
+import java.io.PrintWriter
+import org.slf4j.LoggerFactory
+
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
@@ -9,12 +15,6 @@
  * @param outputFilename The results of all file processing are written here
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
-package org.clulab.asist
-
-import java.io.File
-import java.io.PrintWriter
-import org.slf4j.LoggerFactory
-
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
