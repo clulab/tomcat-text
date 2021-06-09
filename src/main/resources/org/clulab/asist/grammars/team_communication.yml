@@ -89,14 +89,17 @@ rules:
   - name: existential
     priority: ${ rulepriority }
     label: KnowledgeSharing
-    example: "There is a victim here"
+    example: "There is a victim here. There is a victim behind this rubble. There is a victim in the library."
     action: removeResearcher
     pattern: |
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: Victim = >/${agents}/
-      location: Location? = >/advmod/|
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
                >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/
 
   - name: existential2
     priority: ${ rulepriority }
@@ -106,9 +109,12 @@ rules:
     pattern: |
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: Person = >/${agents}/
-      location: Location? = >/advmod/|
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
                >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/
 
   - name: existential3
     priority: ${ rulepriority }
@@ -118,9 +124,10 @@ rules:
     pattern: |
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
       exists: EventLike = >/${agents}/
-      location: Location? = >/advmod/|
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
                >/${preps}/
+      map: Map? = >/${positional_preps}/
 
   - name: existential4
     priority: ${ rulepriority }
@@ -133,3 +140,6 @@ rules:
       location: Location? = >/advmod/|
                >/${agents}/
                >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/

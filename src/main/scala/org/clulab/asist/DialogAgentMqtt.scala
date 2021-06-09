@@ -1,7 +1,15 @@
+package org.clulab.asist
+
+import org.json4s._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
+
+import scala.util.control.Exception._
+
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 April
+ * Updated:  2021 June
  *
  * This class reads input from the message bus on subscribed topics,
  * performs analysis on the input, and then publishes the analysis to
@@ -13,12 +21,6 @@
  * @param port MQTT network port to connect to.
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
-package org.clulab.asist
-
-import org.json4s._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
-import scala.util.control.Exception._
 
 class DialogAgentMqtt(
   val host: String = "",
