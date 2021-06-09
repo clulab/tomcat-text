@@ -14,15 +14,15 @@ package org.clulab.asist
 
 
 /** Part of the DialogAgentInfo class */
-case class DialogAgentInfoData(
-  val agent_name: String = "Not Set"
-  val version: String = "Not Set"
+case class VersionInfoData(
+  val agent_name: String = "Not Set",
+  val version: String = "Not Set",
   val owner: String = "Not Set"
 )
 
 /** Contains the full analysis data of one chat message */
-case class DialogAgentInfo (
+case class VersionInfo (
   val header: CommonHeader,
   val msg: CommonMsg,
-  val data: DialogAgentInfoData
+  val data: VersionInfoData
 ) 

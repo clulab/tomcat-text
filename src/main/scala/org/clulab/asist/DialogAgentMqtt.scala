@@ -37,6 +37,18 @@ class DialogAgentMqtt(
     this
   )
 
+  // Special case for version info message at experiment startup.
+  // 
+  def versionInfo(json: String): Unit = json.split("\n").map(line =>
+    allCatch.opt(read[VersionInfo](line)).map(versionInfo => {
+      if(versionInfo.msg.sub_type == "start") {
+        // compose message with agent parameters for experiment startup
+        //
+        // write 
+      }
+    })
+  )
+
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A metadata text string
@@ -44,18 +56,20 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = json.split("\n").map(line => 
-    allCatch.opt(read[Metadata](line)).map(metadata => 
-      busDriver.publish(  // to Message Bus
-        write( // to json
-          toDialogAgentMessage( // to struct
-            source_type,
-            topic,
-            topic,
-            metadata
+  ): Unit = if(topic == topicTrial) versionInfo(json) else {
+    json.split("\n").map(line => 
+      allCatch.opt(read[Metadata](line)).map(metadata => 
+        busDriver.publish(  // to Message Bus
+          write( // to json
+            toDialogAgentMessage( // to struct
+              source_type,
+              topic,
+              topic,
+              metadata
+            )
           )
         )
       )
     )
-  ) 
+  } 
 }

@@ -34,6 +34,7 @@ class DialogAgent (val nMatches: Int = 0) {
   val topicChat: String = "minecraft/chat"
   val topicUazAsr: String = "agent/asr/final"
   val topicAptimaAsr: String = "status/asistdataingester/userspeech"
+  val topicTrial: String = "trial"
   val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr)
   val outputTopic = "agent/dialog"
 
@@ -90,7 +91,7 @@ class DialogAgent (val nMatches: Int = 0) {
 
   /** create a DialogAgentMessage with metadata
    *  @param source_type Source of message data, either message_bus or a file
-   *  @param source_name Name of message bus topic or filename
+   *  @param source_name topic or filename
    *  @param topic Originating process for message
    *  @param metadata Experiment data 
    */
@@ -138,8 +139,8 @@ class DialogAgent (val nMatches: Int = 0) {
   }
 
   /** create a DialogAgentMessage without metadata
-   *  @param source_type Source of message data, either message_bus or a file
-   *  @param source_name Name of message bus topic or filename
+   *  @param source_type Source of message data, either keyboard input or a file
+   *  @param source_name topic or filename
    *  @param participant_id The individual who has spoken
    *  @param text Spoken text to be analyzed
    */
