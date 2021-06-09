@@ -1,14 +1,15 @@
+package org.clulab.asist
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Updated:  2021 April
+ *  Updated:  2021 June
  *
  *  This metadata structure will overlay the discrete structures produced by 
  *  Chat, University of Arizona ASR, and Aptima ASR sources, eliminating the
  *  need for discrete message types.
  *
  */
-package org.clulab.asist
 
 case class MetadataData(
 

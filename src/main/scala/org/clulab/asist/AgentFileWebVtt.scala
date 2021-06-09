@@ -1,11 +1,3 @@
-/**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
- *
- *  Updated:  2021 April
- *
- *  This trait is to group file processing functionality in one place.
- *
- */
 package org.clulab.asist
 
 import com.crowdscriber.caption.vttdissector.VttDissector
@@ -16,7 +8,17 @@ import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 import org.slf4j.LoggerFactory
+
 import scala.util.{Failure, Success}
+
+/**
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ *  Updated:  2021 June
+ *
+ *  This trait is to group file processing functionality in one place.
+ *
+ */
 
 object AgentFileWebVtt {
 
