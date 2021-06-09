@@ -1,7 +1,12 @@
+package org.clulab.asist
+
+import java.io.{File, PrintWriter}
+import org.slf4j.LoggerFactory
+
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 April
+ * Updated:  2021 June
  *
  * Process a file or the first level of a directory of files.
  *
@@ -9,11 +14,6 @@
  * @param outputFilename The results of all file processing are written here
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
-package org.clulab.asist
-
-import java.io.File
-import java.io.PrintWriter
-import org.slf4j.LoggerFactory
 
 class DialogAgentFile(
   val inputFilename: String = "",

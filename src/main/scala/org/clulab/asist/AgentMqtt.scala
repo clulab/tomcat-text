@@ -1,7 +1,13 @@
+package org.clulab.asist
+
+import org.eclipse.paho.client.mqttv3._
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import org.slf4j.LoggerFactory
+
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 April
+ * Updated:  2021 June
  *
  * Message Bus agent for the Dialog Agent
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
@@ -12,11 +18,6 @@
  * @param outputTopic MQTT topic for publishing processed messages
  * @param owner A DialogAgentMQTT that will process input messages
  */
-package org.clulab.asist
-
-import org.eclipse.paho.client.mqttv3._
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
-import org.slf4j.LoggerFactory
 
 /** Message Bus handler class */
 class AgentMqtt(
