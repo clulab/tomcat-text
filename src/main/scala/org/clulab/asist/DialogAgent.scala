@@ -29,14 +29,14 @@ class DialogAgent (val nMatches: Int = 0) {
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
-  val dialogAgentVersion = "1.0"
+  val dialogAgentVersion = "2.0.0"
 
   // metadata topics
   val topicChat: String = "minecraft/chat"
   val topicUazAsr: String = "agent/asr/final"
   val topicAptimaAsr: String = "status/asistdataingester/userspeech"
   val topicTrial: String = "trial"
-  val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr)
+  val inputTopics = List(topicChat, topicUazAsr, topicAptimaAsr, topicTrial)
   val outputTopic = "agent/dialog"
 
   // Used so Json serializers can recognize case classes
@@ -52,6 +52,36 @@ class DialogAgent (val nMatches: Int = 0) {
   val extractor = new Extractor(new AsistEngine(), taxonomy_map)
   extractor.runExtraction("green victim")
   logger.info("Extractor initialized.")
+
+  // report our configuration
+  def versionInfo: VersionInfo = {
+    val timestamp = Clock.systemUTC.instant.toString
+    VersionInfo(
+      CommonHeader(
+        timestamp = timestamp,
+        message_type = dialogAgentMessageType,
+        version = dialogAgentVersion
+      ),
+      CommonMsg(
+        timestamp = timestamp,
+        source = dialogAgentSource,
+        sub_type = dialogAgentSubType,
+        version = dialogAgentVersion
+      ),
+      VersionInfoData(
+        agent_name = "tomcat_textAnalyzer",
+        owner = "University of Arizona",
+        version = dialogAgentVersion,
+        source = List(
+          "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
+        ),
+        dependencies = List(),
+        config = List(),
+        publishes = List(),
+        subscribes = List()
+      )
+    )
+  }
 
   /** map the mention label to the taxonomy map
    * @param mentionLabel For taxonomy mapping
@@ -88,7 +118,6 @@ class DialogAgent (val nMatches: Int = 0) {
       taxonomy_matches
     )
   }
-
 
   /** create a DialogAgentMessage with metadata
    *  @param source_type Source of message data, either message_bus or a file
