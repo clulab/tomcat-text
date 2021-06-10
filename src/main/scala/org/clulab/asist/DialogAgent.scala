@@ -82,10 +82,10 @@ class DialogAgent (val nMatches: Int = 0) {
             topic = outputTopic,
             message_type = dialogAgentMessageType,
             sub_type = dialogAgentSubType
-          )
+          ),
           VersionInfoDataPublishes(
             topic = outputTopic,
-            message_type = "agent/versioninfo"
+            message_type = "agent/versioninfo",
             sub_type = dialogAgentSubType
           )
         ),
