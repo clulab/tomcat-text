@@ -53,7 +53,7 @@ class DialogAgent (val nMatches: Int = 0) {
   extractor.runExtraction("green victim")
   logger.info("Extractor initialized.")
 
-  // report our configuration
+  // report our testbed configuration
   def versionInfo: VersionInfo = {
     val timestamp = Clock.systemUTC.instant.toString
     VersionInfo(
@@ -77,8 +77,40 @@ class DialogAgent (val nMatches: Int = 0) {
         ),
         dependencies = List(),
         config = List(),
-        publishes = List(),
-        subscribes = List()
+        publishes = List(
+          VersionInfoDataPublishes(
+            topic = outputTopic,
+            message_type = dialogAgentMessageType,
+            sub_type = dialogAgentSubType
+          )
+          VersionInfoDataPublishes(
+            topic = outputTopic,
+            message_type = "agent/versioninfo"
+            sub_type = dialogAgentSubType
+          )
+        ),
+        subscribes = List(
+          VersionInfoDataSubscribes(
+            topic = topicTrial,
+            message_type = "agent/versioninfo",
+            sub_type = "start"
+          ),
+          VersionInfoDataSubscribes(
+            topic = topicChat,
+            message_type = "",
+            sub_type = ""
+          ),
+          VersionInfoDataSubscribes(
+            topic = topicUazAsr,
+            message_type = "",
+            sub_type = ""
+          ),
+          VersionInfoDataSubscribes(
+            topic = topicAptimaAsr,
+            message_type = "",
+            sub_type = ""
+          ),
+        )
       )
     )
   }
