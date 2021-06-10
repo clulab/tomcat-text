@@ -9,22 +9,21 @@ import org.slf4j.LoggerFactory
  *
  * Updated:  2021 June
  *
- * Message Bus agent for the Dialog Agent
+ * Publish and subscribe to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
- * @param inputTopics MQTT topics from which messages to process are read.
+ * @param subscriptions MQTT topics from which messages to process are read.
  * @param outputTopic MQTT topic for publishing processed messages
  * @param owner A DialogAgentMQTT that will process input messages
  */
 
-/** Message Bus handler class */
-class AgentMqtt(
+class MessageBusClient(
   val host: String = "",
   val port: String = "",
-  val inputTopics: List[String] = List.empty,
-  val outputTopic: String = "",
+  val subscriptions: List[String] = List.empty,
+  val publications: List[String] = List.empty,
   val owner: DialogAgentMqtt
 ) extends MqttCallback {
 
@@ -40,14 +39,14 @@ class AgentMqtt(
   // Connect to the Message Bus
   publisher.connect(new MqttConnectOptions)
   subscriber.connect(new MqttConnectOptions).waitForCompletion
-  inputTopics.map(topic => subscriber.subscribe(topic, qos))
+  subscriptions.map(topic => subscriber.subscribe(topic, qos))
   subscriber.setCallback(this)
 
   // Report status of our connection to the Message Bus
   if(subscriber.isConnected && publisher.isConnected) {
     logger.info("Connected to MQTT broker at %s".format(uri))
-    logger.info("Subscribed to: %s".format(inputTopics.mkString(", ")))
-    logger.info("Publishing on: %s".format(outputTopic))
+    logger.info("Subscribed to: %s".format(subscriptions.mkString(", ")))
+    logger.info("Publishing on: %s".format(publications.mkString(", ")))
     logger.info("Running.")
   } else {
     logger.error("Could not connect to MQTT broker at %s".format(uri))
@@ -57,11 +56,11 @@ class AgentMqtt(
   /** Publish a MQTT message to one topic
    *  @param output String to publish on the Message Bus
    */
-  def publish(output: String): Unit = try {
-    publisher.publish(outputTopic, new MqttMessage(output.getBytes))
+  def publish(topic: String, text: String): Unit = try {
+    publisher.publish(topic, new MqttMessage(text.getBytes))
   } catch {
     case t: Throwable => { 
-      logger.error("Could not publish to %s".format(outputTopic))
+      logger.error("Could not publish to %s".format(topic))
       logger.error(t.toString)
     }
   } 

@@ -35,11 +35,18 @@ object AgentFileMetadata {
     while(lines.hasNext) {
       val line = lines.next
       allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
-        if(agent.inputTopics.contains(lookahead.topic))
+        if(agent.subscribeTrial == lookahead.topic) {
+          allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
+            if(trialMessage.msg.sub_type == "start") {
+              output.write(write(agent.versionInfo))
+            }
+          })
+        }
+        else if(agent.subscriptions.contains(lookahead.topic))
           allCatch.opt(read[Metadata](line)).map(metadata =>
             output.write( // to file
               write( // to json
-                agent.toDialogAgentMessage( // to struct
+                agent.dialogAgentMessage( // to struct
                   source_type,
                   filename,
                   lookahead.topic,

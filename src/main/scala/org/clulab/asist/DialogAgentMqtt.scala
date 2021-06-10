@@ -30,23 +30,21 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
+
   // this handles the message bus operations.  
-  val busDriver = new AgentMqtt(
+  val bus = new MessageBusClient(
     host, 
     port, 
-    inputTopics,
-    outputTopic, 
+    subscriptions,
+    publications,
     this
   )
 
-  // Special case for version info message at experiment startup.
-  // 
-  def versionInfo(json: String): Unit = json.split("\n").map(line =>
-    allCatch.opt(read[VersionInfo](line)).map(versionInfo => {
-      if(versionInfo.msg.sub_type == "start") {
-        // compose message with agent parameters for experiment startup
-        //
-        // write 
+  // send VersionInfo if we receive a TrialMessage with subtype "start", 
+  def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
+    allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
+      if(trialMessage.msg.sub_type == "start") {
+        bus.publish(publishVersionInfo, write(versionInfo))
       }
     })
   )
@@ -58,12 +56,13 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = if(topic == topicTrial) versionInfo(json) else {
+  ): Unit = if(topic == subscribeTrial) trialMessageArrived(json) else {
     json.split("\n").map(line => 
       allCatch.opt(read[Metadata](line)).map(metadata => 
-        busDriver.publish(  // to Message Bus
+        bus.publish(  // to Message Bus
+          publishDialogAgent,
           write( // to json
-            toDialogAgentMessage( // to struct
+            dialogAgentMessage( // to struct
               source_type,
               topic,
               topic,

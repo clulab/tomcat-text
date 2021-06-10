@@ -67,10 +67,10 @@ object AgentFileWebVtt {
       val foo = head.split(':')
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        Some(agent.toDialogAgentMessage(source_type, filename, null, text))
+        Some(agent.dialogAgentMessage(source_type, filename, null, text))
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        Some(agent.toDialogAgentMessage(source_type, filename, foo(0), text))
+        Some(agent.dialogAgentMessage(source_type, filename, foo(0), text))
       }
     }
     case _ => None

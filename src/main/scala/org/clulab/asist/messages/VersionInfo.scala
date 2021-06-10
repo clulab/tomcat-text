@@ -21,15 +21,8 @@ case class VersionInfoDataConfig(
   val value: String = "Not Set"
 )
 
-/** Incoming channel on the Message Bus */
-case class VersionInfoDataSubscribes(
-  val topic: String = "Not Set",
-  val message_type: String = "Not Set",
-  val sub_type: String = "Not Set"
-)
-
-/** Outgoing channel on the Message Bus */
-case class VersionInfoDataPublishes(
+/** channel on the Message Bus */
+case class VersionInfoDataMessageChannel(
   val topic: String = "Not Set",
   val message_type: String = "Not Set",
   val sub_type: String = "Not Set"
@@ -43,8 +36,8 @@ case class VersionInfoData(
   val source: Seq[String] = List(), // "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
   val dependencies: Seq[String] = List(),
   val config: Seq[VersionInfoDataConfig] = List(),
-  val publishes: Seq[VersionInfoDataPublishes] = List(),
-  val subscribes: Seq[VersionInfoDataSubscribes] = List()
+  val publishes: Seq[VersionInfoDataMessageChannel] = List(),
+  val subscribes: Seq[VersionInfoDataMessageChannel] = List()
 )
 
 /** Contains the full analysis data of one chat message */
