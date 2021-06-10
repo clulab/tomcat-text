@@ -5,12 +5,12 @@
     - Ordinal
   - Switch
   - EventLike:
+    - Plan
     - Time:
       - TimeUnit
     - Location:
       - Inferred:
         - Deictic
-        - DemPron
       - Infrastructure:
         - Room
         - Door
@@ -53,6 +53,7 @@
         - Clear
         - RoleSwitch
         - ReportLocation
+        - KnowledgeSharing
       - ComplexActions:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -72,13 +73,13 @@
     - Self
     - You
     - Team
+    - DemPron
     - Role:
       - Searcher
       - Medic
       - Engineer
     - Victim:
         - Yellow
-        - Green
     - Friend
     - Foe
     - Player:
@@ -86,6 +87,9 @@
       - Bravo
       - Charlie
       - Delta
+      - Red
+      - Blue
+      - Green
   - Direction:
     - Relative:
       - Up
@@ -102,29 +106,11 @@
       - SouthWest
       - West
   - Item:
-    - Bow
-    - Arrow
     - Sword
     - Shovel
-    - Pickaxe
-    - Axe
-    - Flint
-    - Painting
     - Sign
     - WoodenDoor
-    - Bucket
-    - WaterBucket
-    - LavaBucket
-    - Minecart
-    - Saddle
     - IronDoor
-    - Redstone
-    - Boat
-    - Clock
-    - Bed
-    - Emerald
-    - ItemFrame
-    - FlowerPot
     - Tool:
       - Hammer
       - MedKit

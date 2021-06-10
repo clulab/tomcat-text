@@ -1,19 +1,21 @@
-/**
- * Authors:  Joseph Astier, Adarsh Pyarelal
- *
- * Updated:  2021 April
- *
- * Handle parsing of .metadata files into DialogAgentMessage json
- *
- */
 package org.clulab.asist
 
 import java.io.PrintWriter
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
+
 import scala.io.Source
 import scala.util.control.Exception._
+
+/**
+ * Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ * Updated:  2021 June
+ *
+ * Handle parsing of .metadata files into DialogAgentMessage json
+ *
+ */
 
 object AgentFileMetadata {
   val source_type = "message_bus"

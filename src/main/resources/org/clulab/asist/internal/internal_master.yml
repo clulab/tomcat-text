@@ -10,8 +10,8 @@ rules:
     vars:
       rulepriority: "1"
 
-  # Extract the items
-  - import: org/clulab/asist/grammars/items.yml
+  # Extract the internal-experiment only entities
+  - import: org/clulab/asist/internal/internal_entities.yml
     vars:
       rulepriority: "1"
 
@@ -25,7 +25,6 @@ rules:
     vars:
       first_priority: "2-3"
       second_priority: "4+"
-      third_priority: "5"
 
   # Extract the base_concepts
   - import: org/clulab/asist/grammars/base_concepts.yml
@@ -40,17 +39,22 @@ rules:
   # Extract the simple events
   - import: org/clulab/asist/grammars/actions.yml
     vars:
-      rulepriority: "6"
+      rulepriority: "5"
 
-  # Extract the planning terms, COMMENTED OUT WHILE FILE IS EMPTY
-  #- import: org/clulab/asist/grammars/planning.yml
-  #  vars:
-  #    rulepriority: "5"
+  # Extract the internal simple events
+  - import: org/clulab/asist/internal/internal_actions.yml
+    vars:
+      rulepriority: "5"
+  # Extract the planning terms
+  - import: org/clulab/asist/grammars/planning.yml
+    vars:
+      rulepriority: "5"
 
-  # Extract the complex events, COMMENTED OUT WHILE FILE IS EMPTY
-  #- import: org/clulab/asist/grammars/complex_actions.yml
-  #  vars:
-  #    rulepriority: "7+"
+
+  # Extract the complex events
+  - import: org/clulab/asist/grammars/complex_actions.yml
+    vars:
+      rulepriority: "7+"
 
   # Extract commitments
   - import: org/clulab/asist/grammars/commitment.yml
@@ -62,12 +66,3 @@ rules:
     vars:
       rulepriority: "3+"
 
-  # Extract team_comms
-  - import: org/clulab/asist/grammars/team_communication.yml
-    vars:
-      rulepriority: "3+"
-
-  # Extract temporal extractions
-  - import: org/clulab/asist/grammars/temporal_extractions.yml
-    vars:
-      rulepriority: "7+"

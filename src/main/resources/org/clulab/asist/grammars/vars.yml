@@ -25,8 +25,11 @@ passive_mark_verbs: "marked|defined|indicated|characterized"
 transparent_nouns: "level|amount|quantit" # do we need these in general?
 
 reasons: "cause|factor|motivation|reason"
+
 report: "cite|give|mention|provide|report"
 
 search_relations: ">nmod_in|>nmod_within|>nmod_around|>nmod_beneath"
+
+positional_preps: "nmod_(behind|beneath|in|in_front_of|on|over|under)"
 
 # Todo: nmod_from "X will follow from Y"
