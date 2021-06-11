@@ -1,22 +1,11 @@
 package org.clulab.asist
 
-import java.io.{File, PrintWriter}
-import java.util.{Collection, Map => JMap}
-import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 
-import scala.collection.JavaConverters._
 import org.clulab.odin.Actions
 import org.clulab.odin.impl._
-import org.clulab.odin.impl.{Extractor => OdinExtractor}
 import org.clulab.utils.FileUtils
 import org.slf4j.LoggerFactory
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-
-import scala.reflect.classTag
-import scala.util.Sorting
-import scala.reflect.runtime.universe._
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
