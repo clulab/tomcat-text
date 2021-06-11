@@ -15,7 +15,7 @@ object RunGrammarDemo extends App {
     "",
     "usage:",
     "",
-    "  RunGrammarDemo <outputfile> <masterfile>",
+    "  RunGrammarDemo <outputdir> <masterfile>",
     "",
     ""
   )
