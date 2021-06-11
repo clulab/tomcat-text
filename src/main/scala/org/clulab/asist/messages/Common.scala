@@ -1,13 +1,14 @@
+package org.clulab.asist
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 Hackathon
+ *  updated:  2021 June
  *
  *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/hackathon2021/MessageSpecs/Common_Message/common_message.md
  *
  *  Components used by more than one message class.
  */
-package org.clulab.asist
 
 case class CommonHeader(
   val timestamp: String = null, // "2019-12-26T12:47:23.1234Z" 

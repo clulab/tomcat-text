@@ -1,14 +1,15 @@
+package org.clulab.asist
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 April
+ *  updated:  2021 June
  *
  *  Dialog Agent Message
  *
  *  DialogAgentMessages are produced by the Dialog Agent, either
  *  as file output or on the message bus
  */
-package org.clulab.asist
 
 
 /** Part of the DialogAgentMessage class */

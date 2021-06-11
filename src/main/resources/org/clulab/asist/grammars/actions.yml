@@ -1,7 +1,6 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-
   - name: close
     priority: ${ rulepriority }
     label: Close
@@ -13,15 +12,6 @@ rules:
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
-      name: move
-      template_priority: ${ rulepriority }
-      label: Move
-      trigger: ${ moveto_triggers }
-      object_type: Location
-
-# need intransitive movement
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
       name: toggle
       template_priority: ${ rulepriority }
       label: Toggle
@@ -31,6 +21,7 @@ rules:
   - name: triage
     priority: ${ rulepriority }
     label: Save
+    example: "I will save the victim"
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
@@ -40,6 +31,7 @@ rules:
   - name: triage2
     priority: ${ rulepriority }
     label: Save
+    example: "I will save this guy"
     action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
@@ -47,29 +39,18 @@ rules:
       location: Infrastructure? = >nmod_in
 ###need this because we split "person" from "victim"
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: sight
-      template_priority: ${ rulepriority }
-      label: Sight
-      trigger: ${ sight_triggers }
-      object_type: EntityTypes
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: craft
-      template_priority: ${ rulepriority }
-      label: Craft
-      trigger: ${ craft_triggers }
-      object_type: Concept?
-
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: defeat
-      template_priority: ${ rulepriority }
-      label: Defeat
-      trigger: ${ attack_triggers }
-      object_type: Foe
+  - name: triage3
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save him"
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Entity=
+      >dobj
+      [tag=/PRP/]
+      location: Infrastructure? = >nmod_in
+## This one is not working right now, working on it -Remo
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -98,7 +79,6 @@ rules:
       target: Concept? = >nmod_for
 
   # -------------------------------------------------------------------
-
   - name: move_nmod_action
     priority: ${ rulepriority }
     label: Move
@@ -117,25 +97,36 @@ rules:
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
 
-  # -------------------------------------------------------------------
+  # ------------------------------------------------------------------- sight
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_entity
+      example: "I see the victim"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Entity
 
-  - name: sight_presence
-    priority: ${ rulepriority }
-    label: Sight
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Victim = >/${agents}/
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_item
+      example: "I see the medkit"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Item
 
-  - name: sight_presence2
-    priority: ${ rulepriority }
-    label: Sight
-    action: removeResearcher
-    pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      target: Person = >/${agents}/
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_event_like
+      example: "I see the rubble"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: EventLike
 
 
+##----------------------------------------------------------------------------------------- clear
 
   - name: clear_rubble
     priority: ${ rulepriority }
@@ -167,11 +158,22 @@ rules:
   - name: obstructing
     priority: ${ rulepriority }
     label: Block
+    example: "Some rubble is blocking this door"
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
-      source: Concept? = >/${agents}/ | <acl [incoming=nsubj]
+      source: Concept? = >/${agents}/
       target: Concept? = >/dobj|acl/
+
+  - name: obstructing2
+    priority: ${ rulepriority }
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Obstacle? =  <acl
+      target: Concept? = >/dobj|acl/
+
 
   - name: obstructing_in_the_way
     priority: ${ rulepriority }
@@ -179,6 +181,15 @@ rules:
     action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
-      source: Concept? = </nmod/ >/${agents}/
+      source: Obstacle? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
 
+  - name: obstructing_in_the_way2
+    priority: ${ rulepriority }
+    example: "There is a fire in the way of this door"
+    label: Block
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      source: Concept? = >/${agents}/
+      target: Concept? = >nmod_of

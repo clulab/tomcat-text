@@ -1,14 +1,3 @@
-/**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
- *
- *  Updated:  2021 April
- *
- *  Create extractions from text for the ToMCAT project.
- *
- *  https://github.com/clulab/tomcat-text/blob/master/README.md
- *
- *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
- */
 package org.clulab.asist
 
 import java.time.Clock
@@ -16,11 +5,23 @@ import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.slf4j.LoggerFactory
-import scala.collection.immutable
-import scala.io.Source
 import spray.json.DefaultJsonProtocol._
 import spray.json.JsonParser
 
+import scala.collection.immutable
+import scala.io.Source
+
+/**
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *
+ *  Updated:  2021 June
+ *
+ *  Create extractions from text for the ToMCAT project.
+ *
+ *  https://github.com/clulab/tomcat-text/blob/master/README.md
+ *
+ *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
+ */
 class DialogAgent (val nMatches: Int = 0) {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
