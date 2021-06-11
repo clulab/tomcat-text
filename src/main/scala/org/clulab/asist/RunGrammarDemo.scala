@@ -1,3 +1,5 @@
+package org.clulab.asist
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
@@ -6,8 +8,6 @@
  *  This application will run the YML to Markdown parser.
  *
  */
-package org.clulab.asist
-
 object RunGrammarDemo extends App {
   
   // splash page if args are not understood
@@ -15,7 +15,7 @@ object RunGrammarDemo extends App {
     "",
     "usage:",
     "",
-    "  RunGrammarDemo outputfile",
+    "  RunGrammarDemo <outputdir> <masterfile>",
     "",
     ""
   )
@@ -28,7 +28,7 @@ object RunGrammarDemo extends App {
    * @returns A RuleDemo running in the mode with the args
    */
   def run(argList: List[String]): Option[Any] = argList match {
-    case (outfile::l) => Some(new GrammarDemo(outfile))
+    case List(outfile, masterPath) => Some(new GrammarDemo(outfile, masterPath))
     case _ => {
       usageText.map(println)
       None
