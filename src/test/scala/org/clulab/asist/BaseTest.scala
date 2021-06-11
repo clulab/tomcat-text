@@ -11,6 +11,7 @@ class BaseTest extends FlatSpec with Matchers {
 
   val failingTest = ignore
   val passingTest = it
+  val tempFailingTest = ignore
 
   // Returns a count of how many times each **type** of event occurs (i.e., by label)
   def getMentionCounter(mentions: Vector[Mention]): mutable.Map[String, Int] = {

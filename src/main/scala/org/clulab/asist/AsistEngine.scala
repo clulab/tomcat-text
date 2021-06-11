@@ -1,6 +1,5 @@
 package org.clulab.asist
 
-
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.config.ConfigFactory
 import org.clulab.odin.{ExtractorEngine, Mention, State}
