@@ -3,7 +3,6 @@ package org.clulab.asist
 import java.io.{File, PrintWriter}
 import org.slf4j.LoggerFactory
 
-
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
