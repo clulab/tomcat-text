@@ -1,7 +1,9 @@
+package org.clulab.asist
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  updated:  2021 April
+ *  updated:  2021 June
  *
  *  This application will run the DialogAgent on an input file, on the
  *  message bus, or interactively depending on user inputs.
@@ -11,7 +13,6 @@
  *  
  *    Array("mode","key1","value1","key2","value2", ...)
  */
-package org.clulab.asist
 
 object RunDialogAgent extends App {
   

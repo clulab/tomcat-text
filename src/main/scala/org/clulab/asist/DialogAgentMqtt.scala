@@ -1,12 +1,15 @@
 package org.clulab.asist
 
+import org.json4s._
+import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
+
 import scala.util.control.Exception._
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Updated:  2021 April
+ * Updated:  2021 June
  *
  * This class reads input from the message bus on subscribed topics,
  * performs analysis on the input, and then publishes the analysis to
@@ -18,6 +21,7 @@ import scala.util.control.Exception._
  * @param port MQTT network port to connect to.
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
+
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
@@ -26,13 +30,23 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
+
   // this handles the message bus operations.  
-  val busDriver = new AgentMqtt(
+  val bus = new MessageBusClient(
     host, 
     port, 
-    inputTopics,
-    outputTopic, 
+    subscriptions,
+    publications,
     this
+  )
+
+  // send VersionInfo if we receive a TrialMessage with subtype "start", 
+  def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
+    allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
+      if(trialMessage.msg.sub_type == "start") {
+        bus.publish(publishVersionInfo, write(versionInfo))
+      }
+    })
   )
 
   /** Receive a message from the message bus
@@ -42,18 +56,21 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = json.split("\n").map(line => 
-    allCatch.opt(read[Metadata](line)).map(metadata => 
-      busDriver.publish(  // to Message Bus
-        writeJson( // to json
-          toDialogAgentMessage( // to struct
-            source_type,
-            topic,
-            topic,
-            metadata
+  ): Unit = if(topic == subscribeTrial) trialMessageArrived(json) else {
+    json.split("\n").map(line => 
+      allCatch.opt(read[Metadata](line)).map(metadata => 
+        bus.publish(  // to Message Bus
+          publishDialogAgent,
+          writeJson( // to json
+            dialogAgentMessage( // to struct
+              source_type,
+              topic,
+              topic,
+              metadata
+            )
           )
         )
       )
     )
-  ) 
+  } 
 }
