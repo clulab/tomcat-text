@@ -27,6 +27,7 @@ import spray.json.JsonParser
  *
  *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
+
 class DialogAgent (val nMatches: Int = 0) {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
