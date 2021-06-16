@@ -7,7 +7,7 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 June
  *

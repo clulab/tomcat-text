@@ -17,7 +17,7 @@ import spray.json.JsonParser
 
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  *  Updated:  2021 June
  *

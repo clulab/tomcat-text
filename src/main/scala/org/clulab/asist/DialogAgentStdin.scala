@@ -4,7 +4,7 @@ import java.util.Scanner
 import org.json4s.jackson.Serialization.write
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  *  Updated:  2021 June
  *
