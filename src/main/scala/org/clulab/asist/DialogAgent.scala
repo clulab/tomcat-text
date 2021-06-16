@@ -1,18 +1,23 @@
 package org.clulab.asist
 
 import java.time.Clock
+
+import ai.lum.common.ConfigFactory
+import com.typesafe.config.Config
 import org.clulab.odin.{EventMention, Mention, TextBoundMention}
 import org.json4s._
-import org.json4s.jackson.Serialization
+import org.json4s.jackson.{Serialization, prettyJson}
+import org.json4s.jackson.Serialization.{write, writePretty}
 import org.slf4j.LoggerFactory
-import spray.json.DefaultJsonProtocol._
-import spray.json.JsonParser
 
 import scala.collection.immutable
 import scala.io.Source
+import spray.json.DefaultJsonProtocol._
+import spray.json.JsonParser
+
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  *  Updated:  2021 June
  *
@@ -23,10 +28,11 @@ import scala.io.Source
  *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 
-
 class DialogAgent (val nMatches: Int = 0) {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
+  private val config: Config = ConfigFactory.load()
+  private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
@@ -55,6 +61,13 @@ class DialogAgent (val nMatches: Int = 0) {
 
   // Used so Json serializers can recognize case classes
   implicit val formats = Serialization.formats(NoTypeHints)
+  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
+    if (pretty) {
+      writePretty(a)
+    } else {
+      write(a)
+    }
+  }
 
   // Load the taxonomy map from resource file
   val taxonomy_map = JsonParser(

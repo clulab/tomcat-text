@@ -7,7 +7,7 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.Exception._
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 June
  *
@@ -61,7 +61,7 @@ class DialogAgentMqtt(
       allCatch.opt(read[Metadata](line)).map(metadata => 
         bus.publish(  // to Message Bus
           publishDialogAgent,
-          write( // to json
+          writeJson( // to json
             dialogAgentMessage( // to struct
               source_type,
               topic,
