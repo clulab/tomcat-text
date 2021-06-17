@@ -75,7 +75,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
+      [word=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
 
   - name: we_token_capture
     label: Team
@@ -149,4 +149,29 @@ rules:
     keep: false
     pattern: |
       others | other (?! [tag=/^N|CD/]) | (?<= other) [tag=/CD|^N/]
+
+  - name: possesive_pronoun_my
+    priority: ${ rulepriority }
+    label: Self
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=/my/]
+
+  - name: possesive_pronoun_you
+    priority: ${ rulepriority }
+    label: You
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=/your/]
+
+  - name: possesive_pronoun_other
+    priority: ${ rulepriority }
+    label: Other
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=/his|her|their/]
+# the above regex means: match anything but "m" and "o", which will exclude 1st and 2nd person possessive prns
 
