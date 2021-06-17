@@ -35,7 +35,7 @@ object AgentFileMetadata {
     while(lines.hasNext) {
       val line = lines.next
       allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
-        if(agent.subscribeTrial == lookahead.topic) {
+        if(agent.topicSubTrial == lookahead.topic) {
           allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
             if(trialMessage.msg.sub_type == "start") {
               output.write(write(agent.versionInfo))

@@ -40,23 +40,23 @@ class DialogAgent (val nMatches: Int = 0) {
   val dialogAgentVersion = "2.0.0"
 
   // metadata topics
-  val subscribeChat = "minecraft/chat"
-  val subscribeUazAsr = "agent/asr/final"
-  val subscribeAptimaAsr = "status/asistdataingester/userspeech"
-  val subscribeTrial = "trial"
-  val publishDialogAgent = "agent/dialog"
-  val publishVersionInfo = "agent/tomcat_textAnalyzer/versioninfo"
+  val topicSubChat = "minecraft/chat"
+  val topicSubUazAsr = "agent/asr/final"
+  val topicSubAptimaAsr = "status/asistdataingester/userspeech"
+  val topicSubTrial = "trial"
+  val topicPubDialogAgent = "agent/dialog"
+  val topicPubVersionInfo = "agent/tomcat_textAnalyzer/versioninfo"
 
   val subscriptions = List(
-    subscribeChat,
-    subscribeUazAsr,
-    subscribeAptimaAsr,
-    subscribeTrial
+    topicSubChat,
+    topicSubUazAsr,
+    topicSubAptimaAsr,
+    topicSubTrial
   )
 
   val publications = List(
-    publishDialogAgent,
-    publishVersionInfo
+    topicPubDialogAgent,
+    topicPubVersionInfo
   )
 
   // Used so Json serializers can recognize case classes
@@ -133,7 +133,7 @@ class DialogAgent (val nMatches: Int = 0) {
         config = List(),
         publishes = List(
           VersionInfoDataMessageChannel(
-            topic = publishDialogAgent,
+            topic = topicPubDialogAgent,
             message_type = dialogAgentMessageType,
             sub_type = dialogAgentSubType
           )
@@ -141,22 +141,22 @@ class DialogAgent (val nMatches: Int = 0) {
         ),
         subscribes = List(
           VersionInfoDataMessageChannel(
-            topic = subscribeTrial,
+            topic = topicSubTrial,
             message_type = "agent/versioninfo",
             sub_type = "start"
           ),
           VersionInfoDataMessageChannel(
-            topic = subscribeChat,
+            topic = topicSubChat,
             message_type = "chat",
             sub_type = "Event:Chat"
           ),
           VersionInfoDataMessageChannel(
-            topic = subscribeUazAsr,
+            topic = topicSubUazAsr,
             message_type = "observation",
             sub_type = "asr"
           ),
           VersionInfoDataMessageChannel(
-            topic = subscribeAptimaAsr,
+            topic = topicSubAptimaAsr,
             message_type = "observation",
             sub_type = "asr"
           )
@@ -216,9 +216,9 @@ class DialogAgent (val nMatches: Int = 0) {
   ): DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     val participant_id = topic match {
-      case `subscribeChat` => (metadata.data.sender)
-      case `subscribeUazAsr` => (metadata.data.participant_id)
-      case `subscribeAptimaAsr` => (metadata.data.playername)
+      case `topicSubChat` => (metadata.data.sender)
+      case `topicSubUazAsr` => (metadata.data.participant_id)
+      case `topicSubAptimaAsr` => (metadata.data.playername)
       case _ => null
     }
     DialogAgentMessage(

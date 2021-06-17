@@ -44,7 +44,7 @@ class DialogAgentMqtt(
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
     allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
       if(trialMessage.msg.sub_type == "start") {
-        bus.publish(publishVersionInfo, write(versionInfo))
+        bus.publish(topicPubVersionInfo, write(versionInfo))
       }
     })
   )
@@ -56,11 +56,11 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = if(topic == subscribeTrial) trialMessageArrived(json) else {
+  ): Unit = if(topic == topicSubTrial) trialMessageArrived(json) else {
     json.split("\n").map(line => 
       allCatch.opt(read[Metadata](line)).map(metadata => 
         bus.publish(  // to Message Bus
-          publishDialogAgent,
+          topicPubDialogAgent,
           writeJson( // to json
             dialogAgentMessage( // to struct
               source_type,
