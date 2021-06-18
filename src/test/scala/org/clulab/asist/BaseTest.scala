@@ -49,9 +49,14 @@ class BaseTest extends FlatSpec with Matchers {
     found should equal(desiredMention)
   }
 
-  case class DesiredMention(label: String, text: String, arguments: Map[String, Seq[DesiredMention]] = Map.empty) {
+  case class DesiredMention(
+    label: String,
+    text: String,
+    arguments: Map[String, Seq[DesiredMention]] = Map.empty,
+    attachments: Set[String] = Set.empty
+  ) {
     override def toString: String = {
-      s"TestMention(label=$label, $text, arguments=${arguments.map(_.toString)})"
+      s"TestMention(label=$label, $text, arguments=${arguments.map(_.toString)}, attachments=${attachments.mkString(", ")})\n"
     }
   }
   object DesiredMention {
@@ -61,9 +66,9 @@ class BaseTest extends FlatSpec with Matchers {
             arg._1,
             arg._2.map(one_mention => DesiredMention.fromMention(one_mention))
           )
-        )
+        ),
+        m.attachments.map(_.toString)
       )
-
     }
   }
 

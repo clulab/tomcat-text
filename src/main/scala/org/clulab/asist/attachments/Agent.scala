@@ -2,11 +2,12 @@ package org.clulab.asist.attachments
 
 import org.clulab.odin.Attachment
 
-case class Agent(text: String, agentType: AgentType.agent) extends Attachment {}
+case class Agent(text: String, agentType: String) extends Attachment {}
 
-object AgentType extends Enumeration {
-  type agent = Value
-
-  // todo: extend
-  val Self, Other, You, Team = Value
+object Agent{
+  // agentType values for use when creating an Agent Attachment
+  val SELF = "Self"
+  val YOU = "You"
+  val TEAM = "Team"
+  val OTHER = "Other"
 }

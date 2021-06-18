@@ -4,7 +4,7 @@ package org.clulab.asist
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.odin._
 import org.clulab.asist.AsistEngine._
-import org.clulab.asist.attachments.{Agent, AgentType}
+import org.clulab.asist.attachments.Agent
 import org.clulab.struct.Interval
 
 import scala.collection.mutable.ArrayBuffer
@@ -37,6 +37,7 @@ class TomcatActions(
     val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty)
     val agents = agentMentions.map(mkAgent).toSet
 
+    // make a copy of the mention with the agent attachments
     val copy = mention match {
       case tb: TextBoundMention => mention
       case rm: RelationMention =>
@@ -72,10 +73,10 @@ class TomcatActions(
     //    - You
     //    - Team
     val agentType = m.label match {
-      case "Other" => AgentType.Other
-      case "Self" => AgentType.Self
-      case "You" => AgentType.You
-      case "Team" => AgentType.Team
+      case "Other" => Agent.OTHER
+      case "Self" => Agent.SELF
+      case "You" => Agent.YOU
+      case "Team" => Agent.TEAM
       case _ => ??? // fixme?
     }
     Agent(m.text, agentType)
