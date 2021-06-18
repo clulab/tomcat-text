@@ -24,9 +24,12 @@ object RunDialogAgent extends App {
     "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
     "                 {stdin [-m taxonomy_matches]}",
     "                 {file inputfile outputfile [-m taxonomy_matches]}",
+    "                 {reprocess inputdir outputdir [-m taxonomy_matches]}",
     "",
     "       -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
     "inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)",
+    "inputdir : A directory of .metadata files to be reprocessed by the DialogAgent",
+    "outputdir : A directory where reprocessed .metadata files will be saved, using the same filenames",
     ""
   )
 
@@ -65,16 +68,20 @@ object RunDialogAgent extends App {
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {
       case ("mqtt"::host::port::l) => {
-        val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentMqtt(host, port, m))
+        val matches: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentMqtt(host, port, matches))
       }
       case ("file"::infile::outfile::l) => {
-        val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentFile(infile, outfile, m))
+        val matches: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentFile(infile, outfile, matches))
       }
       case ("stdin"::l) => {
-        val m: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentStdin(m))
+        val matches: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentStdin(matches))
+      }
+      case ("reprocess"::indir::outdir::l) => {
+        val matches: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentReprocess(indir, outdir, matches))
       }
       case _ => {
         usageText.map(println)
