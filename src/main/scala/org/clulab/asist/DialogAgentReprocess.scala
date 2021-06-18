@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory
 
 
 class DialogAgentReprocess (
-  override val inputFilename: String = "",
-  override val outputFilename: String = "",
+  val inputFilename: String = "",
+  val outputFilename: String = "",
   override val nMatches: Int = 0
-) extends DialogAgentFile {
+) extends DialogAgent {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -43,12 +43,36 @@ class DialogAgentReprocess (
     else file.mkdir // create dir if needed
   }
 
+  def foo(json: String): String = {
+    logger.info("foo with %s\n".format(json))
+    "reprocessed JSON"
+  }
+
 
   // metadata elements are one per line
-  def reprocessMetadata(filename: String): Unit = {
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines
-
+  def reprocessMetadata(filename: String): Boolean = {
+    logger.info("Reprocessing input file '%s',".format(filename))
+    val outfile = outputFilename + "/" + (filename.split("/").last)
+    logger.info("Reprocessing output file '%s',".format(outfile))
+    try {
+      val bufferedSource = Source.fromFile(filename)
+      val inputLines = bufferedSource.getLines
+      val output = new PrintWriter(new File(outfile))
+      while(inputLines.hasNext) {
+        val inputLine = inputLines.next
+        val outputLine = foo(inputLine)
+        output.write("%s\n".format(outputLine))))
+      }
+      output.close
+      true
+    } 
+    catch {
+      case t: Throwable => {
+        logger.error("Problem reprocessing %s".format(filename))
+        logger.error(t.toString)
+      }
+      false
+    }
   }
 
 
@@ -68,7 +92,33 @@ class DialogAgentReprocess (
     val results = filenames.map(processFile)
     val passes = results.filter(r => r)
 
-    if(results.contains(false)) {
+    if(!results.contains(false)) {
+      logger.info("All operations completed successfully.")
     }
   }
+
+
+  /** Determine the list of input files to process
+   * @param filename User input arg, may be a file or directory of files
+   * @returns A list of zero or more filenames to process
+   */
+  def getFiles(inputFilename: String): List[String] = {
+    val input = new File(inputFilename)
+    if(input.exists) {
+      if(input.isDirectory) {
+        logger.info("Using input directory '%s'".format(inputFilename))
+        input.listFiles.toList.map(_.getPath).sorted
+      }
+      else {
+        logger.info("Using input file '%s'".format(inputFilename))
+        List(input.getPath)
+      }
+    }
+    else {
+      logger.error("File not found '%s'".format(inputFilename))
+      List()
+    }
+  }
+
+  processFiles(getFiles(inputFilename))
 }
