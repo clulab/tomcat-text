@@ -24,14 +24,24 @@ rules:
       location: Location? = >/${positional_preps}/
 
   - name: information_gathering_question_that
-    example: "What is that?  What is that over there"
+    example: "What is that? What is that in the library?"
     priority: ${ rulepriority }
     label: Question
     action: removeResearcher
     pattern: |
-      trigger = @QuestionParticle
+      trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = <nsubj [lemma=/be|do/] >dep
       location: Location? = <nsubj [lemma=/be|do/] >dep >/${positional_preps}/
+
+  - name: information_gathering_question_that2
+    example: "What's that over there?"
+    priority: ${ rulepriority }
+    label: Question
+    action: removeResearcher
+    pattern: |
+      trigger = @QuestionParticle (?= [lemma=be])
+      topic: Concept = >nsubj
+      location: Location? = >/${positional_preps}/
 
   - name: information_gathering_question_clarification
     example: "What is the plan?"
