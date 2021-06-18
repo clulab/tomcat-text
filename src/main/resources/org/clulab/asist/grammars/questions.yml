@@ -41,7 +41,7 @@ rules:
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = >nsubj
-      location: Location? = >/${positional_preps}/
+      location: Location? = >nsubj >/${positional_preps}/
 
 
 #leave this here so I can remember how to do these complex dependencies
