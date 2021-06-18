@@ -3,31 +3,18 @@ vars: org/clulab/asist/grammars/vars.yml
 rules:
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
-      name: fire
-      priority: ${ rulepriority }
-      label: Fire
-      trigger: ${ fire_triggers }
-
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: foe
-      priority: ${ rulepriority }
-      label: Foe
-      trigger: ${ foe_triggers }
-
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
       name: person
       priority: ${ rulepriority }
       label: Person
       trigger: ${ person_triggers }
 
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: victim
-      priority: ${ rulepriority }
-      label: Victim
-      trigger: ${ victim_triggers }
+  - name: victim
+    priority: ${ rulepriority }
+    label: Victim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ victim_triggers })/]
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
@@ -35,6 +22,13 @@ rules:
       priority: ${ rulepriority }
       label: Rubble
       trigger: ${ rubble_triggers }
+
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: fire
+      priority: ${ rulepriority }
+      label: Fire
+      trigger: fire
 
   - name: all_nps
     priority: ${ rulepriority }
@@ -104,9 +98,25 @@ rules:
     label: Green
     priority: ${ rulepriority }
     type: token
-    keep: false
+    keep: true
     pattern: |
       [lemma=/(?i)^(green)/]
+
+  - name: red
+    label: Red
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(red)/]
+
+  - name: blue
+    label: Blue
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(blue)/]
 
   - name: yellow
     label: Yellow
