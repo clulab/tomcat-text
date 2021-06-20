@@ -18,7 +18,23 @@ rules:
     keep: true
     pattern: |
       /${room_singleword_surface_regex}/ |
-      /${room_twoword_first_word_regex}/ room
+      /(?i)${room_twoword_first_word_regex}/ /(?i)^room|(?i)^office/
+
+  - name: testing1
+    priority: ${ first_priority }
+    label: Entity
+    type: token
+    keep: true
+    pattern: |
+      /(?i)${room_twoword_first_word_regex}/
+
+  - name: room_numbered
+    priority: ${ first_priority }
+    label: Infrastructure
+    keep: true
+    pattern: |
+      trigger = [lemma=/(?i)^room/]
+      number: Number = >/nummod/
 
   - name: north
     priority: ${ first_priority }
