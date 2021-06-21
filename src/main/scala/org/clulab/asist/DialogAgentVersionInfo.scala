@@ -9,8 +9,6 @@ import java.time.Clock
  *
  *  Create a VersionInfo data structure describing the state of the
  *  DialogAgent
- *
- *
  */
 
 object DialogAgentVersionInfo {
@@ -26,7 +24,7 @@ object DialogAgentVersionInfo {
         owner = "University of Arizona",
         version = da.dialogAgentVersion,
         source = List(
- "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
+  "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
         ),
         dependencies = List(),
         config = List(),
@@ -36,7 +34,7 @@ object DialogAgentVersionInfo {
             message_type = da.dialogAgentMessageType,
             sub_type = da.dialogAgentSubType
           )
-          // should we include the trial version info channel?
+          // should we include the trial version info publication channel?
         ),
         subscribes = List(
           VersionInfoDataMessageChannel(
@@ -59,6 +57,7 @@ object DialogAgentVersionInfo {
             message_type = "observation",
             sub_type = "asr"
           )
+          // should we incude the trial version info subscription channel?
         )
       )
     )
