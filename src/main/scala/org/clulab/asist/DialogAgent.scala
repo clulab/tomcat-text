@@ -94,7 +94,6 @@ class DialogAgent (val nMatches: Int = 0) {
   )
 
   def dialogAgentMessageData(
-    timestamp: String, 
     participant_id: String,
     asr_msg_id: String, 
     source_type: String,
@@ -112,56 +111,6 @@ class DialogAgent (val nMatches: Int = 0) {
         source_name = source_name
       ),
       extractions.map(extraction)
-    )
-  }
-
-
-  // report our testbed configuration
-  def versionInfo: VersionInfo = {
-    val timestamp = Clock.systemUTC.instant.toString
-    VersionInfo(
-      commonHeader(timestamp),
-      commonMsg(timestamp),
-      VersionInfoData(
-        agent_name = "tomcat_textAnalyzer",
-        owner = "University of Arizona",
-        version = dialogAgentVersion,
-        source = List(
- "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
-        ),
-        dependencies = List(),
-        config = List(),
-        publishes = List(
-          VersionInfoDataMessageChannel(
-            topic = topicPubDialogAgent,
-            message_type = dialogAgentMessageType,
-            sub_type = dialogAgentSubType
-          )
-          // should we include the trial version info channel?
-        ),
-        subscribes = List(
-          VersionInfoDataMessageChannel(
-            topic = topicSubTrial,
-            message_type = "agent/versioninfo",
-            sub_type = "start"
-          ),
-          VersionInfoDataMessageChannel(
-            topic = topicSubChat,
-            message_type = "chat",
-            sub_type = "Event:Chat"
-          ),
-          VersionInfoDataMessageChannel(
-            topic = topicSubUazAsr,
-            message_type = "observation",
-            sub_type = "asr"
-          ),
-          VersionInfoDataMessageChannel(
-            topic = topicSubAptimaAsr,
-            message_type = "observation",
-            sub_type = "asr"
-          )
-        )
-      )
     )
   }
 
@@ -234,7 +183,6 @@ class DialogAgent (val nMatches: Int = 0) {
         replay_id = metadata.msg.replay_id
       ),
       dialogAgentMessageData(
-        timestamp,
         participant_id,
         metadata.data.id,
         source_type,
@@ -261,7 +209,6 @@ class DialogAgent (val nMatches: Int = 0) {
       commonHeader(timestamp),
       commonMsg(timestamp),
       dialogAgentMessageData(
-        timestamp,
         participant_id,
         null,  // ...
         source_type,
