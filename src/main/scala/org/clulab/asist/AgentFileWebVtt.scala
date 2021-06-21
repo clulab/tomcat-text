@@ -1,9 +1,7 @@
 package org.clulab.asist
 
 import com.crowdscriber.caption.vttdissector.VttDissector
-import java.io.FileInputStream
-import java.io.File
-import java.io.PrintWriter
+import java.io.{File, FileInputStream, PrintWriter}
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
