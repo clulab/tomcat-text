@@ -36,62 +36,78 @@ class DialogAgentReprocess (
       else {  // don't clobber non-dir file of the same name
         logger.error("Can't create output directory '%s',"
           .format(outputFilename))
-        logger.error("A non-directory file with the same name is in the way.")
+        logger.error("A file with the same name is in the way.")
         false
       }
     }
     else file.mkdir // create dir if needed
   }
 
-  def foo(json: String): String = {
-    logger.info("foo with %s\n".format(json))
-    "reprocessed JSON"
-  }
 
-
-  // metadata elements are one per line
-  def reprocessMetadata(filename: String): Boolean = {
-    logger.info("Reprocessing input file '%s',".format(filename))
-    val outfile = outputFilename + "/" + (filename.split("/").last)
-    logger.info("Reprocessing output file '%s',".format(outfile))
+  // process a single DialogAgentMessage metadata string
+  def processLine(
+    line: String,
+    output: PrintWriter
+  ): Boolean = {
     try {
-      val bufferedSource = Source.fromFile(filename)
-      val inputLines = bufferedSource.getLines
-      val output = new PrintWriter(new File(outfile))
-      while(inputLines.hasNext) {
-        val inputLine = inputLines.next
-        val outputLine = foo(inputLine)
-        output.write("%s\n".format(outputLine))))
-      }
-      output.close
+      val message: DialogAgentMessage = read[DialogAgentMessage](line)
+      val newMessage = new DialogAgentMessage(
+        header = message.header,
+        msg = message.msg,
+        data = dialogAgentMessageData(
+          message.data.participant_id,
+          message.data.asr_msg_id,
+          message.data.source.source_type,
+          message.data.source.source_name,
+          message.data.text  // reprocessing happens now
+        ) 
+      ) 
+      output.write("%s\n".format(writeJson(newMessage)))
       true
-    } 
+    }
     catch {
       case t: Throwable => {
-        logger.error("Problem reprocessing %s".format(filename))
+        logger.error("Error parsing input: %s\n".format(line))
         logger.error(t.toString)
       }
       false
     }
   }
 
-
-  def processFile(filename: String): Boolean = 
-    if(filename.endsWith(".metadata")) {
-      reprocessMetadata(filename)
-      true
-    }
-    else {
-      logger.error("Can't reprocess file '%s',".format(filename))
-      logger.error("File extension must be '.metadata'")
+  // process one input file
+  def processFile(
+    filename: String
+  ): Boolean = if(filename.endsWith(".metadata")) {
+    logger.info("Reprocessing input file '%s',".format(filename))
+    val outfile = outputFilename + "/" + (filename.split("/").last)
+    try {
+      val output = new PrintWriter(new File(outfile))
+      val bufferedSource = Source.fromFile(filename)
+      val inputLines = bufferedSource.getLines
+      val results = inputLines.map(line => processLine(line, output))
+      output.close
+      !results.contains(false)
+    } 
+    catch {
+      case t: Throwable => {
+        logger.error("Problem reprocessing file %s".format(filename))
+        logger.error(t.toString)
+      }
       false
     }
+  }
+  else {
+    logger.error("Can't reprocess file '%s',".format(filename))
+    logger.error("File extension must be '.metadata'")
+    false
+  }
 
+
+  // process all of the input files
   def processFiles(filenames: List[String]): Unit = if(outputDirOK) {
     logger.info("Using output directory: %s".format(outputFilename))
     val results = filenames.map(processFile)
     val passes = results.filter(r => r)
-
     if(!results.contains(false)) {
       logger.info("All operations completed successfully.")
     }
