@@ -80,12 +80,18 @@ class DialogAgent (val nMatches: Int = 0) {
   extractor.runExtraction("green victim")
   logger.info("Extractor initialized.")
 
+  /** Create a CommonHeader data structure 
+   *  @param timestamp When this data was created
+   */
   def commonHeader(timestamp: String): CommonHeader = CommonHeader(
     timestamp = timestamp,
     message_type = dialogAgentMessageType,
     version = dialogAgentVersion
   )
 
+  /** Create a CommonMsg data structure 
+   *  @param timestamp When this data was created
+   */
   def commonMsg(timestamp: String): CommonMsg = CommonMsg(
     timestamp = timestamp,
     source = dialogAgentSource,
@@ -93,6 +99,13 @@ class DialogAgent (val nMatches: Int = 0) {
     version = dialogAgentVersion,
   )
 
+  /** Create the data component of the DialogAgentMessage structure
+   *  @param participant_id human subject who created the text
+   *  @param asr_msg_id from the Automated Speech Recognition system
+   *  @param source_type Source of message data, either message_bus or a file
+   *  @param source_name topic or filename
+   *  @param text The text to be analyzed by the pipeline 
+   */
   def dialogAgentMessageData(
     participant_id: String,
     asr_msg_id: String, 
