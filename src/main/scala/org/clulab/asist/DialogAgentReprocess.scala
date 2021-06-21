@@ -10,14 +10,9 @@
 package org.clulab.asist
 
 import java.io.{File, PrintWriter}
-import org.json4s._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
+import org.json4s.jackson.Serialization.read
 import scala.io.Source
-import scala.util.control.Exception._
-import org.clulab.utils.FileUtils
 import org.slf4j.LoggerFactory
-
 
 class DialogAgentReprocess (
   val inputFilename: String = "",
@@ -26,7 +21,6 @@ class DialogAgentReprocess (
 ) extends DialogAgent {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
-
 
   // Make sure we have a place to put the output files.
   def outputDirOK: Boolean = {
