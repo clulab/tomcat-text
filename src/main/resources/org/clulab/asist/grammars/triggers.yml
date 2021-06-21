@@ -22,7 +22,7 @@ infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|r
 
 room_singleword_surface_regex: "(armory|attic|ballroom|basement|bathroom|bedroom|boardroom|cabin|cellar|classroom|courtroom|cubby|den|entry|garage|gym|hall|hallway|kitchen|kitchenette|library|lobby|loft|lounge|lunchroom|mailroom|office|restroom|schoolroom|stockroom|storeroom|studio|study|suite|washroom|workroom)"
 
-room_twoword_first_word_regex: "(back|boiler|conference|control|dining|engine|front|ladies'|laundry|living|locker|men's|utility|waiting|weight|women's|King Chris')"
+room_twoword_first_word_regex: "(back|boiler|conference|control|dining|engine|front|ladies|laundry|living|locker|men|utility|waiting|weight|women)"
 
 switch_triggers: "switch|toggle|lever|door"
 

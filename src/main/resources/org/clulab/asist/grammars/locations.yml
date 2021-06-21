@@ -18,7 +18,7 @@ rules:
     keep: true
     pattern: |
       /${room_singleword_surface_regex}/ |
-      /(?i)${room_twoword_first_word_regex}/ /(?i)^room|(?i)^office/
+      /(?i)${room_twoword_first_word_regex}/ [tag=/POS/]? /(?i)^room|(?i)^office/
 
   - name: testing1
     priority: ${ first_priority }
