@@ -44,7 +44,7 @@ class DialogAgentMqtt(
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
     allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
       if(trialMessage.msg.sub_type == "start") {
-        bus.publish(topicPubVersionInfo, write(DialogAgentVersionInfo(this)))
+        bus.publish(topicPubVersionInfo, write(AgentVersionInfo(this)))
       }
     })
   )

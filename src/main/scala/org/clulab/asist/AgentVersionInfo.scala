@@ -11,7 +11,7 @@ import java.time.Clock
  *  DialogAgent
  */
 
-object DialogAgentVersionInfo {
+object AgentVersionInfo {
 
   // report the Dialog Agent testbed configuration
   def apply(da: DialogAgent): VersionInfo = {

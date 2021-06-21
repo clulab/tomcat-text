@@ -38,7 +38,7 @@ object AgentFileMetadata {
         if(agent.topicSubTrial == lookahead.topic) {
           allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
             if(trialMessage.msg.sub_type == "start") {
-              output.write(write(DialogAgentVersionInfo(agent)))
+              output.write(write(AgentVersionInfo(agent)))
             }
           })
         }
