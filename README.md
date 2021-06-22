@@ -100,7 +100,7 @@ then the host and port that the MQTT message broker is running on.
 
 ### Reprocessing 
 
-The Dialog Agent can reprocess data that it has already run.  The new output
+The Dialog Agent can reprocess metadata that it has already produced.  The new output
 will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
