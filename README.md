@@ -97,6 +97,18 @@ then the host and port that the MQTT message broker is running on.
   sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 ```
 
+
+### Reprocessing 
+
+The Dialog Agent can reprocess data that it has already run.  The new output
+will be identical except for the data.extractions field, which will be
+replaced with extractions created with the latest Dialog Agent rules.
+
+
+```
+  sbt "runMain org.clulab.asist.RunDialogAgent reprocess inputDirectory outputDirectory"
+```
+
 ## Metadata Input
 
 Metadata read by the Dialog Agent, either from .metadata files or the Message
