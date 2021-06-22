@@ -6,7 +6,10 @@
  * Run DialogAgentMessage .metadata files again, using the same filenames in a 
  * new directory. The header and msg timestamps are copied from the input files.
  *
- * If the input filename has a TA3 version number, increment the number by 1.
+ * If a .metadata file ends with Vers-<N>.metadata, the corresponding file 
+ * in the output directory should end with Vers-<N+1>.metadata (instead of 
+ * preserving the original filename). This is to comply with the TA3 file 
+ * naming scheme.
  *
  */
 package org.clulab.asist
@@ -26,26 +29,31 @@ class DialogAgentReprocess (
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
-  // Make sure we have a place to put the output files.
+  /** Make sure we have a place to put the output files.
+   * @returns true if the output file directory was found or created
+   */
   def outputDirOK: Boolean = {
     val file = new File(outputDirname)
     if(file.exists) {
       if(file.isDirectory) true  // use existing dir
       else {  // don't clobber non-dir file of the same name
-        logger.error("Can't create output directory '%s',"
-          .format(outputDirname))
+        logger.error("Can't create directory '%s',".format(outputDirname))
         logger.error("A file with the same name is in the way.")
         false
       }
     }
-    else file.mkdir // create dir if needed
+    else {
+      val ret = file.mkdir // create dir if needed
+      if(!ret) 
+        logger.error("Can't create directory '%s',".format(outputDirname))
+      ret
+    }
   }
 
-
-  // If a .metadata file ends with Vers-<N>.metadata, the corresponding file 
-  // in the output directory should end with Vers-<N+1>.metadata (instead of 
-  // preserving the original filename). This is to comply with the TA3 file 
-  // naming scheme.
+  /** If the filename has a TA3 version number, increment by 1.
+   * @param inputFilename filename that may have a TA3 version number
+   * @returns the inputFilename, with any TA3 version number incremented
+   */
   def ta3Filename(inputFilename: String): String = {
 
     // get local filename out of the input directory
@@ -58,11 +66,15 @@ class DialogAgentReprocess (
     val regex = raw"Vers-(\d+).metadata".r
     regex.replaceAllIn(outputFilename, _ match {
       case regex(version) => "Vers-%s.metadata".format(version.toInt + 1)
-      case _ => outputFilename
+      case _ => outputFilename  // otherwise do not change the inputfilename
     })
   }
 
-  // process a single DialogAgentMessage metadata string
+  /** process a single DialogAgentMessage metadata string
+   * @param line JSON representation of a DialogAgentMessage
+   * @param fileWriter Writes to the output file
+   * @returns true if the line was processed successfully
+   */
   def processLine(
     inputLine: String,
     fileWriter: PrintWriter
@@ -90,7 +102,12 @@ class DialogAgentReprocess (
     false
   }
    
-  // process all the metadata lines from one input file
+  /** process all the metadata lines from one input file
+   * @param lines An iterator with all of the lines for this file
+   * @param fileWriter Writes to the output file
+   * @param result The accumulated outcome of processing each line
+   * @returns true if all lines were processed successfully
+   */
   @tailrec
   private def processLines(
     lines: Iterator[String],
@@ -104,15 +121,17 @@ class DialogAgentReprocess (
     }
   }
 
-  // process one input file
+  /** process one input file
+   * @param inputFilename The file to be processed
+   * @returns true if successful
+   */
   def processFile(
     inputFilename: String
   ): Boolean = {
     if(inputFilename.endsWith(".metadata")) {
-      val outputFilename= ta3Filename(inputFilename)
+      val outputFilename = ta3Filename(inputFilename)
       logger.info("%s' => '%s'".format(inputFilename, outputFilename))
       val fileWriter = new PrintWriter(new File(outputFilename))
-      fileWriter.write("head\n")
       val bufferedSource = Source.fromFile(inputFilename)
       val ret = processLines(bufferedSource.getLines, fileWriter, true)
       fileWriter.close
@@ -126,12 +145,14 @@ class DialogAgentReprocess (
   }
 
 
-  // process all of the input files
+  /** process all of the input files sequentially
+   * @param filenames List of all files to be processed
+   * @returns nothing
+   */
   def processFiles(filenames: List[String]): Unit = if(outputDirOK) {
     logger.info("Using output directory: %s".format(outputDirname))
     logger.info("Reprocessing...")
     val results = filenames.map(processFile)
-    val passes = results.filter(r => r)
     if(!results.contains(false)) {
       logger.info("All operations completed successfully.")
     }
