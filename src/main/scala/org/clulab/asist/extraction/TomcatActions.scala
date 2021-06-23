@@ -1,11 +1,8 @@
-package org.clulab.asist
-
+package org.clulab.asist.extraction
 
 import com.typesafe.scalalogging.LazyLogging
+import org.clulab.asist.extraction.TomcatRuleEngine._
 import org.clulab.odin._
-import org.clulab.asist.TomcatRuleEngine._
-
-import scala.collection.mutable.ArrayBuffer
 
 class TomcatActions() extends Actions with LazyLogging {
 
