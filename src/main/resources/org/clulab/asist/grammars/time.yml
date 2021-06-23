@@ -15,3 +15,11 @@ rules:
     type: token
     pattern: |
       (?<value> [word=/(?i)last|first/ | tag=/^DT/] [word=/(?i)few|several|couple/]) of? (?<trigger> [lemma=/(?i)second|minute|hour|day|year/])
+
+  - name: time_mention
+    label: Time
+    priority: 1
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/time/]
