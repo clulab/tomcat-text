@@ -1,14 +1,11 @@
-package org.clulab.asist
+package org.clulab.asist.extraction
 
 import com.typesafe.config.{Config, ConfigFactory}
-import com.typesafe.config.ConfigFactory
 import org.clulab.odin.{ExtractorEngine, Mention, State}
-import org.clulab.processors.{Document, Processor}
 import org.clulab.processors.fastnlp.FastNLPProcessor
-import org.clulab.utils.{Configured, FileUtils, LocalFileUtils}
+import org.clulab.processors.{Document, Processor}
+import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.LoggerFactory
-
-import scala.collection.mutable.ArrayBuffer
 
 class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Configured {
 
