@@ -2,8 +2,12 @@ package org.clulab.asist.agents
 
 import java.io.PrintWriter
 
-import org.clulab.asist.{AgentFileMetadata, FileHandler, RunDialogAgent}
+import org.clulab.asist.{AgentFileMetadata, RunDialogAgent}
+import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
+import java.io.{File, PrintWriter}
+
+
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -21,7 +25,7 @@ class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
   override val nMatches: Int = 0
-) extends DialogAgent with FileHandler {
+) extends DialogAgent {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -29,7 +33,7 @@ class DialogAgentFile(
    * @param filename a single input file
    * @param output Printwriter to the output file
    */
-  override def processFile(filename: String, output: PrintWriter): Unit = 
+  def processFile(filename: String, output: PrintWriter): Unit = 
     filename.substring(filename.lastIndexOf(".")) match {
       case ".vtt" =>
         logger.info(s"processing WebVTT file '${filename}' ...")
@@ -46,6 +50,24 @@ class DialogAgentFile(
         RunDialogAgent.usageText.foreach(line => (logger.error(line)))
     }
 
-  // todo: what is this needed for?
-//  this(inputFilename, outputFilename)
+
+  /** process all of the input files
+   * @param inputFilename User input source filename
+   * @param outputFileame User input output filename
+   */
+  def apply(inputFilename: String, outputFilename: String): Unit = {
+    logger.info(s"Using input file ${inputFilename}")
+    logger.info(s"Using output file ${outputFilename}")
+    try {
+      val output = new PrintWriter(new File(outputFilename))
+      val filenames = LocalFileUtils.getFileNames(inputFilename)
+      filenames.map(processFile(_, output))
+      output.close
+      logger.info("All operations completed successfully.")
+    } catch {
+      case t: Throwable =>
+        logger.error(s"Problem writing to ${inputFilename}")
+        logger.error(t.toString)
+    }
+  }
 }
