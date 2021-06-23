@@ -4,9 +4,10 @@ import java.time.Clock
 
 import ai.lum.common.ConfigFactory
 import com.typesafe.config.Config
-import org.clulab.odin.{EventMention, Mention, TextBoundMention}
+import org.clulab.asist.messages._
+import org.clulab.odin.Mention
 import org.json4s._
-import org.json4s.jackson.{Serialization, prettyJson}
+import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{write, writePretty}
 import org.slf4j.LoggerFactory
 
@@ -59,8 +60,6 @@ class DialogAgent (val nMatches: Int = 0) {
     topicPubVersionInfo
   )
 
-  // Used so Json serializers can recognize case classes
-  implicit val formats = Serialization.formats(NoTypeHints)
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     if (pretty) {
       writePretty(a)
@@ -76,8 +75,8 @@ class DialogAgent (val nMatches: Int = 0) {
 
   // Create the extractor and run it to get lazy init out of the way 
   logger.info("Initializing Extractor (this may take a few seconds) ...")
-  val extractor = new Extractor(new AsistEngine(), taxonomy_map)
-  extractor.runExtraction("green victim")
+  val extractor = new TomcatRuleEngine()
+  extractor.extractFrom("green victim")
   logger.info("Extractor initialized.")
 
   /** Create a CommonHeader data structure 
@@ -99,6 +98,17 @@ class DialogAgent (val nMatches: Int = 0) {
     version = dialogAgentVersion,
   )
 
+  /**
+   * Extract Odin mentions from text.
+   * @param text String text to extract from, can be multiple sentences.
+   * @return sequence of Odin Mentions
+   */
+  def extractMentions(text: String): Seq[Mention] = {
+    extractor
+      .extractFrom(text, keepText = true)
+      .sortBy(m => (m.sentence, m.label))
+  }
+
   /** Create the data component of the DialogAgentMessage structure
    *  @param participant_id human subject who created the text
    *  @param asr_msg_id from the Automated Speech Recognition system
@@ -113,8 +123,7 @@ class DialogAgent (val nMatches: Int = 0) {
     source_name: String,
     text: String
   ): DialogAgentMessageData = {
-    val (extractions, extracted_doc) = 
-      extractor.runExtraction(Option(text).getOrElse(""))
+    val extractions = extractMentions(text)
     DialogAgentMessageData(
       participant_id = participant_id,
       asr_msg_id = asr_msg_id,
@@ -128,7 +137,8 @@ class DialogAgent (val nMatches: Int = 0) {
   }
 
 
-  /** map the mention label to the taxonomy map
+  /** map the mention label to the taxonomy map, the mappings are static
+   * and computed ahead of time and stored sorted // FIXME: is this true?.
    * @param mentionLabel For taxonomy mapping
    */
   def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = 
@@ -149,17 +159,12 @@ class DialogAgent (val nMatches: Int = 0) {
       converted = ms.map(extraction)
     } yield (role, converted)
     val taxonomy_matches = taxonomyMatches(mention.label)
-    val charOffsets: Tuple2[Int, Int] = mention match {
-      case e: EventMention => (e.trigger.startOffset, e.trigger.endOffset)
-      case e: TextBoundMention => (e.startOffset, e.endOffset)
-      case _ => (-1, -1)
-    }
     DialogAgentMessageDataExtraction(
       mention.label,
       mention.words.mkString(" "),
       extractionArguments.toMap,
-      charOffsets._1,
-      charOffsets._2,
+      mention.startOffset,
+      mention.endOffset,
       taxonomy_matches
     )
   }

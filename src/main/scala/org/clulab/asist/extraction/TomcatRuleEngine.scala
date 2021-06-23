@@ -5,36 +5,27 @@ import com.typesafe.config.ConfigFactory
 import org.clulab.odin.{ExtractorEngine, Mention, State}
 import org.clulab.processors.{Document, Processor}
 import org.clulab.processors.fastnlp.FastNLPProcessor
-import org.clulab.utils.{Configured, FileUtils}
+import org.clulab.utils.{Configured, FileUtils, LocalFileUtils}
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
 
-class AsistEngine(
-    var timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int]) =
-      (new ArrayBuffer[Int], new ArrayBuffer[Int], new ArrayBuffer[Int]),
-    val config: Config = ConfigFactory.load()
-) extends Configured {
+class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Configured {
 
-  val proc: Processor =
-    new FastNLPProcessor() // TODO: Get from configuration file soon
+  val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
 
   override def getConf: Config = config
 
-  protected def getFullName(name: String): String = AsistEngine.PREFIX + "." + name
+  protected def getFullName(name: String): String = TomcatRuleEngine.PREFIX + "." + name
 
   protected def getPath(name: String, defaultValue: String): String = {
     val path = getArgString(getFullName(name), Option(defaultValue))
-
-    AsistEngine.logger.info(name + ": " + path)
+    TomcatRuleEngine.logger.info(name + ": " + path)
     path
   }
 
-  class LoadableAttributes(
-                            // These are the values which can be reloaded.  Query them for current assignments.
-                            val actions: TomcatActions,
-                            val engine: ExtractorEngine
-  )
+  // These are the values which can be reloaded.  Query them for current assignments.
+  class LoadableAttributes(val actions: TomcatActions, val engine: ExtractorEngine)
 
   object LoadableAttributes {
     val masterRulesPath: String =
@@ -45,7 +36,7 @@ class AsistEngine(
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time based on paths in the config file.
       val masterRules = FileUtils.getTextFromResource(masterRulesPath)
-      val actions = TomcatActions(timeintervals)
+      val actions = TomcatActions()
 
       new LoadableAttributes(
         actions,
@@ -63,7 +54,7 @@ class AsistEngine(
   def reload() = loadableAttributes = LoadableAttributes()
 
   // MAIN PIPELINE METHOD
-  def extractFromText(text: String, keepText: Boolean = false): Seq[Mention] = {
+  def extractFrom(text: String, keepText: Boolean = false): Seq[Mention] = {
     val doc = annotate(text, keepText)
     extractFrom(doc)
   }
@@ -80,10 +71,10 @@ class AsistEngine(
 
 }
 
-object AsistEngine {
+object TomcatRuleEngine {
 
   val logger = LoggerFactory.getLogger(this.getClass())
-  val PREFIX: String = "AsistEngine"
+  val PREFIX: String = "TomcatRuleEngine"
 
   val ENTITY: String = "Entity"
   val VICTIM: String = "Victim"

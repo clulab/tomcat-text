@@ -1,7 +1,6 @@
 package org.clulab.asist
 
-import org.json4s._
-import org.json4s.jackson.Serialization
+import org.clulab.asist.messages._
 import org.json4s.jackson.Serialization.{read, write}
 
 import scala.util.control.Exception._
