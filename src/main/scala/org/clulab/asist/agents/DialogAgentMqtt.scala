@@ -1,6 +1,7 @@
-package org.clulab.asist
+package org.clulab.asist.agents
 
 import org.clulab.asist.messages._
+import org.clulab.asist.{AgentVersionInfo, MessageBusClient}
 import org.json4s.jackson.Serialization.{read, write}
 
 import scala.util.control.Exception._

@@ -1,20 +1,20 @@
-package org.clulab.asist
+package org.clulab.asist.agents
 
 import java.time.Clock
 
 import ai.lum.common.ConfigFactory
 import com.typesafe.config.Config
+import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
 import org.json4s._
-import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{write, writePretty}
 import org.slf4j.LoggerFactory
+import spray.json.DefaultJsonProtocol._
+import spray.json.JsonParser
 
 import scala.collection.immutable
 import scala.io.Source
-import spray.json.DefaultJsonProtocol._
-import spray.json.JsonParser
 
 
 /**

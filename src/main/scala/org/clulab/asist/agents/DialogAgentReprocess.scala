@@ -1,12 +1,11 @@
-package org.clulab.asist
+package org.clulab.asist.agents
 
 import java.io.{File, PrintWriter}
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.Paths
 
 import org.clulab.asist.messages.DialogAgentMessage.readDialogAgentMessage
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
-import org.json4s.jackson.Serialization.read
 import org.slf4j.LoggerFactory
 
 import scala.annotation.tailrec

@@ -1,6 +1,9 @@
 package org.clulab.asist
 
 import java.io.PrintWriter
+
+import org.clulab.asist.agents.DialogAgent
+import org.clulab.asist.messages._
 import org.json4s._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
@@ -19,9 +22,6 @@ import scala.util.control.Exception._
 
 object AgentFileMetadata {
   val source_type = "message_bus"
-
-  // Used so Json serializers can recognize case classes
-  implicit val formats = Serialization.formats(NoTypeHints)
 
   /** Wrangle one metadata file
    * @param filename a single input file

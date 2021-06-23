@@ -26,7 +26,7 @@ trait FileHandler {
   def processFile(filename: String, output: PrintWriter): Unit = {}
 
   /** process all of the input files
-   * @param filenames the input files as determined by the inputFilename
+   * @param inputFilename the input files as determined by the inputFilename
    */
   def apply(inputFilename: String, outputFilename: String): Unit = {
     logger.info("Using output file '%s'".format(outputFilename))
@@ -45,8 +45,10 @@ trait FileHandler {
   }
 
 
+  // todo: centralize to LocalFileUtils to avoid complex inheritance issues?
+  //  else remove that and make all things that need to import files extend this
   /** Determine the list of input files to process
-   * @param filename User input arg, may be a file or directory of files
+   * @param inputFilename User input arg, may be a file or directory of files
    * @returns A list of zero or more filenames to process
    */
   def getFiles(inputFilename: String): List[String] = {

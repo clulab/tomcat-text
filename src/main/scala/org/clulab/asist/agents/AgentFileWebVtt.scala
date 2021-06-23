@@ -1,7 +1,8 @@
-package org.clulab.asist
+package org.clulab.asist.agents
+
+import java.io.{File, FileInputStream, PrintWriter}
 
 import com.crowdscriber.caption.vttdissector.VttDissector
-import java.io.{File, FileInputStream, PrintWriter}
 import org.clulab.asist.messages._
 import org.json4s.jackson.Serialization.write
 import org.slf4j.LoggerFactory

@@ -1,7 +1,6 @@
-package org.clulab.asist
+package org.clulab.asist.agents
 
 import java.util.Scanner
-import org.json4s.jackson.Serialization.write
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp

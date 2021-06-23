@@ -1,4 +1,4 @@
-package org.clulab.asist
+package org.clulab.asist.messages
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
@@ -14,5 +14,5 @@ package org.clulab.asist
 
 /** Contains only the needed fields of the Trial Message data format */
 case class TrialMessage (
-  val msg: CommonMsg
+  msg: CommonMsg
 ) 

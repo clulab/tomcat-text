@@ -1,6 +1,8 @@
-package org.clulab.asist
+package org.clulab.asist.agents
 
-import java.io.{File, PrintWriter}
+import java.io.PrintWriter
+
+import org.clulab.asist.{AgentFileMetadata, FileHandler, RunDialogAgent}
 import org.slf4j.LoggerFactory
 
 /**
