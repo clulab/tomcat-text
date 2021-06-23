@@ -12,7 +12,7 @@ import scala.annotation.tailrec
 import scala.io.Source
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 June
  *

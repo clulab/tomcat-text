@@ -1,9 +1,9 @@
 package org.clulab.asist.messages
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  updated:  2021 June
+ *  Updated:  2021 June
  *
  *  Trial Message Format based on:
  *

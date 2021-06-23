@@ -3,16 +3,15 @@ package org.clulab.asist.messages
 import org.json4s.jackson.Serialization.read
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  updated:  2021 June
+ *  Updated:  2021 June
  *
  *  Dialog Agent Message
  *
  *  DialogAgentMessages are produced by the Dialog Agent, either
  *  as file output or on the message bus
  */
-
 
 /** Part of the DialogAgentMessage class */
 case class DialogAgentMessageData(

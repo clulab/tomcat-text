@@ -3,9 +3,9 @@ package org.clulab.asist
 import org.clulab.asist.agents.{DialogAgent, DialogAgentFile, DialogAgentMqtt, DialogAgentReprocess, DialogAgentStdin}
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  updated:  2021 June
+ *  Updated:  2021 June
  *
  *  This application will run the DialogAgent on an input file, on the
  *  message bus, or interactively depending on user inputs.

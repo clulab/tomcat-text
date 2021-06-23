@@ -6,7 +6,7 @@ import org.clulab.asist.agents.DialogAgent
 import org.clulab.asist.messages._
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  *  Updated:  2021 June
  *

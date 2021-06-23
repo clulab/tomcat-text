@@ -6,7 +6,7 @@ import org.clulab.asist.{AgentFileMetadata, FileHandler, RunDialogAgent}
 import org.slf4j.LoggerFactory
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 June
  *

@@ -9,9 +9,9 @@ import org.clulab.utils.{FileUtils, LocalFileUtils}
 import org.slf4j.LoggerFactory
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 May
+ * Updated:  2021 June
  *
  * Use the ODIN infrastructure to list the Extractors, and write them
  * to the output file in Markdown language format.

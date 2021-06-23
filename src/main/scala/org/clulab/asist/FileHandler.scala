@@ -1,7 +1,7 @@
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 April
+ * Updated:  2021 June
  *
  * Process a file or the first level of a directory of files.
  *

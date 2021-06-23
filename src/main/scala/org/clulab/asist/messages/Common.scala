@@ -1,9 +1,9 @@
 package org.clulab.asist.messages
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  updated:  2021 June
+ *  Updated:  2021 June
  *
  *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/hackathon2021/MessageSpecs/Common_Message/common_message.md
  *

@@ -12,7 +12,7 @@ import scala.io.Source
 import scala.util.control.Exception._
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 June
  *
