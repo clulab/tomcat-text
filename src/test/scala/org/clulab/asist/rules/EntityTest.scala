@@ -1,5 +1,6 @@
-package org.clulab.asist
+package org.clulab.asist.rules
 
+import org.clulab.asist.BaseTest
 
 class EntityTest extends BaseTest {
 

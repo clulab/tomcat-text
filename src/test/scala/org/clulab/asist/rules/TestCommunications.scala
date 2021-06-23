@@ -1,4 +1,4 @@
-package org.clulab.asist.text
+package org.clulab.asist.rules
 
 import org.clulab.asist.BaseTest
 // For testing team communications
