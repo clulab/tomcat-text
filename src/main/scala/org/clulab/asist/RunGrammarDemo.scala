@@ -29,9 +29,8 @@ object RunGrammarDemo extends App {
    */
   def run(argList: List[String]): Option[Any] = argList match {
     case List(outfile, masterPath) => Some(new GrammarDemo(outfile, masterPath))
-    case _ => {
-      usageText.map(println)
+    case _ =>
+      usageText.foreach(println)
       None
-    }
   }
 }

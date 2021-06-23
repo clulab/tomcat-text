@@ -1,4 +1,5 @@
-package org.clulab.asist
+package org.clulab.asist.messages
+
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
@@ -13,36 +14,34 @@ package org.clulab.asist
  *  published on the message bus
  */
 
-
-
 /** Configuration settings */
 case class VersionInfoDataConfig(
-  val name: String = "Not Set",
-  val value: String = "Not Set"
+  name: String = "Not Set",
+  value: String = "Not Set"
 )
 
 /** channel on the Message Bus */
 case class VersionInfoDataMessageChannel(
-  val topic: String = "Not Set",
-  val message_type: String = "Not Set",
-  val sub_type: String = "Not Set"
+  topic: String = "Not Set",
+  message_type: String = "Not Set",
+  sub_type: String = "Not Set"
 )
 
 /** Part of the Info class */
 case class VersionInfoData(
-  val agent_name: String = "Not Set", // "tomcat_textAnalyzer"
-  val owner: String = "Not Set", // "University of Arizona"
-  val version: String = "Not Set", // "2.0.0"
-  val source: Seq[String] = List(), // "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
-  val dependencies: Seq[String] = List(),
-  val config: Seq[VersionInfoDataConfig] = List(),
-  val publishes: Seq[VersionInfoDataMessageChannel] = List(),
-  val subscribes: Seq[VersionInfoDataMessageChannel] = List()
+  agent_name: String = "Not Set", // "tomcat_textAnalyzer"
+  owner: String = "Not Set", // "University of Arizona"
+  version: String = "Not Set", // "2.0.0"
+  source: Seq[String] = List(), // "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
+  dependencies: Seq[String] = List(),
+  config: Seq[VersionInfoDataConfig] = List(),
+  publishes: Seq[VersionInfoDataMessageChannel] = List(),
+  subscribes: Seq[VersionInfoDataMessageChannel] = List()
 )
 
 /** Contains the full analysis data of one chat message */
 case class VersionInfo (
-  val header: CommonHeader,
-  val msg: CommonMsg,
-  val data: VersionInfoData
+  header: CommonHeader,
+  msg: CommonMsg,
+  data: VersionInfoData
 ) 

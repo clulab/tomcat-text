@@ -1,5 +1,7 @@
 package org.clulab.asist
 
+import org.clulab.asist.agents.{DialogAgent, DialogAgentFile, DialogAgentMqtt, DialogAgentReprocess, DialogAgentStdin}
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
@@ -36,28 +38,31 @@ object RunDialogAgent extends App {
   // a dialog agent kept in global scope
   val agent = run(args.toList)
 
+  // FIXME: if tail recursive, add the annotation for it
   /** Find a String value in the argument list
    * @param l A flat list of key value pairs
    * @param key A key to search for in the list
-   * @returns the string value for the key, else None
+   * @return the string value for the key, else None
    */
   def stringArg(l: List[String], key: String): Option[String] = l match {
     case (k::v::_) => if (k == key) Some(v) else stringArg(l.tail, key)
     case _ => None
   }
 
+  // FIXME: if tail recursive, add the annotation for it
   /** Find an Int integer value in the argument list
    * @param l A flat list of key value pairs
    * @param key A key to search for in the list
-   * @returns the integer value for the key, else None
+   * @return the integer value for the key, else None
    */
   def intArg(l: List[String], key: String): Option[Int] = l match {
-    case (k::v::_) => if (k == key) { 
-      try Some(v.toInt)
-      catch {
-        case e: Exception => None
-      }
-    } else intArg(l.tail,key)
+    case (k::v::_) =>
+      if (k == key) {
+        try Some(v.toInt)
+        catch {
+          case e: Exception => None
+        }
+      } else intArg(l.tail, key)
     case _ => None
   }
 
@@ -67,26 +72,25 @@ object RunDialogAgent extends App {
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {
-      case ("mqtt"::host::port::l) => {
+      case ("mqtt"::host::port::l) =>
         val matches: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentMqtt(host, port, matches))
-      }
-      case ("file"::infile::outfile::l) => {
+
+      case ("file"::infile::outfile::l) =>
         val matches: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentFile(infile, outfile, matches))
-      }
-      case ("stdin"::l) => {
+
+      case ("stdin"::l) =>
         val matches: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentStdin(matches))
-      }
-      case ("reprocess"::indir::outdir::l) => {
+
+      case ("reprocess"::indir::outdir::l) =>
         val matches: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentReprocess(indir, outdir, matches))
-      }
-      case _ => {
-        usageText.map(println)
+
+      case _ =>
+        usageText.foreach(println)
         None
-      }
     }
   }
 }

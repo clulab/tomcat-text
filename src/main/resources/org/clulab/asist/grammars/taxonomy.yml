@@ -52,6 +52,7 @@
           - Disagreement
         - Clear
         - RoleSwitch
+        - RoleDeclare
         - ReportLocation
         - KnowledgeSharing
       - ComplexActions:

@@ -1,5 +1,6 @@
 package org.clulab.asist
 
+import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.odin.Mention
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -70,5 +71,5 @@ class BaseTest extends FlatSpec with Matchers {
 }
 
 object BaseTest {
-  val extractor = new AsistEngine()
+  val extractor = new TomcatRuleEngine()
 }

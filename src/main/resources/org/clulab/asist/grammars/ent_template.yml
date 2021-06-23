@@ -2,7 +2,7 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
   - name: ${ name }_detection
-    priority: ${ priority }+
+    priority: ${ priority }
     label: ${ label }
     type: token
     keep: true

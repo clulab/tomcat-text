@@ -1,4 +1,4 @@
-package org.clulab.asist
+package org.clulab.asist.messages
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
@@ -14,35 +14,35 @@ package org.clulab.asist
 case class MetadataData(
 
   // From Chat metadata
-  val sender: String = null, // "player_1"
+  sender: String = null, // "player_1"
 
   // From University of Arizona ASR metadata
-  val participant_id: String = null, // "player_1"
-  val id: String = null,
+  participant_id: String = null, // "player_1"
+  id: String = null,
 
   // From Aptima ASR metadata
-  val playername: String = null, // "player_1"
+  playername: String = null, // "player_1"
 
   // From all metadata
-  val text: String = null // "You want me to share my screen?"
+  text: String = null // "You want me to share my screen?"
 )
 
 /* This is an abbreviation of the CommonMsg type with only the fields we use
  */
 case class MetadataMsg (
-  val experiment_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"
-  val trial_id: String = null, //  "123e4567-e89b-12d3-a456-426655440000"
-  val replay_root_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"
-  val replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
+  experiment_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"
+  trial_id: String = null, //  "123e4567-e89b-12d3-a456-426655440000"
+  replay_root_id: String = null, // "123e4567-e89b-12d3-a456-426655440000"
+  replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
 )
 
 // If we recognize the topic we will process the message.
 case class MetadataLookahead(
-  val topic: String = ""
+  topic: String = ""
 )
 
 // 
 case class Metadata(
-  val data: MetadataData,
-  val msg: MetadataMsg
+  data: MetadataData,
+  msg: MetadataMsg
 )

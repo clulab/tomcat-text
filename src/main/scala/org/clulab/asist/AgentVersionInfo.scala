@@ -2,6 +2,9 @@ package org.clulab.asist
 
 import java.time.Clock
 
+import org.clulab.asist.agents.DialogAgent
+import org.clulab.asist.messages._
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
@@ -24,7 +27,7 @@ object AgentVersionInfo {
         owner = "University of Arizona",
         version = da.dialogAgentVersion,
         source = List(
-  "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
+          "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
         ),
         dependencies = List(),
         config = List(),

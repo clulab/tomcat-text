@@ -1,6 +1,8 @@
-package org.clulab.asist
+package org.clulab.asist.agents
 
-import java.io.{File, PrintWriter}
+import java.io.PrintWriter
+
+import org.clulab.asist.{AgentFileMetadata, FileHandler, RunDialogAgent}
 import org.slf4j.LoggerFactory
 
 /**
@@ -29,22 +31,21 @@ class DialogAgentFile(
    */
   override def processFile(filename: String, output: PrintWriter): Unit = 
     filename.substring(filename.lastIndexOf(".")) match {
-      case ".vtt" => {
-        logger.info("processing WebVTT file '%s' ...".format(filename))
+      case ".vtt" =>
+        logger.info(s"processing WebVTT file '${filename}' ...")
         AgentFileWebVtt(filename, this, output)
-        logger.info("finished processing %s".format(filename))
-      }
-      case ".metadata" =>  {
-        logger.info("processing Metadata file: '%s' ...".format(filename))
+        logger.info(s"finished processing ${filename}")
+
+      case ".metadata" =>
+        logger.info(s"processing Metadata file: '${filename}' ...")
         AgentFileMetadata(filename, this, output)
-        logger.info("finished processing '%s'".format(filename))
-      }
-      case _ => {
-        logger.error("Can't process file '%s'".format(filename))
-        RunDialogAgent.usageText.map(line => (logger.error(line)))
-      }
+        logger.info(s"finished processing '${filename}'")
+
+      case _ =>
+        logger.error(s"Can't process file '${filename}'")
+        RunDialogAgent.usageText.foreach(line => (logger.error(line)))
     }
 
-
-  this(inputFilename, outputFilename)
+  // todo: what is this needed for?
+//  this(inputFilename, outputFilename)
 }

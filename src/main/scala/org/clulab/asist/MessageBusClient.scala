@@ -1,5 +1,6 @@
 package org.clulab.asist
 
+import org.clulab.asist.agents.DialogAgentMqtt
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.slf4j.LoggerFactory
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
  * @param subscriptions MQTT topics from which messages to process are read.
- * @param outputTopic MQTT topic for publishing processed messages
+ * @param publications MQTT topic for publishing processed messages
  * @param owner A DialogAgentMQTT that will process input messages
  */
 
@@ -54,7 +55,8 @@ class MessageBusClient(
   }
 
   /** Publish a MQTT message to one topic
-   *  @param output String to publish on the Message Bus
+   *  @param topic
+   *  @param text String to publish on the Message Bus
    */
   def publish(topic: String, text: String): Unit = try {
     publisher.publish(topic, new MqttMessage(text.getBytes))

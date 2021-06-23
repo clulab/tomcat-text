@@ -1,10 +1,10 @@
-package org.clulab.asist
+package org.clulab.asist.agents
+
+import java.io.{File, FileInputStream, PrintWriter}
 
 import com.crowdscriber.caption.vttdissector.VttDissector
-import java.io.{File, FileInputStream, PrintWriter}
-import org.json4s._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
+import org.clulab.asist.messages._
+import org.json4s.jackson.Serialization.write
 import org.slf4j.LoggerFactory
 
 import scala.util.{Failure, Success}
@@ -21,9 +21,6 @@ import scala.util.{Failure, Success}
 object AgentFileWebVtt {
 
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
-
-  // Used so Json serializers can recognize case classes
-  implicit val formats = Serialization.formats(NoTypeHints)
 
   val source_type = "web_vtt_file"
 
