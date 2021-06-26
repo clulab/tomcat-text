@@ -5,7 +5,6 @@ import java.io.PrintWriter
 import org.clulab.asist.agents.DialogAgent
 import org.clulab.asist.messages._
 import org.json4s._
-import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 
 import scala.io.Source
