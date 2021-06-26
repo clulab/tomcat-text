@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
  *
  * Updated:  2021 June
  *
- * Simplified Subscription (read) and publication (write) to message bus topics
+ * Simplified subscription (read) and publication (write) to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
  * @param host MQTT host to connect to.
@@ -24,6 +24,7 @@ trait MessageBusClientListener {
   def messageArrived(topic: String, json: String): Unit
 }
 
+// instantiate one of these in your message bus communicator class
 class MessageBusClient(
   val host: String = "",
   val port: String = "",
