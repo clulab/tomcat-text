@@ -7,8 +7,6 @@ import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
 import java.io.{File, PrintWriter}
 
-
-
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -33,23 +31,31 @@ class DialogAgentFile(
    * @param filename a single input file
    * @param output Printwriter to the output file
    */
-  def processFile(filename: String, output: PrintWriter): Unit = 
+  def processFile(
+    filename: String, 
+    output: PrintWriter
+  ): Unit = if(filename.contains(".")) {
     filename.substring(filename.lastIndexOf(".")) match {
       case ".vtt" =>
         logger.info(s"processing WebVTT file '${filename}' ...")
         AgentFileWebVtt(filename, this, output)
         logger.info(s"finished processing ${filename}")
-
       case ".metadata" =>
         logger.info(s"processing Metadata file: '${filename}' ...")
         AgentFileMetadata(filename, this, output)
         logger.info(s"finished processing '${filename}'")
-
-      case _ =>
-        logger.error(s"Can't process file '${filename}'")
-        RunDialogAgent.usageText.foreach(line => (logger.error(line)))
+      case _ => usage(filename)
     }
+  } else usage(filename)
 
+  /** Give the user a hint
+   * @param filename a single input file
+   */
+  def usage(filename: String): Unit = {
+    logger.error(s"Can't process file '${filename}'")
+    logger.error("Extension must be .vtt or .metadata")
+    RunDialogAgent.usageText.foreach(line => (logger.error(line)))
+  }
 
   /** process all of the input files
    * @param inputFilename User input source filename
