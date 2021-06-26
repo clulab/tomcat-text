@@ -1,7 +1,9 @@
 package org.clulab.asist.agents
 
+import java.time.Clock
+
 import org.clulab.asist.messages._
-import org.clulab.asist.{AgentVersionInfo, MessageBusClient}
+import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 import org.json4s.jackson.Serialization.{read, write}
 
 import scala.util.control.Exception._
@@ -26,10 +28,10 @@ class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val nMatches: Int = 0
-) extends DialogAgent { 
+) extends DialogAgent 
+  with MessageBusClientListener { 
 
   val source_type = "message_bus"
-
 
   // this handles the message bus operations.  
   val bus = new MessageBusClient(
@@ -44,7 +46,8 @@ class DialogAgentMqtt(
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
     allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
       if(trialMessage.msg.sub_type == "start") {
-        bus.publish(topicPubVersionInfo, write(AgentVersionInfo(this)))
+        val timestamp = Clock.systemUTC.instant.toString
+        bus.publish(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
       }
     })
   )
