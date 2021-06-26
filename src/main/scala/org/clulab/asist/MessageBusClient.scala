@@ -55,7 +55,7 @@ class MessageBusClient(
   }
 
   /** Publish a MQTT message to one topic
-   *  @param topic
+   *  @param topic Destination on the Message Bus
    *  @param text String to publish on the Message Bus
    */
   def publish(topic: String, text: String): Unit = try {

@@ -2,6 +2,8 @@ package org.clulab.asist
 
 import org.clulab.asist.agents.{DialogAgent, DialogAgentFile, DialogAgentMqtt, DialogAgentReprocess, DialogAgentStdin}
 
+import scala.annotation.tailrec
+
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -38,23 +40,23 @@ object RunDialogAgent extends App {
   // a dialog agent kept in global scope
   val agent = run(args.toList)
 
-  // FIXME: if tail recursive, add the annotation for it
   /** Find a String value in the argument list
    * @param l A flat list of key value pairs
    * @param key A key to search for in the list
    * @return the string value for the key, else None
    */
+  @tailrec
   def stringArg(l: List[String], key: String): Option[String] = l match {
     case (k::v::_) => if (k == key) Some(v) else stringArg(l.tail, key)
     case _ => None
   }
 
-  // FIXME: if tail recursive, add the annotation for it
   /** Find an Int integer value in the argument list
    * @param l A flat list of key value pairs
    * @param key A key to search for in the list
    * @return the integer value for the key, else None
    */
+  @tailrec
   def intArg(l: List[String], key: String): Option[Int] = l match {
     case (k::v::_) =>
       if (k == key) {
