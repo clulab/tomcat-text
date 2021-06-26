@@ -7,6 +7,8 @@ import org.clulab.asist.messages.DialogAgentMessage.readDialogAgentMessage
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
+import org.json4s._
+import org.json4s.jackson.Serialization.read
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -36,75 +38,20 @@ class DialogAgentReprocess (
   // if the output dir doesn't exist, make it
   private val canWrite = LocalFileUtils.ensureDir(outputDirname)
 
-  /** If the filename has a TA3 version number, increment by 1.
-   * @param inputFilename filename that may have a TA3 version number
-   * @return the inputFilename, with any TA3 version number incremented
+  processFiles(LocalFileUtils.getFileNames(inputDirname))
+
+  /** process all of the input files sequentially
+   * @param filenames List of all files to be processed
+   * @returns nothing
    */
-  def ta3Filename(inputFilename: String): String = {
-
-    // get local filename out of the input directory
-    val localFilename = inputFilename.split("/").last
-
-    // the output filename is the local filename in the output directory
-    val outputPath = Paths.get(outputDirname,localFilename)
-    val outputFilename = outputPath.toFile.getAbsolutePath
-
-    // if the output filename contains a TA3 version number, increment it by 1
-    val regex = """Vers-(\d+).metadata""".r
-    regex.replaceAllIn(outputFilename, _ match {
-      case regex(version) => s"Vers-${version.toInt + 1}.metadata"
-      case _ => outputFilename  // otherwise do not change the inputFilename
-    })
-  }
-
-  /** process a single DialogAgentMessage metadata string
-   * @param inputLine JSON representation of a DialogAgentMessage
-   * @param fileWriter Writes to the output file
-   * @returns true if the line was processed successfully
-   */
-  def processLine(
-    inputLine: String,
-    fileWriter: PrintWriter
-  ): Boolean = try {
-    val message: DialogAgentMessage = readDialogAgentMessage(inputLine)
-    val newMessage = DialogAgentMessage(
-      header = message.header,
-      msg = message.msg,
-      data = dialogAgentMessageData(
-        message.data.participant_id,
-        message.data.asr_msg_id,
-        message.data.source.source_type,
-        message.data.source.source_name,
-        message.data.text  // reprocessing happens now
-      ) 
-    ) 
-    fileWriter.write(s"${writeJson(newMessage)}\n")
-    true
-  }
-  catch {
-    case t: Throwable => {
-      logger.error(s"Error parsing input line: ${inputLine}\n")
-      logger.error(t.toString)
-    }
-    false
-  }
-
-  /** process all the metadata lines from one input file
-   * @param lines An iterator with all of the lines for this file
-   * @param fileWriter Writes to the output file
-   * @param result The accumulated outcome of processing each line
-   * @returns true if all lines were processed successfully
-   */
-  @tailrec
-  private def processLines(
-    lines: Iterator[String],
-    fileWriter: PrintWriter,
-    result: Boolean
-  ): Boolean = {
-    if(!lines.hasNext) result
-    else {
-      val currentResult = processLine(lines.next, fileWriter)
-      processLines(lines, fileWriter, currentResult && result)
+  def processFiles(filenames: List[String]): Unit = {
+    if(canWrite) {
+      logger.info(s"Using output directory: ${outputDirname}")
+      logger.info("Reprocessing...")
+      val results = filenames.map(processFile)
+      if(!results.contains(false)) {
+        logger.info("All operations completed successfully.")
+      }
     }
   }
 
@@ -131,21 +78,96 @@ class DialogAgentReprocess (
     }
   }
 
-
-  /** process all of the input files sequentially
-   * @param filenames List of all files to be processed
-   * @returns nothing
+  /** process all the metadata lines from one input file
+   * @param lines An iterator with all of the lines for this file
+   * @param fileWriter Writes to the output file
+   * @param result The accumulated outcome of processing each line
+   * @returns true if all lines were processed successfully
    */
-  def processFiles(filenames: List[String]): Unit = {
-    if(canWrite) {
-      logger.info(s"Using output directory: ${outputDirname}")
-      logger.info("Reprocessing...")
-      val results = filenames.map(processFile)
-      if(!results.contains(false)) {
-        logger.info("All operations completed successfully.")
-      }
+  @tailrec
+  private def processLines(
+    lines: Iterator[String],
+    fileWriter: PrintWriter,
+    result: Boolean
+  ): Boolean = {
+    if(!lines.hasNext) result
+    else {
+      val currentResult = processLine(lines.next, fileWriter)
+      processLines(lines, fileWriter, currentResult && result)
     }
   }
 
-  processFiles(LocalFileUtils.getFileNames(inputDirname))
+  /** read a JSON input line and reprocess if DialogAgent metadata
+   * @param json One metadata JSON line
+   * @param fileWriter Writes to the output file
+   * @returns true if the line was processed successfully
+   */
+  def processLine(
+    json: String,
+    fileWriter: PrintWriter
+  ): Boolean = try {
+    val lookahead = read[MetadataLookahead](json)
+    if(lookahead.topic == topicPubDialogAgent) {
+      reprocessDialogAgentMetadata(json, fileWriter)
+    }
+    else true // skip non-DialogAgent metadata
+  } 
+  catch {  
+    case t: Throwable => 
+      logger.error(s"Error parsing MetadataLookahead from JSON: ${json}\n")
+      logger.error(t.toString)
+      false
+  }
+
+  /** reprocess the data.text of DialogAgentMessage JSON input, copy all else.
+   * @param json JSON representation of one DialogAgentMessage struct
+   * @param fileWriter Writes to the output file
+   * @returns true if the line was processed successfully
+   */
+  def reprocessDialogAgentMetadata(
+    json: String,
+    fileWriter: PrintWriter
+  ): Boolean = try {
+    val message = read[DialogAgentMessage](json)
+    val newMessage = DialogAgentMessage(
+      header = message.header,
+      msg = message.msg,
+      data = dialogAgentMessageData(
+        message.data.participant_id,
+        message.data.asr_msg_id,
+        message.data.source.source_type,
+        message.data.source.source_name,
+        message.data.text  // reprocessing happens now
+      ) 
+    ) 
+    fileWriter.write(s"${writeJson(newMessage)}\n")
+    true
+  }
+  catch {
+    case t: Throwable => 
+      logger.error(s"Error parsing DialogAgentMessage from JSON: ${json}\n")
+      logger.error(t.toString)
+      false
+  }
+
+  /** If the filename has a TA3 version number, increment by 1.
+   * @param inputFilename filename that may have a TA3 version number
+   * @return the inputFilename, with any TA3 version number incremented
+   */
+  def ta3Filename(inputFilename: String): String = {
+
+    // get local filename out of the input directory
+    val localFilename = inputFilename.split("/").last
+
+    // the output filename is the local filename in the output directory
+    val outputPath = Paths.get(outputDirname,localFilename)
+    val outputFilename = outputPath.toFile.getAbsolutePath
+
+    // if the output filename contains a TA3 version number, increment it by 1
+    val regex = """Vers-(\d+).metadata""".r
+    regex.replaceAllIn(outputFilename, _ match {
+      case regex(version) => s"Vers-${version.toInt + 1}.metadata"
+      case _ => outputFilename  // otherwise do not change the inputFilename
+    })
+  }
 }
