@@ -1,6 +1,7 @@
 package org.clulab.asist
 
 import java.io.PrintWriter
+import java.time.Clock
 
 import org.clulab.asist.agents.DialogAgent
 import org.clulab.asist.messages._
@@ -37,7 +38,8 @@ object AgentFileMetadata {
         if(agent.topicSubTrial == lookahead.topic) {
           allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
             if(trialMessage.msg.sub_type == "start") {
-              output.write(write(AgentVersionInfo(agent)))
+              val timestamp = Clock.systemUTC.instant.toString
+              output.write(write(VersionInfo(agent, timestamp)))
             }
           })
         }
