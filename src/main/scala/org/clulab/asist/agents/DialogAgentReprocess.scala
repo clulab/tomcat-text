@@ -137,7 +137,7 @@ class DialogAgentReprocess (
         message.data.asr_msg_id,
         message.data.source.source_type,
         message.data.source.source_name,
-        Option(message.data.text).getOrElse("")  // reprocessing happens now
+        message.data.text // reprocessing happens now
       ) 
     ) 
     fileWriter.write(s"${writeJson(newMessage)}\n")

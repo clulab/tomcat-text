@@ -105,7 +105,7 @@ class DialogAgent (val nMatches: Int = 0) {
    */
   def extractMentions(text: String): Seq[Mention] = {
     extractor
-      .extractFrom(text, keepText = true)
+      .extractFrom(Option(text).getOrElse(""), keepText = true)
       .sortBy(m => (m.sentence, m.label))
   }
 
