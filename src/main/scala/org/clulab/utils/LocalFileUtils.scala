@@ -4,6 +4,9 @@ import java.io.File
 
 import org.slf4j.LoggerFactory
 
+import scala.io.Source
+
+
 object LocalFileUtils {
   private lazy val logger = LoggerFactory.getLogger(this.getClass())
 
@@ -53,7 +56,7 @@ object LocalFileUtils {
     if(dir.exists) {
       if(dir.isDirectory) true  // use existing dir
       else {  // don't clobber non-dir file of the same name
-        logger.error("Can't create directory '%s',".format(dir.getAbsolutePath))
+        logger.error(s"Can't create directory '${dir.getAbsolutePath}'")
         logger.error("A file with the same name is in the way.")
         false
       }
@@ -61,9 +64,18 @@ object LocalFileUtils {
     else {
       val ret = dir.mkdir // create dir if needed
       if(!ret)
-        logger.error("Can't create directory '%s',".format(dir.getAbsolutePath))
+        logger.error(s"Can't create directory '${dir.getAbsolutePath}'")
       ret
     }
   }
+
+
+  // Return a string iterator of the lines in a file, without the '\n' chars
+  def getLines(filename: String): Iterator[String] = 
+    getLines(new File(filename))
+
+  def getLines(file: File): Iterator[String] = 
+    Source.fromFile(file).getLines
+
 
 }
