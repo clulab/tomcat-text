@@ -71,10 +71,10 @@ object LocalFileUtils {
 
 
   // Return a string iterator of the lines in a file, without the '\n' chars
-  def getLines(filename: String): Iterator[String] = 
-    getLines(new File(filename))
+  def lineIterator(filename: String): Iterator[String] = 
+    lineIterator(new File(filename))
 
-  def getLines(file: File): Iterator[String] = 
+  def lineIterator(file: File): Iterator[String] = 
     Source.fromFile(file).getLines
 
 
