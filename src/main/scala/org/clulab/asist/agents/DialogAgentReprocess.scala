@@ -2,14 +2,14 @@ package org.clulab.asist.agents
 
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
+import java.time.Clock
 
-import org.clulab.asist.messages.DialogAgentMessage.readDialogAgentMessage
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
-import org.clulab.utils.LocalFileUtils.{getFileNames, ensureDir, getLines}
 import org.slf4j.LoggerFactory
 import org.json4s._
 import org.json4s.jackson.Serialization.read
+import org.json4s.jackson.JsonMethods
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -19,10 +19,16 @@ import scala.io.Source
  *
  * Updated:  2021 June
  *
- * If a .metadata file contains DialogAgent output, reprocess the file.
+ * Reprocess Dialog Agent metadata files by reading them line by line and then
+ * writing the processed results to the output file.
  *
- * Reprocess the DialogAgentMessage metadata by copying it to new DialogAgentMessage
- * structs.  Replace the extractions with new ones from the DialogAgent.
+ * Reprocessed DialogAgentMessage metdata is a copy of existing DialogAgentMessage
+ * metdata, with the only difference being that the extractions are regenerated. 
+ *
+ * If existing metadata is not DialogAgent metadata, copy it to the output
+ * file unchanged.
+ *
+ * Do not process metadata files that do not contain DialogAget metadata.
  *
  * If a .metadata file ends with Vers-<N>.metadata, the corresponding file
  * in the output directory should end with Vers-<N+1>.metadata (instead of
@@ -41,68 +47,57 @@ class DialogAgentReprocess (
   // find the files in the input directory that contain DialogAgent metadata
   val fileNames = LocalFileUtils.getFileNames(inputDirName)
     .filter(a => a.endsWith(".metadata"))
-    .filter(hasDialogAgentMetadata)
+    .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a)))
 
-  // make sure we have metadata to process
-  val metadataOk = if(fileNames.length > 0) true else {
+  if(fileNames.length > 0) {  // make sure we have DialogAgent metadata
+    if(LocalFileUtils.ensureDir(outputDirName)) { // make sure dir exists 
+      logger.info(s"Using output directory: $outputDirName")
+      logger.info("Reprocessing...")
+      val results = fileNames.map(processFile)
+      if(!results.contains(false)) 
+        logger.info("All reprocessing completed successfully.")
+      else 
+        logger.error("There were problems during reprocessing.")
+    }
+  } else 
     logger.error("No .metadata files containing DialogAgent data were found")
-    false
-  }
-  
-  // make sure the output directory is available
-  def outputDirOk: Boolean = if(LocalFileUtils.ensureDir(outputDirName)) {
-    logger.info(s"Using output directory: ${outputDirName}")
-    true
-  } else false
 
-  // If we have metadata and an output directory, proceed with reprocessing
-  if(metadataOk && outputDirOk) {
-    logger.info("Reprocessing...")
-    val results = fileNames.map(processFile)
-    if(!results.contains(false)) 
-      logger.info("All reprocessing completed successfully.")
-    else 
-      logger.error("There were problems during reprocessing.")
-  } 
-  // otherwise advise the user and halt. 
-  else logger.error("Unable to reprocess metadata.")
-
-  // True if the file contains any DialogAgent metadata.
-  def hasDialogAgentMetadata(inputFileName: String): Boolean = 
-    hasDialogAgentMetadata(lineIterator(inputFileName))
-
-  def lookahead(line: String): MetadataLookahead = try {
+  def readLookahead(line: String): MetadataLookahead = try {
     Option(read[MetadataLookahead](line))
       .getOrElse(new MetadataLookahead)
   } catch {
       case t: Throwable => new MetadataLookahead
   }
 
+  def readTrialMessage(line: String): TrialMessage = try {
+    Option(read[TrialMessage](line))
+      .getOrElse(new TrialMessage(new CommonMsg))
+  } catch {
+      case t: Throwable => new TrialMessage(new CommonMsg)
+  }
 
-
-  // True if the iterator contains any DialogAgent metadata.
+  /** True if the iterator contains any DialogAgent metadata.
+   *  @param iter:  An iterator containing json strings
+   *  @returns: True if any of the strings contains the DialogAgent publication topic
+   */
   @tailrec
   private def hasDialogAgentMetadata(
     iter: Iterator[String]
   ): Boolean = if(!iter.hasNext) false else {
-    if(lookahead(iter.next).topic == topicPubDialogAgent) true
+    if(readLookahead(iter.next).topic == topicPubDialogAgent) true
     else hasDialogAgentMetadata(iter)
   }
 
-  // Return a string iterator of the lines in an input file
-  def lineIterator(fileName: String): Iterator[String] = 
-    Source.fromFile(fileName).getLines
-
   /** process one input file
-   * @param inputFileName The file to be processed
+   * @param inputFileName The namee of the file to be processed
    * @returns true if successful
    */
   def processFile(inputFileName: String): Boolean = {
     val outputFileName = ta3FileName(inputFileName)
-    logger.info(s"'${inputFileName}' => '${outputFileName}'")
+    logger.info(s"$inputFileName => $outputFileName")
     val fileWriter = new PrintWriter(new File(outputFileName))
     val bufferedSource = Source.fromFile(inputFileName)
-    val iterator = lineIterator(inputFileName)
+    val iterator = LocalFileUtils.lineIterator(inputFileName)
     val ret = processLines(iterator, fileWriter, true)
     fileWriter.close
     ret
@@ -128,90 +123,113 @@ class DialogAgentReprocess (
     }
   }
 
-  /** Reprocess json if DialogAgent metadata, otherwise write it as-is.
-   * @param json One metadata JSON line
+  /** Reprocess line if DialogAgent metadata, otherwise write it as-is.
+   * @param line One metadata JSON line
    * @param fileWriter Writes to the output file
    * @returns true if the line was processed successfully
    */
   def processLine(
-    json: String,
+    line: String,
     fileWriter: PrintWriter
   ): Boolean = {
     val lookahead = 
-      Option(read[MetadataLookahead](json)).getOrElse(new MetadataLookahead)
+      Option(read[MetadataLookahead](line)).getOrElse(new MetadataLookahead)
     lookahead.topic match {
-      case `topicPubDialogAgent` => processDialogAgentMetadata(json, fileWriter)
-      case `topicSubTrial` => processTrialMetadata(json, fileWriter)
+      case `topicPubDialogAgent` => processDialogAgentMetadata(line, fileWriter)
+// FIXME      case `topicSubTrial` => processTrialMetadata(line, fileWriter)
       case _ => 
-        fileWriter.write(s"${writeJson(json)}\n")
+//  FIXME       fileWriter.write(s"$line\n")
         true
     }
   }
 
-  /*
-
-    val lookahead = read[MetadataLookahead](json)
-    if(lookahead.topic == topicPubDialogAgent) {
-      reprocessDialogAgentMetadata(json, fileWriter)
-    }
-    else {
-      fileWriter.write(s"${writeJson(json)}\n")
-      true // skip non-DialogAgent metadata
-    }
-  } 
-  catch {  
-    case t: Throwable => 
-      logger.error(s"Error parsing MetadataLookahead from JSON: ${json}\n")
-      logger.error(t.toString)
-      false
-  }
-  */
-
-
-  /** Generate a Dialog Agent Version Info message and save it to the file
-   * @param json JSON representation of one DialogAgentMessage struct
+  /** Parse a TrialMessage and report Testbed config if trial start.
+   * @param line JSON representation of one DialogAgentMessage struct
    * @param fileWriter Writes to the output file
-   * @returns true if the line was processed successfully
+   * @returns true
    */
   def processTrialMetadata(
-    json: String,
+    line: String,
     fileWriter: PrintWriter
   ): Boolean = {
-    true
+
+    // Copy the input trial message string to the output file in all cases
+    fileWriter.write(s"${line}\n")
+
+    // If this is the start of a trial, follow with a VersionInfo message 
+    // containing the DialogAgent Testbed configuration
+    try {
+      val trialMessage = read[TrialMessage](line)
+      if(trialMessage.msg.sub_type == "start") {
+        val timestamp = Clock.systemUTC.instant.toString
+        val json = writeJson(VersionInfo(this, timestamp))
+        fileWriter.write(s"${json}\n")
+      }
+      true
+    } catch {
+        case t: Throwable => 
+          logger.error(s"Error parsing TrialMessage from JSON: ${line}\n")
+          logger.error(t.toString)
+          false
+    }
   }
 
 
   /** reprocess the data.text of DialogAgentMessage JSON input, copy all else.
-   * @param json JSON representation of one DialogAgentMessage struct
+   * @param line JSON representation of one DialogAgentMessage struct
    * @param fileWriter Writes to the output file
    * @returns true if the line was processed successfully
    */
   def processDialogAgentMetadata(
-    json: String,
+    line: String,
     fileWriter: PrintWriter
-  ): Boolean = try {
-    val message = read[DialogAgentMessage](json)
-    val newMessage = DialogAgentMessage(
-      header = message.header,
-      msg = message.msg,
-      data = dialogAgentMessageData(
-        message.data.participant_id,
-        message.data.asr_msg_id,
-        message.data.source.source_type,
-        message.data.source.source_name,
-        message.data.text // reprocessing happens now
-      ) 
-    ) 
-    fileWriter.write(s"${writeJson(newMessage)}\n")
-    fileWriter.write("%s\n".format(writeJson(newMessage)))
-    true
+  ): Boolean = {
+
+    val metadata: Option[JValue] = getMetadata(line)
+
+    if(metadata.isDefined) {
+      val data = getData(metadata.head)
+      if (data.isDefined) {
+        val newMetadata = reprocessMetadata(metadata.head, data.head)
+
+        // now write it to file
+        true
+      } else false
+    } else false
   }
-  catch {
+
+  def reprocessMetadata(metadata: JValue, data: JValue): JValue = {
+    metadata
+  }
+
+
+  // find the data substructure within the metadata. 
+  def getData(metadata: JValue): Option[JValue] = {
+
+    val dataFieldOpt: Option[JField] = metadata.findField{
+      case (n,v) => n == "data"
+    }
+
+    // FIXME with an idiomatic solution
+    if(dataFieldOpt.isEmpty) {
+      logger.error("Could not find data field in metadata JValue")
+      None
+    } else Some(dataFieldOpt.head._2)
+  }
+
+
+  // parse the metadata text into a JValue to fix nonstandard JSON issues
+  def getMetadata(line: String): Option[JValue] = try {
+    Some(JsonMethods.parse(s""" ${line} """))
+  } catch {
     case t: Throwable => 
-      logger.error(s"Error parsing DialogAgentMessage from JSON: ${json}\n")
+      logger.error(s"Error parsing metadata AST from input string: ${line}\n")
       logger.error(t.toString)
-      false
+      None
   }
+
+
+
 
   /** If the fileName has a TA3 version number, increment by 1.
    * @param inputFileName fileName that may have a TA3 version number
