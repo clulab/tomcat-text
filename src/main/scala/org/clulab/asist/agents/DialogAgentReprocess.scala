@@ -187,19 +187,23 @@ class DialogAgentReprocess (
 
     val metadata: Option[JValue] = getMetadata(line)
 
+    // FIXME with an idiomatic solution
     if(metadata.isDefined) {
       val data = getData(metadata.head)
       if (data.isDefined) {
         val newMetadata = reprocessMetadata(metadata.head, data.head)
 
-        // now write it to file
+        val output = writeJson(newMetadata)
+        fileWriter.write(s"${output}\n")
         true
       } else false
     } else false
   }
 
   def reprocessMetadata(metadata: JValue, data: JValue): JValue = {
-    metadata
+    val extractions = JString("EXTRACTIONS")
+    val newMetadata = metadata.replace("data"::"extractions"::Nil, extractions)
+    newMetadata
   }
 
 
@@ -218,7 +222,7 @@ class DialogAgentReprocess (
   }
 
 
-  // parse the metadata text into a JValue to fix nonstandard JSON issues
+  // parse the metadata text into AST to fix nonstandard JSON issues
   def getMetadata(line: String): Option[JValue] = try {
     Some(JsonMethods.parse(s""" ${line} """))
   } catch {
