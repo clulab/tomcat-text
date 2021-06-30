@@ -122,8 +122,7 @@ class DialogAgent (val nMatches: Int = 0) {
     source_type: String,
     source_name: String,
     text: String
-  ): DialogAgentMessageData = {
-    val extractions = extractMentions(text)
+  ): DialogAgentMessageData = 
     DialogAgentMessageData(
       participant_id = participant_id,
       asr_msg_id = asr_msg_id,
@@ -132,8 +131,14 @@ class DialogAgent (val nMatches: Int = 0) {
         source_type = source_type,
         source_name = source_name
       ),
-      extractions.map(extraction)
+      extractions(text)
     )
+  
+
+
+  def extractions(text: String): Seq[DialogAgentMessageDataExtraction] = {
+    val mentions = extractMentions(text)
+     mentions.map(extraction)
   }
 
 
