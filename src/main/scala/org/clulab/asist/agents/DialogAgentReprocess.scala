@@ -8,11 +8,12 @@ import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
 import org.json4s._
-import org.json4s.jackson.Serialization.read
+import org.json4s.jackson.Serialization.{read,write}
 import org.json4s.jackson.JsonMethods
 
 import scala.annotation.tailrec
 import scala.io.Source
+import scala.util.control.NonFatal
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -49,8 +50,10 @@ class DialogAgentReprocess (
     .filter(a => a.endsWith(".metadata"))
     .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a)))
 
-  if(fileNames.length > 0) {  // make sure we have DialogAgent metadata
-    if(LocalFileUtils.ensureDir(outputDirName)) { // make sure dir exists 
+  // Only take action if there are files with DialogAgent metadata
+  if(fileNames.length > 0) {  
+    // make sure the output directory is available
+    if(LocalFileUtils.ensureDir(outputDirName)) { 
       logger.info(s"Using output directory: $outputDirName")
       logger.info("Reprocessing...")
       val results = fileNames.map(processFile)
@@ -66,14 +69,14 @@ class DialogAgentReprocess (
     Option(read[MetadataLookahead](line))
       .getOrElse(new MetadataLookahead)
   } catch {
-      case t: Throwable => new MetadataLookahead
+      case NonFatal(t) => new MetadataLookahead
   }
 
   def readTrialMessage(line: String): TrialMessage = try {
     Option(read[TrialMessage](line))
       .getOrElse(new TrialMessage(new CommonMsg))
   } catch {
-      case t: Throwable => new TrialMessage(new CommonMsg)
+      case NonFatal(t) => new TrialMessage(new CommonMsg)
   }
 
   /** True if the iterator contains any DialogAgent metadata.
@@ -136,9 +139,9 @@ class DialogAgentReprocess (
       Option(read[MetadataLookahead](line)).getOrElse(new MetadataLookahead)
     lookahead.topic match {
       case `topicPubDialogAgent` => processDialogAgentMetadata(line, fileWriter)
-// FIXME      case `topicSubTrial` => processTrialMetadata(line, fileWriter)
+      case `topicSubTrial` => processTrialMetadata(line, fileWriter)
       case _ => 
-//  FIXME       fileWriter.write(s"$line\n")
+        fileWriter.write(s"$line\n")
         true
     }
   }
@@ -167,13 +170,12 @@ class DialogAgentReprocess (
       }
       true
     } catch {
-        case t: Throwable => 
-          logger.error(s"Error parsing TrialMessage from JSON: ${line}\n")
-          logger.error(t.toString)
-          false
+      case NonFatal(t) => 
+        logger.error(s"Error parsing TrialMessage from JSON: ${line}\n")
+        logger.error(t.toString)
+        false
     }
   }
-
 
   /** reprocess the data.text of DialogAgentMessage JSON input, copy all else.
    * @param line JSON representation of one DialogAgentMessage struct
@@ -185,55 +187,69 @@ class DialogAgentReprocess (
     fileWriter: PrintWriter
   ): Boolean = {
 
-    val metadata: Option[JValue] = getMetadata(line)
-
     // FIXME with an idiomatic solution
+    val metadata: Option[JValue] = getMetadata(line)
     if(metadata.isDefined) {
-      val data = getData(metadata.head)
+      val data = findField(metadata.head, "data")
       if (data.isDefined) {
-        val newMetadata = reprocessMetadata(metadata.head, data.head)
-
-        val output = writeJson(newMetadata)
-        fileWriter.write(s"${output}\n")
-        true
+        val text = findField(data.head, "text")
+        if(text.isDefined) {
+          val newExtractions = getExtractions(text.head.toString)
+          if(newExtractions.isDefined) {
+            val newMetadata = metadata.head.replace(
+              "data"::"extractions"::Nil, 
+              newExtractions.head
+            )
+            val output = writeJson(newMetadata)
+            fileWriter.write(s"${output}\n")
+            true
+          } else false
+        } else false
       } else false
     } else false
   }
 
-  def reprocessMetadata(metadata: JValue, data: JValue): JValue = {
-    val extractions = JString("EXTRACTIONS")
-    val newMetadata = metadata.replace("data"::"extractions"::Nil, extractions)
-    newMetadata
+  /** Return the JSON AST value of a DialogAgentMessageDataExtraction array
+   * @param text Get the extractions found in this text
+   */
+  def getExtractions(text: String): Option[JValue] = {
+    val extract = extractions(text)  // case class array
+    val json = write(extract)   // JSON string
+    try Some(JsonMethods.parse(json)) // JValue
+    catch {
+      case NonFatal(t) => None
+    }
   }
 
+  /** Return the value of the first field found in the jvalue matching the key
+   * @param jvalue The value with key-value fields to search
+   * @param key The key for the value to return
+   * @returns The value found for the key, else None
+   */
+  def findField(jvalue: JValue, key: String): Option[JValue] = {
 
-  // find the data substructure within the metadata. 
-  def getData(metadata: JValue): Option[JValue] = {
-
-    val dataFieldOpt: Option[JField] = metadata.findField{
-      case (n,v) => n == "data"
+    val fieldOpt: Option[JField] = jvalue.findField{
+      case (n,v) => n == key
     }
 
     // FIXME with an idiomatic solution
-    if(dataFieldOpt.isEmpty) {
-      logger.error("Could not find data field in metadata JValue")
+    if(fieldOpt.isDefined) {
+      Some(fieldOpt.head._2)
+    } else {
+      logger.error(s"Could not find '${key}' field in JValue")
       None
-    } else Some(dataFieldOpt.head._2)
+    } 
   }
-
 
   // parse the metadata text into AST to fix nonstandard JSON issues
   def getMetadata(line: String): Option[JValue] = try {
     Some(JsonMethods.parse(s""" ${line} """))
   } catch {
-    case t: Throwable => 
+    case NonFatal(t) => 
       logger.error(s"Error parsing metadata AST from input string: ${line}\n")
       logger.error(t.toString)
       None
   }
-
-
-
 
   /** If the fileName has a TA3 version number, increment by 1.
    * @param inputFileName fileName that may have a TA3 version number
