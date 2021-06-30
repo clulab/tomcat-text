@@ -134,14 +134,6 @@ class DialogAgent (val nMatches: Int = 0) {
       extractions(text)
     )
   
-
-
-  def extractions(text: String): Seq[DialogAgentMessageDataExtraction] = {
-    val mentions = extractMentions(text)
-     mentions.map(extraction)
-  }
-
-
   /** map the mention label to the taxonomy map, the mappings are static
    * and computed ahead of time and stored sorted // FIXME: is this true?.
    * @param mentionLabel For taxonomy mapping
@@ -153,7 +145,13 @@ class DialogAgent (val nMatches: Int = 0) {
       val seq = matches.map(x => (x("term") -> x("score"))).toSeq
       seq.take(nMatches)
     }
-  
+
+  /** Return an array of all extractions found in the input text
+   *  @param text Speech to analyze
+   */
+  def extractions(text: String): Seq[DialogAgentMessageDataExtraction] = 
+    extractMentions(text).map(extraction)
+
   /** Create a DialogAgent extraction from Extractor data 
    *  @param mention Contains text to analyze
    */
