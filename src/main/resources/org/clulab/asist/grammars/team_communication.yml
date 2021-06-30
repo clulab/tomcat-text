@@ -61,7 +61,17 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
       agent: Entity? = >/(${agents})/
-      target: Role? = >/nmod_to|xcomp/
+      target: Role = >/nmod_to|xcomp/
+
+  - name: role_declare
+    priority: ${ rulepriority }
+    label: RoleDeclare
+    example: "I am an engineer"
+    action: removeResearcher
+    pattern: |
+      trigger = [lemma=/(?i)^be/]
+      target: Role = <cop
+      agent: Entity = <cop >/(${agents})/
 
   - name: role_switch_change_to
     priority: ${ rulepriority }
