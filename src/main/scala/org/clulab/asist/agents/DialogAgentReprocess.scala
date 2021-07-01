@@ -9,7 +9,7 @@ import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
 import org.json4s._
 import org.json4s.jackson.Serialization.{read,write}
-import org.json4s.jackson.JsonMethods
+import org.json4s.jackson.JsonMethods.{mapper, parse, pretty}
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -99,7 +99,6 @@ class DialogAgentReprocess (
     val outputFileName = ta3FileName(inputFileName)
     logger.info(s"$inputFileName => $outputFileName")
     val fileWriter = new PrintWriter(new File(outputFileName))
-    val bufferedSource = Source.fromFile(inputFileName)
     val iterator = LocalFileUtils.lineIterator(inputFileName)
     val ret = processLines(iterator, fileWriter, true)
     fileWriter.close
@@ -138,7 +137,10 @@ class DialogAgentReprocess (
     val lookahead = 
       Option(read[MetadataLookahead](line)).getOrElse(new MetadataLookahead)
     lookahead.topic match {
-      case `topicPubDialogAgent` => processDialogAgentMetadata(line, fileWriter)
+      case `topicPubDialogAgent` => 
+        val ret = processDialogAgentMetadata(line, fileWriter)
+        if(!ret)fileWriter.write(s"$line\n") // if can't process, just copy existing
+        ret
       case `topicSubTrial` => processTrialMetadata(line, fileWriter)
       case _ => 
         fileWriter.write(s"$line\n")
@@ -187,27 +189,38 @@ class DialogAgentReprocess (
     fileWriter: PrintWriter
   ): Boolean = {
 
+
     // FIXME with an idiomatic solution
-    val metadata: Option[JValue] = getMetadata(line)
+    val metadata: Option[JValue] = getMetadataOpt(line)
     if(metadata.isDefined) {
-      val data = findField(metadata.head, "data")
-      if (data.isDefined) {
-        val text = findField(data.head, "text")
-        if(text.isDefined) {
-          val newExtractions = getExtractions(text.head.toString)
-          if(newExtractions.isDefined) {
-            val newMetadata = metadata.head.replace(
-              "data"::"extractions"::Nil, 
-              newExtractions.head
-            )
-            val output = writeJson(newMetadata)
-            fileWriter.write(s"${output}\n")
-            true
-          } else false
+      val text = getDataText(line)
+      if(text.isDefined) {
+        val newExtractions = getExtractions(text.head.toString)
+        if(newExtractions.isDefined) {
+          val newMetadata = metadata.head.replace(
+            "data"::"extractions"::Nil, 
+            newExtractions.head
+          )
+          val output = writeJson(newMetadata)
+          fileWriter.write(s"${output}\n")
+          true
         } else false
       } else false
     } else false
   }
+
+
+  def getDataText(line: String): Option[String] = 
+    try {
+      val md = read[MetadataDataText](line)
+      Some(md.data.text)
+    } catch {
+      case NonFatal(t) => 
+        logger.error(s"Could not read data.text from ${line}")
+        logger.error(t.toString)
+        None
+    }
+
 
   /** Return the JSON AST value of a DialogAgentMessageDataExtraction array
    * @param text Get the extractions found in this text
@@ -215,7 +228,7 @@ class DialogAgentReprocess (
   def getExtractions(text: String): Option[JValue] = {
     val extract = extractions(text)  // case class array
     val json = write(extract)   // JSON string
-    try Some(JsonMethods.parse(json)) // JValue
+    try Some(parse(json)) // JValue
     catch {
       case NonFatal(t) => None
     }
@@ -226,7 +239,7 @@ class DialogAgentReprocess (
    * @param key The key for the value to return
    * @returns The value found for the key, else None
    */
-  def findField(jvalue: JValue, key: String): Option[JValue] = {
+  def findFieldOpt(jvalue: JValue, key: String): Option[JValue] = {
 
     val fieldOpt: Option[JField] = jvalue.findField{
       case (n,v) => n == key
@@ -236,20 +249,24 @@ class DialogAgentReprocess (
     if(fieldOpt.isDefined) {
       Some(fieldOpt.head._2)
     } else {
-      logger.error(s"Could not find '${key}' field in JValue")
+      val json = write(jvalue)
+      val json2 = write(parse(s""" ${json} """))
+      logger.error(s"Could not find '${key}' field in ${json2}")
       None
     } 
   }
 
   // parse the metadata text into AST to fix nonstandard JSON issues
-  def getMetadata(line: String): Option[JValue] = try {
-    Some(JsonMethods.parse(s""" ${line} """))
+  def getMetadataOpt(line: String): Option[JValue] = try {
+    Some(parse(s""" ${line} """))
   } catch {
     case NonFatal(t) => 
       logger.error(s"Error parsing metadata AST from input string: ${line}\n")
       logger.error(t.toString)
       None
   }
+
+
 
   /** If the fileName has a TA3 version number, increment by 1.
    * @param inputFileName fileName that may have a TA3 version number

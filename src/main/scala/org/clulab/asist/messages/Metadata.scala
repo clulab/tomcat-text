@@ -46,3 +46,11 @@ case class Metadata(
   data: MetadataData,
   msg: MetadataMsg
 )
+
+case class MetadataText(
+  text: String = ""
+)
+
+case class MetadataDataText(
+  data: MetadataText
+)
