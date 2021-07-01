@@ -13,15 +13,6 @@ import org.json4s.jackson.Serialization.read
  *  as file output or on the message bus
  */
 
-/** Part of the DialogAgentMessage class */
-case class DialogAgentMessageData(
-  participant_id: String = null,
-  asr_msg_id: String = null,
-  text: String = null,
-  source: DialogAgentMessageDataSource,
-  extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
-)
-
 /** Part of the DialogAgentMessageData class */
 case class DialogAgentMessageDataSource(
   source_type: String = null,
@@ -36,6 +27,15 @@ case class DialogAgentMessageDataExtraction(
   start_offset: Int = 0,
   end_offset: Int = 0,
   taxonomy_matches: Seq[(String, String)] = Seq.empty
+)
+
+/** Part of the DialogAgentMessage class */
+case class DialogAgentMessageData(
+  participant_id: String = null,
+  asr_msg_id: String = null,
+  text: String = null,
+  source: DialogAgentMessageDataSource,
+  extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
 )
 
 /** Contains the full analysis data of one chat message */
