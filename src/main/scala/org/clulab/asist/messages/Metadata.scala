@@ -54,3 +54,12 @@ case class MetadataText(
 case class MetadataDataText(
   data: MetadataText
 )
+
+
+// used to read a metadata error
+case class MetadataErrorData(
+  data: Any
+)
+case class MetadataError(
+  error: MetadataErrorData
+)

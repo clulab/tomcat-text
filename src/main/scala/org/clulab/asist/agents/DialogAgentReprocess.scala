@@ -35,6 +35,12 @@ import scala.util.control.NonFatal
  * in the output directory should end with Vers-<N+1>.metadata (instead of
  * preserving the original fileName). This is to comply with the TA3 file
  * naming scheme.
+ *
+ * TODO Test if incuding the data.text field in the lookahead saves time.
+ *
+ * TODO Instead of returning boolean return a struct that counts the number
+ *      of DialogAgent metadata items as well as the total number of all
+ *      metadata items.
  */
 class DialogAgentReprocess (
   val inputDirName: String,
@@ -133,8 +139,8 @@ class DialogAgentReprocess (
     val all = ret.length
     val passes = ret.filter(a => a).length
     val errors = all - passes
-    logger.info(s"  Metatadata found:   ${all}")
-    logger.info(s"  Errors encountered: ${errors}")
+    logger.info(s"  Metatadata lines found: ${all}")
+    logger.info(s"  Errors encountered:     ${errors}")
 
     fileWriter.close
     ret
@@ -237,22 +243,31 @@ class DialogAgentReprocess (
     }
   }
 
-
-// Some metadata with DialogAgent topic are not DialogAgent data
+  /** Process non-DialogAgent metadata that have the DialogAgent topic
+   * @param line JSON representation of metadata
+   * @param fileWriter Writes to the output file
+   * @returns true if the line was processed successfully
+   */
   def processDialogAgentOtherMetadata(
     line: String,
     fileWriter: PrintWriter
-  ): Boolean = {
-
+  ): Boolean = try {
     // try to read it as an error
-
+    val mde = read[MetadataError](line)
+    val error = mde.error
+    val data = error.data
     true
+  } catch {
+    case NonFatal(t) => 
+      fileWriter.write(line)
+      logger.error(s"Could not parse DialogAgent report from metadata error")
+      false
   }
 
 
-  /** 
+  /** Get the DialogAgentMessage.data.text value
    *  @param line a JSON metadata line
-   *  @returns The text value in the data case class of DialogAgent metadata
+   *  @returns The 'text' value in the 'data' struct of DialogAgent metadata
    */
   def getDialogAgentDataText(line: String): String = 
     try {
@@ -264,7 +279,6 @@ class DialogAgentReprocess (
         logger.error(t.toString)
         ""
     }
-
 
 
   /** Return the JSON AST value of a DialogAgentMessageDataExtraction array
@@ -290,7 +304,6 @@ class DialogAgentReprocess (
       case (n,v) => n == key
     }
 
-    // FIXME with an idiomatic solution
     if(fieldOpt.isDefined) {
       Some(fieldOpt.head._2)
     } else {
