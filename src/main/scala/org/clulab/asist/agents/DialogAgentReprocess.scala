@@ -235,10 +235,10 @@ class DialogAgentReprocess (
         true  // DialogAgent metadata successfully reprocessed
       } else {
         // dialog agent metadata but no text, 
-        processDialogAgentOtherMetadata(line, fileWriter)
+        processDialogAgentErrorMetadata(line, fileWriter)
       }
     } else {  
-      fileWriter.write(line)
+      fileWriter.write(s"${line}\n")
       false // Not being able to parse the metadata is an error
     }
   }
@@ -248,19 +248,46 @@ class DialogAgentReprocess (
    * @param fileWriter Writes to the output file
    * @returns true if the line was processed successfully
    */
-  def processDialogAgentOtherMetadata(
+  def processDialogAgentErrorMetadata(
     line: String,
     fileWriter: PrintWriter
   ): Boolean = try {
-    // try to read it as an error
-    val mde = read[MetadataError](line)
-    val error = mde.error
-    val data = error.data
-    true
+
+    // compose new data using existing fields and new extractions
+    val mde = read[ErrorMetadata](line)
+    val errorData = read[ErrorData](mde.error.data)
+    val data = new DialogAgentMessageData(
+      participant_id = errorData.participant_id,
+      asr_msg_id = errorData.asr_msg_id,
+      text = errorData.text,
+      source = errorData.source,
+      extractions = extractions(errorData.text)
+    )
+    val dataJson = write(data)
+    val dataJValue = parse(dataJson)
+
+    // replace the "error" field from the metadata with the new "data" field
+    val metadata: Option[JValue] = getMetadataOpt(line)
+    if(metadata.isDefined) {
+      val newMetadata = metadata.head.transformField {
+        case ("error", _) => ("data", dataJValue)
+      }
+
+      val newMetadataJson = writeJson(newMetadata)
+
+      logger.info(s"RECOVERING ERROR JSON:")
+      logger.info(s"ORIGINAL:  ${line}")
+      logger.info(s"RECOVERED: ${newMetadataJson}")
+
+      fileWriter.write(s"${newMetadataJson}\n")
+      true
+    }
+    fileWriter.write(line)
+    false
   } catch {
     case NonFatal(t) => 
       fileWriter.write(line)
-      logger.error(s"Could not parse DialogAgent report from metadata error")
+      logger.error(s"Could not parse DialogAgent Error from metadata error JSON")
       false
   }
 

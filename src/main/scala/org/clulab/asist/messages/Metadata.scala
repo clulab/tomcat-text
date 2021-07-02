@@ -55,11 +55,21 @@ case class MetadataDataText(
   data: MetadataText
 )
 
+case class ErrorData(
+  participant_id: String = null,
+  asr_msg_id: String = null,
+  text: String = null,
+  source: DialogAgentMessageDataSource
+)
 
-// used to read a metadata error
-case class MetadataErrorData(
-  data: Any
+
+// used to read a metadata error with DialogAgentMessage data
+case class Error(
+  data: String
 )
-case class MetadataError(
-  error: MetadataErrorData
+case class ErrorMetadata(
+  host: String,
+  msg: CommonMsg,
+  error: Error
 )
+
