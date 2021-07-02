@@ -81,6 +81,7 @@
       - Engineer
     - Victim:
         - Yellow
+        - CriticalVictim
     - Friend
     - Foe
     - Player:

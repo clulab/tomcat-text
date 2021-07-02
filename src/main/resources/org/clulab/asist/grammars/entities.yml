@@ -16,6 +16,15 @@ rules:
     pattern: |
       [lemma=/(?i)(${ victim_triggers })/]
 
+  - name: critical_victim
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
+
+
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
       name: rubble
