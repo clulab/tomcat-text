@@ -18,7 +18,24 @@ rules:
     keep: true
     pattern: |
       /${room_singleword_surface_regex}/ |
-      /${room_twoword_first_word_regex}/ room
+      /(?i)${room_twoword_first_word_regex}/ [tag=/POS/]? /(?i)${room_twoword_second_word_regex}/
+
+  - name: storage_room_numb
+    priority: ${ first_priority }
+    label: Infrastructure
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)storage/] [word=/(?i)room/]? /(?i)^[A-Z]/
+
+
+  - name: room_numbered
+    priority: ${ first_priority }
+    label: Infrastructure
+    keep: true
+    pattern: |
+      trigger = [lemma=/(?i)^room/]
+      number: Number = >/nummod/
 
   - name: north
     priority: ${ first_priority }

@@ -8,12 +8,12 @@ rules:
   # Extract the entities
   - import: org/clulab/asist/grammars/entities.yml
     vars:
-      rulepriority: "1"
+      rulepriority: "1+"
 
   # Extract the items
   - import: org/clulab/asist/grammars/items.yml
     vars:
-      rulepriority: "1"
+      rulepriority: "1+"
 
   # Extract the sentiments
   - import: org/clulab/asist/grammars/sentiments.yml
