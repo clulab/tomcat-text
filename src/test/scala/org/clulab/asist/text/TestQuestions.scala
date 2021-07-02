@@ -69,6 +69,24 @@ class TestQuestions extends BaseTest {
     testMention(mentions, q3)
   }
 
+  it should "handle Yes_No questions" in {
+    // information_gathering_question_that
+    // information_gathering_question_clarification
+    val text =
+    "Do you see any rubble? " +
+      "Can you save this guy? "
+    val mentions = extractor.extractFromText(text)
+    val you = DesiredMention("You", "you")
+    val rubble = DesiredMention("Rubble", "rubble")
+    val person = DesiredMention("Person", "guy")
+    val see = DesiredMention("Sight", "you see any rubble", Map("target" -> Seq(rubble), "agent" -> Seq(you)))
+    val save = DesiredMention("Save", "save this guy", Map("target" -> Seq(person)))
+    val q1 = DesiredMention("YesNoQuestion", "Do you see any rubble?", Map("topic" -> Seq(see)))
+    val q2 = DesiredMention("YesNoQuestion", "Can you save this guy", Map("topic" -> Seq(save)))
+    testMention(mentions, q1)
+    testMention(mentions, q2)
+  }
+
 //  it should "handle verb phrase topics"
 
 }

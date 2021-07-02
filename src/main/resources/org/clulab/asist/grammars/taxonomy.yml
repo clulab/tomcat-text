@@ -47,7 +47,7 @@
           - Question:
             - QuestionParticle
             - LocationQuestion
-            - ModalQuestion
+            - YesNoQuestion
           - Agreement
           - Disagreement
         - Clear
