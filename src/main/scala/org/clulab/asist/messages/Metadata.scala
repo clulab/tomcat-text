@@ -36,21 +36,21 @@ case class MetadataMsg (
   replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
 )
 
-// If we recognize the topic we will process the message.
-case class MetadataLookahead(
-  topic: String = ""
-)
-
 // 
 case class Metadata(
   data: MetadataData,
   msg: MetadataMsg
 )
 
+// If we recognize the topic we will process the message.
+case class MetadataLookahead(
+  topic: String = ""
+)
+
+// used to get just the text out of the DialogAgent metadata 
 case class MetadataText(
   text: String = ""
 )
-
 case class MetadataDataText(
   data: MetadataText
 )
