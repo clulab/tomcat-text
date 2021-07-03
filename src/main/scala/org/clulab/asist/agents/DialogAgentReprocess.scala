@@ -176,7 +176,7 @@ class DialogAgentReprocess (
     line: String,
     fileWriter: PrintWriter
   ): Boolean = readMetadataLookahead(line).topic match {
-    case `topicPubDialogAgent` => coordinateDialogAgentMetadata(line, fileWriter)
+    case `topicPubDialogAgent` => processDialogAgentMetadata(line, fileWriter)
     case `topicSubTrial` => processTrialMetadata(line, fileWriter)
     case _ => 
       fileWriter.write(s"$line\n")
@@ -193,7 +193,7 @@ class DialogAgentReprocess (
     fileWriter: PrintWriter
   ): Boolean = {
 
-    // Copy the input trial message string to the output file in all cases
+    // Copy the input trial message string to the the output first.
     fileWriter.write(s"${line}\n")
 
     // If this is the start of a trial, follow with a VersionInfo message 
@@ -205,7 +205,7 @@ class DialogAgentReprocess (
         val json = writeJson(VersionInfo(this, timestamp))
         fileWriter.write(s"${json}\n")
       }
-      true
+      true  
     } catch {
       case NonFatal(t) => 
         logger.error(s"processTrialMetadata: Error parsing TrialMessage from: ${line}\n")
@@ -214,16 +214,15 @@ class DialogAgentReprocess (
     }
   }
 
-  /** reprocess DialogAgent metadata if possible, else copy existing metadata
+  /** There are two types of metadata with the DialogAgent topic
    * @param line JSON representation of one DialogAgentMessage struct
    * @param fileWriter Writes to the output file
    * @returns true if the line was processed successfully
    */
-  def coordinateDialogAgentMetadata(
+  def processDialogAgentMetadata(
     line: String,
     fileWriter: PrintWriter
   ): Boolean = {
-    logger.info("coordinateDialogAgentMetadata")
     // parse the metadata text into AST to fix nonstandard JSON issues
     val metadataOpt: Option[JValue] = getMetadataOpt(line)
     if(metadataOpt.isDefined) {
@@ -234,13 +233,28 @@ class DialogAgentReprocess (
         case (n: String, v: JObject) => n == "data"
         case _ => false
       }
-      if(dataFieldOpt.isDefined) 
-        processDialogAgentMetadata(
-          line, 
-          fileWriter, 
-          metadata,
-          dataFieldOpt.head._2
-        )
+      if(dataFieldOpt.isDefined) {
+        val textFieldOpt: Option[JField] = dataFieldOpt.head._2.findField {
+          case (n: String, v: JValue) => n == "text"
+          case _ => false
+        }
+        // replace the data.extractions with the new ones
+        // TODO this is where slowness is happening.  Fix.
+        if(textFieldOpt.isDefined) {
+          val text = Option(textFieldOpt.head._2).getOrElse("").toString
+          val newExtractions = extractions(text)
+          val newMetadata = metadata.replace(
+            "data"::"extractions"::Nil, 
+            parse(writeJson(newExtractions)) // convert struct to json to JValue
+          )
+          fileWriter.write(s"${writeJson(newMetadata)}\n")// and JValue back to json
+          true
+        } else {
+          logger.error(s"processDialogAgentMetadata: could not parse ${line}")
+          fileWriter.write(s"${line}\n")
+          false // Not being able to find the text field in the data is an error
+        }
+      }
 
       // If we have an error field, it's an error report
       else {
@@ -248,106 +262,36 @@ class DialogAgentReprocess (
           case (n: String, v: JObject) => n == "error"
           case _ => false
         }
-        if(errorFieldOpt.isDefined) 
-          processDialogAgentErrorMetadata(
-            line, 
-            fileWriter, 
-            metadata,
-            errorFieldOpt.head._2
-          )
+        // compose new data struct using existing fields and new extractions
+        val mde = read[ErrorMetadata](line)
+        val errorData = read[ErrorData](mde.error.data)
+        val data = new DialogAgentMessageData(
+          participant_id = errorData.participant_id,
+          asr_msg_id = errorData.asr_msg_id,
+          text = errorData.text,
+          source = errorData.source,
+          extractions = extractions(Option(errorData.text).getOrElse(""))
+        )
+        val dataJson = write(data)
+        val dataJValue = parse(dataJson)
 
-        else {
-          // if we don't have either of those, I'm out of ideas
-          logger.error(s"coordinateDialogAgentMetadata (1): Could not parse ${line}")
-          fileWriter.write(s"${line}\n")
-          false // Not being able to parse the metadata is an error
+        // substitute the new data struct for the error struct
+        val newMetadata = metadata.transformField {
+          case ("error", _) => ("data", dataJValue)
         }
+        val newMetadataJson = writeJson(newMetadata)
+        logger.info(s"RECOVERING ERROR JSON:")
+        logger.info(s"ORIGINAL:  ${line}")
+        logger.info(s"RECOVERED: ${newMetadataJson}")
+        fileWriter.write(s"${newMetadataJson}\n")
+        true
       }
     } else {  
-      logger.error(s"coordinateDialogAgentMetadata (2): Could not parse ${line}")
+      logger.error(s"processDialogAgentMetadata (data): Could not parse ${line}")
       fileWriter.write(s"${line}\n")
       false // Not being able to parse the metadata is an error
     }
   }
-
-  def processDialogAgentMetadata(
-    line: String,
-    fileWriter: PrintWriter,
-    metadata: JValue,
-    data: JValue
-  ): Boolean = {
-    logger.info("coordinateDialogAgentMetadata")
-
-    val textFieldOpt: Option[JField] = data.findField {
-      case (n: String, v: JValue) => n == "text"
-      case _ => false
-    }
-    if(textFieldOpt.isDefined) {
-      val text = Option(textFieldOpt.head._2).getOrElse("").toString
-      val newExtractions = extractions(text)
-      val newMetadata = metadata.replace(
-        "data"::"extractions"::Nil, 
-        parse(writeJson(newExtractions)) // convert struct to json to JValue
-      )
-      fileWriter.write(s"${writeJson(newMetadata)}\n")
-      true
-    } else {
-      logger.error(s"processDialogAgentMetadata: could not parse ${line}")
-      fileWriter.write(s"${line}\n")
-      false // Not being able to find the text field in the data is an error
-    }
-  }
-
-  /** Process metadata reporting DialogAgent errors 
-   * @param line JSON representation of metadata
-   * @param fileWriter Writes to the output file
-   * @returns true if the line was processed successfully
-   */
-  def processDialogAgentErrorMetadata(
-    line: String,
-    fileWriter: PrintWriter,
-    metadata: JValue,
-    errorData: JValue
-  ): Boolean = try {
-
-    // compose new data using existing fields and new extractions
-    val mde = read[ErrorMetadata](line)
-    val errorData = read[ErrorData](mde.error.data)
-    val data = new DialogAgentMessageData(
-      participant_id = errorData.participant_id,
-      asr_msg_id = errorData.asr_msg_id,
-      text = errorData.text,
-      source = errorData.source,
-      extractions = extractions(Option(errorData.text).getOrElse(""))
-    )
-    val dataJson = write(data)
-    val dataJValue = parse(dataJson)
-
-    // replace the "error" field from the metadata with the new "data" field
-    val metadata: Option[JValue] = getMetadataOpt(line)
-    if(metadata.isDefined) {
-      val newMetadata = metadata.head.transformField {
-        case ("error", _) => ("data", dataJValue)
-      }
-      val newMetadataJson = writeJson(newMetadata)
-      logger.info(s"RECOVERING ERROR JSON:")
-      logger.info(s"ORIGINAL:  ${line}")
-      logger.info(s"RECOVERED: ${newMetadataJson}")
-      fileWriter.write(s"${newMetadataJson}\n")
-      true
-    }
-    else {
-      fileWriter.write(line)
-      logger.error(s"processDialogAgentErrorMetadata: Could not parse ${line}")
-      false
-    }
-  } catch {
-    case NonFatal(t) => 
-      fileWriter.write(line)
-      logger.error(s"processDialogAgentErrorMetadata: No ErrorMetadata in ${line}")
-      false
-  }
-
 
   /** Get the DialogAgentMessage.data.text value
    *  @param line a JSON metadata line
