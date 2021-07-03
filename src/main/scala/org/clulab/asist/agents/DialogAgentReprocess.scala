@@ -52,16 +52,18 @@ class DialogAgentReprocess (
     .filter(a => a.endsWith(".metadata"))
     .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a)))
 
+  val nFiles = fileNames.length
+
   val reprocessingStartTime = Clock.systemUTC.millis
   // Only create the output directory if DialogAgent metadata exists
-  if(fileNames.length > 0) {  
+  if(nFiles > 0) {  
 
     // give the user a heads up as to how much data will be run
-    val totalExpectedLines = fileNames.map(n =>
+    val totalInputLines = fileNames.map(n =>
       LocalFileUtils.lineIterator(n).length).sum
 
-    logger.info(s"Files to be processed: ${fileNames.length}")
-    logger.info(s"Lines to be processed: ${totalExpectedLines}")
+    logger.info(s"Files to be processed: ${nFiles}")
+    logger.info(s"Lines to be processed: ${totalInputLines}")
 
     // make sure the output directory is available
     if(LocalFileUtils.ensureDir(outputDirName)) { 
@@ -74,12 +76,19 @@ class DialogAgentReprocess (
       val runSecs = (stopTime-startTime)/1000.0
       val prepSecs = (reprocessingStartTime-startTime)/1000.0
       val compSecs = runSecs - prepSecs
-      logger.info("Total metadata lines:      %d".format(totalLines))
-      logger.info("Time to DialogAgent files: %.1f s".format(prepSecs))
-      logger.info("Time to reprocess lines:   %.1f s".format(compSecs))
+      logger.info("\nMETADATA REPROCESSING COMPLETE:")
+      logger.info("Input directory:     %s".format(inputDirName))
+      logger.info("Output directory:    %s".format(inputDirName))
+      logger.info("Files reprocessed    %d".format(nFiles))
+      logger.info("Input line count     %d".format(totalInputLines))
+      logger.info("Output line count    %d".format(totalLines))
+      logger.info("Time to find files:  %.1f minutes".format(prepSecs/60.0))
+      logger.info("Time to reprocess:   %.1f minutes".format(compSecs/60.0))
 
-      if(totalLines == totalExpectedLines) 
+      if(totalLines == totalInputLines) 
         logger.info("All metadata lines were reprocessed successfully")
+      else
+        logger.error("Problems were encounterd during reprocessing, see logs")
     }
   } else 
     logger.error("No files containing DialogAgent metadata were found")
@@ -129,7 +138,7 @@ class DialogAgentReprocess (
     val iterator = LocalFileUtils.lineIterator(inputFileName)
     val outputLines = processLines(iterator, List()).reverse
     val length = outputLines.length
-    logger.info(s"Lines processed: ${length}")
+    logger.info(s"...lines processed: ${length}")
     // only write the output file if we have output
     if(length > 0) {
       val fileWriter = new PrintWriter(new File(outputFileName))
