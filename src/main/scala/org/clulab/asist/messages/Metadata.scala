@@ -62,6 +62,14 @@ case class ErrorData(
   source: DialogAgentMessageDataSource
 )
 
+// for reprocessing, no need to read complex extraction vector
+case class PartialData(
+  participant_id: String = null,
+  asr_msg_id: String = null,
+  text: String = null,
+  source: DialogAgentMessageDataSource
+)
+
 
 // used to read a metadata error with DialogAgentMessage data
 case class Error(

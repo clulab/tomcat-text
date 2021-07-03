@@ -176,7 +176,7 @@ class DialogAgentReprocess (
     line: String,
     fileWriter: PrintWriter
   ): Boolean = readMetadataLookahead(line).topic match {
-    case `topicPubDialogAgent` => processDialogAgentMetadata(line, fileWriter)
+    case `topicPubDialogAgent` => coordinateDialogAgentMetadata(line, fileWriter)
     case `topicSubTrial` => processTrialMetadata(line, fileWriter)
     case _ => 
       fileWriter.write(s"$line\n")
@@ -219,49 +219,95 @@ class DialogAgentReprocess (
    * @param fileWriter Writes to the output file
    * @returns true if the line was processed successfully
    */
-  def processDialogAgentMetadata(
+  def coordinateDialogAgentMetadata(
     line: String,
     fileWriter: PrintWriter
   ): Boolean = {
+    logger.info("coordinateDialogAgentMetadata")
     // parse the metadata text into AST to fix nonstandard JSON issues
     val metadataOpt: Option[JValue] = getMetadataOpt(line)
     if(metadataOpt.isDefined) {
-
       val metadata = metadataOpt.head
-      val children = metadata.children
 
-      children.foreach(child => logger.info(child.toString))
-
-
-      // look for a data object
-      val text = getDialogAgentDataText(line)
-      if(text.length > 0){
-        val newExtractions = getExtractions(text.head.toString)
-        val newMetadata = metadata.replace(
-          "data"::"extractions"::Nil, 
-          newExtractions.head
+      // if we have a data field, its DialogAgent metadata
+      val dataFieldOpt: Option[JField] = metadata.findField {
+        case (n: String, v: JObject) => n == "data"
+        case _ => false
+      }
+      if(dataFieldOpt.isDefined) 
+        processDialogAgentMetadata(
+          line, 
+          fileWriter, 
+          metadata,
+          dataFieldOpt.head._2
         )
-        fileWriter.write(s"${writeJson(newMetadata)}\n")
-        true  // DialogAgent metadata successfully reprocessed
-      } else {
-        // dialog agent metadata but no text, could be an error report...
-        processDialogAgentErrorMetadata(line, fileWriter)
+
+      // If we have an error field, it's an error report
+      else {
+        val errorFieldOpt = metadata.findField {
+          case (n: String, v: JObject) => n == "error"
+          case _ => false
+        }
+        if(errorFieldOpt.isDefined) 
+          processDialogAgentErrorMetadata(
+            line, 
+            fileWriter, 
+            metadata,
+            errorFieldOpt.head._2
+          )
+
+        else {
+          // if we don't have either of those, I'm out of ideas
+          logger.error(s"coordinateDialogAgentMetadata (1): Could not parse ${line}")
+          fileWriter.write(s"${line}\n")
+          false // Not being able to parse the metadata is an error
+        }
       }
     } else {  
-      logger.error(s"processDialogAgentMetadata: Could not parse ${line}")
+      logger.error(s"coordinateDialogAgentMetadata (2): Could not parse ${line}")
       fileWriter.write(s"${line}\n")
       false // Not being able to parse the metadata is an error
     }
   }
 
-  /** Process non-DialogAgent metadata that have the DialogAgent topic
+  def processDialogAgentMetadata(
+    line: String,
+    fileWriter: PrintWriter,
+    metadata: JValue,
+    data: JValue
+  ): Boolean = {
+    logger.info("coordinateDialogAgentMetadata")
+
+    val textFieldOpt: Option[JField] = data.findField {
+      case (n: String, v: JValue) => n == "text"
+      case _ => false
+    }
+    if(textFieldOpt.isDefined) {
+      val text = Option(textFieldOpt.head._2).getOrElse("").toString
+      val newExtractions = extractions(text)
+      val newMetadata = metadata.replace(
+        "data"::"extractions"::Nil, 
+        parse(writeJson(newExtractions)) // convert struct to json to JValue
+      )
+      fileWriter.write(s"${writeJson(newMetadata)}\n")
+      true
+    } else {
+      logger.error(s"processDialogAgentMetadata: could not parse ${line}")
+      fileWriter.write(s"${line}\n")
+      false // Not being able to find the text field in the data is an error
+    }
+  }
+
+  /** Process metadata reporting DialogAgent errors 
    * @param line JSON representation of metadata
    * @param fileWriter Writes to the output file
    * @returns true if the line was processed successfully
    */
   def processDialogAgentErrorMetadata(
     line: String,
-    fileWriter: PrintWriter
+    fileWriter: PrintWriter,
+    metadata: JValue,
+    errorData: JValue
   ): Boolean = try {
 
     // compose new data using existing fields and new extractions
