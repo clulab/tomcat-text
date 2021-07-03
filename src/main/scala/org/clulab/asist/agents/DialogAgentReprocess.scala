@@ -250,7 +250,6 @@ class DialogAgentReprocess (
         )
         val dataJson = write(data)
         val dataJValue = parse(dataJson)
-
         // substitute the new data struct for the error struct
         val newMetadata = metadata.transformField {
           case ("error", _) => ("data", dataJValue)
@@ -259,11 +258,11 @@ class DialogAgentReprocess (
         logger.info(s"RECOVERING ERROR JSON:")
         logger.info(s"ORIGINAL:  ${line}")
         logger.info(s"RECOVERED: ${newMetadataJson}")
-        write(newMetadataJson)
+        newMetadataJson
       })
     }).flatten match {
       case reprocessed::Nil => reprocessed::result
-      case _ => {
+      case _ => {  // If neither DialogAgent data or error, report problem.
         logger.error(
           s"processDialogAgentErrorMetadata: Could not parse: ${line}\n"
         )
