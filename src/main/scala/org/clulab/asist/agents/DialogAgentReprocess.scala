@@ -36,11 +36,6 @@ import scala.util.control.NonFatal
  * preserving the original fileName). This is to comply with the TA3 file
  * naming scheme.
  *
- * TODO Test if incuding the data.text field in the lookahead saves time.
- *
- * TODO Instead of returning boolean return a struct that counts the number
- *      of DialogAgent metadata items as well as the total number of all
- *      metadata items.
  */
 class DialogAgentReprocess (
   val inputDirName: String,
@@ -131,7 +126,7 @@ class DialogAgentReprocess (
     // only write the output file if we have output
     if(lines.length > 0) {
       val fileWriter = new PrintWriter(new File(outputFileName))
-      lines.foreach(line => fileWriter.write(s"${line}\n"))
+      lines.reverse.foreach(line => fileWriter.write(s"${line}\n"))
       fileWriter.close
     }
     val stop = Clock.systemUTC.millis
@@ -195,7 +190,7 @@ class DialogAgentReprocess (
     line: String
   ): String = {
     // parse the metadata text into AST to fix nonstandard JSON issues
-    val list: List[String] = getMetadataOpt(line).toList.map(metadata => {
+    getMetadataOpt(line).toList.map(metadata => {
 
       // if we have a data field, its DialogAgent metadata
       metadata.findField {
@@ -214,9 +209,12 @@ class DialogAgentReprocess (
       })
 
 
-    }).flatten
+    }).flatten match {
+      case result::tail => result
+      case _ => line
+    }
 
-    "cat"
+    //TODO handle error case
   }
 
     /*
