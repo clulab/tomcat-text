@@ -36,6 +36,8 @@ import scala.util.control.NonFatal
  * preserving the original fileName). This is to comply with the TA3 file
  * naming scheme.
  *
+ * TODO:  Parallelize computation with actors
+ *
  */
 class DialogAgentReprocess (
   val inputDirName: String,
@@ -67,7 +69,11 @@ class DialogAgentReprocess (
     .filter(a => a.endsWith(".metadata"))
     .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a)))
   logger.info(s"DialogAgent metadata files to be processed: ${fileNames.length}")
-  fileNames.foreach(logger.info)
+
+  val totalExpectedLines = fileNames.map(n =>
+    LocalFileUtils.lineIterator(n).length).sum
+
+  logger.info(s"total expected lines to process: ${totalExpectedLines}")
 
 
   val reprocessingStartTime = Clock.systemUTC.millis
@@ -77,7 +83,12 @@ class DialogAgentReprocess (
     if(LocalFileUtils.ensureDir(outputDirName)) { 
       logger.info(s"Using output directory: $outputDirName")
       logger.info("Reprocessing...")
-      fileNames.map(processFile)
+      val totalLines = fileNames.map(processFile).sum
+      logger.info(s"Total metadata lines processed: ${totalLines}")
+
+      if(totalLines == totalExpectedLines) 
+        logger.info("All input lines were processed successfully")
+
     }
   } else 
     logger.error("No .metadata files containing DialogAgent data were found")
@@ -101,7 +112,6 @@ class DialogAgentReprocess (
   } catch {
     case NonFatal(t) => new MetadataLookahead
   }
-     
 
   /** Scan the line as a TrialMessage, return default struct if not readable
    *  @param line:  A single JSON line
@@ -117,29 +127,32 @@ class DialogAgentReprocess (
    * @param inputFileName The namee of the file to be processed
    * @returns a list of the parse results for each JSON line in the file
    */
-  def processFile(inputFileName: String): Unit = {
+  def processFile(inputFileName: String): Int = {
     logger.info(s"Processing ${inputFileName}...")
-    val start = Clock.systemUTC.millis
     val outputFileName = ta3FileName(inputFileName)
     val iterator = LocalFileUtils.lineIterator(inputFileName)
-    val lines = processLines(iterator, List())
+    val outputLines = processLines(iterator, List()).reverse
+    val length = outputLines.length
+    logger.info(s"Lines processed: ${length}")
     // only write the output file if we have output
-    if(lines.length > 0) {
+    if(length > 0) {
       val fileWriter = new PrintWriter(new File(outputFileName))
-      lines.reverse.foreach(line => fileWriter.write(s"${line}\n"))
+      outputLines.foreach(line => fileWriter.write(s"${line}\n"))
       fileWriter.close
     }
-    val stop = Clock.systemUTC.millis
-    val deltaSeconds = (stop-start)/1000.0
+    length
   }
 
+  /** Reprocess all the lines
+   * @param lines All the lines from an input file
+   * @returns A list of all the lines, reprocessed
+   */
   @tailrec
   private def processLines(
     lines: Iterator[String],
     result: List[String]
   ): List[String] = if(!lines.hasNext) result
     else processLines(lines, processLine(lines.next)::result)
-  
 
   /** Reprocess line if DialogAgent-related metadata, otherwise copy
    * @param line One metadata JSON line
@@ -172,7 +185,7 @@ class DialogAgentReprocess (
         val json = write(VersionInfo(this, timestamp))
         s"${line}\n${json}"  // original AND version info if trial start
       }
-      line  
+      else line  
     } catch {
       case NonFatal(t) => 
         logger.error(s"processTrialMetadata: Error parsing TrialMessage from: ${line}\n")
@@ -188,10 +201,9 @@ class DialogAgentReprocess (
    */
   def processDialogAgentMetadata(
     line: String
-  ): String = {
+  ): String = 
     // parse the metadata text into AST to fix nonstandard JSON issues
     getMetadataOpt(line).toList.map(metadata => {
-
       // if we have a data field, its DialogAgent metadata
       metadata.findField {
         case (n: String, data: JObject) => n == "data" 
@@ -208,42 +220,16 @@ class DialogAgentReprocess (
         write(newMetadata)
       })
 
-
     }).flatten match {
       case result::tail => result
-      case _ => line
+      case _ => processDialogAgentErrorMetadata(line)
     }
+  
 
-    //TODO handle error case
-  }
-
-    /*
-      val dataValue: List[JValue] = dataField.map(_._2)
-
-      val textField: List[JField] = dataValue.map(_.findField {
-          case (n: String, v: JValue) => n == "text"
-          case _ => false
-        }).flatten
-
-      val textValue: List[JValue] = textField.map(_._2)
-
-      val text: List[String] = textValue.map(value => {
-        val newExtractions = extractions(value)
-        val newMetadata = metadata.replace(
-          "data"::"extractions"::Nil, 
-          parse(write(newExtractions)) // convert struct to json to JValue
-        )
-        write(newMetadata)
-      })
-
-    }).flatten
-
-
-    line
-  }
-
-      ::
-
+  def processDialogAgentErrorMetadata(
+    line: String
+  ): String =  {
+    getMetadataOpt(line).toList.map(metadata => {
       // If we have an error field, it's an error report
       metadata.findField {
         case (n: String, v: JObject) => n == "error"
@@ -272,39 +258,9 @@ class DialogAgentReprocess (
         logger.info(s"RECOVERED: ${newMetadataJson}")
         write(newMetadataJson)
       })
-    })
-
-    } else {  
-      logger.error(s"processDialogAgentMetadata (data): Could not parse ${line}")
-      fileWriter.write(s"${line}\n")
-      false // Not being able to parse the metadata is an error
-    }
-     */
-
-  /** Get the DialogAgentMessage.data.text value
-   *  @param line a JSON metadata line
-   *  @returns The 'text' value in the 'data' struct of DialogAgent metadata
-   */
-  def getDialogAgentDataText(line: String): String = 
-    try {
-      val mdt = read[MetadataDataText](line)
-      Option(mdt.data.text).getOrElse("")
-    } catch {
-      case NonFatal(t) => 
-        logger.error(s"getDialogAgentDataText: Could not parse: ${line}")
-        logger.error(t.toString)
-        ""
-    }
-
-  /** Return the JSON AST value of a DialogAgentMessageDataExtraction array
-   * @param text Get the extractions found in this text
-   */
-  def getExtractions(text: String): Option[JValue] = {
-    val extract = extractions(text)  // case class array
-    val json = write(extract)   // JSON string
-    try Some(parse(json)) // JValue
-    catch {
-      case NonFatal(t) => None
+    }).flatten match {
+      case result::tail => result
+      case _ => line
     }
   }
 
