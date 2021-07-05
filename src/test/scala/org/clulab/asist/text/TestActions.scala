@@ -62,9 +62,8 @@ class TestActions extends BaseTest {
 
     val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villagers")
-    val search_mention = DesiredMention("Search", "I will search for the villagers",
-      Map("person" -> Seq(self_mention),
-        "target" -> Seq(victim_mention)))
+    val search_mention = DesiredMention("Search", "search for the villagers",
+      Map("target" -> Seq(victim_mention)))
     val deictic_mention = DesiredMention("Deictic", "inside")
     val infrastructure_mention = DesiredMention("Infrastructure", "building")
 
@@ -80,9 +79,8 @@ class TestActions extends BaseTest {
 
     val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villagers")
-    val search_mention = DesiredMention("Search", "I will search for the villagers",
-      Map("person" -> Seq(self_mention),
-        "target" -> Seq(victim_mention)))
+    val search_mention = DesiredMention("Search", "search for the villagers",
+      Map("target" -> Seq(victim_mention)))
     val deictic_mention = DesiredMention("Deictic", "inside")
     val infrastructure_mention = DesiredMention("Infrastructure", "building")
 
@@ -163,9 +161,8 @@ class TestActions extends BaseTest {
 
     val self_mention = DesiredMention("Self", "I")
     val searcher_mention = DesiredMention("Searcher", "searcher")
-    val roleswitch_mention = DesiredMention("RoleSwitch", "I am changing to searcher",
-      Map("agent" -> Seq(self_mention),
-          "target" -> Seq(searcher_mention)))
+    val roleswitch_mention = DesiredMention("RoleSwitch", "changing to searcher",
+      Map("target" -> Seq(searcher_mention)))
 
     testMention(mentions, self_mention)
     testMention(mentions, searcher_mention)

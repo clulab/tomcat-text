@@ -74,7 +74,7 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ search_triggers })/]
+      trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
       #person: Entity = >nsubj
       target: Concept? = >nmod_for
 

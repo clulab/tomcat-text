@@ -19,7 +19,7 @@ class CommitmentTest extends BaseTest {
   }
 
   passingTest should "Recognize commitments" in {
-    val doc = extractor.annotate("I will rescue the victim in here")
+    val doc = extractor.annotate("I will rescue the victim in here.")
     val mentions = extractor.extractFrom(doc)
 
     val self_mention = DesiredMention("Self", "I")
@@ -27,9 +27,8 @@ class CommitmentTest extends BaseTest {
     val deictic_mention = DesiredMention("Deictic", "here")
     val save_mention = DesiredMention("Save", "rescue the victim",
       Map("target" -> Seq(victim_mention)))
-    val commitment_mention = DesiredMention("MakeCommitment", "I will rescue the victim",
-      Map("person" -> Seq(self_mention),
-        "target" -> Seq(save_mention)))
+    val commitment_mention = DesiredMention("MakeCommitment", "will rescue the victim",
+      Map("target" -> Seq(save_mention)))
     testMention(mentions, self_mention)
     testMention(mentions, victim_mention)
     testMention(mentions, deictic_mention)
