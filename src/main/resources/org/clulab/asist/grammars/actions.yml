@@ -60,6 +60,8 @@ rules:
       trigger: ${ search_triggers }
       object_type: Location
 
+
+
   - name: search_infra_action
     priority: ${ rulepriority }
     label: Search
@@ -75,7 +77,7 @@ rules:
     action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
-      #person: Entity = >nsubj
+      person: Entity = >nsubj
       target: Concept? = >nmod_for
 
   # -------------------------------------------------------------------
