@@ -20,9 +20,11 @@ fire_triggers: "fire|blaze|flame"
 
 infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony"
 
-room_singleword_surface_regex: "armory|attic|ballroom|basement|bathroom|bedroom|boardroom|cabin|cellar|classroom|courtroom|cubby|den|entry|garage|gym|hall|hallway|kitchen|kitchenette|library|lobby|loft|lounge|lunchroom|mailroom|office|restroom|schoolroom|stockroom|storeroom|studio|study|suite|washroom|workroom"
+room_singleword_surface_regex: "(cafe|buffet|chophouse|armory|attic|ballroom|basement|bathroom|bedroom|boardroom|cabin|cellar|classroom|courtroom|cubby|den|entry|garage|gym|hall|hallway|kitchen|kitchenette|library|lobby|loft|lounge|lunchroom|mailroom|office|restroom|schoolroom|stockroom|storeroom|studio|study|suite|washroom|workroom)"
 
-room_twoword_first_word_regex: "back|boiler|conference|control|dining|engine|front|ladies'|laundry|living|locker|men's|utility|waiting|weight|women's"
+room_twoword_first_word_regex: "(cubicle|sundollar|Herbalife|limping lamb|lamb|storage|King Chris|king|Chris|back|boiler|conference|control|dining|engine|front|ladies|laundry|living|locker|men|utility|waiting|weight|women|break)"
+
+room_twoword_second_word_regex: "(room|cafe|office|terrace|area|storage|coffee|chophouse)"
 
 switch_triggers: "switch|toggle|lever|door"
 
