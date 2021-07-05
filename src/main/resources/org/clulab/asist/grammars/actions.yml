@@ -26,7 +26,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Victim = >dobj
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 
   - name: triage2
     priority: ${ rulepriority }
@@ -36,7 +36,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Person = >dobj
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 ###need this because we split "person" from "victim"
 
   - name: triage3
@@ -49,7 +49,7 @@ rules:
       target: Entity=
       >dobj
       [tag=/PRP/]
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 ## This one is not working right now, working on it -Remo
 
   - import: org/clulab/asist/grammars/lvo_template.yml
