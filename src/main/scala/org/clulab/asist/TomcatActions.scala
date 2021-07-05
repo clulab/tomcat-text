@@ -66,22 +66,7 @@ class TomcatActions(
     Interval(start, end)
   }
 
-  def mkAgent(m: Mention): Attachment = {
-    // from taxonomy, we have...
-    //    - Other
-    //    - Self
-    //    - You
-    //    - Team
-    val agentType = m.label match {
-      case "Other" => Agent.OTHER
-      case "Self" => Agent.SELF
-      case "You" => Agent.YOU
-      case "Team" => Agent.TEAM
-      case _ => ??? // fixme?
-    }
-    Agent(m.text, agentType)
-  }
-
+  def mkAgent(m: Mention): Attachment = Agent(m.text, m.label)
 
 /** Keeps the longest mention for each group of overlapping mentions **/
   def keepLongest(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
