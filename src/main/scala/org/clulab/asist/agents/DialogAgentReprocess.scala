@@ -182,8 +182,8 @@ class DialogAgentReprocess (
       val trialMessage = read[TrialMessage](line)
       if(trialMessage.msg.sub_type == "start") {
         val timestamp = Clock.systemUTC.instant.toString
-        val json = write(VersionInfo(this, timestamp))
-        line::json::result // original AND version info
+        val json = write(VersionInfoMetadata(this, timestamp))
+        json::line::result // original then version info
       }
       else line::result
     } catch {
@@ -214,7 +214,7 @@ class DialogAgentReprocess (
         write(  
           metadata.replace( 
             "data"::"extractions"::Nil,
-            JString(write(extractions(text)))
+            Extraction.decompose(extractions(text))
           )
         )
       })
@@ -238,26 +238,26 @@ class DialogAgentReprocess (
         case _ => false
       }.map(errorField => {
         // compose new data struct using existing fields and new extractions
-        val mde = read[ErrorMetadata](line)
-        val errorData = read[ErrorData](mde.error.data)
-        val data = new DialogAgentMessageData(
-          participant_id = errorData.participant_id,
-          asr_msg_id = errorData.asr_msg_id,
-          text = errorData.text,
-          source = errorData.source,
-          extractions = extractions(Option(errorData.text).getOrElse(""))
-        )
-        // substitute the new data struct for the error struct
-        val newMetadata = metadata.transformField {
-          case ("error", _) => ("data", JString(write(data)))
-        }
-        val newMetadataJson = write(newMetadata)
-        logger.info(s"RECOVERING ERROR JSON:")
-        logger.info(s"ORIGINAL:  ${line}")
-        logger.info(s"RECOVERED: ${newMetadataJson}")
-        newMetadataJson
+        Extraction.extractOpt[ErrorData](errorField._2).toList.map(errorData => {
+          val data = new DialogAgentMessageData(
+            participant_id = errorData.participant_id,
+            asr_msg_id = errorData.asr_msg_id,
+            text = errorData.text,
+            source = errorData.source,
+            extractions = extractions(Option(errorData.text).getOrElse(""))
+          )
+          // substitute the new data struct for the error struct
+          val newMetadata = metadata.transformField {
+            case ("error", _) => ("data", Extraction.decompose(data))
+          }
+          val newMetadataJson = write(newMetadata)
+          logger.info(s"RECOVERING ERROR JSON:")
+          logger.info(s"ORIGINAL:  ${line}")
+          logger.info(s"RECOVERED: ${newMetadataJson}")
+          newMetadataJson
+        })
       })
-    }).flatten match {
+    }).flatten.flatten match {
       case reprocessed::Nil => reprocessed::result
       case _ => {  // If neither DialogAgent data or error, report problem.
         logger.error(
