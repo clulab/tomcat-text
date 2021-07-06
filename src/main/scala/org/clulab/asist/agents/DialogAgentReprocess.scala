@@ -229,8 +229,74 @@ class DialogAgentReprocess (
     line: String,
     result: List[String]
   ): List[String] =  {
+    logger.info(s"processDialogAgentErrorMetadata line = ${line}")
     parseJValue(line).toList.map(metadata => {
       // If we have an error field, it's an error report
+      metadata.findField {
+        case (n: String, data: JObject) => n == "error"
+        case _ => false
+      }.toList.map(_._2.findField {
+        case (n: String, text: JValue) => n == "data"
+        case _ => false
+      }).toList.flatten.map(_._2).map(errorDataJson => {
+        Foo(toString(errorDataJson)).toList.map(newData => {
+          // substitute the new data struct for the error struct
+          val newMetadata = metadata.transformField {
+            case ("error", _) => ("data", Extraction.decompose(newData))
+          }
+          write(newMetadata)
+        })
+      }).flatten
+    }).flatten match {
+      case reprocessed::Nil => reprocessed::result
+      case _ => {
+        logger.error(
+          s"processDialogAgentErrorMetadata: Could not parse: ${line}\n"
+        )
+        line::result
+      }
+    }
+  }
+
+  def toString(jvalue: JValue): String = {
+    val string = jvalue.toString
+    val start = string.indexOf("{")
+    val end = string.lastIndexOf("}")
+    if((start > -1) && (end > -1)) {
+      string.substring(start, end+1)
+    } else {
+      ""
+    }
+  }
+
+  // process DialogAgentError data 
+  def Foo(
+    line: String
+  ): Option[DialogAgentMessageData] = parseJValue(line) match {
+    case Some(jvalue) => {
+      Extraction.extractOpt[DialogAgentMessageData](jvalue) match {
+        case Some(errorData) => 
+          Some(new DialogAgentMessageData(
+          participant_id = errorData.participant_id,
+          asr_msg_id = errorData.asr_msg_id,
+          text = errorData.text,
+          source = new DialogAgentMessageDataSource(
+            source_type = errorData.source.source_type,
+            source_name = errorData.source.source_name
+          ),
+          extractions = extractions(errorData.text)
+          ))
+        case _ => None
+      }
+    }
+    case _ => None
+  }
+
+
+//  )
+
+  /*
+
       metadata.findField {
         case (n: String, v: JObject) => n == "error"
         case _ => false
@@ -268,20 +334,7 @@ class DialogAgentReprocess (
       }
     }
   }
-
-
-  /** Parse the line into a JValue
-   * @param line Hopefully JSON but could be anything the user tries to run
-   * @return A JSON value parsed from the line or None
-   */
-  def parseJValue(line: String): Option[JValue] = try {
-    Some(parse(s""" ${line} """))
-  } catch {
-    case NonFatal(t) => 
-      logger.error(s"parseJValue: Could not parse: ${line}\n")
-      logger.error(t.toString)
-      None
-  }
+  */
 
   /** If the fileName has a TA3 version number, increment by 1.
    * @param inputFileName fileName that may have a TA3 version number
@@ -302,5 +355,18 @@ class DialogAgentReprocess (
       case regex(version) => s"Vers-${version.toInt + 1}.metadata"
       case _ => outputFileName  // otherwise do not change the inputFileName
     })
+  }
+
+  /** Parse the line into a JValue
+   * @param line Hopefully JSON but could be anything the user tries to run
+   * @return A JSON value parsed from the line or None
+   */
+  def parseJValue(line: String): Option[JValue] = try {
+    Some(parse(s""" ${line} """))
+  } catch {
+    case NonFatal(t) => 
+      logger.error(s"parseJValue: Could not parse: ${line}\n")
+      logger.error(t.toString)
+      None
   }
 }
