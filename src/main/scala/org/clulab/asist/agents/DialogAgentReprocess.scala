@@ -7,8 +7,8 @@ import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
-import org.json4s._
-import org.json4s.jackson.JsonMethods.parse
+import org.json4s.{Extraction,_}
+import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.{read,write}
 
 import scala.annotation.tailrec
@@ -207,18 +207,17 @@ class DialogAgentReprocess (
       metadata.findField {
         case (n: String, data: JObject) => n == "data" 
         case _ => false
-        }.toList.map(_._2.findField {
-          case (n: String, text: JValue) => n == "text" 
-          case _ => false
-        }).toList.flatten.map(_._2.toString).map (text => {
-          val newExtractions = extractions(text)
-          val newMetadata = metadata.replace(
-          "data"::"extractions"::Nil, 
-          parse(write(newExtractions)) // convert struct to json to JValue
+      }.toList.map(_._2.findField {
+        case (n: String, text: JValue) => n == "text" 
+        case _ => false
+      }).toList.flatten.map(_._2.toString).map (text => {
+        write(  
+          metadata.replace( 
+            "data"::"extractions"::Nil,
+            JString(write(extractions(text)))
+          )
         )
-        write(newMetadata)
       })
-
     }).flatten match {
       case reprocessed::Nil => reprocessed::result
       case _ => processDialogAgentErrorMetadata(line, result) 
@@ -248,11 +247,9 @@ class DialogAgentReprocess (
           source = errorData.source,
           extractions = extractions(Option(errorData.text).getOrElse(""))
         )
-        val dataJson = write(data)
-        val dataJValue = parse(dataJson)
         // substitute the new data struct for the error struct
         val newMetadata = metadata.transformField {
-          case ("error", _) => ("data", dataJValue)
+          case ("error", _) => ("data", JString(write(data)))
         }
         val newMetadataJson = write(newMetadata)
         logger.info(s"RECOVERING ERROR JSON:")
