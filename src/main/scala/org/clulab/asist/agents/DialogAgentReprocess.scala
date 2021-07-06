@@ -7,6 +7,7 @@ import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
+import org.json4s.JField
 import org.json4s.{Extraction,_}
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.{read,write}
@@ -202,7 +203,7 @@ class DialogAgentReprocess (
     line: String,
     result: List[String]): List[String] = 
     // parse the metadata text into AST to fix nonstandard JSON issues
-    getMetadataOpt(line).toList.map(metadata => {
+    parseJValue(line).toList.map(metadata => {
       // if we have a data field, its DialogAgent metadata
       metadata.findField {
         case (n: String, data: JObject) => n == "data" 
@@ -223,43 +224,43 @@ class DialogAgentReprocess (
       case _ => processDialogAgentErrorMetadata(line, result) 
     }
 
-  /** process DialogAgent error report metadata.
-   * @param line JSON representation of one DialogAgentMessage struct
-   * @returns The processed JSON line
-   */
+
   def processDialogAgentErrorMetadata(
     line: String,
     result: List[String]
   ): List[String] =  {
-    getMetadataOpt(line).toList.map(metadata => {
+    parseJValue(line).toList.map(metadata => {
       // If we have an error field, it's an error report
       metadata.findField {
         case (n: String, v: JObject) => n == "error"
         case _ => false
       }.map(errorField => {
         // compose new data struct using existing fields and new extractions
-        Extraction.extractOpt[ErrorData](errorField._2).toList.map(errorData => {
-          val data = new DialogAgentMessageData(
-            participant_id = errorData.participant_id,
-            asr_msg_id = errorData.asr_msg_id,
-            text = errorData.text,
-            source = errorData.source,
-            extractions = extractions(Option(errorData.text).getOrElse(""))
-          )
-          // substitute the new data struct for the error struct
-          val newMetadata = metadata.transformField {
-            case ("error", _) => ("data", Extraction.decompose(data))
-          }
-          val newMetadataJson = write(newMetadata)
-          logger.info(s"RECOVERING ERROR JSON:")
-          logger.info(s"ORIGINAL:  ${line}")
-          logger.info(s"RECOVERED: ${newMetadataJson}")
-          newMetadataJson
-        })
+        val mde = read[ErrorMetadata](errorField._2)
+        val errorData = read[ErrorData](mde.error.data)
+        val data = new DialogAgentMessageData(
+          participant_id = errorData.participant_id,
+          asr_msg_id = errorData.asr_msg_id,
+          text = errorData.text,
+          source = errorData.source,
+          extractions = extractions(Option(errorData.text).getOrElse(""))
+        )
+        val dataJson = write(data)
+        val dataJValue = parse(dataJson)
+
+        // substitute the new data struct for the error struct
+        val newMetadata = metadata.transformField {
+          case ("error", _) => ("data", dataJValue)
+        }
+        val newMetadataJson = write(newMetadata)
+        logger.info(s"RECOVERING ERROR JSON:")
+        logger.info(s"ORIGINAL:  ${line}")
+        logger.info(s"RECOVERED: ${newMetadataJson}")
+        newMetadataJson
       })
-    }).flatten.flatten match {
+    }).flatten match {
       case reprocessed::Nil => reprocessed::result
-      case _ => {  // If neither DialogAgent data or error, report problem.
+      case _ => {
         logger.error(
           s"processDialogAgentErrorMetadata: Could not parse: ${line}\n"
         )
@@ -268,15 +269,16 @@ class DialogAgentReprocess (
     }
   }
 
-  /** Parse the line into JSON 
+
+  /** Parse the line into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run
    * @return A JSON value parsed from the line or None
    */
-  def getMetadataOpt(line: String): Option[JValue] = try {
+  def parseJValue(line: String): Option[JValue] = try {
     Some(parse(s""" ${line} """))
   } catch {
     case NonFatal(t) => 
-      logger.error(s"getMetadataOpt: Could not parse: ${line}\n")
+      logger.error(s"parseJValue: Could not parse: ${line}\n")
       logger.error(t.toString)
       None
   }

@@ -48,6 +48,26 @@ case class VersionInfo (
   data: VersionInfoData
 ) 
 
+case class VersionInfoMetadata(
+  topic: String,
+  header: CommonHeader,
+  msg: CommonMsg,
+  data: VersionInfoData
+) 
+
+object VersionInfoMetadata {
+  def apply(da: DialogAgent, timestamp: String): VersionInfoMetadata = {
+    val vi = VersionInfo(da, timestamp)
+    VersionInfoMetadata(
+      topic = da.topicPubVersionInfo,
+      header = vi.header,
+      msg = vi.msg,
+      data = vi.data
+    )
+  }
+}
+
+
 // Return a VersionInfo populated with the current DialogAgent testbed configuration
 object VersionInfo {
   def apply(da: DialogAgent, timestamp: String): VersionInfo = {
