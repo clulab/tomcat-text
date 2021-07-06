@@ -36,7 +36,7 @@ case class MetadataMsg (
   replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
 )
 
-// 
+
 case class Metadata(
   data: MetadataData,
   msg: MetadataMsg
@@ -54,30 +54,3 @@ case class MetadataText(
 case class MetadataDataText(
   data: MetadataText
 )
-
-case class ErrorData(
-  participant_id: String = null,
-  asr_msg_id: String = null,
-  text: String = null,
-  source: DialogAgentMessageDataSource
-)
-
-// for reprocessing, no need to read complex extraction vector
-case class PartialData(
-  participant_id: String = null,
-  asr_msg_id: String = null,
-  text: String = null,
-  source: DialogAgentMessageDataSource
-)
-
-
-// used to read a metadata error with DialogAgentMessage data
-case class Error(
-  data: String
-)
-case class ErrorMetadata(
-  host: String,
-  msg: CommonMsg,
-  error: Error
-)
-
