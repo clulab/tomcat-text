@@ -28,7 +28,7 @@ class CommitmentTest extends BaseTest {
     val save_mention = DesiredMention("Save", "rescue the victim",
       Map("target" -> Seq(victim_mention)))
     val commitment_mention = DesiredMention("MakeCommitment", "will rescue the victim",
-      Map("target" -> Seq(save_mention)))
+      Map("target" -> Seq(save_mention)), Set("Agent(I,Self)"))
     testMention(mentions, self_mention)
     testMention(mentions, victim_mention)
     testMention(mentions, deictic_mention)
