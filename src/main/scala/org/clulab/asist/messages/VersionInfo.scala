@@ -127,13 +127,18 @@ object VersionInfo
         topic = da.topicPubDialogAgent,
         message_type = da.dialogAgentMessageType,
         sub_type = da.dialogAgentSubType
+      ),
+      VersionInfoDataMessageChannel(
+        topic = da.topicPubVersionInfo,
+        message_type = "agent/versioninfo",
+        sub_type = "start"
       )
       // should we include the trial version info publication channel?
     ),
     subscribes = List(
       VersionInfoDataMessageChannel(
         topic = da.topicSubTrial,
-        message_type = "agent/versioninfo",
+        message_type = "trial",
         sub_type = "start"
       ),
       VersionInfoDataMessageChannel(
