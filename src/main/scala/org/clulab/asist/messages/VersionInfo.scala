@@ -57,12 +57,12 @@ case class VersionInfoMetadata(
 
 object VersionInfoMetadata {
   def apply(da: DialogAgent, timestamp: String): VersionInfoMetadata = {
-    val vi = VersionInfo(da, timestamp)
+    val versionInfo = VersionInfo(da, timestamp)
     VersionInfoMetadata(
       topic = da.topicPubVersionInfo,
-      header = vi.header,
-      msg = vi.msg,
-      data = vi.data
+      header = versionInfo.header,
+      msg = versionInfo.msg,
+      data = versionInfo.data
     )
   }
 }
