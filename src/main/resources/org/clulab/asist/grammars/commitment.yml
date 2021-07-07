@@ -6,6 +6,6 @@ rules:
     priority: ${ rulepriority }
     label: MakeCommitment
     pattern: |
-      trigger = [tag=/^MD/]
+      trigger = [tag=/^MD/ & lemma=/^can|will/]
       target: Action = <aux
       person: Self? = <aux >nsubj

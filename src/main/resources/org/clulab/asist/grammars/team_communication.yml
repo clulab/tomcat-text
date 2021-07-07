@@ -16,7 +16,7 @@ rules:
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       person: Entity? = >/nsubj*/
-      role: Item = >dobj
+      item: Item = >dobj
 
   - name: prep_need_action
     priority: ${ rulepriority }
@@ -24,7 +24,7 @@ rules:
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       person: Entity? = >/nsubj*/
-      role: SimpleActions = >xcomp
+      action: SimpleActions = >xcomp
 
 
   - name: continue_action

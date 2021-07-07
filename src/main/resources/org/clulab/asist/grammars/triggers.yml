@@ -14,6 +14,8 @@ toggle_triggers: "flip|toggle|turn|switch|pull|open"
 
 triage_triggers: "save|triage|heal|help|get|rescue"
 
+triage_triggers_strict: "save|triage|heal|rescue"
+
 attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 fire_triggers: "fire|blaze|flame"
