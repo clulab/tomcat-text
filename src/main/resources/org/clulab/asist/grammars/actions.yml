@@ -34,7 +34,7 @@ rules:
     example: "I will save this guy"
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
       target: Person = >dobj
       location: Location? = >/${ positional_preps_+advmod }/
 ###need this because we split "person" from "victim"
@@ -45,10 +45,8 @@ rules:
     example: "I will save him"
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
-      target: Entity=
-      >dobj
-      [tag=/PRP/]
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
+      target: Entity = >dobj [tag=/PRP/]
       location: Location? = >/${ positional_preps_+advmod }/
 ## This one is not working right now, working on it -Remo
 

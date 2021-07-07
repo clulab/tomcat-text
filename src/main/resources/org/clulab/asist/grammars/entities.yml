@@ -78,6 +78,14 @@ rules:
     pattern: |
       [word=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
 
+  - name: third_person_token_capture
+    label: Other
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^(he|him|she|her)/ & tag=/PRP/]
+
   - name: we_token_capture
     label: Team
     priority: ${ rulepriority }
