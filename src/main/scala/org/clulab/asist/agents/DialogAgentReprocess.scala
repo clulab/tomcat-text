@@ -227,7 +227,8 @@ class DialogAgentReprocess (
       }.toList.map(_._2.findField {
         case (n: String, text: JValue) => n == "text" 
         case _ => false
-      }).toList.flatten.map(_._2.toString).map (text => {
+      }).toList.flatten.map(_._2).map (textJValue => {
+        val text: String = textJValue.extract[String]
         write(  
           // replace the data.extractions field value
           metadata.replace( 
