@@ -213,6 +213,7 @@ class DialogAgentReprocess (
         case _ => false
       }).toList.flatten.map(_._2.toString).map (text => {
         write(  
+          // replace the data.extractions field value
           metadata.replace( 
             "data"::"extractions"::Nil,
             Extraction.decompose(extractions(text))
@@ -239,8 +240,12 @@ class DialogAgentReprocess (
         case (n: String, text: JValue) => n == "data"
         case _ => false
       }).toList.flatten.map(_._2).map(errorDataJson => {
-        Foo(toString(errorDataJson)).toList.map(newData => {
-          // substitute the new data struct for the error struct
+        // get actual JSON and not a description of it
+        val json = errorDataJson.extract[String]
+        // parse json to DialogAgentMessageData, reprocess extractions
+        parseDialogAgentErrorData(json).toList.map(newData => {
+          // reprocess error report by replacing the error struct 
+          // with a DialogAgentMessageData struct with new extractions
           val newMetadata = metadata.transformField {
             case ("error", _) => ("data", Extraction.decompose(newData))
           }
@@ -258,83 +263,31 @@ class DialogAgentReprocess (
     }
   }
 
-  def toString(jvalue: JValue): String = {
-    val string = jvalue.toString
-    val start = string.indexOf("{")
-    val end = string.lastIndexOf("}")
-    if((start > -1) && (end > -1)) {
-      string.substring(start, end+1)
-    } else {
-      ""
+  /* Update extractions for a DialogAgentMessageData struct
+   * @param json A JSON representation of a DialogAgentMessageData struct
+   * @returns A copy of the JSON struct with new extractions
+   */
+  def parseDialogAgentErrorData(
+    json: String
+  ): Option[DialogAgentMessageData] = try {
+    val errorData = read[DialogAgentMessageData](json)
+    Some(new DialogAgentMessageData(
+      participant_id = errorData.participant_id,
+      asr_msg_id = errorData.asr_msg_id,
+      text = errorData.text,
+      source = new DialogAgentMessageDataSource(
+        source_type = errorData.source.source_type,
+        source_name = errorData.source.source_name
+      ),
+      extractions = extractions(errorData.text)
+    ))
+  } catch {
+    case NonFatal(t) => {
+      logger.error(s"parseDialogAgentErrorData could not parse ${json}")
+      logger.error(t.toString)
+      None
     }
   }
-
-  // process DialogAgentError data 
-  def Foo(
-    line: String
-  ): Option[DialogAgentMessageData] = parseJValue(line) match {
-    case Some(jvalue) => {
-      Extraction.extractOpt[DialogAgentMessageData](jvalue) match {
-        case Some(errorData) => 
-          Some(new DialogAgentMessageData(
-          participant_id = errorData.participant_id,
-          asr_msg_id = errorData.asr_msg_id,
-          text = errorData.text,
-          source = new DialogAgentMessageDataSource(
-            source_type = errorData.source.source_type,
-            source_name = errorData.source.source_name
-          ),
-          extractions = extractions(errorData.text)
-          ))
-        case _ => None
-      }
-    }
-    case _ => None
-  }
-
-
-//  )
-
-  /*
-
-      metadata.findField {
-        case (n: String, v: JObject) => n == "error"
-        case _ => false
-      }.map(errorField => {
-        // compose new data struct using existing fields and new extractions
-        val mde = read[ErrorMetadata](errorField._2)
-        val errorData = read[ErrorData](mde.error.data)
-        val data = new DialogAgentMessageData(
-          participant_id = errorData.participant_id,
-          asr_msg_id = errorData.asr_msg_id,
-          text = errorData.text,
-          source = errorData.source,
-          extractions = extractions(Option(errorData.text).getOrElse(""))
-        )
-        val dataJson = write(data)
-        val dataJValue = parse(dataJson)
-
-        // substitute the new data struct for the error struct
-        val newMetadata = metadata.transformField {
-          case ("error", _) => ("data", dataJValue)
-        }
-        val newMetadataJson = write(newMetadata)
-        logger.info(s"RECOVERING ERROR JSON:")
-        logger.info(s"ORIGINAL:  ${line}")
-        logger.info(s"RECOVERED: ${newMetadataJson}")
-        newMetadataJson
-      })
-    }).flatten match {
-      case reprocessed::Nil => reprocessed::result
-      case _ => {
-        logger.error(
-          s"processDialogAgentErrorMetadata: Could not parse: ${line}\n"
-        )
-        line::result
-      }
-    }
-  }
-  */
 
   /** If the fileName has a TA3 version number, increment by 1.
    * @param inputFileName fileName that may have a TA3 version number
