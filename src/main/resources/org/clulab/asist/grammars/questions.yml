@@ -58,7 +58,7 @@ rules:
     example: "Can you see the victim?"
     priority: ${ rulepriority }
     label: YesNoQuestion
-    action: removeResearcher
+    action: requireSubjectVerbInversion
     pattern: |
       trigger = [lemma=/(?i)^do|can|will|should|have|could/]
       topic: Action = <aux
