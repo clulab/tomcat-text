@@ -19,7 +19,7 @@ resolvers += "Artifactory" at "http://artifactory.cs.arizona.edu:8081/artifactor
 
 libraryDependencies += "io.spray" %%  "spray-json" % "1.3.5"
 libraryDependencies ++= {
-  val procVer = "8.4.2-SNAPSHOT"
+  val procVer = "8.4.2"
 
   Seq(
     "org.clulab"    %% "processors-main"          % procVer,
