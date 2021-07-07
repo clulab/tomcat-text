@@ -77,39 +77,6 @@ class TomcatActions() extends Actions with LazyLogging {
   }
 
 
-  def removeResearcher(
-      mentions: Seq[Mention],
-      state: State = new State()
-  ): Seq[Mention] = {
-    // If there are no timeintervals, return all events found
-    if (timeintervals._1.size == 0) {
-      return mentions
-    }
-    val to_be_returned = new ArrayBuffer[Mention]
-    for (men <- mentions) {
-      val startOffset = men match {
-        case cur: EventMention     => cur.trigger.startOffset
-        case cur: TextBoundMention => cur.startOffset
-      }
-
-      var cur = timeintervals._1(0)
-      var i = 0
-      while (cur < startOffset) {
-        i += 1
-        cur = timeintervals._1(i)
-      }
-      if (!(timeintervals._2 contains i)) {
-        to_be_returned.append(men)
-        if (timeintervals._3 contains timeintervals._1(i - 1)) {
-          // This checks if the previous utterance was a researcher question
-          //println(men.words.mkString)
-          // TODO create new event mention
-        }
-      }
-    }
-    to_be_returned
-  }
-
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(addArgLabel(_, TARGET_ARG, VICTIM, Some(ENTITY)))
   }
