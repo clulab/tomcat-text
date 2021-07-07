@@ -20,21 +20,35 @@ import scala.util.control.NonFatal
  *
  * Updated:  2021 July
  *
- * Reprocess Dialog Agent metadata files by reading them lines by line and then
- * writing the processed results to the output file.
+ * Reprocess metadata JSON files by reading each line as a JValue and then 
+ * processing according to the topic field.  Lines with topics not addressed
+ * below are copied to the output file.
  *
- * Reprocessed DialogAgent metadata is a copy of existing DialogAgentMessage
- * metdata with the extractions regenerated. 
+ * If an input file has no dialog agent related metadata, an output file is
+ * not generated.  If there are no output files to be written, the output
+ * directory is not created.
  *
- * If existing metadata is not DialogAgent metadata, copy it to the output
- * file unchanged.
+ * Reprocessed DialogAgentMessage metadata is a copy of the existing metadata
+ * with the extractions regenerated. 
+ *
+ * Reprocessed Dialog Agent error messages use the error.data field to generate
+ * a new DialogAgentMessageData struct with new extractions.  This replaces
+ * the error field to transform the metadata into DialogAgentMessage metadata.
+ *
+ * VersionInfo metadata with the DialogAgent topic are not reprocessed or 
+ * copied to the output file.
+ *
+ * Trial Start metadata are copied to the output file followed by a new
+ * VersionInfo metadata message with the DialogAgent topic.
  *
  * If a .metadata file ends with Vers-<N>.metadata, the corresponding file
  * in the output directory should end with Vers-<N+1>.metadata (instead of
  * preserving the original fileName). This is to comply with the TA3 file
  * naming scheme.
  *
- * TODO:  Parallelize computation with actors
+ *
+ * At the time of this writing, the biggest computational bottleneck is
+ * running the extractions.
  *
  */
 class DialogAgentReprocess (
