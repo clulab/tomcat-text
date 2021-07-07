@@ -13,6 +13,7 @@ class TestLocation extends BaseTest {
     "Can you head to the first floor. " +
     "Three victims in the back room. " +
     "Keep going till you are out of the first part. " +
+    "Move into the empty space"+
     ""
 
 
@@ -44,6 +45,7 @@ class TestLocation extends BaseTest {
     val sw3_mention = DesiredMention("SouthWest", "south-west")
 
     val zone_mention = DesiredMention("Zone", "zone")
+    val location_mention = DesiredMention("Location", "space")
 
     testMention(mentions, north_mention)
     testMention(mentions, east_mention)
