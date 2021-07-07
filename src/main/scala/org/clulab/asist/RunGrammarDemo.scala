@@ -1,9 +1,9 @@
 package org.clulab.asist
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  updated:  2021 May
+ *  Updated:  2021 June
  *
  *  This application will run the YML to Markdown parser.
  *
@@ -29,9 +29,8 @@ object RunGrammarDemo extends App {
    */
   def run(argList: List[String]): Option[Any] = argList match {
     case List(outfile, masterPath) => Some(new GrammarDemo(outfile, masterPath))
-    case _ => {
-      usageText.map(println)
+    case _ =>
+      usageText.foreach(println)
       None
-    }
   }
 }

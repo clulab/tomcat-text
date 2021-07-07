@@ -21,7 +21,7 @@ class TestDialogueA extends BaseTest {
       |targets we find cuz we'll need to surround us up towards the end and I'll
       |convene her cup and Tackle us.""".stripMargin
 
-  val mentions = extractor.extractFromText(text)
+  val mentions = extractor.extractFrom(text)
 
   passingTest should "extract delta" in {
     val delta = DesiredMention(DELTA, "Delta")

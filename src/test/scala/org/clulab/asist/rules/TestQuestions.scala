@@ -1,4 +1,4 @@
-package org.clulab.asist.text
+package org.clulab.asist.rules
 
 import org.clulab.asist.BaseTest
 
@@ -15,7 +15,7 @@ class TestQuestions extends BaseTest {
       "Where are they? " +
       "Where is it? " +
       "Where in the back room is it?"
-    val mentions = extractor.extractFromText(text)
+    val mentions = extractor.extractFrom(text)
     val victim = DesiredMention("Victim", "victim")
     val one = DesiredMention("Entity", "one")
     val others = DesiredMention("Entity", "others")
@@ -42,7 +42,7 @@ class TestQuestions extends BaseTest {
 
   it should "find location questions with `location_moving_question` rule" in {
     val text = "Where did they go?"
-    val mentions = extractor.extractFromText(text)
+    val mentions = extractor.extractFrom(text)
     val they = DesiredMention("Entity", "they")
     val move = DesiredMention("Move", "they go", Map("person" -> Seq(they)))
     val desired1 = DesiredMention("LocationQuestion", "Where did they go", Map("topic" -> Seq(move)))
@@ -56,7 +56,7 @@ class TestQuestions extends BaseTest {
       "What's that over there? " +
       "What is the plan? " +
       "What is that?"
-    val mentions = extractor.extractFromText(text)
+    val mentions = extractor.extractFrom(text)
 
     val that = DesiredMention("DemPron", "that")
     val there = DesiredMention("Deictic", "there")
@@ -75,7 +75,7 @@ class TestQuestions extends BaseTest {
     val text =
     "Do you see any rubble? " +
       "Can you save this guy? "
-    val mentions = extractor.extractFromText(text)
+    val mentions = extractor.extractFrom(text)
     val you = DesiredMention("You", "you")
     val rubble = DesiredMention("Rubble", "rubble")
     val person = DesiredMention("Victim", "guy")
