@@ -11,8 +11,12 @@ package org.clulab.asist.messages
  *
  */
 
+case class TrialMessageMsg(
+  sub_type: String = "",
+  timestamp: String = ""
+)
 
 /** Contains only the needed fields of the Trial Message data format */
 case class TrialMessage (
-  msg: CommonMsg
+  msg: TrialMessageMsg
 ) 
