@@ -1,6 +1,4 @@
-package org.clulab.asist.rules
-
-import org.clulab.asist.BaseTest
+package org.clulab.asist
 
 class CommitmentTest extends BaseTest {
 
@@ -27,9 +25,10 @@ class CommitmentTest extends BaseTest {
     val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "victim")
     val deictic_mention = DesiredMention("Deictic", "here")
-    val save_mention = DesiredMention("Save", "rescue the victim",
-      Map("target" -> Seq(victim_mention)))
-    val commitment_mention = DesiredMention("MakeCommitment", "I will rescue the victim",
+    val save_mention = DesiredMention("Save", "rescue the victim in here",
+      Map("target" -> Seq(victim_mention),
+          "location" ->Seq(deictic_mention)))
+    val commitment_mention = DesiredMention("MakeCommitment", "I will rescue the victim in here",
       Map("person" -> Seq(self_mention),
         "target" -> Seq(save_mention)))
     testMention(mentions, self_mention)
