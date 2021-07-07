@@ -32,4 +32,6 @@ search_relations: ">nmod_in|>nmod_within|>nmod_around|>nmod_beneath"
 
 positional_preps: "nmod_(behind|beneath|in|in_front_of|on|over|under)|dep"
 
+positional_preps_+advmod: "nmod_(behind|beneath|in|in_front_of|on|over|under)|advmod"
+
 # Todo: nmod_from "X will follow from Y"

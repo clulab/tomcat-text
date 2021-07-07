@@ -14,7 +14,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ victim_triggers })/]
+      [lemma=/(?i)(${ victim_triggers })/] | [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
+
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:

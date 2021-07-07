@@ -47,7 +47,7 @@
           - Question:
             - QuestionParticle
             - LocationQuestion
-            - ModalQuestion
+            - YesNoQuestion
           - Agreement
           - Disagreement
         - Clear
@@ -81,6 +81,7 @@
       - Engineer
     - Victim:
         - Yellow
+        - CriticalVictim
     - Friend
     - Foe
     - Player:
