@@ -5,6 +5,7 @@ rules:
     example: "Where are they? Where is the victim?"
     priority: ${ rulepriority }
     label: LocationQuestion
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ where_triggers })/]
       topic: Entity =
@@ -16,6 +17,7 @@ rules:
     example: "Where did you go?"
     priority: ${ rulepriority }
     label: LocationQuestion
+    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ where_triggers })/]
       topic: Move = <advmod
@@ -25,6 +27,7 @@ rules:
     example: "What is that? What is that in the library?"
     priority: ${ rulepriority }
     label: Question
+    action: removeResearcher
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = <nsubj [lemma=/be|do/] >dep
@@ -34,6 +37,7 @@ rules:
     example: "What's that over there?"
     priority: ${ rulepriority }
     label: Question
+    action: removeResearcher
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = >nsubj
@@ -43,10 +47,22 @@ rules:
     example: "What is the plan?"
     priority: ${ rulepriority }
     label: Question
+    action: removeResearcher
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = >nsubj
       location: Location? = >nsubj >/${positional_preps}/
+
+
+  - name: binary_question
+    example: "Can you see the victim?"
+    priority: ${ rulepriority }
+    label: YesNoQuestion
+    action: requireSubjectVerbInversion
+    pattern: |
+      trigger = [lemma=/(?i)^do|can|will|should|have|could/]
+      topic: Action = <aux
+      location: Location? = <aux >/${positional_preps}/
 
 
 #leave this here so I can remember how to do these complex dependencies
