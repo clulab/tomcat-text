@@ -7,6 +7,9 @@ import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
 import java.io.{File, PrintWriter}
 
+import scala.util.control.NonFatal
+
+
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -71,7 +74,7 @@ class DialogAgentFile(
       output.close
       logger.info("All operations completed successfully.")
     } catch {
-      case t: Throwable =>
+      case NonFatal(t)  =>
         logger.error(s"Problem writing to ${inputFilename}")
         logger.error(t.toString)
     }
