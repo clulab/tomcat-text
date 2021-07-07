@@ -129,16 +129,6 @@ class DialogAgentReprocess (
     case NonFatal(t) => new MetadataLookahead
   }
 
-  /** Scan the line as a TrialMessage, return default if not readable
-   *  @param line:  A single JSON line
-   *  @returns A TrialMessage struct
-   */
-  def readTrialMessage(line: String): TrialMessage = try {
-    read[TrialMessage](line)
-  } catch {
-    case NonFatal(t) => new TrialMessage(new TrialMessageMsg)
-  }
-
   /** process one input file
    * @param inputFileName The namee of the file to be processed
    * @returns a list of the parse results for each JSON line in the file
@@ -197,15 +187,19 @@ class DialogAgentReprocess (
     try {
       val trialMessage = read[TrialMessage](line)
       if(trialMessage.msg.sub_type == "start") {
-        val timestamp = Clock.systemUTC.instant.toString // for VersionInfo
-        val versionInfo: VersionInfo = VersionInfo(this, timestamp)
-        val topicToMerge = Extraction.decompose(("topic",topicPubVersionInfo))
-        val timestampToMerge =  // for metadata
+
+        // current timestamp
+        val timestamp = Clock.systemUTC.instant.toString
+
+        // metadata timestamp
+        val metadataTimestamp = 
           Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
-        val versionInfoJValue = Extraction.decompose(versionInfo)
+
         val versionInfoMetadata = 
-          versionInfoJValue.merge(topicToMerge).merge(timestampToMerge)
-        val json = write(versionInfoMetadata)
+          VersionInfoMetadata(this, trialMessage, timestamp)
+        val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
+        val outputJValue = versionInfoJValue.merge(metadataTimestamp)
+        val json = write(outputJValue)
         json::line::result // original then version info
       }
       else line::result
@@ -256,7 +250,6 @@ class DialogAgentReprocess (
     line: String,
     result: List[String]
   ): List[String] =  {
-    logger.info(s"reprocessDialogAgentErrorMetadata line = ${line}")
     parseJValue(line).toList.map(metadata => {
       // If we have an error field, it's an error report
       metadata.findField {
