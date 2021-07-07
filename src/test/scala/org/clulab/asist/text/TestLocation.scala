@@ -13,14 +13,12 @@ class TestLocation extends BaseTest {
     "Can you head to the first floor. " +
     "Three victims in the back room. " +
     "Keep going till you are out of the first part. " +
-    "Move into the empty space"+
-    ""
+    "Move into the empty space"
 
 
     val mentions = extractor.extractFromText(text)
 
     val firstfloor = DesiredMention("Infrastructure", "first floor")
-    val backroom = DesiredMention("Infrastructure", "back room")
     val backroom = DesiredMention("Infrastructure", "back room")
 
     val north_mention = DesiredMention("North", "North")
