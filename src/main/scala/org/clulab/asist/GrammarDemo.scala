@@ -30,7 +30,7 @@ class GrammarDemo (val outputDir: String, masterPath: String){
   logger.info("Number of extractors = %s\n".format(extractorEngine.extractors.length))
 
   // Open the print stream and write the extractors as markdown text.
-  ruleReader.exportExtractionSchemas(masterFile, s"${outputDir}/extraction_schemas.md")
+  ruleReader.exportExtractionSchemas(masterFile, s"${outputDir}/extraction_schemas.md", minimal = true)
   ruleReader.exportRuleSchemas(masterFile, s"${outputDir}/rule_schemas.md")
 
 }

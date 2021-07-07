@@ -26,7 +26,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Victim = >dobj
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 
   - name: triage2
     priority: ${ rulepriority }
@@ -34,9 +34,9 @@ rules:
     example: "I will save this guy"
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
       target: Person = >dobj
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 ###need this because we split "person" from "victim"
 
   - name: triage3
@@ -45,11 +45,9 @@ rules:
     example: "I will save him"
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
-      target: Entity=
-      >dobj
-      [tag=/PRP/]
-      location: Infrastructure? = >nmod_in
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
+      target: Entity = >dobj [tag=/PRP/]
+      location: Location? = >/${ positional_preps_+advmod }/
 ## This one is not working right now, working on it -Remo
 
   - import: org/clulab/asist/grammars/lvo_template.yml
@@ -59,6 +57,8 @@ rules:
       label: Search
       trigger: ${ search_triggers }
       object_type: Location
+
+
 
   - name: search_infra_action
     priority: ${ rulepriority }
@@ -74,7 +74,7 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ search_triggers })/]
+      trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
