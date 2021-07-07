@@ -1,4 +1,4 @@
-package org.clulab.asist.rules
+package org.clulab.asist.text
 
 import org.clulab.asist.BaseTest
 
@@ -41,12 +41,13 @@ class TestActions extends BaseTest {
   passingTest should "Parse save events properly" in {
     val doc = extractor.annotate("I'm going to save the villager over there")
     val mentions = extractor.extractFrom(doc)
-
+    val deictic_mention = DesiredMention("Deictic", "there")
     val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villager")
-    val save_mention = DesiredMention("Save", "save the villager",
-      Map("target" -> Seq(victim_mention)))
-    val deictic_mention = DesiredMention("Deictic", "there")
+    val save_mention = DesiredMention("Save", "save the villager over there",
+      Map("target" -> Seq(victim_mention),
+        "location" -> Seq(deictic_mention)))
+
 
     testMention(mentions, self_mention)
     testMention(mentions, save_mention)
@@ -55,36 +56,18 @@ class TestActions extends BaseTest {
 
 
 
-  passingTest should "Parse search events properly" in {
-    val doc =
-      extractor.annotate("I will search for the villagers inside the building")
-    val mentions = extractor.extractFrom(doc)
-
-    val self_mention = DesiredMention("Self", "I")
-    val victim_mention = DesiredMention("Victim", "villagers")
-    val search_mention = DesiredMention("Search", "I will search for the villagers",
-      Map("person" -> Seq(self_mention),
-        "target" -> Seq(victim_mention)))
-    val deictic_mention = DesiredMention("Deictic", "inside")
-    val infrastructure_mention = DesiredMention("Infrastructure", "building")
-
-    testMention(mentions, search_mention)
-    //    testMention(mentions, deictic_mention) // todo: we should determine some structure for locations
-    testMention(mentions, infrastructure_mention)
-  }
-
   passingTest should "Parse search lvo events properly" in {
     val doc =
-      extractor.annotate("I will search for the villagers inside the building")
+      extractor.annotate("I search for the villagers inside the building")
     val mentions = extractor.extractFrom(doc)
-
+    val infrastructure_mention = DesiredMention("Infrastructure", "building")
     val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villagers")
-    val search_mention = DesiredMention("Search", "I will search for the villagers",
+    val search_mention = DesiredMention("Search", "I search for the villagers",
       Map("person" -> Seq(self_mention),
         "target" -> Seq(victim_mention)))
     val deictic_mention = DesiredMention("Deictic", "inside")
-    val infrastructure_mention = DesiredMention("Infrastructure", "building")
+
 
     testMention(mentions, search_mention)
     //    testMention(mentions, deictic_mention) // todo: we should determine some structure for locations
