@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+import json
+
+with open("extraction_schemas.json") as f:
+    data = json.load(f)
+
+    for extraction in data:
+        print(extraction["name"], "/".join(reversed(extraction["labels"])))
+        if extraction["argumentsPerRule"]:
+            print([[list(x.values()) for x in y] for y in extraction["argumentsPerRule"]])
