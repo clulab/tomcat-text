@@ -75,7 +75,7 @@ class TestQuestions extends BaseTest {
     val text =
     "Do you see any rubble? " +
       "Can you save this guy? "
-    val mentions = extractor.extractFromText(text)
+    val mentions = extractor.extractFrom(text)
     val you = DesiredMention("You", "you")
     val rubble = DesiredMention("Rubble", "rubble")
     val person = DesiredMention("Victim", "guy")
