@@ -53,22 +53,7 @@ class TestActions extends BaseTest {
     testMention(mentions, deictic_mention)
   }
 
-  passingTest should "Recognize sight events" in {
-    val doc =
-      extractor.annotate("There's a guy over there, next to the other person")
-    val mentions = extractor.extractFrom(doc)
 
-    val guy_victim = DesiredMention("Person", "guy")
-    val there_deictic = DesiredMention("Deictic", "there")
-    val person_victim = DesiredMention("Person", "person")
-    val sight_mention = DesiredMention("Sight", "'s a guy",
-      Map("target" -> Seq(guy_victim)))
-
-    testMention(mentions, guy_victim)
-    testMention(mentions, there_deictic)
-    testMention(mentions, person_victim)
-    testMention(mentions, sight_mention)
-  }
 
   passingTest should "Parse search events properly" in {
     val doc =
