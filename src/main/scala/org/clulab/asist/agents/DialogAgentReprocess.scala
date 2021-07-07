@@ -164,8 +164,9 @@ class DialogAgentReprocess (
     line: String,
     result: List[String]): List[String] = 
     readMetadataLookahead(line).topic match {
-      case `topicPubDialogAgent` => processDialogAgentMetadata(line, result)
+      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(line, result)
       case `topicSubTrial` => processTrialMetadata(line, result)
+      case `topicPubVersionInfo` => result  // delete existing VersionInfo lines
       case _ => line::result
     }
 
@@ -195,11 +196,11 @@ class DialogAgentReprocess (
     }
   }
 
-  /** process DialogAgent metadata.
+  /** Replace DialogAgentMessage data extractions with fresh ones.
    * @param line JSON representation of one DialogAgentMessage struct
    * @returns The processed JSON line
    */
-  def processDialogAgentMetadata(
+  def reprocessDialogAgentMetadata(
     line: String,
     result: List[String]): List[String] = 
     // parse the metadata text into AST to fix nonstandard JSON issues
@@ -222,15 +223,19 @@ class DialogAgentReprocess (
       })
     }).flatten match {
       case reprocessed::Nil => reprocessed::result
-      case _ => processDialogAgentErrorMetadata(line, result) 
+      case _ => reprocessDialogAgentErrorMetadata(line, result) 
     }
 
 
-  def processDialogAgentErrorMetadata(
+  /* Replace the error field with a reprocessed DialogAgentMessageData struct
+   * @param line A JSON representation DialogAgentMessage error struct
+   * @returns a DialogAgentMessage with new extractions
+   */
+  def reprocessDialogAgentErrorMetadata(
     line: String,
     result: List[String]
   ): List[String] =  {
-    logger.info(s"processDialogAgentErrorMetadata line = ${line}")
+    logger.info(s"reprocessDialogAgentErrorMetadata line = ${line}")
     parseJValue(line).toList.map(metadata => {
       // If we have an error field, it's an error report
       metadata.findField {
@@ -242,50 +247,47 @@ class DialogAgentReprocess (
       }).toList.flatten.map(_._2).map(errorDataJson => {
         // get actual JSON and not a description of it
         val json = errorDataJson.extract[String]
-        // parse json to DialogAgentMessageData, reprocess extractions
-        parseDialogAgentErrorData(json).toList.map(newData => {
+        val newData = reprocessDialogAgentMessageData(json)
           // reprocess error report by replacing the error struct 
           // with a DialogAgentMessageData struct with new extractions
-          val newMetadata = metadata.transformField {
-            case ("error", _) => ("data", Extraction.decompose(newData))
-          }
-          write(newMetadata)
-        })
-      }).flatten
+        val newMetadata = metadata.transformField {
+          case ("error", _) => ("data", Extraction.decompose(newData))
+        }
+        write(newMetadata)
+      })
     }).flatten match {
       case reprocessed::Nil => reprocessed::result
-      case _ => {
+      case _ => 
         logger.error(
-          s"processDialogAgentErrorMetadata: Could not parse: ${line}\n"
+          s"reprocessDialogAgentErrorMetadata: Could not parse: ${line}\n"
         )
         line::result
-      }
     }
   }
 
   /* Update extractions for a DialogAgentMessageData struct
    * @param json A JSON representation of a DialogAgentMessageData struct
-   * @returns A copy of the JSON struct with new extractions
+   * @returns A new DialogAgentMessageData struct with new extractions
    */
-  def parseDialogAgentErrorData(
+  def reprocessDialogAgentMessageData(
     json: String
-  ): Option[DialogAgentMessageData] = try {
-    val errorData = read[DialogAgentMessageData](json)
-    Some(new DialogAgentMessageData(
-      participant_id = errorData.participant_id,
-      asr_msg_id = errorData.asr_msg_id,
-      text = errorData.text,
+  ): DialogAgentMessageData = try {
+    val data = read[DialogAgentMessageData](json)
+    new DialogAgentMessageData(
+      participant_id = data.participant_id,
+      asr_msg_id = data.asr_msg_id,
+      text = data.text,
       source = new DialogAgentMessageDataSource(
-        source_type = errorData.source.source_type,
-        source_name = errorData.source.source_name
+        source_type = data.source.source_type,
+        source_name = data.source.source_name
       ),
-      extractions = extractions(errorData.text)
-    ))
+      extractions = extractions(data.text)
+    )
   } catch {
     case NonFatal(t) => {
-      logger.error(s"parseDialogAgentErrorData could not parse ${json}")
+      logger.error(s"reprocessDialogAgentMessageData could not parse ${json}")
       logger.error(t.toString)
-      None
+      new DialogAgentMessageData(source = new DialogAgentMessageDataSource)
     }
   }
 
