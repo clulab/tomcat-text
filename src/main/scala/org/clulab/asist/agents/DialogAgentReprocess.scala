@@ -136,7 +136,7 @@ class DialogAgentReprocess (
   def readTrialMessage(line: String): TrialMessage = try {
     read[TrialMessage](line)
   } catch {
-    case NonFatal(t) => new TrialMessage(new CommonMsg)
+    case NonFatal(t) => new TrialMessage(new TrialMessageMsg)
   }
 
   /** process one input file
@@ -197,8 +197,15 @@ class DialogAgentReprocess (
     try {
       val trialMessage = read[TrialMessage](line)
       if(trialMessage.msg.sub_type == "start") {
-        val timestamp = Clock.systemUTC.instant.toString
-        val json = write(VersionInfoMetadata(this, timestamp))
+        val timestamp = Clock.systemUTC.instant.toString // for VersionInfo
+        val versionInfo: VersionInfo = VersionInfo(this, timestamp)
+        val topicToMerge = Extraction.decompose(("topic",topicPubVersionInfo))
+        val timestampToMerge =  // for metadata
+          Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
+        val versionInfoJValue = Extraction.decompose(versionInfo)
+        val versionInfoMetadata = 
+          versionInfoJValue.merge(topicToMerge).merge(timestampToMerge)
+        val json = write(versionInfoMetadata)
         json::line::result // original then version info
       }
       else line::result
