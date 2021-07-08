@@ -4,6 +4,8 @@ import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.extraction.TomcatRuleEngine._
 import org.clulab.odin._
 
+import scala.util.control.NonFatal
+
 class TomcatActions() extends Actions with LazyLogging {
 
   def passThrough(
@@ -53,6 +55,7 @@ class TomcatActions() extends Actions with LazyLogging {
     localState.lookUpTable.values.toStream.flatten.distinct.toVector
   }
 
+  /*
   def requireSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     // trigger should be before all the arguments
     // todo: revisit when the no_agent branch merged
@@ -74,6 +77,39 @@ class TomcatActions() extends Actions with LazyLogging {
       // check that trigger is to left of all args and any missed subjects
       if triggerStart < leftMostArg && triggerStart < leftMostMissedSubj
     } yield mention
+  }
+  */
+
+  def requireSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    // trigger should be before all the arguments
+    // todo: revisit when the no_agent branch merged
+    // FIXME!!
+    for {
+      mention <- mentions
+      if testMention(mention)
+    } yield mention
+  }
+
+  def testMention (mention: Mention): Boolean = try {
+    val triggerStart = mention.asInstanceOf[EventMention].trigger.start
+    val leftMostArg = mention.arguments.flatMap(xx => xx._2).map(m => m.start).min // first token index of all the arguments
+    val action = mention.arguments("topic").head.asInstanceOf[EventMention] // should only be one
+    val missedSubjs = action.sentenceObj.dependencies.get
+      // get the outgoing dep edges coming from the trigger of the action
+      .outgoingEdges(action.trigger.start)
+      // we're only interested in nsubj
+      .filter(tup => tup._2 == "nsubj")
+      // get the landing token (i.e., the subject of that action's token index)
+      .map(_._1)
+    // get the leftmost (or a dummy big number if there are none)
+    val leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
+
+    // check that trigger is to left of all args and any missed subjects
+    triggerStart < leftMostArg && triggerStart < leftMostMissedSubj
+  }
+  catch {
+    case t: ClassCastException => false  // TextBoundMention
+    case NonFatal(t) => false
   }
 
 
