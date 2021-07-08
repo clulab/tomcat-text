@@ -12,7 +12,7 @@ import scala.util.control.NonFatal
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 June
+ * Updated:  2021 July
  *
  * Process a file or the first level of a directory of files.
  *

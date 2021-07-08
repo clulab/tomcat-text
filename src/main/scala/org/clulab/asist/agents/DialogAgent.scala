@@ -21,7 +21,7 @@ import scala.io.Source
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
+ *  Updated:  2021 July
  *
  *  Create extractions from text for the ToMCAT project.
  *
