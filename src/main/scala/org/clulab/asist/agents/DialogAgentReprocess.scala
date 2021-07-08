@@ -259,10 +259,9 @@ class DialogAgentReprocess (
       }.toList.map(_._2.findField {
         case (n: String, text: JValue) => n == "data"
         case _ => false
-      }).toList.flatten.map(_._2).map(errorDataJson => {
-        // get actual JSON and not a description of it
-        val json = errorDataJson.extract[String]
-        val newData = reprocessDialogAgentMessageData(json)
+      }).toList.flatten.map(_._2).map(dataJString => {
+        val data = textJString.extract[String]
+        val newData = reprocessDialogAgentMessageData(text)
           // reprocess error report by replacing the error struct 
           // with a DialogAgentMessageData struct with new extractions
         val newMetadata = metadata.transformField {
