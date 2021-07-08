@@ -4,8 +4,49 @@ import json
 
 with open("extraction_schemas.json") as f:
     data = json.load(f)
+    print("""
+Extraction schemas
+==================
+
+This is automatically generated documentation of the different entities and
+events being extracted by the University of Arizona [Dialog
+Agent](https://github.com/clulab/tomcat-text).
+
+Format
+------
+
+Each block below that is separated by a blank line corresponds to an extraction
+type.
+
+The first line of each block contains two parts, separated by a space. The
+first part is the full path to the leaf node in the taxonomy, with levels
+separated by slashes ('/'). The second is an optional label that specifies
+whether this extraction only occurs in an argument.
+
+The next lines are the arguments.
+""")
 
     for extraction in data:
-        print(extraction["name"], "/".join(reversed(extraction["labels"])))
+        keep_str = "[argumentOnly]" if not any(set(extraction["keep"])) else ""
+        print("/".join(reversed(extraction["labels"])), keep_str)
         if extraction["argumentsPerRule"]:
-            print([[list(x.values()) for x in y] for y in extraction["argumentsPerRule"]])
+            arguments = dict()
+            for rule_argument in extraction["argumentsPerRule"]:
+                for arg in rule_argument:
+                    required = arg["required"]
+                    arg_str = arg["name"] if required else f"[{arg['name']}]"
+                    if arg_str not in arguments:
+                        arguments[arg_str] = {
+                            "label(s)": {arg["label"]},
+                            "quantifier(s)": arg["quantifier"],
+                        }
+                    else:
+                        arguments[arg_str]["label(s)"].add(arg["label"])
+            for arg in arguments:
+                print(
+                    "- " + arg,
+                    f"({','.join(x for x in arguments[arg]['label(s)'])})",
+                    f"<{arguments[arg]['quantifier(s)']}>".replace("`","").replace("_none_",""),
+                )
+
+        print("")
