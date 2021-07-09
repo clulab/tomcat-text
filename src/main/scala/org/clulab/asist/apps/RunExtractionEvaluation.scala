@@ -2,7 +2,7 @@ package org.clulab.asist.apps
 
 import ai.lum.common.ConfigFactory
 import org.clulab.asist.`export`.ExtractionEvaluation
-import org.clulab.asist.agents.DialogAgentReprocess
+import org.clulab.asist.agents.DialogAgentReprocessor
 import org.clulab.asist.messages.DialogAgentMessage
 import org.clulab.odin.Mention
 import org.clulab.utils.LocalFileUtils
@@ -13,7 +13,7 @@ object RunExtractionEvaluation extends App {
 
   val config = ConfigFactory.load()
   val inputDir = config.getString("DialogAgent.inputDir")
-  val agent = new DialogAgentReprocess(inputDir, "/dev/null")
+  val agent = new DialogAgentReprocessor(inputDir, "/dev/null")
   val files = LocalFileUtils.getFileNames(inputDir)
   val mentions = for {
     filename <- files.par

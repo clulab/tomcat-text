@@ -1,13 +1,14 @@
 package org.clulab.utils
 
+import com.typesafe.scalalogging.LazyLogging
+
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
-import org.slf4j.LoggerFactory
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 June
+ * Updated:  2021 July
  *
  * Simplified subscription (read) and publication (write) to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
@@ -31,9 +32,7 @@ class MessageBusClient(
   val subscriptions: List[String] = List.empty,
   val publications: List[String] = List.empty,
   val listener: MessageBusClientListener
-) extends MqttCallback {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+) extends MqttCallback with LazyLogging {
 
   val uri = "tcp://%s:%s".format(host,port)
   val qos = 2 // highest quality of service, send msg exactly once.
