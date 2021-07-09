@@ -59,12 +59,12 @@ class TomcatActions() extends Actions with LazyLogging {
     // FIXME!!
     for {
       mention <- mentions
-      triggerStart = mention.asInstanceOf[EventMention].trigger.start
+      triggerStart = mentionStart(mention)
       leftMostArg = mention.arguments.flatMap(xx => xx._2).map(m => m.start).min // first token index of all the arguments
-      action = mention.arguments("topic").head.asInstanceOf[EventMention] // should only be one
+      action = mention.arguments("topic").head // should only be one
       missedSubjs = action.sentenceObj.dependencies.get
         // get the outgoing dep edges coming from the trigger of the action
-        .outgoingEdges(action.trigger.start)
+        .outgoingEdges(mentionStart(action))
         // we're only interested in nsubj
         .filter(tup => tup._2 == "nsubj")
         // get the landing token (i.e., the subject of that action's token index)
@@ -76,6 +76,10 @@ class TomcatActions() extends Actions with LazyLogging {
     } yield mention
   }
 
+  def mentionStart (mention: Mention): Int = mention match {
+    case m: EventMention => m.trigger.start
+    case m: TextBoundMention => m.start
+  }
 
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(addArgLabel(_, TARGET_ARG, VICTIM, Some(ENTITY)))

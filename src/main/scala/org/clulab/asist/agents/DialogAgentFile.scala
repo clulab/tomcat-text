@@ -1,10 +1,9 @@
 package org.clulab.asist.agents
 
-import java.io.PrintWriter
+import com.typesafe.scalalogging.LazyLogging
 
 import org.clulab.asist.{AgentFileMetadata, RunDialogAgent}
 import org.clulab.utils.LocalFileUtils
-import org.slf4j.LoggerFactory
 import java.io.{File, PrintWriter}
 
 import scala.util.control.NonFatal
@@ -13,7 +12,7 @@ import scala.util.control.NonFatal
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 June
+ * Updated:  2021 July
  *
  * Process a file or the first level of a directory of files.
  *
@@ -26,9 +25,7 @@ class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
   override val nMatches: Int = 0
-) extends DialogAgent {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+) extends DialogAgent with LazyLogging {
 
   /** process one input file
    * @param filename a single input file

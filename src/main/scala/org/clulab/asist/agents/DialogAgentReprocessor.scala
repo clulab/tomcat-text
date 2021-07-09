@@ -1,12 +1,13 @@
 package org.clulab.asist.agents
 
+import com.typesafe.scalalogging.LazyLogging
+
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
 import java.time.Clock
 
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
-import org.slf4j.LoggerFactory
 import org.json4s.JField
 import org.json4s.{Extraction,_}
 import org.json4s.jackson.JsonMethods._
@@ -51,13 +52,11 @@ import scala.util.control.NonFatal
  * running the extractions.
  *
  */
-class DialogAgentReprocess (
+class DialogAgentReprocessor (
   val inputDirName: String,
   val outputDirName: String,
   override val nMatches: Int = 0
-) extends DialogAgent {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass)
+) extends DialogAgent with LazyLogging {
 
   val startTime = Clock.systemUTC.millis
   logger.info("Checking input files for DialogAgent metadata...")
@@ -227,7 +226,8 @@ class DialogAgentReprocess (
       }.toList.map(_._2.findField {
         case (n: String, text: JValue) => n == "text" 
         case _ => false
-      }).toList.flatten.map(_._2.toString).map (text => {
+      }).toList.flatten.map(_._2).map (textJValue => {
+        val text: String = textJValue.extract[String]
         write(  
           // replace the data.extractions field value
           metadata.replace( 
@@ -258,10 +258,9 @@ class DialogAgentReprocess (
       }.toList.map(_._2.findField {
         case (n: String, text: JValue) => n == "data"
         case _ => false
-      }).toList.flatten.map(_._2).map(errorDataJson => {
-        // get actual JSON and not a description of it
-        val json = errorDataJson.extract[String]
-        val newData = reprocessDialogAgentMessageData(json)
+      }).toList.flatten.map(_._2).map(dataJString => {
+        val data = dataJString.extract[String]
+        val newData = reprocessDialogAgentMessageData(data)
           // reprocess error report by replacing the error struct 
           // with a DialogAgentMessageData struct with new extractions
         val newMetadata = metadata.transformField {
