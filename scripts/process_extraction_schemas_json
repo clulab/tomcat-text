@@ -1,12 +1,29 @@
 #!/usr/bin/env python
 
-import json
+# Script to generate compact extraction schemas documentation
 
-with open("extraction_schemas.json") as f:
+import sys
+import json
+from datetime import datetime
+
+input_file = sys.argv[1]
+
+# Version of the dialog agent for which this documentation is being
+# generated.
+AGENT_VERSION = "2.0.0"
+
+with open(input_file) as f:
     data = json.load(f)
-    print("""
-Extraction schemas
-==================
+    print(
+        """\
+ASIST Extraction Schemas
+========================
+
+Authors: Adarsh Pyarelal, Rebecca Sharp
+
+Agent version: `{agent_version}`
+
+Document generation timestamp (UTC): `{date}`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -15,20 +32,69 @@ Agent](https://github.com/clulab/tomcat-text).
 Format
 ------
 
-Each block below that is separated by a blank line corresponds to an extraction
-type.
+The extractions are listed below as blocks separated by blank lines.
 
 The first line of each block contains two parts, separated by a space. The
 first part is the full path to the leaf node in the taxonomy, with levels
-separated by slashes ('/'). The second is an optional label that specifies
-whether this extraction only occurs in an argument.
+separated by slashes (`/`). If the extraction is only output as an
+argument of another extraction, rather than as a standalone
+extraction, the name wrapped in square brackets (`[]`).
 
-The next lines are the arguments.
-""")
+Each of the lines that follow the first line in the block corresponds to an
+argument of the extraction. Each argument line starts with a hyphen and a
+space, for additional indentation, in the service of readability. This is
+followed by the name of the argument. If the the argument is optional, the name
+is enclosed in square brackets, it is an optional argument. The possible labels
+that can be assigned to the argument come next, enclosed in parentheses and
+separated by the `|` character. Finally, the third component of the argument
+line is a list of quantifiers, separated by commas, and enclosed in
+parentheses.
+
+[Odin](https://github.com/clulab/processors) arguments can be quantified in
+several ways. First, they may be optional (`?`), meaning that if they can be
+added, given a particular sentence, they will be, but if not the Mention can
+still be found. Further, they can be allowed to match multiple arguments. For
+example, in the sentence Ferdinand ate ice cream and pop tarts., if you made a
+rule to extract eating events and used a `+` quantifier with the food argument
+`(food: Food+ = ...)`, then the Mention would have two separate arguments (ice
+cream and pop tarts). The quantifiers you may see are:
+
+- `?` (arg is optional)
+- `+` (you need at least one, can have as many as are there)
+- `(_min_, _max_)` (you need at least min and can have up to max, where min can be 0).
+
+Take for example the following block:
+
+```
+Concept/LeafNode
+- arg1 (LeafNode1|LeafNode2) ()
+- [arg2] (LeafNode3) (?)
+```
+
+The full path to the leaf node in the taxonomy is `Concept/LeafNode`. The
+extraction has two arguments, `arg1` and `arg2`, with `arg2` being optional.
+The 'arg1' argument can be labeled as either `LeafNode1` or `LeafNode2` (we
+elide the full taxonomy paths here for clarity). Additionally, `arg2` has an
+optional quantifier.
+
+The extractions are documented in the following section.
+
+Extractions
+-----------
+
+```
+""".format(
+            agent_version=AGENT_VERSION, date=datetime.utcnow()
+        )
+    )
+
+    extraction_docs = []
 
     for extraction in data:
-        keep_str = "[argumentOnly]" if not any(set(extraction["keep"])) else ""
-        print("/".join(reversed(extraction["labels"])), keep_str)
+        full_name = "/".join(reversed(extraction["labels"]))
+        keep = any(set(extraction["keep"]))
+        extraction_doc = {"name": full_name, "keep": keep}
+
         if extraction["argumentsPerRule"]:
             arguments = dict()
             for rule_argument in extraction["argumentsPerRule"]:
@@ -42,11 +108,24 @@ The next lines are the arguments.
                         }
                     else:
                         arguments[arg_str]["label(s)"].add(arg["label"])
-            for arg in arguments:
-                print(
-                    "- " + arg,
-                    f"({','.join(x for x in arguments[arg]['label(s)'])})",
-                    f"<{arguments[arg]['quantifier(s)']}>".replace("`","").replace("_none_",""),
-                )
+            extraction_doc["arguments"] = arguments
+        extraction_docs.append(extraction_doc)
 
+    for doc in extraction_docs:
+        if doc["keep"]:
+            print(doc["name"])
+        else:
+            print(f"[{doc['name']}]")
+        arguments = doc.get("arguments", [])
+        for arg in arguments:
+            print(
+                "- " + arg,
+                f"({'|'.join(x for x in arguments[arg]['label(s)'])})",
+                f"({arguments[arg]['quantifier(s)']})".replace(
+                    "`", ""
+                ).replace("_none_", ""),
+            )
         print("")
+
+    # Close markdown code block
+    print("```")

@@ -4,6 +4,3 @@
 
 # Generate markdown documentation
 sbt "runMain org.clulab.asist.RunGrammarDemo . /org/clulab/asist/grammars/master.yml"
-
-# Convert to PDF using pandoc
-#pandoc -s -V colorlinks=true -V urlcolor=blue extraction_schemas.md -o extraction_schemas.pdf
