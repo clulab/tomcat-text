@@ -59,26 +59,40 @@ class TomcatActions() extends Actions with LazyLogging {
     // FIXME!!
     for {
       mention <- mentions
-      triggerStart = mentionStart(mention)
-      leftMostArg = mention.arguments.flatMap(xx => xx._2).map(m => m.start).min // first token index of all the arguments
-      action = mention.arguments("topic").head // should only be one
-      missedSubjs = action.sentenceObj.dependencies.get
-        // get the outgoing dep edges coming from the trigger of the action
-        .outgoingEdges(mentionStart(action))
-        // we're only interested in nsubj
-        .filter(tup => tup._2 == "nsubj")
-        // get the landing token (i.e., the subject of that action's token index)
-        .map(_._1)
-      // get the leftmost (or a dummy big number if there are none)
-      leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
-      // check that trigger is to left of all args and any missed subjects
-      if triggerStart < leftMostArg && triggerStart < leftMostMissedSubj
+      if hasSubjectVerbInversionOrNotApplicable(mention)
     } yield mention
   }
 
-  def mentionStart (mention: Mention): Int = mention match {
-    case m: EventMention => m.trigger.start
-    case m: TextBoundMention => m.start
+  def hasSubjectVerbInversionOrNotApplicable(mention: Mention): Boolean = {
+    mention match {
+      case em: EventMention => hasSubjectVerbInversion(em)
+      case _ => true
+    }
+  }
+
+  def hasSubjectVerbInversion(mention: EventMention): Boolean = {
+    val triggerStart = mention.trigger.start
+    // first token index of all the arguments
+    val leftMostArg = mention.arguments
+      // get the mentions from all arguments, flatten to a Seq[Mention]
+      .flatMap{ case (argName, argMentions) => argMentions }
+      // get the first token index of each mention
+      .map(m => m.start)
+      // find the smallest (leftmost) index
+      .min
+    val action = mention.arguments("topic").head // should only be one
+    val missedSubjs = action.sentenceObj.dependencies.get
+      // get the outgoing dep edges coming from the trigger of the action
+      .outgoingEdges(triggerStart)
+      // we're only interested in nsubj
+      .filter(tup => tup._2 == "nsubj")
+      // get the landing token (i.e., the subject of that action's token index)
+      .map(_._1)
+    // get the leftmost (or a dummy big number if there are none)
+    val leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
+
+    // check that trigger is to left of all args and any missed subjects
+    (triggerStart < leftMostArg) && (triggerStart < leftMostMissedSubj)
   }
 
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
