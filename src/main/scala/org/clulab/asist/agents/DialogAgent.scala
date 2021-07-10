@@ -9,7 +9,7 @@ import org.clulab.asist.attachments.Agent
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.extraction.TomcatRuleEngine.AGENT_ARG
 import org.clulab.asist.messages._
-import org.clulab.odin.{Mention}
+import org.clulab.odin.Mention
 import org.json4s._
 import org.json4s.jackson.Serialization.{write, writePretty}
 import spray.json.DefaultJsonProtocol._
