@@ -2,39 +2,49 @@ package org.clulab.asist
 
 import java.text.SimpleDateFormat
 
+import org.clulab.utils.Closer._
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
-class Transcript(val file_name: String) {
+// TODO: can this file be removed?
+
+
+class Transcript(val fileName: String) {
 
   override def toString: String = {
     var big_string = ""
-    for (line <- Source.fromFile(file_name).getLines) {
-      big_string += line + "\n"
+    Source.fromFile(fileName).autoClose { source =>
+      val lines = source.getLines()
+      for (line <- lines) {
+        big_string += line + "\n"
+      }
     }
     big_string
   }
 
   def getCleanDoc(): (String) = {
-    val zoom_lines = Source.fromFile(file_name).getLines
-    zoom_lines.next
-    var output_string = ""; var cur = ""
-    val punctuation = Set('?', '!', '.')
-    for (line <- zoom_lines) {
-      cur = line.stripLineEnd
-      if (cur.size > 3) {
-        if (!cur.charAt(0).isDigit) {
-          if (cur.contains(":")) {
-            cur = cur.split(":")(1)
+    Source.fromFile(fileName).autoClose { source =>
+      val zoom_lines = source.getLines
+      zoom_lines.next
+      var output_string = ""; var cur = ""
+      val punctuation = Set('?', '!', '.')
+      for (line <- zoom_lines) {
+        cur = line.stripLineEnd
+        if (cur.length > 3) {
+          if (!cur.charAt(0).isDigit) {
+            if (cur.contains(":")) {
+              cur = cur.split(":")(1)
+            }
+            if (!punctuation(cur.charAt(cur.length - 1))) {
+              cur += "."
+            }
+            output_string += cur
           }
-          if (!punctuation(cur.charAt(cur.size - 1))) {
-            cur += "."
-          }
-          output_string += cur
         }
       }
+      output_string
     }
-    output_string
+
   }
 
   def isVictimQuestion(utterance: String): Boolean = {
@@ -42,7 +52,7 @@ class Transcript(val file_name: String) {
       "Which type of victim will you save next Yellow green or whoever comes next"
         .split(' ')
         .toSet
-    var tokens = utterance.split(' ').toSet
+    val tokens = utterance.split(' ').toSet
     var match_count = 0
     for (tok <- tokens) {
       if (gold_tokens contains tok) {
@@ -60,7 +70,7 @@ class Transcript(val file_name: String) {
   ) = {
     // This returns the ending char for each utterance the timestamp of each utterance, and the
     //  index of researcher utterances
-    val zoom_lines = Source.fromFile(file_name).getLines
+    val zoom_lines = Source.fromFile(fileName).getLines
     val char_values = ArrayBuffer[Int]()
     val date_values = ArrayBuffer[java.util.Date]()
     val researcher_char_values = ArrayBuffer[Int]()

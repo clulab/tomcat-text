@@ -1,15 +1,18 @@
 package org.clulab.asist
 
 import java.io.PrintWriter
+import java.time.Clock
+
+import org.clulab.asist.agents.DialogAgent
+import org.clulab.asist.messages._
 import org.json4s._
-import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
 
 import scala.io.Source
 import scala.util.control.Exception._
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 June
  *
@@ -19,9 +22,6 @@ import scala.util.control.Exception._
 
 object AgentFileMetadata {
   val source_type = "message_bus"
-
-  // Used so Json serializers can recognize case classes
-  implicit val formats = Serialization.formats(NoTypeHints)
 
   /** Wrangle one metadata file
    * @param filename a single input file
@@ -35,10 +35,11 @@ object AgentFileMetadata {
     while(lines.hasNext) {
       val line = lines.next
       allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
-        if(agent.subscribeTrial == lookahead.topic) {
+        if(agent.topicSubTrial == lookahead.topic) {
           allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
             if(trialMessage.msg.sub_type == "start") {
-              output.write(write(agent.versionInfo))
+              val timestamp = Clock.systemUTC.instant.toString
+              output.write(write(VersionInfo(agent, timestamp)))
             }
           })
         }

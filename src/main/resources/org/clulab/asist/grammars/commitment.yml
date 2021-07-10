@@ -5,8 +5,7 @@ rules:
   - name: commit_to_something
     priority: ${ rulepriority }
     label: MakeCommitment
-    action: removeResearcher
     pattern: |
-      trigger = [tag=/^MD/]
+      trigger = [tag=/^MD/ & lemma=/^can|will/]
       target: Action = <aux
       agent: Entity? = <aux >nsubj
