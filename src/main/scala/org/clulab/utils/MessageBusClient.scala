@@ -1,33 +1,38 @@
-package org.clulab.asist
+package org.clulab.utils
+
+import com.typesafe.scalalogging.LazyLogging
 
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
-import org.slf4j.LoggerFactory
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 June
+ * Updated:  2021 July
  *
- * Publish and subscribe to message bus topics
+ * Simplified subscription (read) and publication (write) to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
  * @param subscriptions MQTT topics from which messages to process are read.
- * @param outputTopic MQTT topic for publishing processed messages
- * @param owner A DialogAgentMQTT that will process input messages
+ * @param publications MQTT topic for publishing processed messages
+ * @param listener A MessageBusClientListener that will process messages
  */
 
+// extend this in your message bus communicator class
+trait MessageBusClientListener {
+  def messageArrived(topic: String, json: String): Unit
+}
+
+// instantiate one of these in your message bus communicator class
 class MessageBusClient(
   val host: String = "",
   val port: String = "",
   val subscriptions: List[String] = List.empty,
   val publications: List[String] = List.empty,
-  val owner: DialogAgentMqtt
-) extends MqttCallback {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+  val listener: MessageBusClientListener
+) extends MqttCallback with LazyLogging {
 
   val uri = "tcp://%s:%s".format(host,port)
   val qos = 2 // highest quality of service, send msg exactly once.
@@ -54,7 +59,8 @@ class MessageBusClient(
   }
 
   /** Publish a MQTT message to one topic
-   *  @param output String to publish on the Message Bus
+   *  @param topic Destination on the Message Bus
+   *  @param text String to publish on the Message Bus
    */
   def publish(topic: String, text: String): Unit = try {
     publisher.publish(topic, new MqttMessage(text.getBytes))
@@ -84,7 +90,7 @@ class MessageBusClient(
    * @param mm Contains metadata in Json format
    */
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
-    owner.messageArrived(topic, mm.toString)
+    listener.messageArrived(topic, mm.toString)
   } catch {
     case t: Throwable => {
       logger.error("Problem reading message on %s".format(topic))

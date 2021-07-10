@@ -1,31 +1,25 @@
-package org.clulab.asist
+package org.clulab.asist.agents
+
+import com.typesafe.scalalogging.LazyLogging
+
+import java.io.{File, FileInputStream, PrintWriter}
 
 import com.crowdscriber.caption.vttdissector.VttDissector
-import java.io.FileInputStream
-import java.io.File
-import java.io.PrintWriter
-import org.json4s._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
-import org.slf4j.LoggerFactory
+import org.clulab.asist.messages._
+import org.json4s.jackson.Serialization.write
 
 import scala.util.{Failure, Success}
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
+ *  Updated:  2021 July
  *
  *  This trait is to group file processing functionality in one place.
  *
  */
 
-object AgentFileWebVtt {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
-
-  // Used so Json serializers can recognize case classes
-  implicit val formats = Serialization.formats(NoTypeHints)
+object AgentFileWebVtt extends LazyLogging {
 
   val source_type = "web_vtt_file"
 

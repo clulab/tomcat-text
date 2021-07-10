@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject._
-import org.clulab.asist.AsistEngine
+import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.odin.{Attachment, EventMention, Mention, RelationMention, TextBoundMention}
 import org.clulab.processors.{Document, Sentence}
 import org.clulab.utils.DisplayUtils
@@ -18,7 +18,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   // Initialize the EidosSystem
   // -------------------------------------------------
   println("[AsistEngine] Initializing the AsistEngine ...")
-  val ieSystem = new AsistEngine()
+  val ieSystem = new TomcatRuleEngine()
   var proc = ieSystem.proc
   println("[AsistEngine] Completed Initialization ...")
   // -------------------------------------------------
@@ -53,7 +53,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     entityLinkingEvents
   }
   
-  def processPlaySentence(ieSystem: AsistEngine, text: String): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
+  def processPlaySentence(ieSystem: TomcatRuleEngine, text: String): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
     // preprocessing
     println(s"Processing sentence : ${text}" )
     val doc = ieSystem.annotate(text)
