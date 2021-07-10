@@ -62,7 +62,7 @@ class TomcatActions() extends Actions with LazyLogging {
     Interval(start, end)
   }
 
-  def mkAgent(m: Mention): Attachment = Agent(m.text, m.label)
+  def mkAgent(m: Mention): Attachment = Agent(m.text, m.label, m.labels, m.tokenInterval)
 
 /** Keeps the longest mention for each group of overlapping mentions **/
   def keepLongest(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {

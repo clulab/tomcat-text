@@ -1,14 +1,15 @@
 package org.clulab.asist.agents
 
 import java.time.Clock
+
 import com.typesafe.scalalogging.LazyLogging
-
-
 import ai.lum.common.ConfigFactory
 import com.typesafe.config.Config
+import org.clulab.asist.attachments.Agent
 import org.clulab.asist.extraction.TomcatRuleEngine
+import org.clulab.asist.extraction.TomcatRuleEngine.AGENT_ARG
 import org.clulab.asist.messages._
-import org.clulab.odin.Mention
+import org.clulab.odin.{Mention}
 import org.json4s._
 import org.json4s.jackson.Serialization.{write, writePretty}
 import spray.json.DefaultJsonProtocol._
@@ -156,7 +157,9 @@ class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
    *  @param mention Contains text to analyze
    */
   def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
-    val originalArgs = mention.arguments.toArray
+    // Any arguments that were converted to Attachments for internal purposes are now
+    // restored to arg mentions
+    val originalArgs = restoreArgs(mention).toArray
     val extractionArguments = for {
       (role, ms) <- originalArgs
       converted = ms.map(extraction)
@@ -170,6 +173,15 @@ class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
       mention.endOffset,
       taxonomy_matches
     )
+  }
+
+  def restoreArgs(m: Mention): Map[String, Seq[Mention]] = {
+    val agents = m.attachments.toSeq
+      // get all the agents
+      .collect{ case a: Agent => a }
+      // convert each to a TextBoundMention
+      .map(_.mentionLike(m))
+    m.arguments ++ Map(AGENT_ARG -> agents)
   }
 
   /** create a DialogAgentMessage with metadata
