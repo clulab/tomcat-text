@@ -74,8 +74,8 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ search_triggers })/]
-      #person: Entity = >nsubj
+      trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
+      person: Entity = >nsubj
       target: Concept? = >nmod_for
 
   # -------------------------------------------------------------------
@@ -86,7 +86,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/]
       target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/
-      #person: Entity? = >/${agents}/
+      person: Entity? = >/${agents}/
 
   - name: move_deixis_action
     priority: ${ rulepriority }
@@ -95,7 +95,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)${ moveto_triggers }/]
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
-      #person: Entity? = >/${agents}/
+      person: Entity? = >/${agents}/
 
   # ------------------------------------------------------------------- sight
   - import: org/clulab/asist/grammars/lvo_template.yml
