@@ -14,7 +14,7 @@ import org.json4s.jackson.Serialization.read
 
 
 // outbound comms from DialogAgent client to TAMU server
-case class TamuDialogAgent(
+case class TamuDialogAgentMessage(
   participant_id: String = "",
   text: String = "",
   extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty

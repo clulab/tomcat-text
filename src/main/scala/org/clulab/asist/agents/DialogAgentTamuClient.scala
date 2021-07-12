@@ -11,9 +11,29 @@ import scala.concurrent.Future
 import scala.util.{ Failure, Success }
 
 
+class DialogAgentTamu (
+  val host: String = "",
+  val port: String = "",
+  override val nMatches: Int = 0
+) extends DialogAgent  {
+
+  val test = new TamuDialogAgentMessage(
+    participant_id = "Foo",
+    text = "Bar", 
+    extractions = Seq.empty
+  )
+
+  TamuClientSingleRequest.main(test)
+
+}
+
+
+
+
+
 object TamuClientSingleRequest extends LazyLogging {
 
-  def main(args: Array[String]): Unit = {
+  def apply(outboundMessage: TamuDialogAgentMessage): Unit = {
     implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.executionContext

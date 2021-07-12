@@ -11,7 +11,7 @@ import scala.util.control.Exception._
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 June
+ * Updated:  2021 July
  *
  * This class reads input from the message bus on subscribed topics,
  * performs analysis on the input, and then publishes the analysis to
@@ -42,6 +42,9 @@ class DialogAgentMqtt(
     this
   )
 
+  // connect to the Dialog Act Classifier
+  //  
+
   // send VersionInfo if we receive a TrialMessage with subtype "start", 
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
     allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
@@ -59,8 +62,9 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = if(topic == topicSubTrial) trialMessageArrived(json) else {
-    json.split("\n").map(line => 
+  ): Unit = topic match {
+    case `topicSubTrial` => trialMessageArrived(json)
+    case _ => json.split("\n").map(line => 
       allCatch.opt(read[Metadata](line)).map(metadata => 
         bus.publish(  // to Message Bus
           topicPubDialogAgent,
