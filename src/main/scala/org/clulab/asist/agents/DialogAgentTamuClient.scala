@@ -12,23 +12,18 @@ import scala.util.{ Failure, Success }
 
 
 class DialogAgentTamu (
-  val host: String = "",
-  val port: String = "",
   override val nMatches: Int = 0
 ) extends DialogAgent  {
 
   val test = new TamuDialogAgentMessage(
     participant_id = "Foo",
-    text = "Bar", 
+    text = "{\"text\":\"Here is a green victim\"}", 
     extractions = Seq.empty
   )
 
-  TamuClientSingleRequest.main(test)
+  TamuClientSingleRequest(test)
 
 }
-
-
-
 
 
 object TamuClientSingleRequest extends LazyLogging {

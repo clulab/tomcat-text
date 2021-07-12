@@ -1,6 +1,6 @@
 package org.clulab.asist
 
-import org.clulab.asist.agents.{DialogAgent, DialogAgentFile, DialogAgentMqtt, DialogAgentReprocessor, DialogAgentStdin}
+import org.clulab.asist.agents._
 
 import scala.annotation.tailrec
 
@@ -89,6 +89,10 @@ object RunDialogAgent extends App {
       case ("reprocess"::indir::outdir::l) =>
         val matches: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentReprocessor(indir, outdir, matches))
+
+      case ("tamu"::l) =>
+        val matches: Int = intArg(l, "-m").getOrElse(0)
+        Some(new DialogAgentTamu(matches))
 
       case _ =>
         usageText.foreach(println)
