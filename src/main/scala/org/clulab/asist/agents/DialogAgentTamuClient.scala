@@ -13,28 +13,38 @@ import scala.util.{ Failure, Success }
 
 class DialogAgentTamu (
   override val nMatches: Int = 0
-) extends DialogAgent  {
+) extends DialogAgent with LazyLogging {
 
   val test = new TamuDialogAgentMessage(
     participant_id = "Foo",
-    text = "{\"text\":\"Here is a green victim\"}", 
+    text = "Here is a green victim",
     extractions = Seq.empty
   )
 
-  TamuClientSingleRequest(test)
+  TamuClientSingleRequest(writeJson(test))
 
 }
 
 
 object TamuClientSingleRequest extends LazyLogging {
 
-  def apply(outboundMessage: TamuDialogAgentMessage): Unit = {
+  def apply(json :String): Unit = {
+
     implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.executionContext
 
     val responseFuture: Future[HttpResponse] = 
-      Http().singleRequest(HttpRequest(uri = "http://0.0.0.0:8000"))
+      Http().singleRequest(
+        HttpRequest(
+          method=HttpMethods.GET,
+          uri = "http://localhost:8000/classify",
+          entity = HttpEntity(
+            ContentTypes.`application/json`,
+            json
+          )
+        )
+      )
 
     responseFuture
       .onComplete {
