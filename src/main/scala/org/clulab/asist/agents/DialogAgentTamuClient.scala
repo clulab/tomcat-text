@@ -16,9 +16,40 @@ class DialogAgentTamu (
 ) extends DialogAgent with LazyLogging {
 
   val test = new TamuDialogAgentMessage(
-    participant_id = "Foo",
-    text = "Here is a green victim",
-    extractions = Seq.empty
+    participant_id = "Participant 21",
+    text = "Five because at least I know there was one yellow victim that died so",
+    extractions = Seq(
+      DialogAgentMessageDataExtraction(
+        label = "Sight",
+        span = "was one yellow victim",
+        arguments = Map.empty,
+        start_offset = 20,
+        end_offset = 25,
+        taxonomy_matches = Seq(
+          (
+            "stop-triaging", "11.709686762798679"
+          ),
+          (
+           "no-victims-spotted", "10.767969549025242"
+          )
+        )
+      ),
+      DialogAgentMessageDataExtraction(
+        label = "Victim",
+        span = "Victim",
+        arguments = Map.empty,
+        start_offset = 60,
+        end_offset = 75,
+        taxonomy_matches = Seq(
+          (
+            "stop-triaging-victim", "18.593763750341402"
+          ),
+          (
+            "start-triaging-victim", "17.326888048081006"
+          )
+        )
+      )
+    )
   )
 
   TamuClientSingleRequest(writeJson(test))
@@ -48,9 +79,13 @@ object TamuClientSingleRequest extends LazyLogging {
 
     responseFuture
       .onComplete {
-        case Success(res) => println(res)
+        case Success(res: HttpResponse) => 
+          logger.info("Success communicating with server:")
+          logger.info(res.toString)
+          logger.info("Response entity databytes:")
+          logger.info(res.entity.getDataBytes.toString)
         case Failure(e)   => 
-          logger.error("Error communicating with server")
+          logger.error("Error communicating with server:")
           logger.error(e.toString)
       }
   }
