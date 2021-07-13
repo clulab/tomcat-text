@@ -115,7 +115,7 @@ class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
    * @return The return value from the server
    */
   def queryDac(text: String): String = {
-    "Dialog Act Classification goes here"  // FIXME implement this placeholder
+    "Not set"  // override in extending class
   }
 
 
