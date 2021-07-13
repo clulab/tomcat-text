@@ -109,6 +109,16 @@ class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
       .sortBy(m => (m.sentence, m.label))
   }
 
+  /**
+   * Get the Dialog Act Classification from the server
+   * @param text String text for the Classifier to analyse.
+   * @return The return value from the server
+   */
+  def queryDac(text: String): String = {
+    "Dialog Act Classification goes here"  // FIXME implement this placeholder
+  }
+
+
   /** Create the data component of the DialogAgentMessage structure
    *  @param participant_id human subject who created the text
    *  @param asr_msg_id from the Automated Speech Recognition system
@@ -127,6 +137,7 @@ class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
       participant_id = participant_id,
       asr_msg_id = asr_msg_id,
       text = text,
+      dialog_act_label = queryDac(text),
       DialogAgentMessageDataSource(
         source_type = source_type,
         source_name = source_name
