@@ -114,10 +114,7 @@ class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
    * @param text String text for the Classifier to analyse.
    * @return The return value from the server
    */
-  def queryDac(text: String): String = {
-    "Not set"  // override in extending class
-  }
-
+  def queryDac(text: String): String = null // override in extending class
 
   /** Create the data component of the DialogAgentMessage structure
    *  @param participant_id human subject who created the text
