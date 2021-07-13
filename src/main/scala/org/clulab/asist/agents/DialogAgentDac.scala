@@ -16,11 +16,11 @@ import scala.concurrent.Future
 import scala.util.{ Failure, Success }
 
 
-class DialogAgentTamu (
+class DialogAgentDac (
   override val nMatches: Int = 0
 ) extends DialogAgent with LazyLogging {
 
-  val test = new TamuDialogAgentMessage(
+  val test = new DialogActClassifierMessage(
     participant_id = "Participant 21",
     text = 
       "Five because at least I know there was one yellow victim that died so",
@@ -58,17 +58,17 @@ class DialogAgentTamu (
     )
   )
 
-  TamuClientSingleRequest(writeJson(test))
+  DacSingleRequest(writeJson(test))
 
 }
 
 
-object TamuClientSingleRequest extends LazyLogging {
+object DacSingleRequest extends LazyLogging {
 
   def apply(json :String): Unit = {
 
 
-    logger.info(s"TamuClientSingleRequest with ${json}")
+    logger.info(s"DacSingleRequest with ${json}")
 
     implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
     // needed for the future flatMap/onComplete in the end

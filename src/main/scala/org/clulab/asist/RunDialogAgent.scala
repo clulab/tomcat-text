@@ -90,9 +90,9 @@ object RunDialogAgent extends App {
         val matches: Int = intArg(l, "-m").getOrElse(0)
         Some(new DialogAgentReprocessor(indir, outdir, matches))
 
-      case ("tamu"::l) =>
+      case ("dac"::l) =>
         val matches: Int = intArg(l, "-m").getOrElse(0)
-        Some(new DialogAgentTamu(matches))
+        Some(new DialogAgentDac(matches))
 
       case _ =>
         usageText.foreach(println)

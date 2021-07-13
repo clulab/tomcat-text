@@ -7,14 +7,14 @@ import org.json4s.jackson.Serialization.read
  *
  *  Updated:  2021 July
  *
- *  TAMU messages
+ *  Classifier messages
  *
- *  Messages for communication with the TAMU Dialog Act Classifier
+ *  Messages for communication with the Dialog Act Classifier
  */
 
 
-// outbound comms from DialogAgent client to TAMU server
-case class TamuDialogAgentMessage(
+// outbound comms from DialogAgent client to Dialog Act Classifier server
+case class DialogActClassifierMessage(
   participant_id: String = "",
   text: String = "",
   extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
