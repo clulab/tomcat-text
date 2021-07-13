@@ -34,7 +34,7 @@ case class DialogAgentMessageData(
   participant_id: String = null,
   asr_msg_id: String = null,
   text: String = null,
-  dialog_act_label = null,  // from Dialog Act Classifier
+  dialog_act_label: String  = null,  // from Dialog Act Classifier
   source: DialogAgentMessageDataSource,
   extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
 )
