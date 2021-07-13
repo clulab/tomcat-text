@@ -4,8 +4,13 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
+import akka.stream.scaladsl._
+import akka.stream.SourceShape
+import akka.stream.javadsl.Source
+import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
+
 
 import scala.concurrent.Future
 import scala.util.{ Failure, Success }
@@ -17,7 +22,8 @@ class DialogAgentTamu (
 
   val test = new TamuDialogAgentMessage(
     participant_id = "Participant 21",
-    text = "Five because at least I know there was one yellow victim that died so",
+    text = 
+      "Five because at least I know there was one yellow victim that died so",
     extractions = Seq(
       DialogAgentMessageDataExtraction(
         label = "Sight",
@@ -61,6 +67,9 @@ object TamuClientSingleRequest extends LazyLogging {
 
   def apply(json :String): Unit = {
 
+
+    logger.info(s"TamuClientSingleRequest with ${json}")
+
     implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.executionContext
@@ -82,11 +91,48 @@ object TamuClientSingleRequest extends LazyLogging {
         case Success(res: HttpResponse) => 
           logger.info("Success communicating with server:")
           logger.info(res.toString)
-          logger.info("Response entity databytes:")
-          logger.info(res.entity.getDataBytes.toString)
+          getPayload(res)
         case Failure(e)   => 
           logger.error("Error communicating with server:")
           logger.error(e.toString)
       }
   }
+
+  // we see this: Source(SourceShape(single.out(1971255275)))
+  // source[SourceShape[whatever a single.out is[1971255275]]]
+  //
+  //
+  // We want this for our test case: "Statement"
+
+  def getPayload(res: HttpResponse): Unit = {
+    logger.info("Response payload:")
+    
+    val entity = res.entity
+
+    val source: Source[ByteString, AnyRef] = entity.getDataBytes
+    val shape = source.shape
+    val out = shape.out
+    val content = shape.toString
+    val iter = shape.productIterator
+
+
+    val contentType = entity.getContentType.toString
+    val contentLength = entity.contentLengthOption.getOrElse(-1)
+
+    logger.info(s"ContentType   = ${contentType}")
+    logger.info(s"ContentLength = ${contentLength}")
+
+    while(iter.hasNext) {
+      logger.info(s"Content       = ${iter.next}")
+    }
+
+
+    source.map(a => logger.info(a.toString))
+
+
+   
+  }
+
+
+
 }
