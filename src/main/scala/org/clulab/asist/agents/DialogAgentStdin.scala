@@ -14,7 +14,7 @@ import java.util.Scanner
  */
 
 class DialogAgentStdin (
-  override val nMatches: Int = 0
+  override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent { 
 
   println("\nDialog Agent stdin extractor running.")

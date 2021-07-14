@@ -24,7 +24,7 @@ import scala.util.control.NonFatal
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
-  override val nMatches: Int = 0
+  override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
   /** process one input file
