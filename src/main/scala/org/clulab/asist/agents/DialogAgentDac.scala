@@ -5,9 +5,14 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
+import java.util.concurrent.TimeoutException
 import org.clulab.asist.messages._
 
-import scala.concurrent._
+import scala.concurrent.{Await, Awaitable, Future}
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.control.NonFatal
+
 
 class DialogAgentDac (
   override val nMatches: Int = 0
@@ -55,62 +60,65 @@ class DialogAgentDac (
   val json = writeJson(test)
 
   val list = List(json, json, json, json, json)
-
   
-  Classifier(this, list)
-
-
-  def finish(json: String, l: List[String], classification: String): Unit = {
-    logger.info(s"Classification = ${classification}")
-    if(!l.isEmpty) Classifier(this, l)
-  }
-
-
+  list.foreach(json => Classifier(json))
 }
 
+case class Classification(name: String)
 
 object Classifier extends LazyLogging {
+
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
 
-  case class Classification(name: String)
 
   def parse(
-    line: ByteString, 
-    json: String, 
-    list: List[String],
-    dac: DialogAgentDac
+    line: ByteString 
   ): Option[Classification] = {
     val ret = line.utf8String.split(" ").headOption.map(Classification)
-    ret.toList.foreach(c => dac.finish(json, list, c.name))
     ret
   }
 
   // Run and completely consume a single akka http request
+  /*
   def runRequest(
     req: HttpRequest, 
-    json: String,
-    list: List[String],
-    dac: DialogAgentDac
   ): Future[Option[Classification]] = {
     Http()
       .singleRequest(req)
       .flatMap { response =>
         response.entity.dataBytes
           .runReduce(_ ++ _)
-          .map(parse(_, json, list, dac))
+          .map(parse))
       }
   }
+  */
 
-  def apply(dac: DialogAgentDac, l: List[String]) = l match {
-    case head::tail => 
+  // used by 'time' method
+  implicit val baseTime = System.currentTimeMillis
 
-      val request = HttpRequest(
-        uri = Uri("http://localhost:8000/classify"),
-        entity = HttpEntity(ContentTypes.`application/json`,head)
-      )
+  def apply(json: String)  {
 
-      runRequest(request, head, tail, dac)
-    case _ =>  // done
+    val request = HttpRequest(
+      uri = Uri("http://localhost:8000/classify"),
+      entity = HttpEntity(ContentTypes.`application/json`,json)
+    )
+
+    val future = Http().singleRequest(request).withTimeout(Duration(5 seconds))
+
+    // wait five seconds for a server response then proceed without it.
+    try {
+      val response: HttpResponse = Await.result(future, 5 seconds)
+    } catch {
+      case NonFatal(t) => logger.error(t.toString)
+      case t: TimeoutException => logger.error(t.toString)
+    }
+
+
+    future.flatMap{response => 
+      response.entity.dataBytes
+          .runReduce(_ ++ _)
+          .map(parse)
+    }
   }
 }

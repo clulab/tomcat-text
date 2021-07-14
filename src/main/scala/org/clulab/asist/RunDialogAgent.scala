@@ -68,13 +68,6 @@ object RunDialogAgent extends App {
     case _ => None
   }
 
-  /** Test if a flag is set
-   * @param l A flat list of arguments
-   * @param arg An arg to find in the list
-   * @return true if the arg is found in the list
-   */
-  def argSet(l: List[String], arg: String): Boolean = l.contains(arg) 
-
   /** Compose the arguments used by the Dialog Agent
    * @param l A flat list of arguments
    * @return An Args struct populated per the arg list
