@@ -1,24 +1,18 @@
 package org.clulab.asist.agents
 
-import akka.actor.typed.ActorSystem
-import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
-import akka.stream.scaladsl._
-import akka.stream.SourceShape
-import akka.stream.javadsl.Source
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 
-
-import scala.concurrent.Future
-import scala.util.{ Failure, Success }
-
+import scala.concurrent._
 
 class DialogAgentDac (
   override val nMatches: Int = 0
 ) extends DialogAgent with LazyLogging {
+
 
   val test = new DialogActClassifierMessage(
     participant_id = "Participant 21",
@@ -58,81 +52,65 @@ class DialogAgentDac (
     )
   )
 
-  DacSingleRequest(writeJson(test))
+  val json = writeJson(test)
+
+  val list = List(json, json, json, json, json)
+
+  
+  Classifier(this, list)
+
+
+  def finish(json: String, l: List[String], classification: String): Unit = {
+    logger.info(s"Classification = ${classification}")
+    if(!l.isEmpty) Classifier(this, l)
+  }
+
 
 }
 
 
-object DacSingleRequest extends LazyLogging {
+object Classifier extends LazyLogging {
+  implicit val system = ActorSystem()
+  implicit val dispatcher = system.dispatcher
 
-  def apply(json :String): Unit = {
+  case class Classification(name: String)
 
+  def parse(
+    line: ByteString, 
+    json: String, 
+    list: List[String],
+    dac: DialogAgentDac
+  ): Option[Classification] = {
+    val ret = line.utf8String.split(" ").headOption.map(Classification)
+    ret.toList.foreach(c => dac.finish(json, list, c.name))
+    ret
+  }
 
-    logger.info(s"DacSingleRequest with ${json}")
-
-    implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
-    // needed for the future flatMap/onComplete in the end
-    implicit val executionContext = system.executionContext
-
-    val responseFuture: Future[HttpResponse] = 
-      Http().singleRequest(
-        HttpRequest(
-          method=HttpMethods.GET,
-          uri = "http://localhost:8000/classify",
-          entity = HttpEntity(
-            ContentTypes.`application/json`,
-            json
-          )
-        )
-      )
-
-    responseFuture
-      .onComplete {
-        case Success(res: HttpResponse) => 
-          logger.info("Success communicating with server:")
-          logger.info(res.toString)
-          getPayload(res)
-        case Failure(e)   => 
-          logger.error("Error communicating with server:")
-          logger.error(e.toString)
+  // Run and completely consume a single akka http request
+  def runRequest(
+    req: HttpRequest, 
+    json: String,
+    list: List[String],
+    dac: DialogAgentDac
+  ): Future[Option[Classification]] = {
+    Http()
+      .singleRequest(req)
+      .flatMap { response =>
+        response.entity.dataBytes
+          .runReduce(_ ++ _)
+          .map(parse(_, json, list, dac))
       }
   }
 
-  // we see this: Source(SourceShape(single.out(1971255275)))
-  // source[SourceShape[whatever a single.out is[1971255275]]]
-  //
-  //
-  // We want this for our test case: "Statement"
+  def apply(dac: DialogAgentDac, l: List[String]) = l match {
+    case head::tail => 
 
-  def getPayload(res: HttpResponse): Unit = {
-    logger.info("Response payload:")
-    
-    val entity = res.entity
+      val request = HttpRequest(
+        uri = Uri("http://localhost:8000/classify"),
+        entity = HttpEntity(ContentTypes.`application/json`,head)
+      )
 
-    val source: Source[ByteString, AnyRef] = entity.getDataBytes
-    val shape = source.shape
-    val out = shape.out
-    val content = shape.toString
-    val iter = shape.productIterator
-
-
-    val contentType = entity.getContentType.toString
-    val contentLength = entity.contentLengthOption.getOrElse(-1)
-
-    logger.info(s"ContentType   = ${contentType}")
-    logger.info(s"ContentLength = ${contentLength}")
-
-    while(iter.hasNext) {
-      logger.info(s"Content       = ${iter.next}")
-    }
-
-
-    source.map(a => logger.info(a.toString))
-
-
-   
+      runRequest(request, head, tail, dac)
+    case _ =>  // done
   }
-
-
-
 }
