@@ -15,7 +15,7 @@ import scala.util.control.NonFatal
 
 
 class DialogAgentDac (
-  override val nMatches: Int = 0
+  override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
 
