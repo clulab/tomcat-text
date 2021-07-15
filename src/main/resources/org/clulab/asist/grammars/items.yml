@@ -41,3 +41,36 @@ rules:
     pattern: |
       trigger = [lemma=/map/]
       owner: Entity? = >"nmod:poss"
+
+# -------- marker blocks ----------
+  - name: marker_block
+    priority: ${ rulepriority }
+    label: MarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)marker block|marker/]
+
+  - name: critical_marker_token
+    priority: ${ rulepriority }
+    label: CriticalMarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical|critical victim/] [lemma=/(?i)marker|marker block/]
+
+  - name: regular_marker_token
+    priority: ${ rulepriority }
+    label: RegularMarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)regular|regular victim/] [lemma=/(?i)marker|marker block/]
+
+  - name: no_victim_marker_token
+    priority: ${ rulepriority }
+    label: NoVictimMarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)no victim|empty/] [lemma=/(?i)marker|marker block/]
