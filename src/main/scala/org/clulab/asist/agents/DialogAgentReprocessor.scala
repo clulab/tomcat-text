@@ -232,7 +232,7 @@ class DialogAgentReprocessor (
           // replace the data.extractions field value
           metadata.replace( 
             "data"::"extractions"::Nil,
-            Extraction.decompose(extractions(text))
+            Extraction.decompose(getExtractions(text))
           )
         )
       })
@@ -294,7 +294,7 @@ class DialogAgentReprocessor (
         source_type = data.source.source_type,
         source_name = data.source.source_name
       ),
-      extractions = extractions(data.text)
+      extractions = getExtractions(data.text)
     )
   } catch {
     case NonFatal(t) => {

@@ -1,4 +1,4 @@
-package org.clulab.asist.agents
+package org.clulab.asist
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -7,6 +7,7 @@ import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import java.util.concurrent.TimeoutException
 import org.clulab.asist.messages._
+import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.{Await, Awaitable, Future}
 import scala.concurrent.duration._
@@ -14,57 +15,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.control.NonFatal
 
 
-class DialogAgentDac (
-  override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent with LazyLogging {
-
-
-  val test = new DialogActClassifierMessage(
-    participant_id = "Participant 21",
-    text = 
-      "Five because at least I know there was one yellow victim that died so",
-    extractions = Seq(
-      DialogAgentMessageDataExtraction(
-        label = "Sight",
-        span = "was one yellow victim",
-        arguments = Map.empty,
-        start_offset = 20,
-        end_offset = 25,
-        taxonomy_matches = Seq(
-          (
-            "stop-triaging", "11.709686762798679"
-          ),
-          (
-           "no-victims-spotted", "10.767969549025242"
-          )
-        )
-      ),
-      DialogAgentMessageDataExtraction(
-        label = "Victim",
-        span = "Victim",
-        arguments = Map.empty,
-        start_offset = 60,
-        end_offset = 75,
-        taxonomy_matches = Seq(
-          (
-            "stop-triaging-victim", "18.593763750341402"
-          ),
-          (
-            "start-triaging-victim", "17.326888048081006"
-          )
-        )
-      )
-    )
-  )
-
-  val json = writeJson(test)
-
-  val list = List(json, json, json, json, json)
-  
-  list.foreach(json => Classifier(json))
-}
 
 case class Classification(name: String)
+
+// outbound comms from DialogAgent client to Dialog Act Classifier server
+case class DialogActClassifierMessage(
+  participant_id: String = "",
+  text: String = "",
+  extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
+)
 
 object Classifier extends LazyLogging {
 
@@ -97,14 +56,31 @@ object Classifier extends LazyLogging {
   // used by 'time' method
   implicit val baseTime = System.currentTimeMillis
 
-  def apply(json: String)  {
+  def apply(
+    participant_id: String,
+    text: String,
+    extractions: Seq[DialogAgentMessageDataExtraction]
+  ): String = {
+    foo(new DialogActClassifierMessage(
+      participant_id,
+      text,
+      extractions)
+    )
+    null
+  }
+
+
+
+  def foo(thing: DialogActClassifierMessage): Unit = {
+
+    val json = write(thing)
 
     val request = HttpRequest(
       uri = Uri("http://localhost:8000/classify"),
       entity = HttpEntity(ContentTypes.`application/json`,json)
     )
 
-    val future = Http().singleRequest(request).withTimeout(Duration(5 seconds))
+    val future = Http().singleRequest(request)
 
     // wait five seconds for a server response then proceed without it.
     try {
@@ -113,7 +89,6 @@ object Classifier extends LazyLogging {
       case NonFatal(t) => logger.error(t.toString)
       case t: TimeoutException => logger.error(t.toString)
     }
-
 
     future.flatMap{response => 
       response.entity.dataBytes

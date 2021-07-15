@@ -74,7 +74,7 @@ object RunDialogAgent extends App {
    */
   def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
     nMatches = intArg(l, "-m").getOrElse(0),
-    withClassifier = l.contains("--with-classifications")
+    withClassifications = l.contains("--with-classifications")
   )
 
   /** Run the Dialog Agent per user args.
@@ -91,8 +91,6 @@ object RunDialogAgent extends App {
         Some(new DialogAgentStdin(readArgs(l)))
       case ("reprocess"::indir::outdir::l) =>
         Some(new DialogAgentReprocessor(indir, outdir, readArgs(l)))
-      case ("dac"::l) =>
-        Some(new DialogAgentDac(readArgs(l)))
       case _ =>
         usageText.foreach(println)
         None

@@ -8,6 +8,7 @@ import ai.lum.common.ConfigFactory
 import com.typesafe.config.Config
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
+import org.clulab.asist.Classifier
 import org.clulab.odin.Mention
 import org.json4s._
 import org.json4s.jackson.Serialization.{write, writePretty}
@@ -34,7 +35,7 @@ import scala.io.Source
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
   val nMatches: Int = 0,  // Number of taxonomy matches to include with extractions
-  val withClassifier: Boolean = false // query the Dialog Act Classification server
+  val withClassifications: Boolean = false // query the Dialog Act Classification server
 )
 
 
@@ -46,7 +47,7 @@ class DialogAgent (
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
   val nMatches = args.nMatches
-  val withClassifier = args.withClassifier
+  val withClassifications = args.withClassifications
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
@@ -111,10 +112,9 @@ class DialogAgent (
     version = dialogAgentVersion,
   )
 
-  /**
-   * Extract Odin mentions from text.
-   * @param text String text to extract from, can be multiple sentences.
-   * @return sequence of Odin Mentions
+  /** Extract Odin mentions from text.
+   *  @param text String text to extract from, can be multiple sentences.
+   *  @return sequence of Odin Mentions
    */
   def extractMentions(text: String): Seq[Mention] = {
     extractor
@@ -122,12 +122,19 @@ class DialogAgent (
       .sortBy(m => (m.sentence, m.label))
   }
 
-  /**
-   * Get the Dialog Act Classification from the server
-   * @param text String text for the Classifier to analyse.
-   * @return The return value from the server
+  /** Return the Dialog Act Classification from the server
+   *  @param participant_id human subject who created the text
+   *  @param text String text for the Classifier to analyse.
+   *  @param extractions A sequence of extractions for the given text
+   *  @return The return value from the server
    */
-  def queryDac(text: String): String = null // override in extending class
+  def classification(
+    participant_id: String,
+    text: String,
+    extractions: Seq[DialogAgentMessageDataExtraction]
+  ): String = 
+    if (withClassifications) Classifier(participant_id, text, extractions) 
+    else null 
 
   /** Create the data component of the DialogAgentMessage structure
    *  @param participant_id human subject who created the text
@@ -135,6 +142,7 @@ class DialogAgent (
    *  @param source_type Source of message data, either message_bus or a file
    *  @param source_name topic or filename
    *  @param text The text to be analyzed by the pipeline 
+   *  @return A completely populaed DialogAgentMessageData struct
    */
   def dialogAgentMessageData(
     participant_id: String,
@@ -142,18 +150,20 @@ class DialogAgent (
     source_type: String,
     source_name: String,
     text: String
-  ): DialogAgentMessageData = 
+  ): DialogAgentMessageData = {
+    val extractions = getExtractions(text)
     DialogAgentMessageData(
       participant_id = participant_id,
       asr_msg_id = asr_msg_id,
       text = text,
-      dialog_act_label = queryDac(text),
+      dialog_act_label = classification(participant_id, text, extractions),
       DialogAgentMessageDataSource(
         source_type = source_type,
         source_name = source_name
       ),
-      extractions(text)
+      extractions
     )
+  }
   
   /** map the mention label to the taxonomy map, the mappings are static
    * and computed ahead of time and stored sorted // FIXME: is this true?.
@@ -170,17 +180,17 @@ class DialogAgent (
   /** Return an array of all extractions found in the input text
    *  @param text Speech to analyze
    */
-  def extractions(text: String): Seq[DialogAgentMessageDataExtraction] = 
-    extractMentions(text).map(extraction)
+  def getExtractions(text: String): Seq[DialogAgentMessageDataExtraction] = 
+    extractMentions(text).map(getExtraction)
 
   /** Create a DialogAgent extraction from Extractor data 
    *  @param mention Contains text to analyze
    */
-  def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
+  def getExtraction(mention: Mention): DialogAgentMessageDataExtraction = {
     val originalArgs = mention.arguments.toArray
     val extractionArguments = for {
       (role, ms) <- originalArgs
-      converted = ms.map(extraction)
+      converted = ms.map(getExtraction)
     } yield (role, converted)
     val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageDataExtraction(
