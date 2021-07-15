@@ -1,32 +1,18 @@
 package org.clulab.asist.agents
 
-import com.typesafe.scalalogging.LazyLogging
-
-import org.clulab.utils.LocalFileUtils
-import java.io.{File, PrintWriter}
-
-import scala.util.control.NonFatal
-
-import java.io.{File, FileInputStream, PrintWriter}
-import org.clulab.asist.RunDialogAgent
-
 import com.crowdscriber.caption.vttdissector.VttDissector
-import org.clulab.asist.messages._
-import org.json4s.jackson.Serialization.write
-
-import scala.util.{Failure, Success}
-
-import java.io.PrintWriter
+import com.typesafe.scalalogging.LazyLogging
+import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
-
 import org.clulab.asist.messages._
-import org.json4s._
+import org.clulab.asist.RunDialogAgent
+import org.clulab.utils.LocalFileUtils
+//import org.json4s._
 import org.json4s.jackson.Serialization.{read, write}
-
 import scala.io.Source
 import scala.util.control.Exception._
-
-
+import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
 
 
 /**
