@@ -55,7 +55,7 @@ class DialogAgentMqtt(
     })
   )
 
-  /* async callback after clasissification */
+  /* async callback after classification */
   override def receiveDialogAgentMessage(m: DialogAgentMessage) {
     bus.publish(topicPubDialogAgent,writeJson(m))
   }
