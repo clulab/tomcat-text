@@ -8,6 +8,16 @@ import java.io.{File, PrintWriter}
 
 import scala.util.control.NonFatal
 
+import java.io.{File, FileInputStream, PrintWriter}
+
+import com.crowdscriber.caption.vttdissector.VttDissector
+import org.clulab.asist.messages._
+import org.json4s.jackson.Serialization.write
+
+import scala.util.{Failure, Success}
+
+
+
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -37,8 +47,7 @@ class DialogAgentFile(
   ): Unit = if(filename.contains(".")) {
     filename.substring(filename.lastIndexOf(".")) match {
       case ".vtt" =>
-        logger.info(s"processing WebVTT file '${filename}' ...")
-        AgentFileWebVtt(filename, this, output)
+        processWebVttFile(filename, output)
         logger.info(s"finished processing ${filename}")
       case ".metadata" =>
         logger.info(s"processing Metadata file: '${filename}' ...")
@@ -47,6 +56,58 @@ class DialogAgentFile(
       case _ => usage(filename)
     }
   } else usage(filename)
+
+
+  /** Manage one WebVtt file
+  *  @param filename input filename
+  *  @param output Printwriter to the output file
+  */
+  def processWebVttFile(
+    filename: String, 
+    output: PrintWriter
+  ): Unit = {
+    VttDissector(new FileInputStream(new File(filename))) match {
+      case Success(blocks) => blocks.map(block =>
+        processWebVttElement(
+          block.lines.toList,
+          filename
+        ).map(dialogAgentMessage =>
+          output.write("%s\n".format(write(dialogAgentMessage)))
+        )
+      )
+      case Failure(f) => {
+        logger.error("VttDissector could not parse '%s'".format(filename))
+        logger.error(f.toString)
+      }
+    }
+  }
+
+  /** process one web_vtt block
+  *  @param lines The line sequence from a single SubtitleBlock instance
+  *  @param filename The name of the input file where the block was read
+  *  @return A DialogAgentMessage based on the inputs
+  */
+  def processWebVttElement(
+    lines: List[String],
+    filename: String
+  ): Option[DialogAgentMessage] = {
+    val source_type = "web_vtt_file"
+    lines match {
+      case head::tail => {
+        // if a colon exists in the first line, text to left is participant id
+        val foo = head.split(':')
+        if(foo.length == 1) {
+          val text = lines.mkString(" ")
+          Some(dialogAgentMessage(source_type, filename, null, text))
+        } else {
+          val text = (foo(1)::tail).mkString(" ")
+          Some(dialogAgentMessage(source_type, filename, foo(0), text))
+        }
+      }
+      case _ => None  // FIXME: Is the multiple-line case really a showstopper?
+    }
+  }
+
 
   /** Give the user a hint
    * @param filename a single input file
