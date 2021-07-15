@@ -55,6 +55,11 @@ class DialogAgentMqtt(
     })
   )
 
+  /* async callback after clasissification */
+  override def receiveDialogAgentMessage(m: DialogAgentMessage) {
+    bus.publish(topicPubDialogAgent,writeJson(m))
+  }
+
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A metadata text string
@@ -66,16 +71,11 @@ class DialogAgentMqtt(
     case `topicSubTrial` => trialMessageArrived(json)
     case _ => json.split("\n").map(line => 
       allCatch.opt(read[Metadata](line)).map(metadata => 
-        bus.publish(  // to Message Bus
-          topicPubDialogAgent,
-          writeJson( // to json
-            dialogAgentMessage( // to struct
-              source_type,
-              topic,
-              topic,
-              metadata
-            )
-          )
+        requestDialogAgentMessage(  
+          source_type,
+          topic,
+          topic,
+          metadata
         )
       )
     )

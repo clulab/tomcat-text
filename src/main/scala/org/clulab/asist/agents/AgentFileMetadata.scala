@@ -43,6 +43,7 @@ object AgentFileMetadata {
             }
           })
         }
+        /* FIXME for Classifier use
         else if(agent.subscriptions.contains(lookahead.topic))
           allCatch.opt(read[Metadata](line)).map(metadata =>
             output.write( // to file
@@ -56,6 +57,7 @@ object AgentFileMetadata {
               )
             )
           )
+        */
       )
     }
     bufferedSource.close

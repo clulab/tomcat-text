@@ -7,6 +7,7 @@ import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import java.util.concurrent.TimeoutException
 import org.clulab.asist.messages._
+import org.clulab.asist.agents.DialogAgent
 import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.{Await, Awaitable, Future}
@@ -25,55 +26,29 @@ case class DialogActClassifierMessage(
   extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
 )
 
-object Classifier extends LazyLogging {
+class Classifier(da: DialogAgent) {
+
+  // the DAC can only run one job at a time.
+  private var locked: Boolean = false
 
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
 
+  def isBusy: Boolean = locked
 
-  def parse(
-    line: ByteString 
-  ): Option[Classification] = {
-    val ret = line.utf8String.split(" ").headOption.map(Classification)
-    ret
-  }
-
-  // Run and completely consume a single akka http request
-  /*
-  def runRequest(
-    req: HttpRequest, 
-  ): Future[Option[Classification]] = {
-    Http()
-      .singleRequest(req)
-      .flatMap { response =>
-        response.entity.dataBytes
-          .runReduce(_ ++ _)
-          .map(parse))
-      }
-  }
-  */
-
-  // used by 'time' method
-  implicit val baseTime = System.currentTimeMillis
-
-  def apply(
+  def classify(
     participant_id: String,
     text: String,
-    extractions: Seq[DialogAgentMessageDataExtraction]
-  ): String = {
-    foo(new DialogActClassifierMessage(
+    extractions: Seq[DialogAgentMessageDataExtraction],
+  ): Unit = {
+
+    locked = true
+
+    val json = write(new DialogActClassifierMessage(
       participant_id,
       text,
       extractions)
     )
-    null
-  }
-
-
-
-  def foo(thing: DialogActClassifierMessage): Unit = {
-
-    val json = write(thing)
 
     val request = HttpRequest(
       uri = Uri("http://localhost:8000/classify"),
@@ -82,18 +57,36 @@ object Classifier extends LazyLogging {
 
     val future = Http().singleRequest(request)
 
-    // wait five seconds for a server response then proceed without it.
-    try {
-      val response: HttpResponse = Await.result(future, 5 seconds)
-    } catch {
-      case NonFatal(t) => logger.error(t.toString)
-      case t: TimeoutException => logger.error(t.toString)
+    future.flatMap { response =>
+      response.entity.dataBytes
+        .runReduce(_ ++ _)
+        .map(parse)
     }
 
-    future.flatMap{response => 
-      response.entity.dataBytes
+  }
+
+  def parse(
+    line: ByteString 
+  ): Unit = {
+    val ret = line.utf8String.split(" ").headOption.map(Classification)
+    val classification = ret.getOrElse(new Classification("")).name
+    locked = false
+    da.classificationCallback(classification)
+  }
+
+ /*
+  // Run and completely consume a single akka http request
+  def runRequest(
+    req: HttpRequest, 
+  ): Future[Option[Classification]] = {
+    Http()
+      .singleRequest(req)
+      .flatMap { response =>
+        response.entity.dataBytes
           .runReduce(_ ++ _)
           .map(parse)
-    }
+      }
   }
+  */
+
 }

@@ -16,6 +16,7 @@ import spray.json.DefaultJsonProtocol._
 import spray.json.JsonParser
 
 import scala.collection.immutable
+import scala.collection.mutable.Queue  // ...
 import scala.io.Source
 
 
@@ -35,9 +36,17 @@ import scala.io.Source
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
   val nMatches: Int = 0,  // Number of taxonomy matches to include with extractions
-  val withClassifications: Boolean = false // query the Dialog Act Classification server
+  val withClassifications: Boolean = false // Dialog Act Classification if true
 )
 
+
+case class DialogAgentMessageRequest(
+  source_type: String,
+  source_name: String,
+  topic: String,
+  metadata: Metadata,
+  output: Any
+)
 
 class DialogAgent (
   val args: DialogAgentArgs = new DialogAgentArgs
@@ -46,8 +55,12 @@ class DialogAgent (
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
+  private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
+
   val nMatches = args.nMatches
   val withClassifications = args.withClassifications
+
+  val classifier = new Classifier(this)
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
@@ -128,6 +141,7 @@ class DialogAgent (
    *  @param extractions A sequence of extractions for the given text
    *  @return The return value from the server
    */
+  /*
   def classification(
     participant_id: String,
     text: String,
@@ -135,6 +149,48 @@ class DialogAgent (
   ): String = 
     if (withClassifications) Classifier(participant_id, text, extractions) 
     else null 
+
+  */
+
+  def receiveDialogAgentMessage(
+    m: DialogAgentMessage
+  ): Unit = {
+    // override in extending class
+  }
+
+  // this classification will go with the DialogAgentMessage at the head
+  // of the queue
+  def classificationCallback(result: String): Unit = {
+    val m = queue.dequeue
+  }
+
+  /** request an DialogAgentMessage with metadata
+   *  @param source_type Source of message data, either message_bus or a file
+   *  @param source_name topic or filename
+   *  @param topic Originating process for message
+   *  @param metadata Experiment data 
+   *  @return Nothing
+   */
+  def requestDialogAgentMessage(
+    source_type: String,
+    source_name: String,
+    topic: String,
+    metadata: Metadata
+  ): Unit = {
+    val m = getDialogAgentMessage(source_type, source_name, topic, metadata)
+    if(withClassifications) { 
+      queue.enqueue(m)
+      if (!classifier.isBusy) {  // if the classifier is available, run the job
+        classifier.classify(
+          m.data.participant_id,
+          m.data.text,
+          m.data.extractions
+        )
+      } 
+      // otherwise wait for current job to complete
+    }
+    else receiveDialogAgentMessage(m)
+  }
 
   /** Create the data component of the DialogAgentMessage structure
    *  @param participant_id human subject who created the text
@@ -150,20 +206,18 @@ class DialogAgent (
     source_type: String,
     source_name: String,
     text: String
-  ): DialogAgentMessageData = {
-    val extractions = getExtractions(text)
+  ): DialogAgentMessageData = 
     DialogAgentMessageData(
       participant_id = participant_id,
       asr_msg_id = asr_msg_id,
       text = text,
-      dialog_act_label = classification(participant_id, text, extractions),
+      dialog_act_label = null,
       DialogAgentMessageDataSource(
         source_type = source_type,
         source_name = source_name
       ),
-      extractions
+      getExtractions(text)
     )
-  }
   
   /** map the mention label to the taxonomy map, the mappings are static
    * and computed ahead of time and stored sorted // FIXME: is this true?.
@@ -208,13 +262,15 @@ class DialogAgent (
    *  @param source_name topic or filename
    *  @param topic Originating process for message
    *  @param metadata Experiment data 
+   *  @return a new DialogAgentMessage based on the input
    */
-  def dialogAgentMessage(
+  private def getDialogAgentMessage(
     source_type: String,
     source_name: String,
     topic: String,
     metadata: Metadata
   ): DialogAgentMessage = {
+    
     val timestamp = Clock.systemUTC.instant.toString
     val participant_id = topic match {
       case `topicSubChat` => (metadata.data.sender)
@@ -250,7 +306,7 @@ class DialogAgent (
    *  @param participant_id The individual who has spoken
    *  @param text Spoken text to be analyzed
    */
-  def dialogAgentMessage(
+  def requestDialogAgentMessage(
     source_type: String,
     source_name: String,
     participant_id: String,

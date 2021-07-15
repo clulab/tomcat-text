@@ -61,10 +61,14 @@ object AgentFileWebVtt extends LazyLogging {
       val foo = head.split(':')
       if(foo.length == 1) {
         val text = lines.mkString(" ")
-        Some(agent.dialogAgentMessage(source_type, filename, null, text))
+// FIXME for Classifier use
+        None
+//        Some(agent.dialogAgentMessage(source_type, filename, null, text))
       } else {
         val text = (foo(1)::tail).mkString(" ")
-        Some(agent.dialogAgentMessage(source_type, filename, foo(0), text))
+// FIXME for Classifier use
+        None
+//        Some(agent.dialogAgentMessage(source_type, filename, foo(0), text))
       }
     }
     case _ => None
