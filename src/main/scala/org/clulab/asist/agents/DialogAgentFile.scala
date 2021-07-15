@@ -2,19 +2,29 @@ package org.clulab.asist.agents
 
 import com.typesafe.scalalogging.LazyLogging
 
-import org.clulab.asist.{AgentFileMetadata, RunDialogAgent}
 import org.clulab.utils.LocalFileUtils
 import java.io.{File, PrintWriter}
 
 import scala.util.control.NonFatal
 
 import java.io.{File, FileInputStream, PrintWriter}
+import org.clulab.asist.RunDialogAgent
 
 import com.crowdscriber.caption.vttdissector.VttDissector
 import org.clulab.asist.messages._
 import org.json4s.jackson.Serialization.write
 
 import scala.util.{Failure, Success}
+
+import java.io.PrintWriter
+import java.time.Clock
+
+import org.clulab.asist.messages._
+import org.json4s._
+import org.json4s.jackson.Serialization.{read, write}
+
+import scala.io.Source
+import scala.util.control.Exception._
 
 
 
@@ -51,11 +61,55 @@ class DialogAgentFile(
         logger.info(s"finished processing ${filename}")
       case ".metadata" =>
         logger.info(s"processing Metadata file: '${filename}' ...")
-        AgentFileMetadata(filename, this, output)
+        processMetadataFile(filename, output)
         logger.info(s"finished processing '${filename}'")
       case _ => usage(filename)
     }
   } else usage(filename)
+
+
+  /** Manage one metadata file
+   * @param filename a single input file
+   * @param output Printwriter to the output file
+   * @return true if the operation succeeded
+   */
+  def processMetadataFile(
+    filename: String,
+    output: PrintWriter
+  ): Unit = {
+    val source_type = "message_bus" // file metadata originates there
+    val bufferedSource = Source.fromFile(filename)
+    val lines = bufferedSource.getLines
+    while(lines.hasNext) {
+      val line = lines.next
+      allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
+        if(topicSubTrial == lookahead.topic) {
+          allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
+            if(trialMessage.msg.sub_type == "start") {
+              val timestamp = Clock.systemUTC.instant.toString
+              output.write(write(VersionInfo(this, timestamp)))
+            }
+          })
+        }
+        else if(subscriptions.contains(lookahead.topic))
+          allCatch.opt(read[Metadata](line)).map(metadata =>
+            output.write( // to file
+              write( // to json
+                dialogAgentMessage( // to struct
+                  source_type,
+                  filename,
+                  lookahead.topic,
+                  metadata
+                )
+              )
+            )
+          )
+      )
+    }
+    bufferedSource.close
+  }
+
+
 
 
   /** Manage one WebVtt file
