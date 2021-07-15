@@ -7,13 +7,11 @@ import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.asist.RunDialogAgent
 import org.clulab.utils.LocalFileUtils
-//import org.json4s._
 import org.json4s.jackson.Serialization.{read, write}
 import scala.io.Source
 import scala.util.control.Exception._
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
-
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
