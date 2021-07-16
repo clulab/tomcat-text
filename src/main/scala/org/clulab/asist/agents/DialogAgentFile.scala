@@ -8,6 +8,7 @@ import org.clulab.asist.messages._
 import org.clulab.asist.RunDialogAgent
 import org.clulab.utils.LocalFileUtils
 import org.json4s.jackson.Serialization.{read, write}
+
 import scala.io.Source
 import scala.util.control.Exception._
 import scala.util.control.NonFatal
@@ -30,6 +31,40 @@ class DialogAgentFile(
   val outputFilename: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
+
+  // screen input filenames for supported types
+  val supported = List(".vtt", ".metadata")
+  val filenames = LocalFileUtils
+    .getFileNames(inputFilename)
+    .filter(f => f.contains("."))
+    .filter(f => supported.contains(f.substring(f.lastIndexOf("."))))
+
+
+  if(filenames.isEmpty) 
+    logger.error("No valid input files found")
+  else openFileWriter(outputFilename).foreach{fileWriter =>
+    logger.info(s"Using input files: ${filenames.mkString(", ")}")
+    filenames.map(processFile(_, fileWriter))
+    fileWriter.close
+    logger.info("All operations completed successfully.")
+  } 
+
+  /** Create a file writer for a given filename
+   *  @param filename a single input file
+   *  @return A file writer for the filename, or None if an error occurs.
+   */
+  def openFileWriter(
+    filename: String
+  ): Option[PrintWriter] = try {
+    val output = new PrintWriter(new File(filename))
+    logger.info(s"Using output file ${filename}")
+    Some(output)
+  } catch {
+    case NonFatal(t)  =>
+      logger.error(s"Problem opening ${filename} for writing.")
+      logger.error(t.toString)
+      None
+  } 
 
   /** process one input file
    * @param filename a single input file
@@ -93,9 +128,6 @@ class DialogAgentFile(
     bufferedSource.close
   }
 
-
-
-
   /** Manage one WebVtt file
   *  @param filename input filename
   *  @param output Printwriter to the output file
@@ -153,26 +185,6 @@ class DialogAgentFile(
   def usage(filename: String): Unit = {
     logger.error(s"Can't process file '${filename}'")
     logger.error("Extension must be .vtt or .metadata")
-    RunDialogAgent.usageText.foreach(line => (logger.error(line)))
   }
 
-  /** process all of the input files
-   * @param inputFilename User input source filename
-   * @param outputFileame User input output filename
-   */
-  def apply(inputFilename: String, outputFilename: String): Unit = {
-    logger.info(s"Using input file ${inputFilename}")
-    logger.info(s"Using output file ${outputFilename}")
-    try {
-      val output = new PrintWriter(new File(outputFilename))
-      val filenames = LocalFileUtils.getFileNames(inputFilename)
-      filenames.map(processFile(_, output))
-      output.close
-      logger.info("All operations completed successfully.")
-    } catch {
-      case NonFatal(t)  =>
-        logger.error(s"Problem writing to ${inputFilename}")
-        logger.error(t.toString)
-    }
-  }
 }
