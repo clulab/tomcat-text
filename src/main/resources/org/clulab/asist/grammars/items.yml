@@ -49,7 +49,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)marker block|marker/]
+      [lemma=/(?i)marker/] [lemma=block]?
 
   - name: critical_marker_token
     priority: ${ rulepriority }
@@ -57,7 +57,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)critical|critical victim/] [lemma=/(?i)marker|marker block/]
+      [lemma=/(?i)critical/] [lemma=victim]? [lemma=marker] [lemma=block]?
 
   - name: regular_marker_token
     priority: ${ rulepriority }
@@ -65,7 +65,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)regular|regular victim/] [lemma=/(?i)marker|marker block/]
+      [lemma=/(?i)regular/] [lemma=victim]? [lemma=marker] [lemma=block]?
 
   - name: no_victim_marker_token
     priority: ${ rulepriority }
@@ -73,4 +73,4 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)no victim|empty/] [lemma=/(?i)marker|marker block/]
+      [lemma=/(?i)empty/] [lemma=marker] [lemma=block]?
