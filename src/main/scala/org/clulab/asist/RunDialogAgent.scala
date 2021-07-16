@@ -79,7 +79,7 @@ object RunDialogAgent extends App {
 
   /** Run the Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
-   * @returns A DialogAgent running in the mode with the args
+   * @return A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {

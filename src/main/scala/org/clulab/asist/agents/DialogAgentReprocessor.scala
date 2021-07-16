@@ -106,7 +106,7 @@ class DialogAgentReprocessor (
 
   /** Scan a string iterator for valid DialogAgent JSON
    *  @param iter:  An iterator containing json strings
-   *  @returns: True if DialogAgent publication topic and data.text are found
+   *  @return: True if DialogAgent publication topic and data.text are found
    */
   @tailrec
   private def hasDialogAgentMetadata(
@@ -120,7 +120,7 @@ class DialogAgentReprocessor (
 
   /** Scan the line as a MetadataLookahead, return default if not readable
    *  @param line:  A single JSON line
-   *  @returns A MetadataLookahead struct
+   *  @return A MetadataLookahead struct
    */
   def readMetadataLookahead(line: String): MetadataLookahead = try {
     read[MetadataLookahead](line)
@@ -130,7 +130,7 @@ class DialogAgentReprocessor (
 
   /** process one input file
    * @param inputFileName The namee of the file to be processed
-   * @returns a list of the parse results for each JSON line in the file
+   * @return a list of the parse results for each JSON line in the file
    */
   def processFile(inputFileName: String): Int = {
     logger.info(s"Processing ${inputFileName}...")
@@ -150,7 +150,7 @@ class DialogAgentReprocessor (
 
   /** Process all the lines in a string iterator
    * @param lines All the lines from an input file
-   * @returns A list of all the lines, reprocessed
+   * @return A list of all the lines, reprocessed
    */
   @tailrec
   private def processLines(
@@ -161,7 +161,7 @@ class DialogAgentReprocessor (
 
   /** Reprocess line if DialogAgent-related metadata, otherwise copy
    * @param line One metadata JSON line
-   * @returns either the orignal line or a reprocessed version if it's ours
+   * @return either the orignal line or a reprocessed version if it's ours
    */
   def processLine(
     line: String,
@@ -175,7 +175,7 @@ class DialogAgentReprocessor (
 
   /** Parse a TrialMessage and report Testbed config if trial start.
    * @param line JSON representation of one DialogAgentMessage struct
-   * @returns The original line always, with VersionInfo if trial start
+   * @return The original line always, with VersionInfo if trial start
    */
   def processTrialMetadata(
     line: String,
@@ -212,7 +212,7 @@ class DialogAgentReprocessor (
 
   /** Replace DialogAgentMessage data extractions with fresh ones.
    * @param line JSON representation of one DialogAgentMessage struct
-   * @returns The processed JSON line
+   * @return The processed JSON line
    */
   def reprocessDialogAgentMetadata(
     line: String,
@@ -244,7 +244,7 @@ class DialogAgentReprocessor (
 
   /* Replace the error field with a reprocessed DialogAgentMessageData struct
    * @param line A JSON representation DialogAgentMessage error struct
-   * @returns a DialogAgentMessage with new extractions
+   * @return a DialogAgentMessage with new extractions
    */
   def reprocessDialogAgentErrorMetadata(
     line: String,
@@ -280,7 +280,7 @@ class DialogAgentReprocessor (
 
   /* Update extractions for a DialogAgentMessageData struct
    * @param json A JSON representation of a DialogAgentMessageData struct
-   * @returns A new DialogAgentMessageData struct with new extractions
+   * @return A new DialogAgentMessageData struct with new extractions
    */
   def reprocessDialogAgentMessageData(
     json: String

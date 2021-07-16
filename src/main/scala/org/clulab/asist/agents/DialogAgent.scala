@@ -57,17 +57,21 @@ class DialogAgent (
 
   private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
 
-  val nMatches = args.nMatches
-  val withClassifications = args.withClassifications
+  /** The number of Taxonomy matches to include with Extractions */
+  val nMatches: Int = args.nMatches
 
-  val classifier = new Classifier(this)
+  /** Use the Dialog Act Classifier if true */
+  val withClassifications: Boolean = args.withClassifications
+
+  /** Interface for the Dialog Act Classifier */
+  val classifier: Classifier = new Classifier(this)
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
   val dialogAgentVersion = "2.0.0"
 
-  // metadata topics
+  /** metadata topics */
   val topicSubChat = "minecraft/chat"
   val topicSubUazAsr = "agent/asr/final"
   val topicSubAptimaAsr = "status/asistdataingester/userspeech"
@@ -75,6 +79,7 @@ class DialogAgent (
   val topicPubDialogAgent = "agent/dialog"
   val topicPubVersionInfo = "agent/tomcat_textAnalyzer/versioninfo"
 
+  // topics subscribed to
   val subscriptions = List(
     topicSubChat,
     topicSubUazAsr,
@@ -82,6 +87,7 @@ class DialogAgent (
     topicSubTrial
   )
 
+  // topics published to
   val publications = List(
     topicPubDialogAgent,
     topicPubVersionInfo
@@ -108,6 +114,7 @@ class DialogAgent (
 
   /** Create a CommonHeader data structure 
    *  @param timestamp When this data was created
+   *  @return A new CommonHeader instance
    */
   def commonHeader(timestamp: String): CommonHeader = CommonHeader(
     timestamp = timestamp,
@@ -117,6 +124,7 @@ class DialogAgent (
 
   /** Create a CommonMsg data structure 
    *  @param timestamp When this data was created
+   *  @return A new CommonMsg instance
    */
   def commonMsg(timestamp: String): CommonMsg = CommonMsg(
     timestamp = timestamp,

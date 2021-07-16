@@ -25,7 +25,7 @@ object RunGrammarDemo extends App {
 
   /** Run the RuleDemo per user args.
    * @param argList A flat list of running mode then n key-value pairs
-   * @returns A RuleDemo running in the mode with the args
+   * @return A RuleDemo running in the mode with the args
    */
   def run(argList: List[String]): Option[Any] = argList match {
     case List(outfile, masterPath) => Some(new GrammarDemo(outfile, masterPath))

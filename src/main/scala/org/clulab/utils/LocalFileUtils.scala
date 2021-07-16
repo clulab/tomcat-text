@@ -46,7 +46,7 @@ object LocalFileUtils {
   }
 
   /** Make sure we have a place to put the output files.
-   * @returns true if the output file directory was found or created
+   * @return true if the output file directory was found or created
    */
   def ensureDir(dirName: String): Boolean = {
     ensureDir(new File(dirName))
