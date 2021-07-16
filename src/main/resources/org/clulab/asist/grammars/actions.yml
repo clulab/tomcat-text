@@ -85,19 +85,27 @@ rules:
   # -------------------------------------------------------------------
   - name: move_nmod_action
     priority: ${ rulepriority }
-    label: Move
+    label: MoveTo
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/]
-      target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/
+      target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
       person: Entity? = >/${agents}/
 
   - name: move_deixis_action
     priority: ${ rulepriority }
-    label: Move
+    label: MoveTo
     pattern: |
       trigger = [lemma=/(?i)${ moveto_triggers }/]
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
+
+  - name: move_explicit_1
+    example: "I'll be right there.  I will be there in a minute."
+    priority: ${ rulepriority }
+    label: MoveTo
+    type: token
+    pattern: |
+      @person:Entity (?<trigger> will be) right? (@target:Deictic | (?<target> over))
 
   # ------------------------------------------------------------------- sight
   - import: org/clulab/asist/grammars/lvo_template.yml

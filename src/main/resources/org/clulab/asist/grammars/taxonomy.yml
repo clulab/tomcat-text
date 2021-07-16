@@ -32,7 +32,9 @@
     - Action:
       - SimpleActions:
         - Block
-        - Move
+        - Move:
+          - MoveTo
+          - MoveFrom
         - Open
         - Close
         - Push
