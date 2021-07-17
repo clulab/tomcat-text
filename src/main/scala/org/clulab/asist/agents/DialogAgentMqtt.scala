@@ -27,7 +27,7 @@ import scala.util.control.Exception._
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
-  override val nMatches: Int = 0
+  override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent 
   with MessageBusClientListener { 
 

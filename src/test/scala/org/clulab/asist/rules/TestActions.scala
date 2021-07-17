@@ -1,8 +1,6 @@
 package org.clulab.asist.rules
 
-import com.sun.xml.internal.ws.api.message.Attachment
 import org.clulab.asist.BaseTest
-import org.clulab.asist.attachments.Agent
 
 class TestActions extends BaseTest {
 
@@ -58,23 +56,6 @@ class TestActions extends BaseTest {
 
 
 
-  passingTest should "Parse search events properly" in {
-    val doc =
-      extractor.annotate("I will search for the villagers inside the building")
-    val mentions = extractor.extractFrom(doc)
-
-    val self_mention = DesiredMention("Self", "I")
-    val victim_mention = DesiredMention("Victim", "villagers")
-    val search_mention = DesiredMention("Search", "I will search for the villagers",
-      Map("person"-> Seq(self_mention),
-      "target" -> Seq(victim_mention)))
-    val infrastructure_mention = DesiredMention("Infrastructure", "building")
-
-    testMention(mentions, search_mention)
-    //    testMention(mentions, deictic_mention) ("inside") // todo: we should determine some structure for locations
-    testMention(mentions, infrastructure_mention)
-  }
-
   passingTest should "Parse search lvo events properly" in {
     val doc =
       extractor.annotate("I search for the villagers inside the building")
@@ -86,7 +67,8 @@ class TestActions extends BaseTest {
       Map("person" -> Seq(self_mention),
         "target" -> Seq(victim_mention)))
     val deictic_mention = DesiredMention("Deictic", "inside")
-    
+
+
     testMention(mentions, search_mention)
     //    testMention(mentions, deictic_mention) // todo: we should determine some structure for locations
     testMention(mentions, infrastructure_mention)
@@ -164,8 +146,9 @@ class TestActions extends BaseTest {
 
     val self_mention = DesiredMention("Self", "I")
     val searcher_mention = DesiredMention("Searcher", "searcher")
-    val roleswitch_mention = DesiredMention("RoleSwitch", "changing to searcher",
-      Map("target" -> Seq(searcher_mention)), Set("Agent(I,Self)"))
+    val roleswitch_mention = DesiredMention("RoleSwitch", "I am changing to searcher",
+      Map("agent" -> Seq(self_mention),
+          "target" -> Seq(searcher_mention)))
 
     testMention(mentions, self_mention)
     testMention(mentions, searcher_mention)

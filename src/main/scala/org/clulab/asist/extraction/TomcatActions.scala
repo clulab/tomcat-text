@@ -3,10 +3,6 @@ package org.clulab.asist.extraction
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.extraction.TomcatRuleEngine._
 import org.clulab.odin._
-import org.clulab.asist.attachments.Agent
-import org.clulab.struct.Interval
-
-import scala.collection.mutable.ArrayBuffer
 
 class TomcatActions() extends Actions with LazyLogging {
 
@@ -18,51 +14,10 @@ class TomcatActions() extends Actions with LazyLogging {
   }
 
   def globalAction(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    // convert any agent argument to an attachment
-    val agentResolved = convertAgents(mentions, state)
-    val notSubsumed = mostSpecificOnly(agentResolved, state)
+    val notSubsumed = mostSpecificOnly(mentions, state)
     keepLongest(notSubsumed, state)
   }
 
-  def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    mentions.map(convertAgent)
-  }
-
-  def convertAgent(mention: Mention): Mention = {
-    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG)
-    val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty)
-    val agents = agentMentions.map(mkAgent).toSet
-
-    // make a copy of the mention with the agent attachments
-    val copy = mention match {
-      case tb: TextBoundMention => mention
-      case rm: RelationMention =>
-        val newSpan = mkInterval(mention, nonAgentArgs)
-        rm.copy(arguments = nonAgentArgs, attachments = agents, tokenInterval = newSpan)
-      case em: EventMention =>
-        val newSpan = mkInterval(mention, nonAgentArgs)
-        em.copy(arguments = nonAgentArgs, attachments = agents, tokenInterval = newSpan)
-      case _ => ???
-    }
-
-    copy
-  }
-
-  def mkInterval(m: Mention, args: Map[String, Seq[Mention]]): Interval = {
-    val triggerOffsets = m match {
-      case em: EventMention => Seq(em.trigger.start, em.trigger.end)
-      case _ => Seq.empty
-    }
-    val argOffsets = args.toSeq.flatMap(_._2)
-      .map(_.tokenInterval)
-      .flatMap(t => Seq(t.start, t.end))
-    val allOffsets = triggerOffsets ++ argOffsets
-    val start = allOffsets.min
-    val end = allOffsets.max
-    Interval(start, end)
-  }
-
-  def mkAgent(m: Mention): Attachment = Agent(m.text, m.label, m.labels, m.tokenInterval)
 
 /** Keeps the longest mention for each group of overlapping mentions **/
   def keepLongest(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
@@ -104,26 +59,40 @@ class TomcatActions() extends Actions with LazyLogging {
     // FIXME!!
     for {
       mention <- mentions
-      triggerStart = mentionStart(mention)
-      leftMostArg = mention.arguments.flatMap(xx => xx._2).map(m => m.start).min // first token index of all the arguments
-      action = mention.arguments("topic").head // should only be one
-      missedSubjs = action.sentenceObj.dependencies.get
-        // get the outgoing dep edges coming from the trigger of the action
-        .outgoingEdges(mentionStart(action))
-        // we're only interested in nsubj
-        .filter(tup => tup._2 == "nsubj")
-        // get the landing token (i.e., the subject of that action's token index)
-        .map(_._1)
-      // get the leftmost (or a dummy big number if there are none)
-      leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
-      // check that trigger is to left of all args and any missed subjects
-      if triggerStart < leftMostArg && triggerStart < leftMostMissedSubj
+      if hasSubjectVerbInversionOrNotApplicable(mention)
     } yield mention
   }
 
-  def mentionStart (mention: Mention): Int = mention match {
-    case m: EventMention => m.trigger.start
-    case m: TextBoundMention => m.start
+  def hasSubjectVerbInversionOrNotApplicable(mention: Mention): Boolean = {
+    mention match {
+      case em: EventMention => hasSubjectVerbInversion(em)
+      case _ => true
+    }
+  }
+
+  def hasSubjectVerbInversion(mention: EventMention): Boolean = {
+    val triggerStart = mention.trigger.start
+    // first token index of all the arguments
+    val leftMostArg = mention.arguments
+      // get the mentions from all arguments, flatten to a Seq[Mention]
+      .flatMap{ case (argName, argMentions) => argMentions }
+      // get the first token index of each mention
+      .map(m => m.start)
+      // find the smallest (leftmost) index
+      .min
+    val action = mention.arguments("topic").head // should only be one
+    val missedSubjs = action.sentenceObj.dependencies.get
+      // get the outgoing dep edges coming from the trigger of the action
+      .outgoingEdges(triggerStart)
+      // we're only interested in nsubj
+      .filter(tup => tup._2 == "nsubj")
+      // get the landing token (i.e., the subject of that action's token index)
+      .map(_._1)
+    // get the leftmost (or a dummy big number if there are none)
+    val leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
+
+    // check that trigger is to left of all args and any missed subjects
+    (triggerStart < leftMostArg) && (triggerStart < leftMostMissedSubj)
   }
 
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
