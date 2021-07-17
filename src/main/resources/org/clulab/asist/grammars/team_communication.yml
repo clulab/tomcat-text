@@ -82,7 +82,7 @@ rules:
     label: ReportLocation
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
-      location: Location = </cop/
+      location: Location = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
       person: Entity? =
         </cop/
         >/nsubj/

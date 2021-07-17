@@ -57,6 +57,8 @@ medic_triggers: "medic|paramedic|nurse|doctor|medical"
 
 medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
+movefrom_triggers: "depart|exit|leave"
+
 moveto_triggers: "go|enter|move|run|walk|come|scoot|climb|jump"
 
 north_triggers: "north"

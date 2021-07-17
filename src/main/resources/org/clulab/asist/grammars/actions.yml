@@ -82,12 +82,12 @@ rules:
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
-  # -------------------------------------------------------------------
+  # ------------------------------------------------------------------- move
   - name: move_nmod_action
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
-      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/]
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! []? away)
       target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
       person: Entity? = >/${agents}/
 
@@ -95,7 +95,7 @@ rules:
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
-      trigger = [lemma=/(?i)${ moveto_triggers }/]
+      trigger = [lemma=/(?i)${ moveto_triggers }/] (?! []? away)
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
       person: Entity? = >/${agents}/
 
@@ -106,6 +106,22 @@ rules:
     type: token
     pattern: |
       @person:Entity (?<trigger> will be) right? (@target:Deictic | (?<target> over))
+
+  - name: leave_deixis_action
+    priority: ${ rulepriority }
+    label: MoveFrom
+    pattern: |
+      trigger = [lemma=/(?i)${ movefrom_triggers }/] | [lemma=go] /(away|from)/
+      target: Deictic = >/nmod_(away|from)/ | >advmod
+      person: Entity? = >/${agents}/
+
+  - name: leave_nmod_action
+    priority: ${ rulepriority }
+    label: MoveFrom
+    pattern: |
+      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/] | [lemma=go] /(away|from)/
+      target: Location? =  >/nmod_(away|from)/ | >/${objects}/
+      person: Entity? = >/${agents}/
 
   # ------------------------------------------------------------------- sight
   - import: org/clulab/asist/grammars/lvo_template.yml
