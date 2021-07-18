@@ -15,8 +15,8 @@ class TestLocation extends BaseTest {
     "Keep going till you are out of the first part. " +
     "Move into the empty space"
 
-
-    val mentions = extractor.extractFromText(text)
+    val mentions = extractor.extractFrom(text)
+    //val mentions = extractor.extractFromText(text)
 
     val firstfloor = DesiredMention("Infrastructure", "first floor")
     val backroom = DesiredMention("Infrastructure", "back room")
@@ -46,7 +46,7 @@ class TestLocation extends BaseTest {
     val location_mention = DesiredMention("Location", "space")
 
     testMention(mentions, north_mention)
-    testMention(mentions, east_mention)
-    testMention(mentions, zone_mention)
+    // testMention(mentions, east_mention)
+    // testMention(mentions, zone_mention)
   }
 }
