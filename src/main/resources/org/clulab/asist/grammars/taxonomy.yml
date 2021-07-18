@@ -47,11 +47,12 @@
           - Question:
             - QuestionParticle
             - LocationQuestion
-            - ModalQuestion
+            - YesNoQuestion
           - Agreement
           - Disagreement
         - Clear
         - RoleSwitch
+        - RoleDeclare
         - ReportLocation
         - KnowledgeSharing
       - ComplexActions:
@@ -80,6 +81,7 @@
       - Engineer
     - Victim:
         - Yellow
+        - CriticalVictim
     - Friend
     - Foe
     - Player:
@@ -111,6 +113,10 @@
     - Sign
     - WoodenDoor
     - IronDoor
+    - MarkerBlock:
+        - RegularMarkerBlock
+        - NoVictimMarkerBlock
+        - CriticalMarkerBlock
     - Tool:
       - Hammer
       - MedKit

@@ -1,33 +1,38 @@
+package org.clulab.utils
+
+import com.typesafe.scalalogging.LazyLogging
+
+import org.eclipse.paho.client.mqttv3._
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 April
+ * Updated:  2021 July
  *
- * Message Bus agent for the Dialog Agent
+ * Simplified subscription (read) and publication (write) to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
- * @param inputTopics MQTT topics from which messages to process are read.
- * @param outputTopic MQTT topic for publishing processed messages
- * @param owner A DialogAgentMQTT that will process input messages
+ * @param subscriptions MQTT topics from which messages to process are read.
+ * @param publications MQTT topic for publishing processed messages
+ * @param listener A MessageBusClientListener that will process messages
  */
-package org.clulab.asist
 
-import org.eclipse.paho.client.mqttv3._
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
-import org.slf4j.LoggerFactory
+// extend this in your message bus communicator class
+trait MessageBusClientListener {
+  def messageArrived(topic: String, json: String): Unit
+}
 
-/** Message Bus handler class */
-class AgentMqtt(
+// instantiate one of these in your message bus communicator class
+class MessageBusClient(
   val host: String = "",
   val port: String = "",
-  val inputTopics: List[String] = List.empty,
-  val outputTopic: String = "",
-  val owner: DialogAgentMqtt
-) extends MqttCallback {
-
-  private lazy val logger = LoggerFactory.getLogger(this.getClass())
+  val subscriptions: List[String] = List.empty,
+  val publications: List[String] = List.empty,
+  val listener: MessageBusClientListener
+) extends MqttCallback with LazyLogging {
 
   val uri = "tcp://%s:%s".format(host,port)
   val qos = 2 // highest quality of service, send msg exactly once.
@@ -39,14 +44,14 @@ class AgentMqtt(
   // Connect to the Message Bus
   publisher.connect(new MqttConnectOptions)
   subscriber.connect(new MqttConnectOptions).waitForCompletion
-  inputTopics.map(topic => subscriber.subscribe(topic, qos))
+  subscriptions.map(topic => subscriber.subscribe(topic, qos))
   subscriber.setCallback(this)
 
   // Report status of our connection to the Message Bus
   if(subscriber.isConnected && publisher.isConnected) {
     logger.info("Connected to MQTT broker at %s".format(uri))
-    logger.info("Subscribed to: %s".format(inputTopics.mkString(", ")))
-    logger.info("Publishing on: %s".format(outputTopic))
+    logger.info("Subscribed to: %s".format(subscriptions.mkString(", ")))
+    logger.info("Publishing on: %s".format(publications.mkString(", ")))
     logger.info("Running.")
   } else {
     logger.error("Could not connect to MQTT broker at %s".format(uri))
@@ -54,13 +59,14 @@ class AgentMqtt(
   }
 
   /** Publish a MQTT message to one topic
-   *  @param output String to publish on the Message Bus
+   *  @param topic Destination on the Message Bus
+   *  @param text String to publish on the Message Bus
    */
-  def publish(output: String): Unit = try {
-    publisher.publish(outputTopic, new MqttMessage(output.getBytes))
+  def publish(topic: String, text: String): Unit = try {
+    publisher.publish(topic, new MqttMessage(text.getBytes))
   } catch {
     case t: Throwable => { 
-      logger.error("Could not publish to %s".format(outputTopic))
+      logger.error("Could not publish to %s".format(topic))
       logger.error(t.toString)
     }
   } 
@@ -84,7 +90,7 @@ class AgentMqtt(
    * @param mm Contains metadata in Json format
    */
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
-    owner.messageArrived(topic, mm.toString)
+    listener.messageArrived(topic, mm.toString)
   } catch {
     case t: Throwable => {
       logger.error("Problem reading message on %s".format(topic))

@@ -1,16 +1,10 @@
-package org.clulab.asist
-
+package org.clulab.asist.extraction
 
 import com.typesafe.scalalogging.LazyLogging
+import org.clulab.asist.extraction.TomcatRuleEngine._
 import org.clulab.odin._
-import org.clulab.asist.AsistEngine._
 
-import scala.collection.mutable.ArrayBuffer
-
-class TomcatActions(
-    val timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
-) extends Actions
-    with LazyLogging {
+class TomcatActions() extends Actions with LazyLogging {
 
   def passThrough(
       mentions: Seq[Mention],
@@ -59,37 +53,46 @@ class TomcatActions(
     localState.lookUpTable.values.toStream.flatten.distinct.toVector
   }
 
-  def removeResearcher(
-      mentions: Seq[Mention],
-      state: State = new State()
-  ): Seq[Mention] = {
-    // If there are no timeintervals, return all events found
-    if (timeintervals._1.size == 0) {
-      return mentions
-    }
-    val to_be_returned = new ArrayBuffer[Mention]
-    for (men <- mentions) {
-      val startOffset = men match {
-        case cur: EventMention     => cur.trigger.startOffset
-        case cur: TextBoundMention => cur.startOffset
-      }
+  def requireSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    // trigger should be before all the arguments
+    // todo: revisit when the no_agent branch merged
+    // FIXME!!
+    for {
+      mention <- mentions
+      if hasSubjectVerbInversionOrNotApplicable(mention)
+    } yield mention
+  }
 
-      var cur = timeintervals._1(0)
-      var i = 0
-      while (cur < startOffset) {
-        i += 1
-        cur = timeintervals._1(i)
-      }
-      if (!(timeintervals._2 contains i)) {
-        to_be_returned.append(men)
-        if (timeintervals._3 contains timeintervals._1(i - 1)) {
-          // This checks if the previous utterance was a researcher question
-          //println(men.words.mkString)
-          // TODO create new event mention
-        }
-      }
+  def hasSubjectVerbInversionOrNotApplicable(mention: Mention): Boolean = {
+    mention match {
+      case em: EventMention => hasSubjectVerbInversion(em)
+      case _ => true
     }
-    to_be_returned
+  }
+
+  def hasSubjectVerbInversion(mention: EventMention): Boolean = {
+    val triggerStart = mention.trigger.start
+    // first token index of all the arguments
+    val leftMostArg = mention.arguments
+      // get the mentions from all arguments, flatten to a Seq[Mention]
+      .flatMap{ case (argName, argMentions) => argMentions }
+      // get the first token index of each mention
+      .map(m => m.start)
+      // find the smallest (leftmost) index
+      .min
+    val action = mention.arguments("topic").head // should only be one
+    val missedSubjs = action.sentenceObj.dependencies.get
+      // get the outgoing dep edges coming from the trigger of the action
+      .outgoingEdges(triggerStart)
+      // we're only interested in nsubj
+      .filter(tup => tup._2 == "nsubj")
+      // get the landing token (i.e., the subject of that action's token index)
+      .map(_._1)
+    // get the leftmost (or a dummy big number if there are none)
+    val leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
+
+    // check that trigger is to left of all args and any missed subjects
+    (triggerStart < leftMostArg) && (triggerStart < leftMostMissedSubj)
   }
 
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
@@ -134,12 +137,6 @@ class TomcatActions(
 }
 
 object TomcatActions {
-
-  def apply(
-      timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
-  ) =
-    new TomcatActions(
-      timeintervals: (ArrayBuffer[Int], ArrayBuffer[Int], ArrayBuffer[Int])
-    )
+  def apply() = new TomcatActions()
 }
 

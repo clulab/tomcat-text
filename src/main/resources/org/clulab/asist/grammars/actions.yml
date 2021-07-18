@@ -4,10 +4,15 @@ rules:
   - name: close
     priority: ${ rulepriority }
     label: Close
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ close_triggers })/ & tag=/^V/]
       target: Infrastructure? = >dobj | >/nmod/
+
+  - name: close_dem_pronoun
+    priority: ${ rulepriority }
+    label: Close
+    pattern: |
+      trigger = [lemma=/(?i)^(${ close_triggers })/ & tag=/^V/]
       target: DemPron? = >dobj
 
   - import: org/clulab/asist/grammars/lvo_template.yml
@@ -22,11 +27,10 @@ rules:
     priority: ${ rulepriority }
     label: Save
     example: "I will save the victim"
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Victim = >dobj
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 
   - name: triage2
     priority: ${ rulepriority }
@@ -34,9 +38,9 @@ rules:
     example: "I will save this guy"
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
       target: Person = >dobj
-      location: Infrastructure? = >nmod_in
+      location: Location? = >/${ positional_preps_+advmod }/
 ###need this because we split "person" from "victim"
 
   - name: triage3
@@ -45,11 +49,9 @@ rules:
     example: "I will save him"
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
-      target: Entity=
-      >dobj
-      [tag=/PRP/]
-      location: Infrastructure? = >nmod_in
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
+      target: Entity = >dobj [tag=/PRP/]
+      location: Location? = >/${ positional_preps_+advmod }/
 ## This one is not working right now, working on it -Remo
 
   - import: org/clulab/asist/grammars/lvo_template.yml
@@ -59,6 +61,8 @@ rules:
       label: Search
       trigger: ${ search_triggers }
       object_type: Location
+
+
 
   - name: search_infra_action
     priority: ${ rulepriority }
@@ -74,7 +78,7 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ search_triggers })/]
+      trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
       person: Entity = >nsubj
       target: Concept? = >nmod_for
 
@@ -82,7 +86,6 @@ rules:
   - name: move_nmod_action
     priority: ${ rulepriority }
     label: Move
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/]
       target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/
@@ -91,7 +94,6 @@ rules:
   - name: move_deixis_action
     priority: ${ rulepriority }
     label: Move
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)${ moveto_triggers }/]
       target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
@@ -131,7 +133,6 @@ rules:
   - name: clear_rubble
     priority: ${ rulepriority }
     label: Clear
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
       agent: Entity? = >/${agents}/
@@ -140,7 +141,6 @@ rules:
   - name: clear_rubble_token
     priority: ${ rulepriority }
     label: Clear
-    action: removeResearcher
     type: token
     pattern: |
       @agent:Entity? [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
@@ -148,18 +148,15 @@ rules:
   - name: clear_location
     priority: ${ rulepriority }
     label: Clear
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
       agent: Entity? = >/${agents}/
       target: Location = >dobj
 
-
   - name: obstructing
     priority: ${ rulepriority }
     label: Block
     example: "Some rubble is blocking this door"
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
       source: Concept? = >/${agents}/
@@ -168,17 +165,14 @@ rules:
   - name: obstructing2
     priority: ${ rulepriority }
     label: Block
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
       source: Obstacle? =  <acl
       target: Concept? = >/dobj|acl/
 
-
   - name: obstructing_in_the_way
     priority: ${ rulepriority }
     label: Block
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
       source: Obstacle? = </nmod/ >/${agents}/
@@ -188,7 +182,6 @@ rules:
     priority: ${ rulepriority }
     example: "There is a fire in the way of this door"
     label: Block
-    action: removeResearcher
     pattern: |
       trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
       source: Concept? = >/${agents}/

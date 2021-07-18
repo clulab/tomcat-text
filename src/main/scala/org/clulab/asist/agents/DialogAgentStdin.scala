@@ -1,20 +1,20 @@
+package org.clulab.asist.agents
+
+import java.util.Scanner
+
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal
+ *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 April
+ *  Updated:  2021 June
  *
  *  An interactive Dialog Agent that will return extractions for text entered
- *  on the command line 
+ *  on the command line
  *
  *  @param nMatches Number of taxonomy_matches to return (up to 5)
  */
-package org.clulab.asist
-
-import java.util.Scanner
-import org.json4s.jackson.Serialization.write
 
 class DialogAgentStdin (
-  override val nMatches: Int = 0
+  override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent { 
 
   println("\nDialog Agent stdin extractor running.")
@@ -27,8 +27,8 @@ class DialogAgentStdin (
 
   // Read keyboard input until user hits [CTRL-D]
   while (input.hasNextLine){
-    val (extractions, extracted_doc) = extractor.runExtraction(input.nextLine)
-    extractions.map(extraction).map(f => println(write(f)))
+    val extractions = extractor.extractFrom(input.nextLine, keepText = true)
+    extractions.map(extraction).map(f => println(writeJson(f)))
     print("\n> ")
   }
 }

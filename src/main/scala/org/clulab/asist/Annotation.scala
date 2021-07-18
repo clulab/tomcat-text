@@ -1,7 +1,5 @@
 package org.clulab.asist
 
-import edu.stanford.nlp.ling.CoreAnnotations.EntityClassAnnotation
-
 // Add id info
 class ActionAnnotation(
     var span: String,
@@ -23,9 +21,9 @@ class ActionAnnotation(
       (action_type == other_type) &&
       (start_offset <= other_start && end_offset >= other_end)
     ) {
-      return true
+      true
     } else {
-      return false
+      false
     }
   }
 
@@ -35,22 +33,16 @@ class ActionAnnotation(
       other_end: Int,
       other_target: Option[String] = None
   ): Boolean = {
-    if (!shallowCompare(other_type, other_start, other_end)) {
-      return false
-    } else {
+    if (!shallowCompare(other_type, other_start, other_end)) false
+    else {
       other_target match {
         case Some(other_span) =>
-          if (target_span contains other_span) {
-            return true
-          } else {
-            return false
-          }
+          if (target_span contains other_span) true
+          else false
+
         case None =>
-          if (target_span == "-1") {
-            return true
-          } else {
-            return false
-          }
+          if (target_span == "-1") true
+          else false
       }
     }
   }

@@ -1,15 +1,10 @@
 package controllers
 
 import javax.inject._
-import org.clulab.asist.AsistEngine
+import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.odin.{Attachment, EventMention, Mention, RelationMention, TextBoundMention}
 import org.clulab.processors.{Document, Sentence}
 import org.clulab.utils.DisplayUtils
-
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
-
-import play.api._
 import play.api.mvc._
 import play.api.libs.json._
 
@@ -23,7 +18,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   // Initialize the EidosSystem
   // -------------------------------------------------
   println("[AsistEngine] Initializing the AsistEngine ...")
-  val ieSystem = new AsistEngine()
+  val ieSystem = new TomcatRuleEngine()
   var proc = ieSystem.proc
   println("[AsistEngine] Completed Initialization ...")
   // -------------------------------------------------
@@ -37,7 +32,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
-  def index() = Action { implicit request: Request[AnyContent] =>
+  def index(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }
 
@@ -58,11 +53,10 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     entityLinkingEvents
   }
   
-  def processPlaySentence(ieSystem: AsistEngine, text: String): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
+  def processPlaySentence(ieSystem: TomcatRuleEngine, text: String): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
     // preprocessing
     println(s"Processing sentence : ${text}" )
     val doc = ieSystem.annotate(text)
-
 
     println(s"DOC : ${doc}")
     // extract mentions from annotated document
@@ -70,21 +64,17 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     println(s"Done extracting the mentions ... ")
     println(s"They are : ${mentions.map(m => m.text).mkString(",\t")}")
 
-//    println(s"Grounding the gradable adjectives ... ")
-//    val groundedEntities = groundEntities(ieSystem, mentions)
-
     println(s"Getting entity linking events ... ")
     val events = getEntityLinkerEvents(mentions)
 
     println("DONE .... ")
-//    println(s"Grounded Adjectives : ${groundedAdjectives.size}")
     // return the sentence and all the mentions extracted ... TODO: fix it to process all the sentences in the doc
     (doc, mentions.sortBy(_.start), events)
   }
 
   def parseSentence(text: String) = Action {
     val (doc, mentions, causalEvents) = processPlaySentence(ieSystem, text)
-    println(s"Sentence returned from processPlaySentence : ${doc.sentences.head.getSentenceText()}")
+    println(s"Sentence returned from processPlaySentence : ${doc.sentences.head.getSentenceText}")
     val json = mkJson(text, doc, mentions, causalEvents) // we only handle a single sentence
     Ok(json)
   }
