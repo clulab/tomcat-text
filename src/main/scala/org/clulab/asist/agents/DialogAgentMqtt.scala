@@ -31,8 +31,6 @@ class DialogAgentMqtt(
 ) extends DialogAgent 
   with MessageBusClientListener { 
 
-  val qMan: QueueManager = new QueueManager(this)
-
   val source_type = "message_bus"
 
   // this handles the message bus operations.  
@@ -44,20 +42,26 @@ class DialogAgentMqtt(
     this
   )
 
+  /* async callback after DAC reset */
+  def publishVersionInfo(
+    versionInfo: VersionInfo,
+  ): Unit = bus.publish(topicPubVersionInfo,write(versionInfo))
+
+  /* async callback after Dac classification */
+  def publishMessage(
+    message: DialogAgentMessage,
+  ): Unit = bus.publish(topicPubDialogAgent,write(message))
+
   // send VersionInfo if we receive a TrialMessage with subtype "start", 
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
     allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
       if(trialMessage.msg.sub_type == "start") {
         val timestamp = Clock.systemUTC.instant.toString
-        bus.publish(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
+        val versionInfo = VersionInfo(this, timestamp)
+        dqm.enqueueReset(this, publishVersionInfo, versionInfo)
       }
     })
   )
-
-  /* async callback after classification */
-  def sendMessage(
-    message: DialogAgentMessage,
-  ): Unit = bus.publish(topicPubDialogAgent,writeJson(message))
 
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
@@ -76,7 +80,7 @@ class DialogAgentMqtt(
           topic,
           metadata
         )
-        qMan.enqueue(sendMessage, message)
+        dqm.enqueueClassification(this, publishMessage, message)
       }
     )
   } 

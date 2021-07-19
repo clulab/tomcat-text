@@ -42,7 +42,7 @@ case class DacRequest(
 )
 
 
-class QueueManager(val agent: DialogAgent) extends LazyLogging {
+class DacQueueManager() extends LazyLogging {
 
   private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
 
@@ -114,27 +114,83 @@ class QueueManager(val agent: DialogAgent) extends LazyLogging {
     }
   }
 
-  def enqueue(
+  /** Enqueue a classification job with a user parameter
+  *  @param agent Caller with a message and an output param
+  *  @param callback Called with the message when the future returns
+  *  @param message Use text field for Dialog Act Classification
+  *  @param output Used by file reading Agents to write output files
+  *  @return Nothing
+  */
+  def enqueueClassification(
+    agent: DialogAgent,
     callback: (DialogAgentMessage, PrintWriter) => Unit,
     message: DialogAgentMessage,
     output: PrintWriter
   ): Unit = {
-    if(agent.withClassification) {
-      // set up DAC job with messsage and output
+    logger.info("enqueueClassification with agent, callback, message, output")
+    if(agent.withClassifications) {
+      // set up classification job with messsage and output
     } else {  
-      // call back without DAC
+      // call back without classification
       callback(message, output)
     }
   }
 
-  def enqueue(
+  /** Enqueue a classification job 
+  *  @param callback Call with the message when the future returns
+  *  @param message Use text field for Dialog Act Classification
+  *  @param agent Caller with a message
+  *  @return Nothing
+  */
+  def enqueueClassification(
+    agent: DialogAgent,
     callback: DialogAgentMessage => Unit,
     message: DialogAgentMessage
   ): Unit = {
-    if(agent.withClassification) {
-      // set up DAC job with messsage
+    logger.info("enqueueClassification with agent, callback, message")
+    if(agent.withClassifications) {
+      // set up classification job with messsage
     } else {
-      // call back without DAC
+      // call back without classification
+      callback(message)
+    }
+  }
+
+  /** Enqueue a classification reset 
+  *  @param agent Caller requesting reset
+  *  @param callback Call with the message when the future returns
+  *  @return Nothing
+  */
+  def enqueueReset(
+    agent: DialogAgent,
+    callback: (VersionInfo, PrintWriter) => Unit,
+    message: VersionInfo,
+    output: PrintWriter
+  ): Unit = {
+    logger.info("enqueueReset with agent, callback, message, output")
+    if(agent.withClassifications) {
+      // set up classification job with messsage
+    } else {
+      // call back without classification
+      callback(message, output)
+    }
+  }
+
+  /** Enqueue a classification reset 
+  *  @param agent Caller requesting reset
+  *  @param callback Call with the message when the future returns
+  *  @return Nothing
+  */
+  def enqueueReset(
+    agent: DialogAgent,
+    callback: (VersionInfo) => Unit,
+    message: VersionInfo
+  ): Unit = {
+    logger.info("enqueueReset with agent, callback, message")
+    if(agent.withClassifications) {
+      // set up classification job with messsage
+    } else {
+      // call back without classification
       callback(message)
     }
   }

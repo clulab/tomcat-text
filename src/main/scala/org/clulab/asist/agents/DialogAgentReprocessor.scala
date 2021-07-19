@@ -58,8 +58,6 @@ class DialogAgentReprocessor (
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
-  val qMan: QueueManager = new QueueManager(this)
-
   val startTime = Clock.systemUTC.millis
   logger.info("Checking input files for DialogAgent metadata...")
 
@@ -69,8 +67,8 @@ class DialogAgentReprocessor (
     .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a)))
 
   val nFiles = fileNames.length
-
   val reprocessingStartTime = Clock.systemUTC.millis
+
   // Only create the output directory if DialogAgent metadata exists
   if(nFiles > 0) {  
 

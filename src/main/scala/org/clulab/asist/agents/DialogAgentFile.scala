@@ -19,7 +19,11 @@ import scala.util.{Failure, Success}
  *
  * Updated:  2021 July
  *
- * Process a file or the first level of a directory of files.
+ * Process a file or the first level of a directory of files
+ *
+ * A file is processed by finding metadata elements published on any of the 
+ * DialogAgent subscribed topics and creating new DialogAgentMessages with 
+ * that data.
  *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
@@ -31,8 +35,6 @@ class DialogAgentFile(
   val outputFilename: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
-
-  val qMan: QueueManager = new QueueManager(this)
 
   // screen input filenames for supported types
   val supported = List(".vtt", ".metadata")
@@ -51,11 +53,31 @@ class DialogAgentFile(
   } 
 
 
-  /* async callback after classification */
-  def writeToFile(
+  /** async callback after classification
+   *  @param message A fully populated case class ready for output
+   *  @param output  A PrintWriter connected to an output file
+   *  @return 
+   */
+  def writeMessageToFile(
     message: DialogAgentMessage,
     output: PrintWriter
-  ): Unit = output.write(s"${writeJson(message)}\n")
+  ): Unit = {
+    logger.info("writeMessageToFile with message, output")
+    output.write(s"${writeJson(message)}\n")
+  }
+
+  /** async callback after reset
+   *  @param message A fully populated case class ready for output
+   *  @param output  A PrintWriter connected to an output file
+   *  @return 
+   */
+  def writeVersionInfoToFile(
+    message: VersionInfo,
+    output: PrintWriter
+  ): Unit = {
+    logger.info("writeVersionInfoToFile with message, output")
+    output.write(s"${writeJson(message)}\n")
+  }
 
 
   /** Create a file writer for a given filename
@@ -105,17 +127,25 @@ class DialogAgentFile(
     filename: String,
     output: PrintWriter
   ): Unit = {
+    logger.info("processMetadataFile")
     val source_type = "message_bus" // file metadata originates there
     val bufferedSource = Source.fromFile(filename)
     val lines = bufferedSource.getLines
     while(lines.hasNext) {
       val line = lines.next
       allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
+        logger.info(s"processMetadataFile with topic = ${lookahead.topic}")
         if(topicSubTrial == lookahead.topic) {
           allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
             if(trialMessage.msg.sub_type == "start") {
               val timestamp = Clock.systemUTC.instant.toString
-              output.write(writeJson(VersionInfo(this, timestamp)))
+              val versionInfo = VersionInfo(this, timestamp)
+              dqm.enqueueReset(
+                this,
+                writeVersionInfoToFile,
+                versionInfo,
+                output
+              )
             }
           }
         }
@@ -127,7 +157,12 @@ class DialogAgentFile(
               lookahead.topic,
               metadata
             )
-            qMan.enqueue(writeToFile, message, output) 
+            dqm.enqueueClassification(
+              this, 
+              writeMessageToFile,
+              message,
+              output
+            ) 
           }
         }
       }
@@ -145,10 +180,15 @@ class DialogAgentFile(
   ): Unit = {
     VttDissector(new FileInputStream(new File(filename))) match {
       case Success(blocks) => blocks.map{block =>
-        processWebVttElement(
-          block.lines.toList,
-          filename
-        ).map(message => qMan.enqueue(writeToFile, message, output))
+        processWebVttElement(block.lines.toList, filename)
+        .map{message => 
+          dqm.enqueueClassification(
+            this, 
+            writeMessageToFile,
+            message,
+            output
+          )
+        }
       }
       case Failure(f) => {
         logger.error("VttDissector could not parse '%s'".format(filename))
