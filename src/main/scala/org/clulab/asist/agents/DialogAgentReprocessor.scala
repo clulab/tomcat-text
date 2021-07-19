@@ -58,6 +58,8 @@ class DialogAgentReprocessor (
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
+  val qMan: QueueManager = new QueueManager(this)
+
   val startTime = Clock.systemUTC.millis
   logger.info("Checking input files for DialogAgent metadata...")
 

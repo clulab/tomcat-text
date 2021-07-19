@@ -31,6 +31,8 @@ class DialogAgentMqtt(
 ) extends DialogAgent 
   with MessageBusClientListener { 
 
+  val qMan: QueueManager = new QueueManager(this)
+
   val source_type = "message_bus"
 
   // this handles the message bus operations.  
@@ -41,9 +43,6 @@ class DialogAgentMqtt(
     publications,
     this
   )
-
-  // connect to the Dialog Act Classifier
-  //  
 
   // send VersionInfo if we receive a TrialMessage with subtype "start", 
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
@@ -56,9 +55,9 @@ class DialogAgentMqtt(
   )
 
   /* async callback after classification */
-  override def receiveDialogAgentMessage(m: DialogAgentMessage) {
-    bus.publish(topicPubDialogAgent,writeJson(m))
-  }
+  def sendMessage(
+    message: DialogAgentMessage,
+  ): Unit = bus.publish(topicPubDialogAgent,writeJson(message))
 
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
@@ -70,14 +69,15 @@ class DialogAgentMqtt(
   ): Unit = topic match {
     case `topicSubTrial` => trialMessageArrived(json)
     case _ => json.split("\n").map(line => 
-      allCatch.opt(read[Metadata](line)).map(metadata => 
-        requestDialogAgentMessage(  
+      allCatch.opt(read[Metadata](line)).map{metadata => 
+        val message = getDialogAgentMessage(
           source_type,
           topic,
           topic,
           metadata
         )
-      )
+        qMan.enqueue(sendMessage, message)
+      }
     )
   } 
 }

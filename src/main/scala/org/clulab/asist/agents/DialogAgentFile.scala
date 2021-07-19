@@ -32,13 +32,14 @@ class DialogAgentFile(
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
+  val qMan: QueueManager = new QueueManager(this)
+
   // screen input filenames for supported types
   val supported = List(".vtt", ".metadata")
   val filenames = LocalFileUtils
     .getFileNames(inputFilename)
     .filter(f => f.contains("."))
     .filter(f => supported.contains(f.substring(f.lastIndexOf("."))))
-
 
   if(filenames.isEmpty) 
     logger.error("No valid input files found")
@@ -49,12 +50,12 @@ class DialogAgentFile(
     logger.info("All operations completed successfully.")
   } 
 
-  /* async callback after classification */
-  override def receiveDialogAgentMessage(m: DialogAgentMessage) {
-    val json = writeJson(m)
-    // output.write(json)  // FIXME need to keep the output stream locally.
-  }
 
+  /* async callback after classification */
+  def writeToFile(
+    message: DialogAgentMessage,
+    output: PrintWriter
+  ): Unit = output.write(s"${writeJson(message)}\n")
 
 
   /** Create a file writer for a given filename
@@ -114,18 +115,19 @@ class DialogAgentFile(
           allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
             if(trialMessage.msg.sub_type == "start") {
               val timestamp = Clock.systemUTC.instant.toString
-              output.write(write(VersionInfo(this, timestamp)))
+              output.write(writeJson(VersionInfo(this, timestamp)))
             }
           }
         }
         else if(subscriptions.contains(lookahead.topic)) {
           allCatch.opt(read[Metadata](line)).map{metadata =>
-            requestDialogAgentMessage(
+            val message = getDialogAgentMessage(
               source_type,
               filename,
               lookahead.topic,
               metadata
             )
+            qMan.enqueue(writeToFile, message, output) 
           }
         }
       }
@@ -142,14 +144,12 @@ class DialogAgentFile(
     output: PrintWriter
   ): Unit = {
     VttDissector(new FileInputStream(new File(filename))) match {
-      case Success(blocks) => blocks.map(block =>
+      case Success(blocks) => blocks.map{block =>
         processWebVttElement(
           block.lines.toList,
           filename
-        ).map(dialogAgentMessage =>
-          output.write("%s\n".format(write(dialogAgentMessage)))
-        )
-      )
+        ).map(message => qMan.enqueue(writeToFile, message, output))
+      }
       case Failure(f) => {
         logger.error("VttDissector could not parse '%s'".format(filename))
         logger.error(f.toString)
@@ -173,16 +173,10 @@ class DialogAgentFile(
         val foo = head.split(':')
         if(foo.length == 1) {
           val text = lines.mkString(" ")
-/*        FIXME with requestDialogAgentMessage
-          Some(dialogAgentMessage(source_type, filename, null, text))
-*/
-         None
+          Some(getDialogAgentMessage(source_type, filename, null, text))
         } else {
           val text = (foo(1)::tail).mkString(" ")
-/*        FIXME with requestDialogAgentMessage
-          Some(dialogAgentMessage(source_type, filename, foo(0), text))
-*/
-         None
+          Some(getDialogAgentMessage(source_type, filename, foo(0), text))
         }
       }
       case _ => None  // FIXME: Is the multiple-line case really a showstopper?
