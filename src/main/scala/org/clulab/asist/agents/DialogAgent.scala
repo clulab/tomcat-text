@@ -50,10 +50,6 @@ class DialogAgent (
   val dqm = new DacQueueManager
   logger.info(s"args.withClassifications = ${args.withClassifications}")
 
-
-  val nMatches = args.nMatches
-  val withClassifications = args.withClassifications
-
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
@@ -78,6 +74,9 @@ class DialogAgent (
     topicPubDialogAgent,
     topicPubVersionInfo
   )
+
+  def nMatches = args.nMatches
+  def withClassifications = args.withClassifications
 
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     if (pretty) {

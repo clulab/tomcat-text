@@ -58,11 +58,14 @@ class DacQueueManager() extends LazyLogging {
   val q: Queue[DacRequest] = Queue.empty
   var busy: Boolean = false
 
-  def showQ = println(s"Elements in queue: ${q.length}")
+  def showQ = {
+    logger.info(s"Elements in queue: ${q.length}")
+
+  }
 
   // deliver
   def doSomethingWithValue(dr: DacRequest, response: HttpResponse): Unit = {
-    println("doSomethingWithValue")
+    logger.info("doSomethingWithValue")
     response.entity.dataBytes
       .runReduce(_ ++ _)
       .map{ line =>
@@ -75,10 +78,10 @@ class DacQueueManager() extends LazyLogging {
 
 
   def dq(): Option[DacRequest] = {
-    println("dq")
+    logger.info("dq")
     showQ
     if(q.isEmpty) {
-      println("ERROR - tried to dequeue from empty queue!")
+      logger.info("ERROR - tried to dequeue from empty queue!")
       None
     } else {
       Some(q.dequeue)
@@ -99,46 +102,29 @@ class DacQueueManager() extends LazyLogging {
     )
     val future = Http().singleRequest(request)
 
-//    future.flatMap { response =>
-//      response.entity.dataBytes
-//        .runReduce(_ ++ _)
-//        .map(parse)
-//    }
-
     future onComplete {
       case Failure(t) => 
-        println("onFailure: " + t.toString)
+        logger.info("onFailure: " + t.toString)
         // end execution, in real life we would continue
       case Success(c: HttpResponse) => 
-        println("onSuccess")
+        logger.info("onSuccess")
         doSomethingWithValue(dr, c)
         synchronized {
           if(q.isEmpty) busy = false // release lock
           else {
-            dq.foreach{_dr =>
-              busy = true  // take lock
-              futureRequest(_dr)
-            }
+            busy = true  // take lock
+            futureRequest(dq)
           }
         }
     }
   }
 
-
-  def parse(
-    line: ByteString
-  ): Unit = {
-    val ret = line.utf8String.split(" ").headOption.map(Classification)
-    val classification = ret.getOrElse(new Classification("")).name
-    logger.info(s"parse with ${classification}")
-  }
-
   // request
   def nq(dr: DacRequest): Unit = {
-    println("nq")
+    logger.info("nq")
     synchronized{
       if(busy) {
-        println("busy, enqueueing")
+        logger.info("busy, enqueueing")
         q.enqueue(dr)
         showQ
       }
@@ -167,7 +153,6 @@ class DacQueueManager() extends LazyLogging {
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message, output")
     if(agent.withClassifications) {
-      
       val dr = DacRequest(
         callback1 = None,
         callback2 = Some(callback),

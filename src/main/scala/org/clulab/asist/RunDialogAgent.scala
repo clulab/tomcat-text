@@ -20,7 +20,7 @@ import scala.annotation.tailrec
  *    Array("mode","key1","value1","key2","value2", ...)
  */
 
-object RunDialogAgent extends App with LazyLogging {
+object RunDialogAgent extends App {
   
   // splash page if args are not understood
   val usageText = List(

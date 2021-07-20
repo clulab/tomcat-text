@@ -103,7 +103,7 @@ class DialogAgentReprocessor (
   } else 
     logger.error("No files containing DialogAgent metadata were found")
 
-
+  //FIXME This routine takes a long time.  Maybe grep?
   /** Scan a string iterator for valid DialogAgent JSON
    *  @param iter:  An iterator containing json strings
    *  @return: True if DialogAgent publication topic and data.text are found
