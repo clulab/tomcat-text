@@ -48,6 +48,8 @@ class DialogAgent (
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
   val dqm = new DacQueueManager
+  logger.info(s"args.withClassifications = ${args.withClassifications}")
+
 
   val nMatches = args.nMatches
   val withClassifications = args.withClassifications

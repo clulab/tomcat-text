@@ -1,8 +1,10 @@
 package org.clulab.asist
 
+import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._
 
 import scala.annotation.tailrec
+
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -18,7 +20,7 @@ import scala.annotation.tailrec
  *    Array("mode","key1","value1","key2","value2", ...)
  */
 
-object RunDialogAgent extends App {
+object RunDialogAgent extends App with LazyLogging {
   
   // splash page if args are not understood
   val usageText = List(

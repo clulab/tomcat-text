@@ -34,38 +34,38 @@ import scala.collection.mutable.Queue
  *  Maintain a FIFO queue of jobs to the Dialog Act Classifier server
  */
 
-// Dialog Act Classification Request
-case class DacRequest(
-  message: Option[DialogAgentMessage] = None,
-  owner: Option[DialogAgent] = None,
-  ownerParam: Option[Any] = None
-)
 
+// returned from DAC server
+case class Classification(name: String)
+
+
+// Dialog Act Classification Request 
+case class DacRequest(
+  callback1: Option[DialogAgentMessage => Unit] = None,
+  callback2: Option[(DialogAgentMessage, PrintWriter) => Unit] = None,
+  message: Option[DialogAgentMessage] = None,
+  output: Option[PrintWriter] = None
+)
 
 class DacQueueManager() extends LazyLogging {
 
+  implicit val system = ActorSystem()
+  implicit val dispatcher = system.dispatcher
+
   private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
 
-  val q: Queue[Int] = Queue.empty
+  val q: Queue[DacRequest] = Queue.empty
   var busy: Boolean = false
 
-  // slow function that executes remotely
-  def take5(i: Int): Int = {
-    println("take5")
-    Thread.sleep(5000)
-    i
-  }
-
-  def showQ = {
-    if(q.isEmpty) println("Q = []")
-    else println(s"Q = ${q.mkString(", ")}")
-  }
+  def showQ = println(s"Elements in queue: ${q.length}")
 
   // deliver
-  def doSomethingWithValue(i: Int): Unit =
-    println(s"doSomethingWithValue: ${i}")
+  def doSomethingWithValue(dr: DacRequest, hr: HttpResponse): Unit = {
+    println("doSomethingWithValue")
+  }
 
-  def dq(): Option[Int] = {
+
+  def dq(): Option[DacRequest] = {
     println("dq")
     showQ
     if(q.isEmpty) {
@@ -76,43 +76,72 @@ class DacQueueManager() extends LazyLogging {
     }
   }
 
-  def futureInt(i: Int): Unit = {
-    println("futureInt")
-    val f = Future(take5(i))
-    f onComplete {
-      case Success(x: Int) => 
-        println("onSuccess")
-        doSomethingWithValue(i)
-        synchronized {
-          if(q.isEmpty) busy = false // release lock
-          else {
-            dq.foreach{ n =>
-              busy = true  // take lock
-              futureInt(n)
-            }
-          }
-        }
+  def futureRequest(dr: DacRequest): Unit = dr.message.foreach{message  =>
+    logger.info("futureRequest")
+    val data = message.data
+    val json = write(new DialogActClassifierMessage(
+      data.participant_id,
+      data.text,
+      data.extractions)
+    )
+    val request = HttpRequest(
+      uri = Uri("http://localhost:8000/classify"),
+      entity = HttpEntity(ContentTypes.`application/json`,json)
+    )
+    val future = Http().singleRequest(request)
+
+//    future.flatMap { response =>
+//      response.entity.dataBytes
+//        .runReduce(_ ++ _)
+//        .map(parse)
+//    }
+
+    future onComplete {
       case Failure(t) => 
         println("onFailure: " + t.toString)
         // end execution, in real life we would continue
+      case Success(c: HttpResponse) => 
+        println("onSuccess")
+        doSomethingWithValue(dr, c)
+        synchronized {
+          if(q.isEmpty) busy = false // release lock
+          else {
+            dq.foreach{_dr =>
+              busy = true  // take lock
+              futureRequest(_dr)
+            }
+          }
+        }
     }
   }
 
+
+  def parse(
+    line: ByteString
+  ): Unit = {
+    val ret = line.utf8String.split(" ").headOption.map(Classification)
+    val classification = ret.getOrElse(new Classification("")).name
+    logger.info(s"parse with ${classification}")
+  }
+
   // request
-  def nq(i: Int): Unit = {
-    println(s"nq: ${i}")
+  def nq(dr: DacRequest): Unit = {
+    println("nq")
     synchronized{
       if(busy) {
         println("busy, enqueueing")
-        q.enqueue(i)
+        q.enqueue(dr)
         showQ
       }
       else {
         busy = true
-        futureInt(i)
+        futureRequest(dr)
       }
     }
   }
+
+
+  // the following queue entrypoints could use some abstraction.
 
   /** Enqueue a classification job with a user parameter
   *  @param agent Caller with a message and an output param
@@ -128,7 +157,16 @@ class DacQueueManager() extends LazyLogging {
     output: PrintWriter
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message, output")
+    logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
+      
+      val dr = DacRequest(
+        callback1 = None,
+        callback2 = Some(callback),
+        message = Some(message),
+        output = Some(output)
+      )
+      nq(dr)
       // set up classification job with messsage and output
     } else {  
       // call back without classification
@@ -148,6 +186,7 @@ class DacQueueManager() extends LazyLogging {
     message: DialogAgentMessage
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message")
+    logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
     } else {
@@ -168,6 +207,7 @@ class DacQueueManager() extends LazyLogging {
     output: PrintWriter
   ): Unit = {
     logger.info("enqueueReset with agent, callback, message, output")
+    logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
     } else {
@@ -187,6 +227,7 @@ class DacQueueManager() extends LazyLogging {
     message: VersionInfo
   ): Unit = {
     logger.info("enqueueReset with agent, callback, message")
+    logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
     } else {

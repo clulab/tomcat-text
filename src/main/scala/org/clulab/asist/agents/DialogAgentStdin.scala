@@ -15,7 +15,7 @@ import java.util.Scanner
 
 class DialogAgentStdin (
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent { 
+) extends DialogAgent(args) { 
 
   println("\nDialog Agent stdin extractor running.")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")

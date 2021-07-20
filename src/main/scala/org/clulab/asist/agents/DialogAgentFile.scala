@@ -34,7 +34,9 @@ class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent with LazyLogging {
+) extends DialogAgent(args) with LazyLogging {
+
+  logger.info(s"args.withClassifications = ${args.withClassifications}") 
 
   // screen input filenames for supported types
   val supported = List(".vtt", ".metadata")

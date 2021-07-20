@@ -56,7 +56,7 @@ class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent with LazyLogging {
+) extends DialogAgent(args) with LazyLogging {
 
   val startTime = Clock.systemUTC.millis
   logger.info("Checking input files for DialogAgent metadata...")

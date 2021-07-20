@@ -28,7 +28,7 @@ class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent 
+) extends DialogAgent(args)
   with MessageBusClientListener { 
 
   val source_type = "message_bus"
