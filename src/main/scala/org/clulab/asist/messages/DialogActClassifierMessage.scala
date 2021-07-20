@@ -1,7 +1,5 @@
 package org.clulab.asist.messages
 
-import org.json4s.jackson.Serialization.read
-
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -9,14 +7,16 @@ import org.json4s.jackson.Serialization.read
  *
  *  Classifier messages
  *
- *  Messages for communication with the Dialog Act Classifier
+ *  Messages for communication with the Dialog Act Classifier (DAC)
  */
 
-
-// outbound comms from DialogAgent client to Dialog Act Classifier server
+// outbound comms from DialogAgent client to DAC server
 case class DialogActClassifierMessage(
   participant_id: String = "",
   text: String = "",
   extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
 )
+
+// returned from DAC server
+case class Classification(name: String)
 
