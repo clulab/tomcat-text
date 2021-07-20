@@ -36,7 +36,7 @@ import scala.collection.mutable.Queue
 
 
 // returned from DAC server
-//case class Classification(name: String)
+case class Classification(name: String)
 
 
 // Dialog Act Classification Request 
@@ -51,7 +51,6 @@ class DacQueueManager() extends LazyLogging {
 
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
-  private val classifier = new Classifier
 
   private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
 
@@ -110,10 +109,10 @@ class DacQueueManager() extends LazyLogging {
         logger.info("onSuccess")
         doSomethingWithValue(dr, c)
         synchronized {
-          if(q.isEmpty) busy = false // release lock
+          if(q.isEmpty) busy = false // release lock, no more jobs
           else {
-            busy = true  // take lock
-            futureRequest(dq)
+            busy = true  // take lock, start next job
+            dq.foreach(job => futureRequest(job))
           }
         }
     }
