@@ -36,7 +36,7 @@ import scala.collection.mutable.Queue
 
 
 // returned from DAC server
-case class Classification(name: String)
+//case class Classification(name: String)
 
 
 // Dialog Act Classification Request 
@@ -51,6 +51,7 @@ class DacQueueManager() extends LazyLogging {
 
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
+  private val classifier = new Classifier
 
   private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
 
@@ -60,8 +61,16 @@ class DacQueueManager() extends LazyLogging {
   def showQ = println(s"Elements in queue: ${q.length}")
 
   // deliver
-  def doSomethingWithValue(dr: DacRequest, hr: HttpResponse): Unit = {
+  def doSomethingWithValue(dr: DacRequest, response: HttpResponse): Unit = {
     println("doSomethingWithValue")
+    response.entity.dataBytes
+      .runReduce(_ ++ _)
+      .map{ line =>
+        val ret = line.utf8String.split(" ").headOption.map(Classification)
+        val classification = ret.getOrElse(new Classification(""))
+        val name = classification.name
+        logger.info(s"Classification name = ${name}")
+      }
   }
 
 
@@ -157,7 +166,6 @@ class DacQueueManager() extends LazyLogging {
     output: PrintWriter
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message, output")
-    logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       
       val dr = DacRequest(
