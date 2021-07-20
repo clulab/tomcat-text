@@ -33,9 +33,9 @@ import scala.io.Source
 
 /** A place to keep a growing number of settings for the Dialog Agent */
 case class DialogAgentArgs(
-  /** Number of taxonomy matches to include with extractions */
+  // Number of taxonomy matches to include with extractions
   val nMatches: Int = 0,
-  /** query the Dialog Act Classification server */
+  // query the Dialog Act Classification server
   val withClassifications: Boolean = false
 )
 
@@ -48,7 +48,6 @@ class DialogAgent (
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
   val dqm = new DacQueueManager
-  logger.info(s"args.withClassifications = ${args.withClassifications}")
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
