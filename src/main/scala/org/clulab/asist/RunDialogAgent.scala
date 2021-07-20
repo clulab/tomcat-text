@@ -68,25 +68,18 @@ object RunDialogAgent extends App {
     case _ => None
   }
 
-  /** Test if a flag is set
-   * @param l A flat list of arguments
-   * @param arg An arg to find in the list
-   * @return true if the arg is found in the list
-   */
-  def argSet(l: List[String], arg: String): Boolean = l.contains(arg) 
-
   /** Compose the arguments used by the Dialog Agent
    * @param l A flat list of arguments
    * @return An Args struct populated per the arg list
    */
   def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
     nMatches = intArg(l, "-m").getOrElse(0),
-    withClassifier = l.contains("--with-classifications")
+    withClassifications = l.contains("--with-classifications")
   )
 
   /** Run the Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
-   * @returns A DialogAgent running in the mode with the args
+   * @return A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {
