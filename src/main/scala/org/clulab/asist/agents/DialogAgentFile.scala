@@ -48,37 +48,24 @@ class DialogAgentFile(
   else openFileWriter(outputFilename).foreach{fileWriter =>
     logger.info(s"Using input files: ${filenames.mkString(", ")}")
     filenames.map(processFile(_, fileWriter))
-    fileWriter.close
+//    fileWriter.close   FIXME need this to be a queued job.
     logger.info("All operations completed successfully.")
   } 
-
-
-  /** async callback after classification
-   *  @param message A fully populated case class ready for output
-   *  @param output  A PrintWriter connected to an output file
-   *  @return 
-   */
-  def writeMessageToFile(
-    message: DialogAgentMessage,
-    output: PrintWriter
-  ): Unit = {
-    logger.info("writeMessageToFile with message, output")
-    output.write(s"${writeJson(message)}\n")
-  }
 
   /** async callback after reset
    *  @param message A fully populated case class ready for output
    *  @param output  A PrintWriter connected to an output file
    *  @return 
    */
-  def writeVersionInfoToFile(
-    message: VersionInfo,
+  def writeToFile(
+    json: String,
     output: PrintWriter
   ): Unit = {
-    logger.info("writeVersionInfoToFile with message, output")
-    output.write(s"${writeJson(message)}\n")
+    logger.info("writeToFile with json, output")
+    logger.info(json)
+    output.write(s"${json}\n")
+    output.flush
   }
-
 
   /** Create a file writer for a given filename
    *  @param filename a single input file
@@ -141,8 +128,7 @@ class DialogAgentFile(
               val timestamp = Clock.systemUTC.instant.toString
               val versionInfo = VersionInfo(this, timestamp)
               dqm.enqueueReset(
-                this,
-                writeVersionInfoToFile,
+                writeToFile,
                 versionInfo,
                 output
               )
@@ -158,8 +144,7 @@ class DialogAgentFile(
               metadata
             )
             dqm.enqueueClassification(
-              this, 
-              writeMessageToFile,
+              writeToFile,
               message,
               output
             ) 
@@ -183,8 +168,7 @@ class DialogAgentFile(
         processWebVttElement(block.lines.toList, filename)
         .map{message => 
           dqm.enqueueClassification(
-            this, 
-            writeMessageToFile,
+            writeToFile,
             message,
             output
           )

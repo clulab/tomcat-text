@@ -43,13 +43,13 @@ class DialogAgentMqtt(
 
   /* async callback after DAC reset */
   def publishVersionInfo(
-    versionInfo: VersionInfo,
-  ): Unit = bus.publish(topicPubVersionInfo,write(versionInfo))
+    json: String,
+  ): Unit = bus.publish(topicPubVersionInfo, json)
 
   /* async callback after Dac classification */
   def publishMessage(
-    message: DialogAgentMessage,
-  ): Unit = bus.publish(topicPubDialogAgent,write(message))
+    json: String,
+  ): Unit = bus.publish(topicPubDialogAgent, json)
 
   // send VersionInfo if we receive a TrialMessage with subtype "start", 
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
@@ -57,7 +57,7 @@ class DialogAgentMqtt(
       if(trialMessage.msg.sub_type == "start") {
         val timestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(this, timestamp)
-        dqm.enqueueReset(this, publishVersionInfo, versionInfo)
+        dqm.enqueueReset(publishVersionInfo, versionInfo)
       }
     })
   )
@@ -79,7 +79,7 @@ class DialogAgentMqtt(
           topic,
           metadata
         )
-        dqm.enqueueClassification(this, publishMessage, message)
+        dqm.enqueueClassification(publishMessage, message)
       }
     )
   } 

@@ -1,5 +1,6 @@
 package org.clulab.asist.agents
 
+//FIXME clean up imports
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
@@ -19,8 +20,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 import scala.collection.mutable.Queue
 
-
-
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -35,36 +34,78 @@ import scala.collection.mutable.Queue
  */
 
 
-// returned from DAC server
-case class Classification(name: String)
-
-
 // Dialog Act Classification Request 
 case class DacRequest(
-  callback1: Option[DialogAgentMessage => Unit] = None,
-  callback2: Option[(DialogAgentMessage, PrintWriter) => Unit] = None,
+  callback1: Option[String => Unit] = None,
+  callback2: Option[(String, PrintWriter) => Unit] = None,
   message: Option[DialogAgentMessage] = None,
   output: Option[PrintWriter] = None
 )
 
-class DacQueueManager() extends LazyLogging {
+// returned from DAC server
+case class Classification(name: String)
+
+class DacQueueManager(val agent: DialogAgent) 
+extends LazyLogging {
 
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
-
-  private val queue: Queue[DialogAgentMessage] = new Queue[DialogAgentMessage]
 
   val q: Queue[DacRequest] = Queue.empty
   var busy: Boolean = false
 
   def showQ = {
     logger.info(s"Elements in queue: ${q.length}")
-
   }
 
+  // change the data.dialog_act_label field of a DialogAgentMessage
+  def classifyMessage(
+    message: DialogAgentMessage,
+    dialog_act_label: String
+  ): DialogAgentMessage = DialogAgentMessage(
+    message.header,
+    message.msg,
+    DialogAgentMessageData(
+      participant_id = message.data.participant_id,
+      asr_msg_id = message.data.asr_msg_id,
+      text = message.data.text,
+      dialog_act_label = dialog_act_label,
+      source = message.data.source,
+      extractions = message.data.extractions
+    )
+  )
+
   // deliver
-  def doSomethingWithValue(dr: DacRequest, response: HttpResponse): Unit = {
-    logger.info("doSomethingWithValue")
+  def deliver(
+    dr: DacRequest,
+    dialog_act_label: String
+  ): Unit = {
+    logger.info("deliver")
+
+    dr.message.foreach{ message =>
+      // DialogAgentMessage with data classification field updated
+      val classifiedMessage = classifyMessage(message, dialog_act_label)
+
+      val json = agent.writeJson(classifiedMessage)
+
+      // try to service one-arg callback
+      dr.callback1.foreach{callback => callback(json)}
+
+      // try to service two-arg callback
+      dr.callback2.foreach{callback => 
+        dr.output.foreach{output => 
+          callback(json, output)
+        }
+      }
+    }
+  }
+
+  // The future has arrived
+  def receiveResponse(
+    dr: DacRequest, 
+    response: HttpResponse
+  ): Unit = {
+    logger.info("receiveResponse")
     response.entity.dataBytes
       .runReduce(_ ++ _)
       .map{ line =>
@@ -72,9 +113,18 @@ class DacQueueManager() extends LazyLogging {
         val classification = ret.getOrElse(new Classification(""))
         val name = classification.name
         logger.info(s"Classification name = ${name}")
+        deliver(dr, name)
       }
   }
 
+  // service the next job in the queue or do nothing if no more jobs.
+  def startNextJob(): Unit = synchronized {
+    if(q.isEmpty) busy = false // release lock, no more jobs
+    else {
+      busy = true  // take lock, start next job
+      dq.foreach(job => futureRequest(job))
+    }
+  }
 
   def dq(): Option[DacRequest] = {
     logger.info("dq")
@@ -107,14 +157,8 @@ class DacQueueManager() extends LazyLogging {
         // end execution, in real life we would continue
       case Success(c: HttpResponse) => 
         logger.info("onSuccess")
-        doSomethingWithValue(dr, c)
-        synchronized {
-          if(q.isEmpty) busy = false // release lock, no more jobs
-          else {
-            busy = true  // take lock, start next job
-            dq.foreach(job => futureRequest(job))
-          }
-        }
+        receiveResponse(dr, c)
+        startNextJob
     }
   }
 
@@ -145,13 +189,13 @@ class DacQueueManager() extends LazyLogging {
   *  @return Nothing
   */
   def enqueueClassification(
-    agent: DialogAgent,
-    callback: (DialogAgentMessage, PrintWriter) => Unit,
+    callback: (String, PrintWriter) => Unit,
     message: DialogAgentMessage,
     output: PrintWriter
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message, output")
     if(agent.withClassifications) {
+      // set up classification job with messsage
       val dr = DacRequest(
         callback1 = None,
         callback2 = Some(callback),
@@ -159,10 +203,9 @@ class DacQueueManager() extends LazyLogging {
         output = Some(output)
       )
       nq(dr)
-      // set up classification job with messsage and output
     } else {  
       // call back without classification
-      callback(message, output)
+      callback(agent.writeJson(message), output)
     }
   }
 
@@ -173,17 +216,22 @@ class DacQueueManager() extends LazyLogging {
   *  @return Nothing
   */
   def enqueueClassification(
-    agent: DialogAgent,
-    callback: DialogAgentMessage => Unit,
+    callback: String => Unit,
     message: DialogAgentMessage
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message")
     logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
+      val dr = DacRequest(
+        callback1 = Some(callback),
+        callback2 = None,
+        message = Some(message)
+      )
+      nq(dr)
     } else {
       // call back without classification
-      callback(message)
+      callback(agent.writeJson(message))
     }
   }
 
@@ -193,8 +241,7 @@ class DacQueueManager() extends LazyLogging {
   *  @return Nothing
   */
   def enqueueReset(
-    agent: DialogAgent,
-    callback: (VersionInfo, PrintWriter) => Unit,
+    callback: (String, PrintWriter) => Unit,
     message: VersionInfo,
     output: PrintWriter
   ): Unit = {
@@ -202,9 +249,16 @@ class DacQueueManager() extends LazyLogging {
     logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
+      val dr = DacRequest(
+        callback1 = None,
+        callback2 = Some(callback),
+        message = Some(message),
+        output = Some(output)
+      )
+      nq(dr)
     } else {
       // call back without classification
-      callback(message, output)
+      callback(agent.writeJson(message), output)
     }
   }
 
@@ -214,17 +268,22 @@ class DacQueueManager() extends LazyLogging {
   *  @return Nothing
   */
   def enqueueReset(
-    agent: DialogAgent,
-    callback: (VersionInfo) => Unit,
+    callback: (String) => Unit,
     message: VersionInfo
   ): Unit = {
     logger.info("enqueueReset with agent, callback, message")
     logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
+      val dr = DacRequest(
+        callback1 = Some(callback),
+        callback2 = None,
+        message = Some(message)
+      )
+      nq(dr)
     } else {
       // call back without classification
-      callback(message)
+      callback(agent.writeJson(message))
     }
   }
 }

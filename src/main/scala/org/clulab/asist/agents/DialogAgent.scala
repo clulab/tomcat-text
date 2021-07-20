@@ -1,11 +1,9 @@
 package org.clulab.asist.agents
 
-import java.time.Clock
-import com.typesafe.scalalogging.LazyLogging
-
-
 import ai.lum.common.ConfigFactory
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
+import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
@@ -16,7 +14,6 @@ import spray.json.JsonParser
 
 import scala.collection.immutable
 import scala.io.Source
-
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -30,15 +27,13 @@ import scala.io.Source
  *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 
-
-/** A place to keep a growing number of settings for the Dialog Agent */
+// A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
   // Number of taxonomy matches to include with extractions
   val nMatches: Int = 0,
   // query the Dialog Act Classification server
   val withClassifications: Boolean = false
 )
-
 
 class DialogAgent (
   val args: DialogAgentArgs = new DialogAgentArgs
@@ -47,7 +42,7 @@ class DialogAgent (
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
-  val dqm = new DacQueueManager
+  val dqm = new DacQueueManager(this)
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
