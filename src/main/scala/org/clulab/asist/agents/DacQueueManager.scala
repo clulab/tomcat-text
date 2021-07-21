@@ -34,22 +34,26 @@ import scala.collection.mutable.Queue
  */
 
 
-class WorkOrder(
+abstract class WorkOrder
+
+class DacRequest(
+  val message: Option[DialogAgentMessage] = None,
   val callback1: Option[String => Unit] = None,
   val callback2: Option[(String, PrintWriter) => Unit] = None,
   val output: Option[PrintWriter] = None
-)  
-
-class DacRequest(
-  val message: Option[DialogAgentMessage] = None
 ) extends WorkOrder
 
 class TrialStartRequest(
-  val message: Option[VersionInfo] = None
+  val message: Option[VersionInfo] = None,
+  val callback1: Option[String => Unit] = None,
+  val callback2: Option[(String, PrintWriter) => Unit] = None,
+  val output: Option[PrintWriter] = None
 ) extends WorkOrder
 
+// a queued callback, with the arg
 class CallbackRequest(
-  val message: Option[String] = None
+  val callback: Option[AnyRef => Unit] = None,
+  val arg: Option[AnyRef] = None,
 ) extends WorkOrder
 
 // returned from DAC server
@@ -72,24 +76,27 @@ extends LazyLogging {
   def classifyMessage(
     message: DialogAgentMessage,
     dialog_act_label: String
-  ): DialogAgentMessage = DialogAgentMessage(
-    message.header,
-    message.msg,
-    DialogAgentMessageData(
-      participant_id = message.data.participant_id,
-      asr_msg_id = message.data.asr_msg_id,
-      text = message.data.text,
-      dialog_act_label = dialog_act_label,
-      source = message.data.source,
-      extractions = message.data.extractions
+  ): DialogAgentMessage = synchronized {
+      DialogAgentMessage(
+      message.header,
+      message.msg,
+      DialogAgentMessageData(
+        participant_id = message.data.participant_id,
+        asr_msg_id = message.data.asr_msg_id,
+        text = message.data.text,
+        dialog_act_label = dialog_act_label,
+        source = message.data.source,
+        extractions = message.data.extractions
+      )
     )
-  )
+  }
 
+  /*
   // deliver
   def deliver(
     dr: DacRequest,
     dialog_act_label: String
-  ): Unit = {
+  ): Unit = synchronized {
     logger.info("deliver")
 
     dr.message.foreach{ message =>
@@ -110,12 +117,12 @@ extends LazyLogging {
     }
   }
 
-  // The future has arrived
-  def receiveResponse(
+  // The DAC response to a request.
+  def dacResponse(
     dr: DacRequest, 
     response: HttpResponse
-  ): Unit = {
-    logger.info("receiveResponse")
+  ): Unit = synchronized {
+    logger.info("dacResponse")
     response.entity.dataBytes
       .runReduce(_ ++ _)
       .map{ line =>
@@ -126,68 +133,92 @@ extends LazyLogging {
         deliver(dr, name)
       }
   }
+  */
 
-  // service the next job in the queue or do nothing if no more jobs.
+  // Call the DAC with this query.
+  def dacRequest(dr: DacRequest): Unit = synchronized {
+    dr.message.foreach{message  =>
+      logger.info("dacRequest")
+      val data = message.data
+      val json = write(new DialogActClassifierMessage(
+        data.participant_id,
+        data.text,
+        data.extractions)
+      )
+      val request = HttpRequest(
+        uri = Uri("http://localhost:8000/classify"),
+        entity = HttpEntity(ContentTypes.`application/json`,json)
+      )
+      val future = Http().singleRequest(request)
+
+      future onComplete {
+        case Failure(t) => 
+          logger.info("onFailure: " + t.toString)
+          // end execution, in real life we would continue
+        case Success(response: HttpResponse) => 
+          logger.info("onSuccess")
+          logger.info(s"busy = ${busy}")
+          response.entity.dataBytes
+            .runReduce(_ ++ _)
+            .map{ line =>
+              val ret = line.utf8String.split(" ").headOption.map(Classification)
+              val classification = ret.getOrElse(new Classification(""))
+              val dialog_act_label = classification.name
+              logger.info(s"Classification name = ${dialog_act_label}")
+              dr.message.foreach{ message =>
+                val classifiedMessage = classifyMessage(message, dialog_act_label)
+                val json = agent.writeJson(classifiedMessage)
+                // try to service two-arg callback
+                dr.callback2.foreach{callback => 
+                  dr.output.foreach{output => 
+                    callback(json, output)
+                  }
+                }
+                // try to service one-arg callback
+                dr.callback1.foreach{callback => callback(json)}
+              }
+            }
+          startNextJob
+      }
+    }
+  }
+
+  // start the next job in the queue or do nothing if no more jobs.
   def startNextJob(): Unit = synchronized {
+    busy = true  // take lock, start next job
     if(q.isEmpty) busy = false // release lock, no more jobs
-    else {
-      busy = true  // take lock, start next job
-      dq match {
-        case i:
-      val wo = dq
-      dq.foreach(job => futureRequest(job))
-    }
+    else serviceWorkOrder(q.dequeue)
   }
 
-  def dq(): Option[WorkOrder] = {
-    logger.info("dq")
-    showQ
-    if(q.isEmpty) {
-      logger.info("ERROR - tried to dequeue from empty queue!")
-      None
-    } else {
-      Some(q.dequeue)
-    }
-  }
-
-  def futureRequest(dr: DacRequest): Unit = dr.message.foreach{message  =>
-    logger.info("futureRequest")
-    val data = message.data
-    val json = write(new DialogActClassifierMessage(
-      data.participant_id,
-      data.text,
-      data.extractions)
-    )
-    val request = HttpRequest(
-      uri = Uri("http://localhost:8000/classify"),
-      entity = HttpEntity(ContentTypes.`application/json`,json)
-    )
-    val future = Http().singleRequest(request)
-
-    future onComplete {
-      case Failure(t) => 
-        logger.info("onFailure: " + t.toString)
-        // end execution, in real life we would continue
-      case Success(c: HttpResponse) => 
-        logger.info("onSuccess")
-        receiveResponse(dr, c)
-        startNextJob
-    }
+  // Called only when busy is false.
+  def serviceWorkOrder(wo: WorkOrder): Unit = synchronized {
+    wo match {
+      case dr: DacRequest =>
+        logger.info("serviceWorkOrder with DacRequest")
+        dacRequest(dr)
+      case ts: TrialStartRequest =>
+        logger.info("serviceWorkOrder with TrialStartRequest")
+      case cr: CallbackRequest => 
+        logger.info("serviceWorkOrder with CallbackRequest")
+        cr.arg.foreach{arg =>
+          cr.callback.foreach{callback =>
+            callback(arg)
+          }
+        }
+      }
   }
 
   // request
-  def nq(wo: WorkOrder): Unit = {
-    logger.info("nq")
-    synchronized{
-      if(busy) {
-        logger.info("busy, enqueueing")
-        q.enqueue(wo)
-        showQ
-      }
-      else {
-        busy = true
-        futureRequest(dr)  // send to a breakout method
-      }
+  def nq(wo: WorkOrder): Unit = synchronized {
+   if(busy) {
+      logger.info("nq busy, enqueueing work order")
+      q.enqueue(wo)
+      showQ
+    }
+    else {
+      logger.info("nq available, servicing work order")
+      busy = true
+      serviceWorkOrder(wo)  // send to a breakout method
     }
   }
 
@@ -203,22 +234,22 @@ extends LazyLogging {
   */
   def enqueueClassification(
     callback: (String, PrintWriter) => Unit,
-    message: DialogAgentMessage,
+    dog: DialogAgentMessage,
     output: PrintWriter
   ): Unit = {
     logger.info("enqueueClassification with agent, callback, message, output")
     if(agent.withClassifications) {
       // set up classification job with messsage
       val dr = new DacRequest(
+        message = Some(dog),
         callback1 = None,
         callback2 = Some(callback),
-        message = Some(message),
         output = Some(output)
       )
       nq(dr)
     } else {  
       // call back without classification
-      callback(agent.writeJson(message), output)
+      callback(agent.writeJson(dog), output)
     }
   }
 
@@ -236,7 +267,7 @@ extends LazyLogging {
     logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
-      val dr = DacRequest(
+      val dr = new DacRequest(
         callback1 = Some(callback),
         callback2 = None,
         message = Some(message)
@@ -262,10 +293,10 @@ extends LazyLogging {
     logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
-      val dr = DacRequest(
+      val dr = new TrialStartRequest(
+        message = Some(message),
         callback1 = None,
         callback2 = Some(callback),
-        message = Some(message),
         output = Some(output)
       )
       nq(dr)
@@ -288,7 +319,7 @@ extends LazyLogging {
     logger.info(s"agent.withClassifications = ${agent.withClassifications}")
     if(agent.withClassifications) {
       // set up classification job with messsage
-      val dr = DacRequest(
+      val dr = new TrialStartRequest(
         callback1 = Some(callback),
         callback2 = None,
         message = Some(message)
@@ -297,6 +328,22 @@ extends LazyLogging {
     } else {
       // call back without classification
       callback(agent.writeJson(message))
+    }
+  }
+
+  def enqueueCallback(
+    callback: (AnyRef) => Unit,
+    arg: AnyRef
+  ): Unit = {
+    if(agent.withClassifications) {
+      val cr = new CallbackRequest (
+        callback = Some(callback),
+        arg = Some(arg)
+      )
+      nq(cr)
+    } else {
+      // call back without classification
+      callback(arg)
     }
   }
 }

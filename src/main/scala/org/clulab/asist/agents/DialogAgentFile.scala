@@ -47,10 +47,21 @@ class DialogAgentFile(
     logger.error("No valid input files found")
   else openFileWriter(outputFilename).foreach{fileWriter =>
     logger.info(s"Using input files: ${filenames.mkString(", ")}")
-    filenames.map(processFile(_, fileWriter))
-//    fileWriter.close   FIXME need this to be a queued job.
+    filenames.foreach(file => processFile(file, fileWriter))
+    dqm.enqueueCallback(closeFileWriter, fileWriter)
     logger.info("All operations completed successfully.")
   } 
+
+
+  def closeFileWriter[A <: AnyRef](a: A): Unit = {
+    logger.info("closeFileWriter")
+    a match {
+      case fw: PrintWriter => 
+        fw.close
+        logger.info("fileWriter closed.")
+      case _ =>
+    }
+  }
 
   /** async callback after reset
    *  @param message A fully populated case class ready for output
@@ -64,7 +75,6 @@ class DialogAgentFile(
     logger.info("writeToFile with json, output")
     logger.info(json)
     output.write(s"${json}\n")
-    output.flush
   }
 
   /** Create a file writer for a given filename
