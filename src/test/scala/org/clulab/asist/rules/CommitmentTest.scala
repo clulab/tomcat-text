@@ -4,15 +4,17 @@ import org.clulab.asist.BaseTest
 
 class CommitmentTest extends BaseTest {
 
-  failingTest should "Recognize commitment in" in {
+  passingTest should "Recognize commitment in" in {
     val doc = extractor.annotate("I can save this guy.")
     val mentions = extractor.extractFrom(doc)
 
     val self_mention = DesiredMention("Self", "I")
-    val person_mention = DesiredMention("Person", "guy")
+    val person_mention = DesiredMention("Victim", "guy")
     val action_mention = DesiredMention("Save", "save this guy",
       Map("target" -> Seq(person_mention)))
-    val commit1_mention = DesiredMention("Commitment", "I can save this guy"
+    val commit1_mention = DesiredMention("MakeCommitment", "I can save this guy",
+      Map("agent" -> Seq(self_mention),
+        "target" -> Seq(action_mention))
     )
 
     testMention(mentions, self_mention)
@@ -31,7 +33,7 @@ class CommitmentTest extends BaseTest {
       Map("target" -> Seq(victim_mention),
           "location" ->Seq(deictic_mention)))
     val commitment_mention = DesiredMention("MakeCommitment", "I will rescue the victim in here",
-      Map("person" -> Seq(self_mention),
+      Map("agent" -> Seq(self_mention),
         "target" -> Seq(save_mention)))
     testMention(mentions, self_mention)
     testMention(mentions, victim_mention)
