@@ -34,13 +34,23 @@ import scala.collection.mutable.Queue
  */
 
 
-// Dialog Act Classification Request 
-case class DacRequest(
-  callback1: Option[String => Unit] = None,
-  callback2: Option[(String, PrintWriter) => Unit] = None,
-  message: Option[DialogAgentMessage] = None,
-  output: Option[PrintWriter] = None
-)
+class WorkOrder(
+  val callback1: Option[String => Unit] = None,
+  val callback2: Option[(String, PrintWriter) => Unit] = None,
+  val output: Option[PrintWriter] = None
+)  
+
+class DacRequest(
+  val message: Option[DialogAgentMessage] = None
+) extends WorkOrder
+
+class TrialStartRequest(
+  val message: Option[VersionInfo] = None
+) extends WorkOrder
+
+class CallbackRequest(
+  val message: Option[String] = None
+) extends WorkOrder
 
 // returned from DAC server
 case class Classification(name: String)
@@ -51,7 +61,7 @@ extends LazyLogging {
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
 
-  val q: Queue[DacRequest] = Queue.empty
+  val q: Queue[WorkOrder] = Queue.empty
   var busy: Boolean = false
 
   def showQ = {
@@ -122,11 +132,14 @@ extends LazyLogging {
     if(q.isEmpty) busy = false // release lock, no more jobs
     else {
       busy = true  // take lock, start next job
+      dq match {
+        case i:
+      val wo = dq
       dq.foreach(job => futureRequest(job))
     }
   }
 
-  def dq(): Option[DacRequest] = {
+  def dq(): Option[WorkOrder] = {
     logger.info("dq")
     showQ
     if(q.isEmpty) {
@@ -163,17 +176,17 @@ extends LazyLogging {
   }
 
   // request
-  def nq(dr: DacRequest): Unit = {
+  def nq(wo: WorkOrder): Unit = {
     logger.info("nq")
     synchronized{
       if(busy) {
         logger.info("busy, enqueueing")
-        q.enqueue(dr)
+        q.enqueue(wo)
         showQ
       }
       else {
         busy = true
-        futureRequest(dr)
+        futureRequest(dr)  // send to a breakout method
       }
     }
   }
@@ -196,7 +209,7 @@ extends LazyLogging {
     logger.info("enqueueClassification with agent, callback, message, output")
     if(agent.withClassifications) {
       // set up classification job with messsage
-      val dr = DacRequest(
+      val dr = new DacRequest(
         callback1 = None,
         callback2 = Some(callback),
         message = Some(message),
