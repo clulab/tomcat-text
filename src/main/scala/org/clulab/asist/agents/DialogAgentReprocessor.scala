@@ -53,9 +53,9 @@ import scala.util.control.NonFatal
  *
  */
 class DialogAgentReprocessor (
-  val inputDirName: String,
-  val outputDirName: String,
-  override val nMatches: Int = 0
+  val inputDirName: String = "",
+  val outputDirName: String = "",
+  override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
   val startTime = Clock.systemUTC.millis

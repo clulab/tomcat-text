@@ -115,6 +115,10 @@
     - Sign
     - WoodenDoor
     - IronDoor
+    - MarkerBlock:
+        - RegularMarkerBlock
+        - NoVictimMarkerBlock
+        - CriticalMarkerBlock
     - Tool:
       - Hammer
       - MedKit

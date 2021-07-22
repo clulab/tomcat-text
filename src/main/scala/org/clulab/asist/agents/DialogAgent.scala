@@ -30,10 +30,25 @@ import scala.io.Source
  *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 
-class DialogAgent (val nMatches: Int = 0) extends LazyLogging {
+
+// A place to keep a growing number of settings for the Dialog Agent
+case class DialogAgentArgs(
+  // Number of taxonomy matches to include with extractions
+  val nMatches: Int = 0,
+  // query the Dialog Act Classification server
+  val withClassifications: Boolean = false
+)
+
+
+class DialogAgent (
+  val args: DialogAgentArgs = new DialogAgentArgs
+) extends LazyLogging {
 
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
+
+  def nMatches = args.nMatches
+  def withClassifications = args.withClassifications
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"

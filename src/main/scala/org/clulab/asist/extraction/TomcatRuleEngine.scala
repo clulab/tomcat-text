@@ -77,4 +77,6 @@ object TomcatRuleEngine {
   val VICTIM: String = "Victim"
   val TARGET_ARG: String = "target"
 
+  val AGENT_ARG: String = "agent"
+
 }
