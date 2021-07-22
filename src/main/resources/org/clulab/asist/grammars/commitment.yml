@@ -8,4 +8,4 @@ rules:
     pattern: |
       trigger = [tag=/^MD/ & lemma=/^can|will/]
       target: Action = <aux
-      person: Self? = <aux >nsubj
+      agent: Entity? = <aux >nsubj
