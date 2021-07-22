@@ -24,6 +24,7 @@ case class DialogAgentMessageDataExtraction(
   label: String = null,
   span: String = null,
   arguments: Map[String, Seq[DialogAgentMessageDataExtraction]] = Map.empty,
+  attachments: Set[String] = Set.empty, // Json strings
   start_offset: Int = 0,
   end_offset: Int = 0,
   taxonomy_matches: Seq[(String, String)] = Seq.empty
