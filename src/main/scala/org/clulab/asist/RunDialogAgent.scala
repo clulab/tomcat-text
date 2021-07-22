@@ -74,6 +74,7 @@ object RunDialogAgent extends App {
    */
   def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
     nMatches = intArg(l, "-m").getOrElse(0),
+    ta3Version = intArg(l, "-v"),
     withClassifications = l.contains("--with-classifications")
   )
 
