@@ -304,7 +304,7 @@ class DialogAgentReprocessor (
     }
   }
 
-  /** If the fileName has a TA3 version number, increment by 1.
+  /** If the fileName has a TA3 version number, either set it or increment it.
    * @param inputFileName fileName that may have a TA3 version number
    * @return the inputFileName, with any TA3 version number incremented
    */
@@ -320,10 +320,13 @@ class DialogAgentReprocessor (
     // if the output fileName contains a TA3 version number, increment it by 1
     val regex = """Vers-(\d+).metadata""".r
     regex.replaceAllIn(outputFileName, _ match {
-      case regex(version) => s"Vers-${version.toInt + 1}.metadata"
+      case regex(version) => 
+        val newVersion: Int = ta3Version.getOrElse(version.toInt +1)
+        s"Vers-${newVersion}.metadata"
       case _ => outputFileName  // otherwise do not change the inputFileName
     })
   }
+
 
   /** Parse the line into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run

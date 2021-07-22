@@ -35,8 +35,11 @@ import scala.io.Source
 case class DialogAgentArgs(
   // Number of taxonomy matches to include with extractions
   val nMatches: Int = 0,
-  // query the Dialog Act Classification server
-  val withClassifications: Boolean = false
+  // Query the Dialog Act Classification server
+  val withClassifications: Boolean = false,
+  // Optionally hard-set the TA3 version number of reprocessed .metadata files
+  // If this value is not set, existing version numbers are incremented by 1
+  val ta3Version: Option[Int] = None
 )
 
 
@@ -49,6 +52,7 @@ class DialogAgent (
 
   def nMatches = args.nMatches
   def withClassifications = args.withClassifications
+  def ta3Version = args.ta3Version
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
