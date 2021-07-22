@@ -48,12 +48,14 @@ class DialogAgentFile(
   if(filenames.isEmpty) 
     logger.error("No valid input files found")
   else openFileWriter(outputFilename).foreach{fileWriter =>
-    logger.info(s"Using input files: ${filenames.mkString(", ")}")
-    filenames.foreach(file => processFile(file, fileWriter))
-    logger.info("All operations completed successfully.")
-    logger.info("closingFileWriter")
-    fileWriter.close
-    logger.info("fileWriter closed.")
+    synchronized {
+      logger.info(s"Using input files: ${filenames.mkString(", ")}")
+      filenames.foreach(file => processFile(file, fileWriter))
+      logger.info("All operations completed successfully.")
+    }
+    logger.info("Not closingFileWriter")
+//    fileWriter.close  // FIXME
+    logger.info("fileWriter not closed.")
   }
 
 
@@ -62,6 +64,7 @@ class DialogAgentFile(
    *  @param output  A PrintWriter connected to an output file
    *  @return 
    */
+  /*
   def writeToFile(
     json: String,
     output: PrintWriter
@@ -70,6 +73,7 @@ class DialogAgentFile(
     logger.info(json)
     output.write(s"${json}\n")
   }
+  */
 
   /** Create a file writer for a given filename
    *  @param filename a single input file
@@ -117,42 +121,56 @@ class DialogAgentFile(
   def processMetadataFile(
     filename: String,
     output: PrintWriter
-  ): Unit = {
+  ): Unit = synchronized {
     logger.info("processMetadataFile")
-    val source_type = "message_bus" // file metadata originates there
     val bufferedSource = Source.fromFile(filename)
     val lines = bufferedSource.getLines
     while(lines.hasNext) {
-      val line = lines.next
-      allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
-        logger.info(s"processMetadataFile with topic = ${lookahead.topic}")
-        if(topicSubTrial == lookahead.topic) {
-          allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
-            if(trialMessage.msg.sub_type == "start") {
-              val timestamp = Clock.systemUTC.instant.toString
-              val versionInfo = VersionInfo(this, timestamp)
-              // FIXME: handle this
-              logger.warn("Trial Start not handled")
-            }
+      processMetadataLine(filename, lines.next, output)
+    }
+    bufferedSource.close
+  }
+
+  def processMetadataLine(
+    filename: String, 
+    line: String, 
+    output: PrintWriter
+  ): Unit = synchronized {
+    val source_type = "message_bus" // file metadata originates there
+
+    allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
+      logger.info(s"processMetadataFile with topic = ${lookahead.topic}")
+      if(topicSubTrial == lookahead.topic) {
+        allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
+          if(trialMessage.msg.sub_type == "start") {
+            val timestamp = Clock.systemUTC.instant.toString
+            val versionInfo = VersionInfo(this, timestamp)
+            // FIXME: handle this
+            logger.warn("Trial Start not handled")
           }
         }
-        else if(subscriptions.contains(lookahead.topic)) {
-          allCatch.opt(read[Metadata](line)).map{metadata =>
-            val message = getDialogAgentMessage(
-              source_type,
-              filename,
-              lookahead.topic,
-              metadata
-            )
-            val classification = dacClient.classification(message)
-            // FIXME: add the classifcation to the message
-            output.write(write(message))
+      }
+      else if(subscriptions.contains(lookahead.topic)) {
+        allCatch.opt(read[Metadata](line)).map{metadata =>
+          val message = getDialogAgentMessage(
+            source_type,
+            filename,
+            lookahead.topic,
+            metadata
+          )
+          if(withClassifications)
+            dacClient.classifyAndWrite(message, output)
+          else {
+            val json = write(message)
+            output.write(s"${json}\n")
           }
         }
       }
     }
-    bufferedSource.close
   }
+
+
+  
 
   /** Manage one WebVtt file
   *  @param filename input filename
