@@ -25,7 +25,7 @@ rules:
     keep: false
     pattern: |
       trigger = [tag=/^VB/]
-      tense: Concept = >aux [tag=MD & lemma=will]
+      tense: Concept = <cop? >aux [tag=MD & lemma=will]
 
   - name: future-going-to
     priority: ${ rulepriority }
