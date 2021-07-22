@@ -8,14 +8,14 @@ import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import java.util.concurrent.TimeoutException
 import java.io.PrintWriter
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.clulab.asist.messages._
 import org.json4s.jackson.Serialization.write
 
-import scala.concurrent.{Await, Awaitable, Future}
+import scala.concurrent._
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.control.NonFatal
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 import scala.collection.mutable.Queue
@@ -65,18 +65,13 @@ extends LazyLogging {
   implicit val system = ActorSystem()
   implicit val dispatcher = system.dispatcher
 
-  val q: Queue[WorkOrder] = Queue.empty
-  var busy: Boolean = false
-
-  def showQ = {
-    logger.info(s"Elements in queue: ${q.length}")
-  }
+  val q: ConcurrentLinkedQueue[WorkOrder] = new ConcurrentLinkedQueue
 
   // change the data.dialog_act_label field of a DialogAgentMessage
   def classifyMessage(
     message: DialogAgentMessage,
     dialog_act_label: String
-  ): DialogAgentMessage = synchronized {
+  ): DialogAgentMessage = 
       DialogAgentMessage(
       message.header,
       message.msg,
@@ -89,7 +84,6 @@ extends LazyLogging {
         extractions = message.data.extractions
       )
     )
-  }
 
   /*
   // deliver
@@ -136,7 +130,7 @@ extends LazyLogging {
   */
 
   // Call the DAC with this query.
-  def dacRequest(dr: DacRequest): Unit = synchronized {
+  def dacRequest(dr: DacRequest): Unit = {
     dr.message.foreach{message  =>
       logger.info("dacRequest")
       val data = message.data
@@ -155,9 +149,8 @@ extends LazyLogging {
         case Failure(t) => 
           logger.info("onFailure: " + t.toString)
           // end execution, in real life we would continue
-        case Success(response: HttpResponse) => 
+        case Success(response: HttpResponse) => try {
           logger.info("onSuccess")
-          logger.info(s"busy = ${busy}")
           response.entity.dataBytes
             .runReduce(_ ++ _)
             .map{ line =>
@@ -178,48 +171,51 @@ extends LazyLogging {
                 dr.callback1.foreach{callback => callback(json)}
               }
             }
-          startNextJob
+        } finally {
+          finishJob
+        }
       }
     }
   }
 
-  // start the next job in the queue or do nothing if no more jobs.
-  def startNextJob(): Unit = synchronized {
-    busy = true  // take lock, start next job
-    if(q.isEmpty) busy = false // release lock, no more jobs
-    else serviceWorkOrder(q.dequeue)
+  def finishJob(): Unit = {
+    logger.info("finish job")
+    q.poll // remove current element
+    startJob
   }
 
-  // Called only when busy is false.
-  def serviceWorkOrder(wo: WorkOrder): Unit = synchronized {
-    wo match {
+
+  // start the next job in the queue or do nothing if no more jobs.
+  def startJob(): Unit = if(!q.isEmpty) {
+    logger.info("start job")
+    q.peek match {
+      // threaded job 
       case dr: DacRequest =>
         logger.info("serviceWorkOrder with DacRequest")
         dacRequest(dr)
+      // threaded job 
       case ts: TrialStartRequest =>
         logger.info("serviceWorkOrder with TrialStartRequest")
+      // a callback is expected to be a non-threaded job.
       case cr: CallbackRequest => 
         logger.info("serviceWorkOrder with CallbackRequest")
         cr.arg.foreach{arg =>
           cr.callback.foreach{callback =>
             callback(arg)
+            finishJob
           }
         }
-      }
+    }
   }
 
   // request
-  def nq(wo: WorkOrder): Unit = synchronized {
-   if(busy) {
-      logger.info("nq busy, enqueueing work order")
-      q.enqueue(wo)
-      showQ
-    }
-    else {
-      logger.info("nq available, servicing work order")
-      busy = true
-      serviceWorkOrder(wo)  // send to a breakout method
-    }
+  def nq(wo: WorkOrder): Unit = if(q.isEmpty) {
+    logger.info("nq with empty queue")
+    q.add(wo)
+    startJob
+  } else {
+    logger.info("nq with non-empty queue")
+    q.add(wo)
   }
 
 
