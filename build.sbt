@@ -29,7 +29,7 @@ libraryDependencies ++= {
     "ai.lum" %% "common" % "0.0.9",
     "org.scalatest" %% "scalatest" % "3.0.4" % "test",
     "com.typesafe" % "config" % "1.3.1",
-    "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "net.sf.saxon" % "saxon-dom" % "8.7",

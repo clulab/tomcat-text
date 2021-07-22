@@ -42,8 +42,6 @@ class DialogAgent (
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
-  val dqm = new DacQueueManager(this)
-
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"

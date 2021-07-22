@@ -36,6 +36,8 @@ class DialogAgentFile(
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
+  val dacClient = new DacClient
+
   // screen input filenames for supported types
   val supported = List(".vtt", ".metadata")
   val filenames = LocalFileUtils
@@ -48,20 +50,12 @@ class DialogAgentFile(
   else openFileWriter(outputFilename).foreach{fileWriter =>
     logger.info(s"Using input files: ${filenames.mkString(", ")}")
     filenames.foreach(file => processFile(file, fileWriter))
-    dqm.enqueueCallback(closeFileWriter, fileWriter)
     logger.info("All operations completed successfully.")
-  } 
-
-
-  def closeFileWriter[A <: AnyRef](a: A): Unit = {
-    logger.info("closeFileWriter")
-    a match {
-      case fw: PrintWriter => 
-        fw.close
-        logger.info("fileWriter closed.")
-      case _ =>
-    }
+    logger.info("closingFileWriter")
+    fileWriter.close
+    logger.info("fileWriter closed.")
   }
+
 
   /** async callback after reset
    *  @param message A fully populated case class ready for output
@@ -71,7 +65,7 @@ class DialogAgentFile(
   def writeToFile(
     json: String,
     output: PrintWriter
-  ): Unit = {
+  ): Unit = synchronized {
     logger.info("writeToFile with json, output")
     logger.info(json)
     output.write(s"${json}\n")
@@ -137,11 +131,8 @@ class DialogAgentFile(
             if(trialMessage.msg.sub_type == "start") {
               val timestamp = Clock.systemUTC.instant.toString
               val versionInfo = VersionInfo(this, timestamp)
-              dqm.enqueueReset(
-                writeToFile,
-                versionInfo,
-                output
-              )
+              // FIXME: handle this
+              logger.warn("Trial Start not handled")
             }
           }
         }
@@ -153,11 +144,9 @@ class DialogAgentFile(
               lookahead.topic,
               metadata
             )
-            dqm.enqueueClassification(
-              writeToFile,
-              message,
-              output
-            ) 
+            val classification = dacClient.classification(message)
+            // FIXME: add the classifcation to the message
+            output.write(write(message))
           }
         }
       }
@@ -175,6 +164,7 @@ class DialogAgentFile(
   ): Unit = {
     VttDissector(new FileInputStream(new File(filename))) match {
       case Success(blocks) => blocks.map{block =>
+        /* FIXME: get this running
         processWebVttElement(block.lines.toList, filename)
         .map{message => 
           dqm.enqueueClassification(
@@ -183,6 +173,7 @@ class DialogAgentFile(
             output
           )
         }
+        */
       }
       case Failure(f) => {
         logger.error("VttDissector could not parse '%s'".format(filename))

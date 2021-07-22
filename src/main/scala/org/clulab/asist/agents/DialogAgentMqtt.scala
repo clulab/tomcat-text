@@ -57,7 +57,7 @@ class DialogAgentMqtt(
       if(trialMessage.msg.sub_type == "start") {
         val timestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(this, timestamp)
-        dqm.enqueueReset(publishVersionInfo, versionInfo)
+//        dqm.enqueueReset(publishVersionInfo, versionInfo)
       }
     })
   )
@@ -79,7 +79,7 @@ class DialogAgentMqtt(
           topic,
           metadata
         )
-        dqm.enqueueClassification(publishMessage, message)
+//        dqm.enqueueClassification(publishMessage, message)
       }
     )
   } 
