@@ -5,7 +5,6 @@ import org.clulab.asist.BaseTest
 class TestActions extends BaseTest {
 
   val CLOSE = "Close"
-  val INFRASTRUCTURE = "Infrastructure"
 
   behavior of "AsistEngine"
 
@@ -15,7 +14,6 @@ class TestActions extends BaseTest {
     val doc = extractor.annotate("I'm closing the door")
     val mentions = extractor.extractFrom(doc)
 
-    val self_mention = DesiredMention("Self", "I")
     val door_mention = DesiredMention(INFRASTRUCTURE, "door")
     val close_mention = DesiredMention(CLOSE, "closing the door",
       Map("target" -> Seq(door_mention)))
@@ -51,7 +49,6 @@ class TestActions extends BaseTest {
     testMention(mentions, save_mention)
     testMention(mentions, deictic_mention)
   }
-
 
 
   passingTest should "Parse search lvo events properly" in {

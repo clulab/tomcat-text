@@ -14,7 +14,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ victim_triggers })/]
+      (?<! [lemma=/no|critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/]
 
   - name: critical_victim
     priority: ${ rulepriority }

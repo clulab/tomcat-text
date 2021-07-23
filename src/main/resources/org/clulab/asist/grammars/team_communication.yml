@@ -150,4 +150,4 @@ rules:
     type: token
     example: "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
     pattern: |
-      @target:Infrastructure [lemma=be] clear
+      @target:Infrastructure [lemma=be] (?<trigger> clear)

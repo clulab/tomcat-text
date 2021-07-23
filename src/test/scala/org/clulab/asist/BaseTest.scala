@@ -14,6 +14,9 @@ class BaseTest extends FlatSpec with Matchers {
   val passingTest = it
   val tempFailingTest = ignore
 
+  // Mention labels
+  val INFRASTRUCTURE = "Infrastructure"
+
   // AttachmentStrings
   val AGENT_SELF: String = "Agent(Self)"
   val AGENT_YOU: String = "Agent(You)"

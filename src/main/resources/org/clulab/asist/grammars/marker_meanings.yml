@@ -15,7 +15,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      @meaning:Victim /is|has|as|are|for/ (?<trigger> [lemma=/one|two|three|1|2|3/])
+      @meaning:Victim /is|has|as|are|for/ for? (?<trigger> [lemma=/one|two|three|1|2|3/])
 
   - name: marker_meaning_token_flipped
     priority: ${ rulepriority }
@@ -23,7 +23,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<trigger> [lemma=/one|two|three|1|2|3/]) [lemma=/be|say|show/] @meaning: Victim
+      (?<trigger> [lemma=/one|two|three|1|2|3/]) [lemma=/be|say|show/] for? @meaning: Victim
 
   - name: marker_meaning_two_misparsed
     priority: ${ rulepriority }
