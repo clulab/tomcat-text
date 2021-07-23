@@ -54,7 +54,7 @@ rules:
     label: YesNoQuestion
     action: requireSubjectVerbInversion
     pattern: |
-      trigger = [lemma=/(?i)^do|can|will|should|have|could/]
+      trigger = (?<! [mention=QuestionParticle]) [lemma=/(?i)^do|can|will|should|have|could/]
       topic: Action = <aux
       location: Location? = <aux >/${positional_preps}/
 

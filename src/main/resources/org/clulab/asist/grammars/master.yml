@@ -5,42 +5,62 @@ vars: org/clulab/asist/grammars/triggers.yml
 
 rules:
 
+  # match all tokens to be able to use them later,
+  # BUT don't keep unless found by some other rule
+  - name: allTokens
+    label: Concept
+    priority: 1
+    type: token
+    keep: false
+    pattern: |
+      []
+
+  # Extract past and future tense
+  - import: org/clulab/asist/grammars/tense.yml
+    vars:
+      rulepriority: "2"
+
   # Extract the entities
   - import: org/clulab/asist/grammars/entities.yml
     vars:
-      rulepriority: "1+"
+      rulepriority: "3+"
 
   # Extract the items
   - import: org/clulab/asist/grammars/items.yml
     vars:
-      rulepriority: "1+"
+      rulepriority: "3+"
 
   # Extract the sentiments
   - import: org/clulab/asist/grammars/sentiments.yml
     vars:
-      rulepriority: "2"
+      rulepriority: "4"
 
   # Extract the locations
   - import: org/clulab/asist/grammars/locations.yml
     vars:
-      first_priority: "2-3"
-      second_priority: "4+"
-      third_priority: "5"
+      first_priority: "4-5"
+      second_priority: "6+"
+      third_priority: "7"
 
   # Extract the base_concepts
   - import: org/clulab/asist/grammars/base_concepts.yml
     vars:
-      rulepriority: "3+"
+      rulepriority: "5+"
+
+  # Extract the marker meanings
+  - import: org/clulab/asist/grammars/marker_meanings.yml
+    vars:
+      rulepriority: "5+"
 
   # Extract time mentions, e.g., "30 seconds"
   - import: org/clulab/asist/grammars/time.yml
     vars:
-      rulepriority: "1"
+      rulepriority: "3"
 
   # Extract the simple events
   - import: org/clulab/asist/grammars/actions.yml
     vars:
-      rulepriority: "6"
+      rulepriority: "8"
 
   # Extract the planning terms, COMMENTED OUT WHILE FILE IS EMPTY
   #- import: org/clulab/asist/grammars/planning.yml
@@ -55,19 +75,19 @@ rules:
   # Extract commitments
   - import: org/clulab/asist/grammars/commitment.yml
     vars:
-      rulepriority: "7+"
+      rulepriority: "9+"
 
   # Extract questions
   - import: org/clulab/asist/grammars/questions.yml
     vars:
-      rulepriority: "3+"
+      rulepriority: "5+"
 
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
     vars:
-      rulepriority: "3+"
+      rulepriority: "5+"
 
   # Extract temporal extractions
   - import: org/clulab/asist/grammars/temporal_extractions.yml
     vars:
-      rulepriority: "7+"
+      rulepriority: "9+"

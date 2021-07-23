@@ -34,12 +34,12 @@ import scala.io.Source
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
   // Number of taxonomy matches to include with extractions
-  val nMatches: Int = 0,
+  nMatches: Int = 0,
   // Query the Dialog Act Classification server
-  val withClassifications: Boolean = false,
+  withClassifications: Boolean = false,
   // Optionally hard-set the TA3 version number of reprocessed .metadata files
   // If this value is not set, existing version numbers are incremented by 1
-  val ta3Version: Option[Int] = None
+  ta3Version: Option[Int] = None
 )
 
 
@@ -180,11 +180,13 @@ class DialogAgent (
       (role, ms) <- originalArgs
       converted = ms.map(extraction)
     } yield (role, converted)
+    val extractionAttachments = mention.attachments.map(writeJson(_))
     val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageDataExtraction(
       mention.label,
       mention.words.mkString(" "),
       extractionArguments.toMap,
+      extractionAttachments,
       mention.startOffset,
       mention.endOffset,
       taxonomy_matches

@@ -4,6 +4,7 @@ import org.clulab.odin.{Attachment, Mention, TextBoundMention}
 import org.clulab.struct.Interval
 
 case class Agent(text: String, agentType: String, labels: Seq[String], span: Interval) extends Attachment {
+  override def toString(): String = s"Agent($agentType)"
   def mentionLike(m: Mention): TextBoundMention = {
     new TextBoundMention(
       labels,

@@ -5,7 +5,6 @@ import org.clulab.asist.BaseTest
 class TestActions extends BaseTest {
 
   val CLOSE = "Close"
-  val INFRASTRUCTURE = "Infrastructure"
 
   behavior of "AsistEngine"
 
@@ -15,12 +14,10 @@ class TestActions extends BaseTest {
     val doc = extractor.annotate("I'm closing the door")
     val mentions = extractor.extractFrom(doc)
 
-    val self_mention = DesiredMention("Self", "I")
     val door_mention = DesiredMention(INFRASTRUCTURE, "door")
     val close_mention = DesiredMention(CLOSE, "closing the door",
       Map("target" -> Seq(door_mention)))
 
-    testMention(mentions, self_mention)
     testMention(mentions, door_mention)
     testMention(mentions, close_mention)
   }
@@ -30,11 +27,11 @@ class TestActions extends BaseTest {
       extractor.annotate("Open the door.")
     val mentions = extractor.extractFrom(doc)
 
-    val switch_mention = DesiredMention("Switch", "door")
-    val open_mention = DesiredMention("Toggle", "Open the door",
-      Map("target" -> Seq(switch_mention)))
+    val door_mention = DesiredMention(INFRASTRUCTURE, "door")
+    val open_mention = DesiredMention("Open", "Open the door",
+      Map("target" -> Seq(door_mention)))
 
-    testMention(mentions, switch_mention)
+    testMention(mentions, door_mention)
     testMention(mentions, open_mention)
   }
 
@@ -42,18 +39,16 @@ class TestActions extends BaseTest {
     val doc = extractor.annotate("I'm going to save the villager over there")
     val mentions = extractor.extractFrom(doc)
     val deictic_mention = DesiredMention("Deictic", "there")
-    val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villager")
     val save_mention = DesiredMention("Save", "save the villager over there",
       Map("target" -> Seq(victim_mention),
-        "location" -> Seq(deictic_mention)))
+        "location" -> Seq(deictic_mention)),
+      Set(AGENT_SELF, FUTURE_TENSE)
+    )
 
-
-    testMention(mentions, self_mention)
     testMention(mentions, save_mention)
     testMention(mentions, deictic_mention)
   }
-
 
 
   passingTest should "Parse search lvo events properly" in {
@@ -61,13 +56,12 @@ class TestActions extends BaseTest {
       extractor.annotate("I search for the villagers inside the building")
     val mentions = extractor.extractFrom(doc)
     val infrastructure_mention = DesiredMention("Infrastructure", "building")
-    val self_mention = DesiredMention("Self", "I")
     val victim_mention = DesiredMention("Victim", "villagers")
-    val search_mention = DesiredMention("Search", "I search for the villagers",
-      Map("person" -> Seq(self_mention),
-        "target" -> Seq(victim_mention)))
+    val search_mention = DesiredMention("Search", "search for the villagers",
+      Map("target" -> Seq(victim_mention)),
+      Set(AGENT_SELF)
+    )
     val deictic_mention = DesiredMention("Deictic", "inside")
-
 
     testMention(mentions, search_mention)
     //    testMention(mentions, deictic_mention) // todo: we should determine some structure for locations
@@ -78,52 +72,52 @@ class TestActions extends BaseTest {
     val doc = extractor.annotate("Let's run over.")
     val mentions = extractor.extractFrom(doc)
 
-    val move_mention = DesiredMention("Move", "run")
+    val move_mention = DesiredMention("MoveTo", "run")
 
     testMention(mentions, move_mention)
   }
 
-  tempFailingTest should "Parse move into events properly" in {
+  passingTest should "Parse move into events properly" in {
     val doc = extractor.annotate("I'm moving into the building.")
     val mentions = extractor.extractFrom(doc)
 
-    val self_mention = DesiredMention("Self", "I")
     val infra_mention = DesiredMention(INFRASTRUCTURE, "building")
-    val move_mention = DesiredMention("Move", "I'm moving into the building",
-                        Map("person" -> Seq(self_mention),
-                        "target" -> Seq(infra_mention)))
+    val move_mention = DesiredMention(
+      "Enter", "moving into the building",
+      Map("target" -> Seq(infra_mention)),
+      Set(AGENT_SELF)
+    )
 
-    testMention(mentions, self_mention)
     testMention(mentions, infra_mention)
     testMention(mentions, move_mention)
   }
 
-  tempFailingTest should "Parse clear events properly" in {
+  passingTest should "Parse clear events properly" in {
     val doc = extractor.annotate("I'm clearing this rebel.")
     val mentions = extractor.extractFrom(doc)
 
-    val self_mention = DesiredMention("Self", "I")
     val rubble_mention = DesiredMention("Rubble", "rebel")
-    val clear_mention = DesiredMention("Clear", "I'm clearing this rebel",
-      Map("agent" -> Seq(self_mention),
-        "target" -> Seq(rubble_mention)))
+    val clear_mention = DesiredMention(
+      "Clear", "clearing this rebel",
+      Map("target" -> Seq(rubble_mention)),
+      Set(AGENT_SELF)
+    )
 
-    testMention(mentions, self_mention)
     testMention(mentions, rubble_mention)
     testMention(mentions, clear_mention)
   }
 
-  tempFailingTest should "Parse clear locations events properly" in {
+  passingTest should "Parse clear locations events properly" in {
     val doc = extractor.annotate("I'm clearing this room.")
     val mentions = extractor.extractFrom(doc)
 
-    val self_mention = DesiredMention("Self", "I")
     val infra_mention = DesiredMention(INFRASTRUCTURE, "room")
-    val clear_mention = DesiredMention("Clear", "I'm clearing this room",
-      Map("agent" -> Seq(self_mention),
-        "target" -> Seq(infra_mention)))
+    val clear_mention = DesiredMention(
+      "Clear", "clearing this room",
+      Map("target" -> Seq(infra_mention)),
+      Set(AGENT_SELF)
+    )
 
-    testMention(mentions, self_mention)
     testMention(mentions, infra_mention)
     testMention(mentions, clear_mention)
   }
@@ -144,13 +138,12 @@ class TestActions extends BaseTest {
     val doc = extractor.annotate("I am changing to searcher.")
     val mentions = extractor.extractFrom(doc)
 
-    val self_mention = DesiredMention("Self", "I")
     val searcher_mention = DesiredMention("Searcher", "searcher")
-    val roleswitch_mention = DesiredMention("RoleSwitch", "I am changing to searcher",
-      Map("agent" -> Seq(self_mention),
-          "target" -> Seq(searcher_mention)))
+    val roleswitch_mention = DesiredMention("RoleSwitch", "changing to searcher",
+      Map("target" -> Seq(searcher_mention)),
+      Set(AGENT_SELF)
+    )
 
-    testMention(mentions, self_mention)
     testMention(mentions, searcher_mention)
     testMention(mentions, roleswitch_mention)
   }
@@ -160,7 +153,7 @@ class TestActions extends BaseTest {
     val mentions = extractor.extractFrom(doc)
 
     val rubble_mention = DesiredMention("Rubble", "rubble")
-    val switch_mention = DesiredMention("Switch", "door")
+    val switch_mention = DesiredMention(INFRASTRUCTURE, "door")
     val block_mention = DesiredMention("Block", "rubble blocking this door",
       Map("source" -> Seq(rubble_mention),
         "target" -> Seq(switch_mention)))
@@ -175,13 +168,13 @@ class TestActions extends BaseTest {
     val mentions = extractor.extractFrom(doc)
 
     val rubble_mention = DesiredMention("Rubble", "rubble")
-    val switch_mention = DesiredMention("Switch", "door")
+    val door_mention = DesiredMention(INFRASTRUCTURE, "door")
     val block_mention = DesiredMention("Block", "rubble in the way of this door",
       Map("source" -> Seq(rubble_mention),
-        "target" -> Seq(switch_mention)))
+        "target" -> Seq(door_mention)))
 
     testMention(mentions, rubble_mention)
-    testMention(mentions, switch_mention)
+    testMention(mentions, door_mention)
     testMention(mentions, block_mention)
   }
 
@@ -195,7 +188,6 @@ class TestActions extends BaseTest {
       Map("person" -> Seq(self_mention),
         "location" -> Seq(infra_mention)))
 
-    testMention(mentions, self_mention)
     testMention(mentions, infra_mention)
     testMention(mentions, report_loc_mention)
   }
