@@ -28,12 +28,15 @@ object RunDialogAgent extends App {
     "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
     "                 {stdin [-m taxonomy_matches]}",
     "                 {file inputfile outputfile [-m taxonomy_matches]}",
-    "                 {reprocess inputdir outputdir [-m taxonomy_matches]}",
+    "                 {reprocess inputdir outputdir [-m taxonomy_matches] [-v ta3_version_number]}",
     "",
     "       -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
-    "inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)",
-    "inputdir : A directory of .metadata files to be reprocessed by the DialogAgent",
-    "outputdir : A directory where reprocessed .metadata files will be saved, using the same filenames",
+    "       -v : Set the TA3 version number of reprocessed metadata files.",
+    "            If not set, existing TA3 version numbers are incremented by 1",
+    "inputfile : supported file extensions are .vtt and .metadata",
+    "            (also handles directories containing files with those extensions)",
+    "inputdir  : A directory of .metadata files to be reprocessed by the DialogAgent",
+    "outputdir : A directory where reprocessed .metadata files will be saved.",
     ""
   )
 
@@ -74,6 +77,7 @@ object RunDialogAgent extends App {
    */
   def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
     nMatches = intArg(l, "-m").getOrElse(0),
+    ta3Version = intArg(l, "-v"),
     withClassifications = l.contains("--with-classifications")
   )
 
