@@ -32,7 +32,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO]
+      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO] (?! [lemma=victim])
 
 
   - name: thank_you

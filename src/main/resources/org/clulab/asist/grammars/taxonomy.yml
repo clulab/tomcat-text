@@ -4,6 +4,7 @@
       - FutureTense
   - NounPhrase
   - Attribute
+  - MarkerMeaning
   - Number:
     - Ordinal
   - Switch
@@ -38,6 +39,7 @@
         - Move:
           - MoveTo
           - MoveFrom
+          - Enter
         - Open
         - Close
         - Push
@@ -59,7 +61,9 @@
         - RoleSwitch
         - RoleDeclare
         - ReportLocation
-        - KnowledgeSharing
+        - KnowledgeSharing:
+          - RoomStatus:
+            - RoomClear
       - ComplexActions:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -87,6 +91,8 @@
     - Victim:
         - Yellow
         - CriticalVictim
+        - RegularVictim
+        - NoVictim
     - Friend
     - Foe
     - Player:

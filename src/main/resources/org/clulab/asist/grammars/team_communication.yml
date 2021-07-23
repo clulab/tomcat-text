@@ -143,3 +143,11 @@ rules:
       obstacle: Obstacle? = >/${agents}/
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/
+
+  - name: room_clear
+    priority: ${ rulepriority }
+    label: RoomClear
+    type: token
+    example: "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
+    pattern: |
+      @target:Infrastructure [lemma=be] clear

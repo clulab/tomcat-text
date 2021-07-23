@@ -40,6 +40,24 @@ rules:
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)one/]
 
+  - name: regular_victim_one
+    priority: ${ rulepriority }
+    label: RegularVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/regular|normal/] [lemma=/one|victim/]
+
+  - name: no_victim_one
+    priority: ${ rulepriority }
+    label: NoVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/no/] [lemma=/one|victim/]
+
+
+
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
       name: rubble
@@ -66,6 +84,7 @@ rules:
     priority: ${ rulepriority }
     label: Number
     type: token
+    keep: false
     pattern: |
       (?<! other) [tag=CD]
 
@@ -89,7 +108,7 @@ rules:
     label: Self
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP/]
 
@@ -97,7 +116,7 @@ rules:
     label: You
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [word=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
 
@@ -105,7 +124,7 @@ rules:
     label: Other
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [word=/(?i)^(he|him|she|her)/ & tag=/PRP/]
 
@@ -113,7 +132,7 @@ rules:
     label: Team
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [lemma=/(?i)^(${ team_triggers })/ & tag=/PRP/]
 
@@ -122,7 +141,7 @@ rules:
     examples: "it, they, them"
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: false
     pattern: |
       [lemma=/(?i)^it\b|they|them/ & tag=/PRP/]
 

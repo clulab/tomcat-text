@@ -59,7 +59,7 @@ medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 movefrom_triggers: "depart|exit|leave"
 
-moveto_triggers: "go|enter|move|run|walk|come|scoot|climb|jump"
+moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
 
 north_triggers: "north"
 
@@ -93,7 +93,7 @@ specialist_triggers: "specialist"
 
 stretcher_triggers: "stretcher|carrying bed"
 
-switch_triggers: "switch|toggle|lever|door"
+switch_triggers: "switch|toggle|lever"
 
 team_triggers: "we|us"
 

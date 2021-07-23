@@ -1,9 +1,11 @@
 package org.clulab.asist.extraction
 
 import com.typesafe.scalalogging.LazyLogging
-import org.clulab.asist.attachments.{Negation, Tense}
+import org.clulab.asist.attachments.{Agent, MarkerId, Negation, Tense, VictimType}
 import org.clulab.asist.extraction.TomcatRuleEngine._
 import org.clulab.odin._
+import org.clulab.struct.Interval
+import org.clulab.utils.DisplayUtils
 import org.clulab.utils.MentionUtils._
 
 class TomcatActions() extends Actions with LazyLogging {
@@ -16,20 +18,86 @@ class TomcatActions() extends Actions with LazyLogging {
   }
 
   def globalAction(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    val notSubsumed = mostSpecificOnly(mentions, state)
-    val withAttachments = addAttachments(notSubsumed, state)
+    // convert any agent argument to an attachment
+    val agentResolved = convertAgents(mentions, state)
+    val excluded = excludeArgEqualsParent(agentResolved, state)
+//    val notSubsumed = mostSpecificOnly(agentResolved, state)
+    val withAttachments = addAttachments(excluded, state)
     keepLongest(withAttachments, state)
   }
 
+  def excludeArgEqualsParent(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    mentions.filterNot{ parent =>
+      val args = parent.arguments
+      args.values.flatten.exists(argMention => argIsParent(argMention, parent))
+    }
+  }
+
+  def argsSubsumeParent(argMentions: Seq[Mention], parentMention: Mention): Boolean = {
+    argMentions.exists(m => argIsParent(m, parentMention))
+  }
+
+  def argIsParent(argMention: Mention, parentMention: Mention): Boolean = {
+    argMention.sentence == parentMention.sentence &&
+      argMention.tokenInterval == parentMention.tokenInterval
+  }
+
+  def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    mentions.map(convertAgent)
+  }
+
+  def convertAgent(mention: Mention): Mention = {
+    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG)
+    val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty)
+    val agents = agentMentions.map(mkAgent).toSet
+
+    val copy = mention match {
+      case tb: TextBoundMention => mention
+      case rm: RelationMention =>
+        val newSpan = mkInterval(mention, nonAgentArgs)
+        rm.copy(arguments = nonAgentArgs, attachments = agents, tokenInterval = newSpan)
+      case em: EventMention =>
+        val newSpan = mkInterval(mention, nonAgentArgs)
+        em.copy(arguments = nonAgentArgs, attachments = agents, tokenInterval = newSpan)
+      case _ => ???
+    }
+
+    copy
+  }
+
+  def mkInterval(m: Mention, args: Map[String, Seq[Mention]]): Interval = {
+    val triggerOffsets = m match {
+      case em: EventMention => Seq(em.trigger.start, em.trigger.end)
+      case _ => Seq.empty
+    }
+    val argOffsets = args.toSeq.flatMap(_._2)
+      .map(_.tokenInterval)
+      .flatMap(t => Seq(t.start, t.end))
+    val allOffsets = triggerOffsets ++ argOffsets
+    val start = allOffsets.min
+    val end = allOffsets.max
+    Interval(start, end)
+  }
+
+  def mkAgent(m: Mention): Attachment = Agent(m.text, m.label, m.labels, m.tokenInterval)
 
 /** Keeps the longest mention for each group of overlapping mentions **/
   def keepLongest(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    def argLabelsBonus(args: Map[String, Seq[Mention]]): Double = {
+      val argMentions = args.values.flatten.toSeq
+      // 0.1 * number of args
+      val numArgsBonus = argMentions.length * 0.1
+      // 0.01 * number of labels for each
+      val argSpecificityBonus = argMentions.flatMap(_.labels).size * 0.05
+      numArgsBonus + argSpecificityBonus
+    }
     val mns: Iterable[Mention] = for {
     // find mentions of the same label and sentence overlap
       (k, v) <- mentions.groupBy(m => (m.sentence, m.label, m.tags.get.contains("CC")))
       m <- v
       // for overlapping mentions starting at the same token, keep only the longest
-      longest = v.filter(vm => vm.tokenInterval.overlaps(m.tokenInterval)).maxBy(m => m.end - m.start)
+      longest = v.filter(vm => vm.tokenInterval.overlaps(m.tokenInterval))
+        .maxBy(m => (m.end - m.start) + argLabelsBonus(m.arguments))
     } yield longest
     mns.toVector.distinct
   }
@@ -62,54 +130,59 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def addAttachments(mention: Mention, state: State): Mention = {
     // negation
-    val negation = findNegation(mention)
+    val negation = findNegation(mention, state)
     // tense
     val tense = findTense(mention, state)
+    // victimType and markerId are for MarkerMeaning mentions
+    val victimType = findVictim(mention)
+    val markerId = findMarkerId(mention)
 
     // add them all
-    val attachments = negation ++ tense
+    val attachments = negation ++ tense ++ victimType ++ markerId
     withMoreAttachments(mention, attachments.toSeq)
   }
 
-  def findNegation(mention: Mention): Option[Negation] = {
+  def findNegation(mention: Mention, state: State): Option[Negation] = {
     mention match {
       case event: EventMention =>
         val trigger = event.trigger
         if (hasVerb(trigger)) {
           // most precise: look for negation coming from a token in the trigger
-          negationFrom(trigger)
+          negationFrom(trigger, state)
         } else {
           // backoff: look for negation in the span
-          negationFrom(mention)
+          negationFrom(mention, state)
         }
       case _ => // backoff: look for negation in the span
-        negationFrom(mention)
+        negationFrom(mention, state)
     }
   }
 
-  def negationFrom(mention: Mention): Option[Negation] = {
-    if (outgoingNeg(mention) || prevTokenNot(mention)) Some(Negation())
+  def negationFrom(mention: Mention, state: State): Option[Negation] = {
+    if (mention.matches(VICTIM)) return None
+
+    val negatedTokens = outgoingNeg(mention) ++ prevTokenNot(mention)
+    val nonVictimNegated = negatedTokens.filter(token => !state.hasMentionsFor(mention.sentence, token, VICTIM))
+    if (nonVictimNegated.nonEmpty) Some(Negation())
     else None
   }
 
-  def prevTokenNot(mention: Mention): Boolean = {
-    if (mention.start == 0) false
-    else {
-      mention.sentenceObj.words(mention.start - 1) == "not"
-    }
+  def prevTokenNot(mention: Mention): Array[Int] = {
+    if (mention.start == 0) Array.empty
+    else if (mention.sentenceObj.words(mention.start - 1) == "not") Array(mention.start)
+    else Array.empty
   }
 
-  def outgoingNeg(mention: Mention): Boolean = {
+  def outgoingNeg(mention: Mention): Array[Int] = {
     mention
       .sentenceObj.dependencies.get // should be safe bc sentence has been parsed
       // outgoing dependencies
       .outgoingEdges.slice(mention.start, mention.end)
       // we don't care which token in the mention the outgoing is coming from, so flatten
       .flatten
-      // get the dependency names only bc it doesn't matter where we land
-      .map(_._2)
       // check for negation dependency
-      .contains("neg")
+      .filter(_._2 == "neg")
+      .map(_._1)
   }
 
   def hasVerb(mention: TextBoundMention): Boolean = {
@@ -144,6 +217,26 @@ class TomcatActions() extends Actions with LazyLogging {
     } else None
   }
 
+  def findMarkerId(mention: Mention): Option[MarkerId] = {
+    mention.label match {
+      case MARKER_MEANING =>
+        mention match {
+          case event: EventMention => Some(MarkerId(event.trigger.text))
+          case _ =>
+            logger.warn(s"MarkerMeaning mention found that wasn't an EventMention, no attachment created. (${mention.text})")
+            None
+        }
+      case _ => None
+    }
+  }
+
+  def preventSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
+    for {
+      mention <- mentions
+      if !hasSubjectVerbInversionOrNotApplicable(mention)
+    } yield mention
+  }
+
   def requireSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     // trigger should be before all the arguments
     // todo: revisit when the no_agent branch merged
@@ -163,6 +256,7 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def hasSubjectVerbInversion(mention: EventMention): Boolean = {
     val triggerStart = mention.trigger.start
+
     // first token index of all the arguments
     val leftMostArg = mention.arguments
       // get the mentions from all arguments, flatten to a Seq[Mention]
@@ -171,35 +265,49 @@ class TomcatActions() extends Actions with LazyLogging {
       .map(m => m.start)
       // find the smallest (leftmost) index
       .min
-    val action = mention.arguments("topic").head // should only be one
-    val missedSubjs = action.sentenceObj.dependencies.get
-      // get the outgoing dep edges coming from the trigger of the action
-      .outgoingEdges(triggerStart)
-      // we're only interested in nsubj
-      .filter(tup => tup._2 == "nsubj")
-      // get the landing token (i.e., the subject of that action's token index)
-      .map(_._1)
-    // get the leftmost (or a dummy big number if there are none)
-    val leftMostMissedSubj = if (missedSubjs.isEmpty) 1000 else missedSubjs.min
 
+    val action = mention.arguments("topic").head // should only be one
+    val actionAgents = action.attachments.collect{ case a: Agent => a.span.start }
+    val leftMostAgentAttachment = if (actionAgents.isEmpty) 1000 else actionAgents.min
+
+    val leftMostAll = Seq(leftMostArg, leftMostAgentAttachment).min
     // check that trigger is to left of all args and any missed subjects
-    (triggerStart < leftMostArg) && (triggerStart < leftMostMissedSubj)
+    triggerStart < leftMostAll
   }
 
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    mentions.map(addArgLabel(_, TARGET_ARG, VICTIM, Some(ENTITY)))
+    mentions.map(mkVictimArg(_, Some(ENTITY)))
   }
 
-  def addArgLabel(mention: Mention, argName: String, newLabel: String, typeConstraint: Option[String]): Mention = {
+  def mkVictimArg(mention: Mention, typeConstraint: Option[String]): Mention = {
     val newArgs = mention.arguments.toSeq.map { case (name, argMentions) =>
       name match {
-        case n if n == argName =>
-          val afterAdding = argMentions.map(m => copyWithNewLabel(m, newLabel, typeConstraint))
+        case n if n == TARGET_ARG =>
+          val afterAdding = argMentions.map {m =>
+            copyWithNewLabel(m, VICTIM, typeConstraint)
+          }
           (name, afterAdding)
         case _ => (name, argMentions)
       }
     }
     copyWithNewArgs(mention, newArgs.toMap)
+  }
+
+  def findVictim(mention: Mention): Option[VictimType] = {
+    mention.label match {
+      case MARKER_MEANING => mkVictimType(mention.arguments("meaning").head)
+      case _ => None
+    }
+  }
+
+  def mkVictimType(mention: Mention): Option[VictimType] = {
+    mention.label match {
+      case CRITICAL_VICTIM => Some(VictimType(VictimType.CRITICAL))
+      case NO_VICTIM => Some(VictimType(VictimType.NONE))
+      case REGULAR_VICTIM => Some(VictimType(VictimType.REGULAR))
+      case VICTIM => Some(VictimType(VictimType.REGULAR))
+      case _ => None
+    }
   }
 
   def copyWithNewArgs(m: Mention, newArgs: Map[String, Seq[Mention]]): Mention = {

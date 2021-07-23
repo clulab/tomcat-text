@@ -5,7 +5,8 @@ rules:
   - name: commit_to_something
     priority: ${ rulepriority }
     label: MakeCommitment
+    action: preventSubjectVerbInversion
     pattern: |
       trigger = [tag=/^MD/ & lemma=/^can|will/]
-      target: Action = <aux
+      topic: Action = <aux
       agent: Entity? = <aux >nsubj

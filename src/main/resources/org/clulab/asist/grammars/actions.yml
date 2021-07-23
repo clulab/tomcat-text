@@ -23,6 +23,14 @@ rules:
       trigger: ${ toggle_triggers }
       object_type: Switch
 
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: open
+      template_priority: ${ rulepriority }
+      label: Open
+      trigger: ${ open_triggers }
+      object_type: Infrastructure
+
   - name: triage
     priority: ${ rulepriority }
     label: Save
@@ -31,6 +39,7 @@ rules:
       trigger = [lemma=/(?i)^(${ triage_triggers })/]
       target: Victim = >dobj
       location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
 
   - name: triage2
     priority: ${ rulepriority }
@@ -41,6 +50,7 @@ rules:
       trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
       target: Person = >dobj
       location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
 ###need this because we split "person" from "victim"
 
   - name: triage3
@@ -52,6 +62,7 @@ rules:
       trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
       target: Entity = >dobj [tag=/PRP/]
       location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
 ## This one is not working right now, working on it -Remo
 
   - import: org/clulab/asist/grammars/lvo_template.yml
@@ -72,6 +83,7 @@ rules:
       trigger = [lemma=/${ search_triggers }/]
       area: Location = ${ search_relations }
       target: Concept? = >nmod_for
+      agent: Entity? = >/${agents}/
 
   - name: i_am_searching
     priority: ${ rulepriority }
@@ -79,7 +91,7 @@ rules:
     action: mkVictim
     pattern: |
       trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
-      person: Entity = >nsubj
+      agent: Entity = >/${agents}/
       target: Concept? = >nmod_for
 
   # ------------------------------------------------------------------- move
@@ -87,17 +99,17 @@ rules:
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
-      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! []? away)
-      target: Location? =  >/nmod_(into|through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
-      person: Entity? = >/${agents}/
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
 
   - name: move_deixis_action
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
-      trigger = [lemma=/(?i)${ moveto_triggers }/] (?! []? away)
-      target: Deictic = >/nmod_(into|through|to|towards)/ | >advmod
-      person: Entity? = >/${agents}/
+      trigger = [lemma=/(?i)${ moveto_triggers }/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Deictic = >/nmod_(through|to|towards)/ | >advmod
+      agent: Entity? = >/${agents}/
 
   - name: move_explicit_1
     example: "I'll be right there.  I will be there in a minute."
@@ -105,7 +117,7 @@ rules:
     label: MoveTo
     type: token
     pattern: |
-      @person:Entity (?<trigger> will be) right? (@target:Deictic | (?<target> over))
+      @agent:Entity (?<trigger> will be) right? (@target:Deictic | (?<target> over))
 
   - name: leave_deixis_action
     priority: ${ rulepriority }
@@ -113,7 +125,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)${ movefrom_triggers }/] | [lemma=go] /(away|from)/
       target: Deictic = >/nmod_(away|from)/ | >advmod
-      person: Entity? = >/${agents}/
+      agent: Entity? = >/${agents}/
 
   - name: leave_nmod_action
     priority: ${ rulepriority }
@@ -121,7 +133,31 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/] | [lemma=go] /(away|from)/
       target: Location? =  >/nmod_(away|from)/ | >/${objects}/
-      person: Entity? = >/${agents}/
+      agent: Entity? = >/${agents}/
+
+  - name: enter_action
+    priority: ${ rulepriority }
+    label: Enter
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: Location? = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: enter_into_action
+    priority: ${ rulepriority }
+    label: Enter
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers }|enter)$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Location =  >/nmod_(inside|into)/
+      agent: Entity? = >/${agents}/
+
+  - name: enter_into_deixis_action
+    priority: ${ rulepriority }
+    label: Enter
+    pattern: |
+      trigger = [lemma=/(?i)${ moveto_triggers }|enter/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Deictic = >/nmod_(inside|into)/
+      agent: Entity? = >/${agents}/
 
   # ------------------------------------------------------------------- sight
   - import: org/clulab/asist/grammars/lvo_template.yml

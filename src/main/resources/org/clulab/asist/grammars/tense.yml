@@ -18,7 +18,6 @@ rules:
       trigger = [tag=/^VB/]
       tense: Concept = >aux [tag=VBD]
 
-
   - name: future-modal
     priority: ${ rulepriority }
     label: FutureTense
