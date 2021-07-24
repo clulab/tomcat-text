@@ -5,7 +5,7 @@ import org.clulab.odin.{ExtractorEngine, Mention, State}
 import org.clulab.processors.fastnlp.FastNLPProcessor
 import org.clulab.processors.{Document, Processor}
 import org.clulab.utils.{Configured, FileUtils}
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Configured {
 
@@ -46,9 +46,9 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
 
   // These public variables are accessed directly by clients which
   // don't know they are loadable and which had better not keep copies.
-  def engine = loadableAttributes.engine
+  def engine: ExtractorEngine = loadableAttributes.engine
 
-  def reload() = loadableAttributes = LoadableAttributes()
+  def reload(): Unit = loadableAttributes = LoadableAttributes()
 
   // MAIN PIPELINE METHOD
   def extractFrom(text: String, keepText: Boolean = false): Seq[Mention] = {
@@ -56,7 +56,9 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
     extractFrom(doc)
   }
 
-  def extractFrom(doc: Document): Vector[Mention] = engine.extractFrom(doc, new State()).toVector
+  def extractFrom(doc: Document): Vector[Mention] = {
+    loadableAttributes.actions.keepLongest(engine.extractFrom(doc, new State())).toVector
+  }
 
   // ---------- Helper Methods -----------
 
@@ -70,11 +72,18 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
 
 object TomcatRuleEngine {
 
-  val logger = LoggerFactory.getLogger(this.getClass())
+  val logger: Logger = LoggerFactory.getLogger(this.getClass)
   val PREFIX: String = "TomcatRuleEngine"
 
   val ENTITY: String = "Entity"
   val VICTIM: String = "Victim"
+  val CRITICAL_VICTIM: String = "CriticalVictim"
+  val NO_VICTIM: String = "NoVictim"
+  val REGULAR_VICTIM: String = "RegularVictim"
   val TARGET_ARG: String = "target"
+
+  val MARKER_MEANING: String = "MarkerMeaning"
+
+  val AGENT_ARG: String = "agent"
 
 }

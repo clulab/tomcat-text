@@ -1,0 +1,40 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  - name: marker_meaning
+    priority: ${ rulepriority }
+    label: MarkerMeaning
+    keep: true
+    pattern: |
+      trigger = [lemma=/one|two|three|1|2|3/]
+      meaning: Victim = <nummod? <nsubj >dobj?
+
+  - name: marker_meaning_token
+    priority: ${ rulepriority }
+    label: MarkerMeaning
+    type: token
+    keep: true
+    pattern: |
+      @meaning:Victim /is|has|as|are|for/ for? (?<trigger> [lemma=/one|two|three|1|2|3/])
+
+  - name: marker_meaning_token_flipped
+    priority: ${ rulepriority }
+    label: MarkerMeaning
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger> [lemma=/one|two|three|1|2|3/]) [lemma=/be|say|show/] for? @meaning: Victim
+
+  - name: marker_meaning_two_misparsed
+    priority: ${ rulepriority }
+    label: MarkerMeaning
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger> [lemma=/to|too/]) [lemma=/be|say|show|indicate/] []{,2} @meaning: Victim
+
+
+  # handle to instead of two
+  # one online one indicates a regular victim to indicates no victim and then three and debate indicate the critical victim
+  # handle clear = no
+#I'm taking the same same tactic as last time I started with the Searchers looks like our numbers mean the same thing as well regular victim has one no victim or clear drum its 2 and I'm critical victims are three

@@ -28,12 +28,15 @@ object RunDialogAgent extends App {
     "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
     "                 {stdin [-m taxonomy_matches]}",
     "                 {file inputfile outputfile [-m taxonomy_matches]}",
-    "                 {reprocess inputdir outputdir [-m taxonomy_matches]}",
+    "                 {reprocess inputdir outputdir [-m taxonomy_matches] [-v ta3_version_number]}",
     "",
     "       -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
-    "inputfile : supported file extensions are .vtt and .metadata (also handles directories containing files with those extensions)",
-    "inputdir : A directory of .metadata files to be reprocessed by the DialogAgent",
-    "outputdir : A directory where reprocessed .metadata files will be saved, using the same filenames",
+    "       -v : Set the TA3 version number of reprocessed metadata files.",
+    "            If not set, existing TA3 version numbers are incremented by 1",
+    "inputfile : supported file extensions are .vtt and .metadata",
+    "            (also handles directories containing files with those extensions)",
+    "inputdir  : A directory of .metadata files to be reprocessed by the DialogAgent",
+    "outputdir : A directory where reprocessed .metadata files will be saved.",
     ""
   )
 
@@ -68,25 +71,19 @@ object RunDialogAgent extends App {
     case _ => None
   }
 
-  /** Test if a flag is set
-   * @param l A flat list of arguments
-   * @param arg An arg to find in the list
-   * @return true if the arg is found in the list
-   */
-  def argSet(l: List[String], arg: String): Boolean = l.contains(arg) 
-
   /** Compose the arguments used by the Dialog Agent
    * @param l A flat list of arguments
    * @return An Args struct populated per the arg list
    */
   def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
     nMatches = intArg(l, "-m").getOrElse(0),
-    withClassifier = l.contains("--with-classifications")
+    ta3Version = intArg(l, "-v"),
+    withClassifications = l.contains("--with-classifications")
   )
 
   /** Run the Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
-   * @returns A DialogAgent running in the mode with the args
+   * @return A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {

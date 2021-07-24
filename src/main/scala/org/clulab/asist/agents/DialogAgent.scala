@@ -33,8 +33,13 @@ import scala.io.Source
 
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
-  val nMatches: Int = 0,  // Number of taxonomy matches to include with extractions
-  val withClassifier: Boolean = false // query the Dialog Act Classification server
+  // Number of taxonomy matches to include with extractions
+  nMatches: Int = 0,
+  // Query the Dialog Act Classification server
+  withClassifications: Boolean = false,
+  // Optionally hard-set the TA3 version number of reprocessed .metadata files
+  // If this value is not set, existing version numbers are incremented by 1
+  ta3Version: Option[Int] = None
 )
 
 
@@ -45,13 +50,14 @@ class DialogAgent (
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
-  val nMatches = args.nMatches
-  val withClassifier = args.withClassifier
+  def nMatches = args.nMatches
+  def withClassifications = args.withClassifications
+  def ta3Version = args.ta3Version
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
-  val dialogAgentVersion = "2.0.0"
+  val dialogAgentVersion = "2.1.0"
 
   // metadata topics
   val topicSubChat = "minecraft/chat"
@@ -174,11 +180,13 @@ class DialogAgent (
       (role, ms) <- originalArgs
       converted = ms.map(extraction)
     } yield (role, converted)
+    val extractionAttachments = mention.attachments.map(writeJson(_))
     val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageDataExtraction(
       mention.label,
       mention.words.mkString(" "),
       extractionArguments.toMap,
+      extractionAttachments,
       mention.startOffset,
       mention.endOffset,
       taxonomy_matches

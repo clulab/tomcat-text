@@ -14,6 +14,16 @@ class BaseTest extends FlatSpec with Matchers {
   val passingTest = it
   val tempFailingTest = ignore
 
+  // Mention labels
+  val INFRASTRUCTURE = "Infrastructure"
+
+  // AttachmentStrings
+  val AGENT_SELF: String = "Agent(Self)"
+  val AGENT_YOU: String = "Agent(You)"
+  val AGENT_ENTITY: String = "Agent(Entity)"
+  val FUTURE_TENSE: String = "Tense(future)"
+  val PAST_TENSE: String = "Tense(past)"
+
   // Returns a count of how many times each **type** of event occurs (i.e., by label)
   def getMentionCounter(mentions: Vector[Mention]): mutable.Map[String, Int] = {
     val mention_map = mutable.Map[String, Int]()
@@ -50,9 +60,14 @@ class BaseTest extends FlatSpec with Matchers {
     found should equal(desiredMention)
   }
 
-  case class DesiredMention(label: String, text: String, arguments: Map[String, Seq[DesiredMention]] = Map.empty) {
+  case class DesiredMention(
+    label: String,
+    text: String,
+    arguments: Map[String, Seq[DesiredMention]] = Map.empty,
+    attachments: Set[String] = Set.empty
+  ) {
     override def toString: String = {
-      s"TestMention(label=$label, $text, arguments=${arguments.map(_.toString)})"
+      s"TestMention(label=$label, $text, arguments=${arguments.map(_.toString)}, attachments=${attachments.mkString(", ")})\n"
     }
   }
   object DesiredMention {
@@ -62,9 +77,9 @@ class BaseTest extends FlatSpec with Matchers {
             arg._1,
             arg._2.map(one_mention => DesiredMention.fromMention(one_mention))
           )
-        )
+        ),
+        m.attachments.map(_.toString)
       )
-
     }
   }
 

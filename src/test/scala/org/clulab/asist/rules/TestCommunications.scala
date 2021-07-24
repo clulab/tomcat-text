@@ -20,15 +20,27 @@ class TestCommunications extends BaseTest {
 
   }
 
-  failingTest should "Parse existential constructions 2" in {
+  passingTest should "Parse existential constructions 2" in {
     val text =  "There is a victim in here."
     // fixme:{I dont know why this one fails! Help}
     val mentions = extractor.extractFrom(text)
     val deic = DesiredMention("Deictic", "here")
     val victim_men = DesiredMention("Victim", "victim")
-    val ex2 = DesiredMention("KnowledgeSharing", "There is a victim in here", Map("location" -> Seq(deic), "exists" -> Seq(victim_men)))
+    val ex2 = DesiredMention(
+      "KnowledgeSharing",
+      "There is a victim in here",
+      Map("location" -> Seq(deic), "exists" -> Seq(victim_men))
+    )
 
     testMention(mentions, ex2)
+  }
+
+  passingTest should "find RoomClear event with `room_clear` rule" in {
+    val text = "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
+    val mentions = extractor.extractFrom(text)
+    val cleared = DesiredMention("RoomClear", "room is clear", Map("target" -> Seq(DesiredMention(INFRASTRUCTURE, "room"))))
+
+    testMention(mentions, cleared)
   }
 
 }

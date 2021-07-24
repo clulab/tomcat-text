@@ -79,12 +79,12 @@ filenames, and optionally the number of taxonomy matches to return.
   sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
 ```
 
-Supported input file types are WebVtt(.vtt), and TomCAT metadata (.metadata).
+Supported input file types are WebVtt(.vtt), and ToMCAT metadata (.metadata).
 A directory can be specified as input.  Directories are traversed one level
 deep, and only the .vtt and .metadata files are processed.  Input files are
 processed in alphabetical order.
 
-The ouput from the file(s) written to a singe output file in the order of
+The output from the file(s) written to a single output file in the order of
 processing.  
    
 
