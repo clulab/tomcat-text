@@ -47,10 +47,6 @@ import scala.util.control.NonFatal
  * preserving the original fileName). This is to comply with the TA3 file
  * naming scheme.
  *
- *
- * At the time of this writing, the biggest computational bottleneck is
- * running the extractions.
- *
  */
 class DialogAgentReprocessor (
   val inputDirName: String = "",
@@ -78,8 +74,8 @@ class DialogAgentReprocessor (
 
     // give the user a heads up as to how much data will be run
     // TODO profile this call on a full bucket and see how long it takes.
-    val totalInputLines = -1 //fileNames.map(n =>
-    //  LocalFileUtils.lineIterator(n).length).sum
+    val totalInputLines = 
+      fileNames.map(n =>LocalFileUtils.lineIterator(n).length).sum
 
     logger.info("Files to be processed: {}", nFiles)
     logger.info("Lines to be processed: {}", totalInputLines)
@@ -143,7 +139,7 @@ class DialogAgentReprocessor (
    * @return a list of the parse results for each JSON line in the file
    */
   // FIXME restore the count somehow
-  def processFile(inputFileName: String): Unit = {
+  def processFile(inputFileName: String): Int = {
     logger.info(s"Processing ${inputFileName}...")
     val outputFileName = ta3FileName(inputFileName)
     val iterator = LocalFileUtils.lineIterator(inputFileName)
@@ -168,6 +164,8 @@ class DialogAgentReprocessor (
         writeOutput(outputLines, outputFileName)
       }
     }
+
+    length
   }
 
   def writeOutput(
