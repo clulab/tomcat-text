@@ -1,36 +1,19 @@
 package org.clulab.asist.agents
 
-//FIXME clean up imports
 import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
+import akka.http.scaladsl._
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, PrintWriter}
-import java.nio.file.Paths
-import java.time.Clock
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.TimeoutException
 import org.clulab.asist.messages._
-import org.clulab.utils.LocalFileUtils
-import org.json4s.{Extraction,_}
-import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.{read,write}
-import org.json4s.JField
-
-import scala.annotation.tailrec
-import scala.collection.mutable.Queue
-import scala.concurrent._
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.postfixOps
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
-
-//import spray.json.DefaultJsonProtocol._
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -48,36 +31,79 @@ import scala.util.{Failure, Success}
 case class Classification(name: String)
 
 
-class DacClient extends LazyLogging {
-  implicit val system = ActorSystem("System")
-//  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer
-  implicit val dispatcher = system.dispatcher
+class DacClient (
+  agent: DialogAgent, 
+  input: List[String],
+  outputFileName: String
+) extends LazyLogging {
 
-  // Call the DAC with this query.
-  def classifyAndWrite(
-    message: DialogAgentMessage,
-    output: PrintWriter
-  ): Unit = synchronized {
-    logger.info("classification")
+  implicit val ec = ExecutionContext.global
+  implicit val system: ActorSystem = ActorSystem("test")
+
+  val iterator = input.iterator
+
+  val fileWriter = new PrintWriter(new File(outputFileName))
+
+  if(iterator.hasNext) classify(iterator.next)
+
+  def rejoin(line: String): Unit = synchronized {
+    logger.info("classifyOther")
+    fileWriter.write(s"${line}\n")
+    if(iterator.hasNext) classify(iterator.next)
+    else {
+      logger.info("No more lines to process")
+      fileWriter.close
+      logger.info("filewriter closed")
+    }
+  }
+
+  def classify(line: String): Unit = synchronized {
+    val lookAhead = readMetadataLookahead(line)
+    if(lookAhead.topic == agent.topicPubDialogAgent) {
+      try {
+        val message = read[DialogAgentMessage](line)
+        classifyDialogAgentMessage(message)
+      } catch {
+        case NonFatal(t) => {
+          logger.error("Some kind of error occured: {}",t.toString)
+          logger.info("failing over to classifyOther")
+          classifyOther(line)
+        }
+      }
+    }
+    else classifyOther(line)
+  }
+
+  def classifyOther(line: String): Unit = {
+    logger.info("classifyOther")
+    val f: Future[String]  = Future {
+      line
+    }
+
+    f onComplete {
+      case Success(finishedLine) => rejoin(finishedLine)
+      case Failure(t) => logger.error(s"An error occured:  ${t}")
+    }
+  }
+
+  def classifyDialogAgentMessage(message: DialogAgentMessage): Unit = {
+    logger.info("classifyDialogAgentMessage")
     val data = message.data
     val requestJson = write(new DialogActClassifierMessage(
       data.participant_id,
       data.text,
       data.extractions)
     )
+
     val request = HttpRequest(
       uri = Uri("http://localhost:8000/classify"),
       entity = HttpEntity(ContentTypes.`application/json`,requestJson)
     )
     val future: Future[HttpResponse] = Http().singleRequest(request)
 
-    logger.info("DAC request start")
-    val response: HttpResponse = Await.ready(future, 20 seconds).value.get.get
-    // FIXME catch timeout exception
-    logger.info("DAC request end")
+    val response: HttpResponse = Await.ready(future, 5 seconds).value.get.get
 
-    response.entity.dataBytes
+    val futureMessage: Future[DialogAgentMessage] = response.entity.dataBytes
       .runReduce(_ ++ _)
       .map{ line =>
         val ret = line.utf8String.split(" ").headOption.map(Classification)
@@ -85,7 +111,7 @@ class DacClient extends LazyLogging {
         val rawName = classification.name
         val name = rawName.replace("\"","")
         logger.info(s"Classification name = ${name}")
-        val newMessage = DialogAgentMessage(
+        DialogAgentMessage(
           message.header,
           message.msg,
           DialogAgentMessageData(
@@ -97,14 +123,61 @@ class DacClient extends LazyLogging {
             extractions = message.data.extractions
           )
         )
-        val json = write(newMessage)
-        output.write(s"${json}\n")
-        output.flush
-        logger.info(s"Wrote: ${json}")
       }
 
-    val ret = response.toString
-    logger.info(ret)
-    ret
+    futureMessage onComplete {
+      case Success(m: DialogAgentMessage) => rejoin(write(m))
+      case Failure(t) => 
+        logger.error(s"An error occured:  ${t}")
+        rejoin("{error}")
+    }
+  }
+
+
+  /** Scan the line as a MetadataLookahead, return default if not readable
+   *  @param line:  A single JSON line
+   *  @return A MetadataLookahead struct
+   */
+  def readMetadataLookahead(line: String): MetadataLookahead = try {
+    read[MetadataLookahead](line)
+  } catch {
+    case NonFatal(t) => new MetadataLookahead
   }
 }
+
+object Classifier extends LazyLogging {
+  implicit val system = ActorSystem()
+  implicit val dispatcher = system.dispatcher
+
+  case class Classification(name: String)
+
+  def parse(line: ByteString): Option[Classification] = {
+    logger.info("parse")
+    val ret = line.utf8String.split(" ").headOption.map(Classification)
+    ret.toList.foreach(c => logger.info(s"Classification = ${c.name}"))
+    ret
+  }
+
+  // Run and completely consume a single akka http request
+  def runRequest(req: HttpRequest): Future[Option[Classification]] = {
+    logger.info("runRequest")
+    Http()
+      .singleRequest(req)
+      .flatMap { response =>
+        response.entity.dataBytes
+          .runReduce(_ ++ _)
+          .map(parse)
+      }
+  }
+
+  def apply(json: String) = {
+    logger.info("apply")
+
+    val request = HttpRequest(
+      uri = Uri("http://localhost:8000/classify"),
+      entity = HttpEntity(ContentTypes.`application/json`,json)
+    )
+    runRequest(request)
+  }
+}
+

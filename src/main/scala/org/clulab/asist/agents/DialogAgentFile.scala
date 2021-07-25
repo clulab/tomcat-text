@@ -36,44 +36,20 @@ class DialogAgentFile(
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
-  val dacClient = new DacClient
-
   // screen input filenames for supported types
   val supported = List(".vtt", ".metadata")
   val filenames = LocalFileUtils
     .getFileNames(inputFilename)
     .filter(f => f.contains("."))
     .filter(f => supported.contains(f.substring(f.lastIndexOf("."))))
-
   if(filenames.isEmpty) 
     logger.error("No valid input files found")
   else openFileWriter(outputFilename).foreach{fileWriter =>
-    synchronized {
-      logger.info(s"Using input files: ${filenames.mkString(", ")}")
-      filenames.foreach(file => processFile(file, fileWriter))
-      logger.info("All operations completed successfully.")
-    }
-    logger.info("Not closingFileWriter")
-//    fileWriter.close  // FIXME
-    logger.info("fileWriter not closed.")
+    logger.info(s"Using input files: ${filenames.mkString(", ")}")
+    filenames.foreach(file => processFile(file, fileWriter))
+    logger.info("All operations completed successfully.")
+    fileWriter.close 
   }
-
-
-  /** async callback after reset
-   *  @param message A fully populated case class ready for output
-   *  @param output  A PrintWriter connected to an output file
-   *  @return 
-   */
-  /*
-  def writeToFile(
-    json: String,
-    output: PrintWriter
-  ): Unit = synchronized {
-    logger.info("writeToFile with json, output")
-    logger.info(json)
-    output.write(s"${json}\n")
-  }
-  */
 
   /** Create a file writer for a given filename
    *  @param filename a single input file
@@ -143,10 +119,13 @@ class DialogAgentFile(
       if(topicSubTrial == lookahead.topic) {
         allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
           if(trialMessage.msg.sub_type == "start") {
+
+            // TODO get the time from the metadata message.
             val timestamp = Clock.systemUTC.instant.toString
+
             val versionInfo = VersionInfo(this, timestamp)
-            // FIXME: handle this
-            logger.warn("Trial Start not handled")
+            val json = write(versionInfo)
+            output.write(s"${json}\n")
           }
         }
       }
@@ -158,19 +137,12 @@ class DialogAgentFile(
             lookahead.topic,
             metadata
           )
-          if(withClassifications)
-            dacClient.classifyAndWrite(message, output)
-          else {
-            val json = write(message)
-            output.write(s"${json}\n")
-          }
+          val json = write(message)
+          output.write(s"${json}\n")
         }
       }
     }
   }
-
-
-  
 
   /** Manage one WebVtt file
   *  @param filename input filename
@@ -181,22 +153,16 @@ class DialogAgentFile(
     output: PrintWriter
   ): Unit = {
     VttDissector(new FileInputStream(new File(filename))) match {
-      case Success(blocks) => blocks.map{block =>
-        /* FIXME: get this running
+      case Success(blocks) => blocks.map{ block =>
         processWebVttElement(block.lines.toList, filename)
         .map{message => 
-          dqm.enqueueClassification(
-            writeToFile,
-            message,
-            output
-          )
+          val json = write(message)
+          output.write(s"${json}\n")
         }
-        */
       }
-      case Failure(f) => {
+      case Failure(f) => 
         logger.error("VttDissector could not parse '%s'".format(filename))
         logger.error(f.toString)
-      }
     }
   }
 

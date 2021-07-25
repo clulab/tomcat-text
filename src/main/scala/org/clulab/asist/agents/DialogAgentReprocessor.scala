@@ -59,12 +59,12 @@ class DialogAgentReprocessor (
 ) extends DialogAgent(args) with LazyLogging {
 
   val startTime = Clock.systemUTC.millis
-  logger.info("Checking input files for DialogAgent metadata...")
+  logger.info("Checking files for DialogAgent metadata...")
 
   /* Find the names of files containing DialogAgent metadata */
   val fileNames: List[String] = LocalFileUtils.getFileNames(inputDirName)
     .filter(a => a.endsWith(".metadata"))
-    .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a)))
+    .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a), 0))
 
   val nFiles = fileNames.length
   val reprocessingStartTime = Clock.systemUTC.millis
@@ -72,19 +72,22 @@ class DialogAgentReprocessor (
   // Only create the output directory if DialogAgent metadata exists
   if(nFiles > 0) {  
 
-    // give the user a heads up as to how much data will be run
-    val totalInputLines = fileNames.map(n =>
-      LocalFileUtils.lineIterator(n).length).sum
-
-    logger.info(s"Files to be processed: ${nFiles}")
-    logger.info(s"Lines to be processed: ${totalInputLines}")
-
     // make sure the output directory is available
     if(LocalFileUtils.ensureDir(outputDirName)) { 
-      logger.info(s"Using output directory: $outputDirName")
+      logger.info("Using output directory: {}", outputDirName)
+
+    // give the user a heads up as to how much data will be run
+    // TODO profile this call on a full bucket and see how long it takes.
+    val totalInputLines = -1 //fileNames.map(n =>
+    //  LocalFileUtils.lineIterator(n).length).sum
+
+    logger.info("Files to be processed: {}", nFiles)
+    logger.info("Lines to be processed: {}", totalInputLines)
+
       logger.info("Reprocessing files...")
 
-      val totalLines = fileNames.map(processFile).sum
+      fileNames.map(processFile)
+      val totalLines = -1 //fileNames.map(processFile).sum
 
       val stopTime = Clock.systemUTC.millis
       val runSecs = (stopTime-startTime)/1000.0
@@ -110,12 +113,19 @@ class DialogAgentReprocessor (
    */
   @tailrec
   private def hasDialogAgentMetadata(
-    iter: Iterator[String]
-  ): Boolean = if(!iter.hasNext) false else {
+    iter: Iterator[String],
+    counter: Int
+  ): Boolean = if(!iter.hasNext) {
+    logger.info("No DialogAgent metadata found in {} lines", counter)
+    false 
+  }else {
     val line = iter.next
-    val lookAheadOpt = readMetadataLookahead(line)
-    if(lookAheadOpt.topic == topicPubDialogAgent) true
-    else hasDialogAgentMetadata(iter)
+    val lookAhead = readMetadataLookahead(line)
+    if(lookAhead.topic == topicPubDialogAgent) {
+      logger.info("DialogAgent metadata found after searching {} lines", counter +1)
+      true
+    }
+    else hasDialogAgentMetadata(iter, counter+1)
   }
 
   /** Scan the line as a MetadataLookahead, return default if not readable
@@ -132,20 +142,44 @@ class DialogAgentReprocessor (
    * @param inputFileName The namee of the file to be processed
    * @return a list of the parse results for each JSON line in the file
    */
-  def processFile(inputFileName: String): Int = {
+  // FIXME restore the count somehow
+  def processFile(inputFileName: String): Unit = {
     logger.info(s"Processing ${inputFileName}...")
     val outputFileName = ta3FileName(inputFileName)
     val iterator = LocalFileUtils.lineIterator(inputFileName)
     val outputLines = processLines(iterator, List()).reverse
     val length = outputLines.length
     logger.info(s"...lines processed: ${length}")
+
     // only write the output file if we have output
     if(length > 0) {
-      val fileWriter = new PrintWriter(new File(outputFileName))
-      outputLines.foreach(line => fileWriter.write(s"${line}\n"))
-      fileWriter.close
+      if(withClassifications) {
+
+        // for testing purposes, send the completed list of reprocessed
+        // metadata to an outside agent that will run it again with
+        // classifications.  If that works, inline the process.
+        new DacClient(
+          this, 
+          outputLines, 
+          outputFileName
+        )
+
+      } else {
+        writeOutput(outputLines, outputFileName)
+      }
     }
-    length
+  }
+
+  def writeOutput(
+    outputLines: List[String],
+    outputFileName: String
+  ): Unit = {
+
+    // FIXME dangerous, check if it got created
+    val fileWriter = new PrintWriter(new File(outputFileName))
+
+    outputLines.foreach(line => fileWriter.write(s"${line}\n"))
+    fileWriter.close
   }
 
   /** Process all the lines in a string iterator
