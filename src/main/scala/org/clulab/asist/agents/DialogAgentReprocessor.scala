@@ -48,6 +48,16 @@ import scala.util.control.NonFatal
  * naming scheme.
  *
  */
+
+// A single struct to pass around as we process the files
+case class RunState(
+  fileIterator: Iterator[String] = Iterator(),
+  lineIterator: Iterator[String] = Iterator(),
+  fileWriter: Option[PrintWriter] = None
+
+  // keep statistics here
+)
+
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
@@ -60,30 +70,41 @@ class DialogAgentReprocessor (
   /* Find the names of files containing DialogAgent metadata */
   val fileNames: List[String] = LocalFileUtils.getFileNames(inputDirName)
     .filter(a => a.endsWith(".metadata"))
-    .filter(a => hasDialogAgentMetadata(LocalFileUtils.lineIterator(a), 0))
+    .filter(a => fileHasDialogAgentMetadata(LocalFileUtils.lineIterator(a), 0))
 
   val nFiles = fileNames.length
   val reprocessingStartTime = Clock.systemUTC.millis
 
   // Only create the output directory if DialogAgent metadata exists
   if(nFiles > 0) {  
-
     // make sure the output directory is available
     if(LocalFileUtils.ensureDir(outputDirName)) { 
       logger.info("Using output directory: {}", outputDirName)
 
-    // give the user a heads up as to how much data will be run
-    // TODO profile this call on a full bucket and see how long it takes.
-    val totalInputLines = 
-      fileNames.map(n =>LocalFileUtils.lineIterator(n).length).sum
+      // give the user a heads up as to how much data will be run
+      // TODO profile this call on a full bucket and see how long it takes.
+      val totalInputLines = 
+        fileNames.map(n =>LocalFileUtils.lineIterator(n).length).sum
 
-    logger.info("Files to be processed: {}", nFiles)
-    logger.info("Lines to be processed: {}", totalInputLines)
+      logger.info("Files to be processed: {}", nFiles)
+      logger.info("Lines to be processed: {}", totalInputLines)
 
       logger.info("Reprocessing files...")
 
-      fileNames.map(processFile)
-      val totalLines = -1 //fileNames.map(processFile).sum
+      val fileIterator = fileNames.iterator
+
+      val startState = RunState(
+        fileIterator = fileNames.iterator
+      )
+
+      iteration(startState)
+    } 
+  }  else logger.error("No files with DialogAgent metadata were found")
+
+  /*
+      // be nice to count these
+      val totalLines = -1
+      fileNames.map(reprocessFile)
 
       val stopTime = Clock.systemUTC.millis
       val runSecs = (stopTime-startTime)/1000.0
@@ -99,8 +120,7 @@ class DialogAgentReprocessor (
       logger.info("DialogAgent scan:   %.1f minutes".format(prepSecs/60.0))
       logger.info("Time to reprocess:  %.1f minutes".format(compSecs/60.0))
     }
-  } else 
-    logger.error("No files containing DialogAgent metadata were found")
+*/
 
   //FIXME This routine takes a long time.  Maybe grep?
   /** Scan a string iterator for valid DialogAgent JSON
@@ -108,7 +128,7 @@ class DialogAgentReprocessor (
    *  @return: True if DialogAgent publication topic and data.text are found
    */
   @tailrec
-  private def hasDialogAgentMetadata(
+  private def fileHasDialogAgentMetadata(
     iter: Iterator[String],
     counter: Int
   ): Boolean = if(!iter.hasNext) {
@@ -121,7 +141,7 @@ class DialogAgentReprocessor (
       logger.info("DialogAgent metadata found after searching {} lines", counter +1)
       true
     }
-    else hasDialogAgentMetadata(iter, counter+1)
+    else fileHasDialogAgentMetadata(iter, counter+1)
   }
 
   /** Scan the line as a MetadataLookahead, return default if not readable
@@ -134,89 +154,129 @@ class DialogAgentReprocessor (
     case NonFatal(t) => new MetadataLookahead
   }
 
-  /** process one input file
-   * @param inputFileName The namee of the file to be processed
-   * @return a list of the parse results for each JSON line in the file
-   */
-  def processFile(inputFileName: String): Int = {
-    logger.info(s"Processing ${inputFileName}...")
-    val outputFileName = ta3FileName(inputFileName)
-    val iterator = LocalFileUtils.lineIterator(inputFileName)
-    val outputLines = processLines(iterator, List()).reverse
-    val length = outputLines.length
-    logger.info(s"...lines processed: ${length}")
+
+//    val outputLines = processLines(iterator, List()).reverse
+//    val length = outputLines.length
+//    logger.info(s"...lines processed: ${length}")
 
     // only write the output file if we have output
-    if(length > 0) {
-      if(withClassifications) {
+//    if(length > 0) {
+//      if(withClassifications) {
 
         // for testing purposes, send the completed list of reprocessed
         // metadata to an outside agent that will run it again with
         // classifications.  If that works, inline the process.
-        new DacClient(
-          this, 
-          outputLines, 
-          outputFileName
-        )
+//        new DacClient(
+//          this, 
+//          outputLines, 
+//          outputFileName
+//        )
 
-      } else {
-        writeOutput(outputLines, outputFileName)
-      }
-    }
+//      } else {
+//        writeOutput(outputLines, outputFileName)
+//      }
+//    }
 
-    length
-  }
+//    length
+//  }
 
-  def writeOutput(
-    outputLines: List[String],
-    outputFileName: String
-  ): Unit = {
+//  def writeOutput(
+//    outputLines: List[String],
+//    outputFileName: String
+//  ): Unit = {
 
     // FIXME dangerous, check if it got created
-    val fileWriter = new PrintWriter(new File(outputFileName))
 
-    outputLines.foreach(line => fileWriter.write(s"${line}\n"))
-    fileWriter.close
-  }
+//    outputLines.foreach(line => fileWriter.write(s"${line}\n"))
+//    fileWriter.close
+//  }
 
   /** Process all the lines in a string iterator
    * @param lines All the lines from an input file
    * @return A list of all the lines, reprocessed
    */
-  @tailrec
-  private def processLines(
-    lines: Iterator[String],
-    result: List[String]
-  ): List[String] = if(!lines.hasNext) result
-    else processLines(lines, processLine(lines.next,result))
+//  @tailrec
+//  private def processLines(
+//    lines: Iterator[String],
+//    result: List[String]
+//  ): List[String] = if(!lines.hasNext) result
+//    else processLines(lines, processLine(lines.next,result))
 
+  /** process one input file
+   * @param inputFileName The namee of the file to be processed
+   * @return a list of the parse results for each JSON line in the file
+   */
+  /*
+  def reprocessFile(inputFileName: String): Unit = {
+    logger.info(s"Processing ${inputFileName}...")
+
+    if(iterator.hasNext) reprocessLine(iterator, fileWriter)
+  }
+  */
+
+  // two dimensional iteration through files and their contents
+  def iteration(s: RunState): Unit = {
+    if(s.lineIterator.hasNext) {
+      // next line iteration
+      processLine(s)
+    }
+    else if(s.fileIterator.hasNext) {
+      // next file iteration
+      val inputFileName = s.fileIterator.next
+      val outputFileName = ta3FileName(inputFileName)
+      s.fileWriter.foreach(fw => fw.close)
+      val newState = RunState(
+        fileIterator = s.fileIterator,
+        lineIterator = LocalFileUtils.lineIterator(inputFileName),
+        fileWriter = Some(new PrintWriter(new File(outputFileName)))
+      )
+      processLine(newState)
+    }
+    else {
+      // done
+      logger.info("No more files to process")
+
+      // Shut down Actor system
+      // system.terminate() 
+
+      // show full run statistics 
+      logger.info("Run statistics:")
+      logger.info("blah:")
+      logger.info("blah:")
+    }
+  }
+
+
+  // the line iterator of the run state is presumed to have a next value
   /** Reprocess line if DialogAgent-related metadata, otherwise copy
    * @param line One metadata JSON line
+   * @param fileWriter output to result file
    * @return either the orignal line or a reprocessed version if it's ours
    */
-  def processLine(
-    line: String,
-    result: List[String]): List[String] = 
+  def processLine(s: RunState): Unit = {
+    val line = s.lineIterator.next
     readMetadataLookahead(line).topic match {
-      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(line, result)
-      case `topicSubTrial` => processTrialMetadata(line, result)
-      case `topicPubVersionInfo` => result  // delete existing VersionInfo lines
-      case _ => line::result
+      case `topicSubTrial` => processTrialMetadata(s, line)
+      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(s, line)
+      case `topicPubVersionInfo` => iteration(s) // VersionInfo lines deleted
+      case _ => // transcribe lines we don't process or reprocess
+        s.fileWriter.foreach(fw => fw.write(s"${line}\n"))
+        iteration(s)
     }
+  }
 
   /** Parse a TrialMessage and report Testbed config if trial start.
    * @param line JSON representation of one DialogAgentMessage struct
    * @return The original line always, with VersionInfo if trial start
    */
-  def processTrialMetadata(
-    line: String,
-    result: List[String]): List[String] = {
+  def processTrialMetadata(s: RunState, line: String): Unit = {
+    // output the line in all cases.
+    s.fileWriter.foreach(fw => fw.write(s"${line}\n"))
 
-    // return the line in all cases. If this is the start of a trial, 
-    // follow with a VersionInfo message 
     try {
-      val trialMessage = read[TrialMessage](line)
-      if(trialMessage.msg.sub_type == "start") {
+    // If this is the start of a trial, follow with a VersionInfo message 
+    val trialMessage = read[TrialMessage](line)
+    if(trialMessage.msg.sub_type == "start") {
 
         // current timestamp
         val timestamp = Clock.systemUTC.instant.toString
@@ -227,17 +287,19 @@ class DialogAgentReprocessor (
 
         val versionInfoMetadata = 
           VersionInfoMetadata(this, trialMessage, timestamp)
+
         val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
         val outputJValue = versionInfoJValue.merge(metadataTimestamp)
         val json = write(outputJValue)
-        json::line::result // original then version info
+        s.fileWriter.foreach(fw => fw.write(s"${json}\n"))
       }
-      else line::result
     } catch {
       case NonFatal(t) => 
         logger.error(s"processTrialMetadata: Could not parse: ${line}\n")
         logger.error(t.toString)
-        line::result
+    }
+    finally {
+      iteration(s)
     }
   }
 
@@ -245,9 +307,8 @@ class DialogAgentReprocessor (
    * @param line JSON representation of one DialogAgentMessage struct
    * @return The processed JSON line
    */
-  def reprocessDialogAgentMetadata(
-    line: String,
-    result: List[String]): List[String] = 
+  def reprocessDialogAgentMetadata(s: RunState, line: String): Unit = {
+
     // parse the metadata text into AST to fix nonstandard JSON issues
     parseJValue(line).toList.map(metadata => {
       // if we have a data field, its DialogAgent metadata
@@ -268,20 +329,20 @@ class DialogAgentReprocessor (
         )
       })
     }).flatten match {
-      case reprocessed::Nil => reprocessed::result
-      case _ => reprocessDialogAgentErrorMetadata(line, result) 
+      case reprocessed::Nil => 
+        s.fileWriter.foreach(fw => fw.write(s"${reprocessed}\n"))
+        iteration(s)
+      case _ => reprocessDialogAgentErrorMetadata(s, line) 
     }
+  }
 
 
   /* Replace the error field with a reprocessed DialogAgentMessageData struct
    * @param line A JSON representation DialogAgentMessage error struct
    * @return a DialogAgentMessage with new extractions
    */
-  def reprocessDialogAgentErrorMetadata(
-    line: String,
-    result: List[String]
-  ): List[String] =  {
-    parseJValue(line).toList.map(metadata => {
+  def reprocessDialogAgentErrorMetadata(s: RunState, line: String): Unit = {
+    parseJValue(line).toList.map{metadata => 
       // If we have an error field, it's an error report
       metadata.findField {
         case (n: String, data: JObject) => n == "error"
@@ -299,15 +360,18 @@ class DialogAgentReprocessor (
         }
         write(newMetadata)
       })
-    }).flatten match {
-      case reprocessed::Nil => reprocessed::result
+    }.flatten match {
+      case reprocessed::Nil => 
+        s.fileWriter.foreach(fw => fw.write(s"${reprocessed}\n"))
+        iteration(s)
       case _ => 
-        logger.error(
-          s"reprocessDialogAgentErrorMetadata: Could not parse: ${line}\n"
-        )
-        line::result
+        logger.error("reprocessDialogAgentErrorMetadata:")
+        logger.error("Could not parse: {}\n",line)
+        s.fileWriter.foreach(fw => fw.write(s"${line}\n"))
+        iteration(s)
     }
   }
+
 
   /* Update extractions for a DialogAgentMessageData struct
    * @param json A JSON representation of a DialogAgentMessageData struct
