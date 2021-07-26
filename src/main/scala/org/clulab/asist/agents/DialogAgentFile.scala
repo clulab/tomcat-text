@@ -101,29 +101,31 @@ class DialogAgentFile(
     val lines = bufferedSource.getLines
     while(lines.hasNext) {
       val line = lines.next
-      allCatch.opt(read[MetadataLookahead](line)).map(lookahead =>
+      allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
         if(topicSubTrial == lookahead.topic) {
-          allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
+          allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
             if(trialMessage.msg.sub_type == "start") {
+
+              // FIXME get from metadata
               val timestamp = Clock.systemUTC.instant.toString
+
               output.write(write(VersionInfo(this, timestamp)))
             }
-          })
+          }
         }
-        else if(subscriptions.contains(lookahead.topic))
-          allCatch.opt(read[Metadata](line)).map(metadata =>
-            output.write( // to file
-              write( // to json
-                dialogAgentMessage( // to struct
-                  source_type,
-                  filename,
-                  lookahead.topic,
-                  metadata
-                )
-              )
+        else if(subscriptions.contains(lookahead.topic)) {
+          allCatch.opt(read[Metadata](line)).map{metadata =>
+            val message = dialogAgentMessage( // to struct
+              source_type,
+              filename,
+              lookahead.topic,
+              metadata
             )
-          )
-      )
+            val json = writeJson(message) 
+            output.write(s"${json}\n") // to file
+          }
+        }
+      }
     }
     bufferedSource.close
   }
@@ -141,9 +143,10 @@ class DialogAgentFile(
         processWebVttElement(
           block.lines.toList,
           filename
-        ).map(dialogAgentMessage =>
-          output.write("%s\n".format(write(dialogAgentMessage)))
-        )
+        ).map{message => // struct
+            val json = writeJson(message) 
+            output.write(s"${json}\n") // to file
+        }
       )
       case Failure(f) => {
         logger.error("VttDissector could not parse '%s'".format(filename))
@@ -186,5 +189,4 @@ class DialogAgentFile(
     logger.error(s"Can't process file '${filename}'")
     logger.error("Extension must be .vtt or .metadata")
   }
-
 }
