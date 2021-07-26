@@ -62,13 +62,14 @@ case class RunState(
   fileInfoIterator: Iterator[(String, Int)] = Iterator(),
   lineIterator: Iterator[String] = Iterator(),
   fileWriter: Option[PrintWriter] = None,
-  dialogAgentWritten: Int = 0,
+  dialogAgentMessagesWritten: Int = 0,
+  dialogAgentErrorReportsRead: Int = 0,
   versionInfoWritten: Int = 0,
   trialStarts: Int = 0,
   totalLinesRead: Int = 0,
   totalLinesWritten: Int = 0,
   dacQueries: Int = 0,
-  errorsEncountered: Int = 0
+  errors: Int = 0
 )
 
 class DialogAgentReprocessor (
@@ -116,7 +117,6 @@ class DialogAgentReprocessor (
   }  else logger.error("No files with DialogAgent metadata were found")
 
 
-  //FIXME This routine takes a long time.  Maybe grep?
   /** Scan a string iterator for valid DialogAgent JSON
    *  @param iter:  An iterator containing json strings
    *  @return: True if DialogAgent publication topic and data.text are found
@@ -192,11 +192,13 @@ class DialogAgentReprocessor (
       totalLinesRead = s.totalLinesRead+1,
     ) 
     readMetadataLookahead(line).topic match {
-//      case `topicSubTrial` => processTrialMetadata(withRead, line)
-//      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(withRead, line)
-//      case `topicPubVersionInfo` => futureIteration(withRead) // VersionInfo lines deleted
+      case `topicSubTrial` => processTrialMetadata(withRead, line)
+      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(withRead, line)
+      case `topicPubVersionInfo` => futureIteration(withRead) // VersionInfo lines deleted
       case _ => 
-        val withWrite = withRead.copy(totalLinesWritten = withRead.totalLinesWritten+1)
+        val withWrite = withRead.copy(
+          totalLinesWritten = withRead.totalLinesWritten+1
+        )
         futureIteration(withWrite, line) // transcribe unhandled cases
     }
   }
@@ -206,8 +208,11 @@ class DialogAgentReprocessor (
    * @return The original line always, with VersionInfo if trial start
    */
   def processTrialMetadata(s: RunState, line: String): Unit = try {
-    // If this is the start of a trial, follow with a VersionInfo message 
+
     val trialMessage = read[TrialMessage](line)
+
+    // If this is the start of a trial, write the input line and 
+    // then follow with a VersionInfo message 
     if(trialMessage.msg.sub_type == "start") {
 
       // current timestamp
@@ -224,16 +229,26 @@ class DialogAgentReprocessor (
       val outputJValue = versionInfoJValue.merge(metadataTimestamp)
       val json = write(outputJValue)
       val twoLines = s"${line}\n${json}"
-      futureIteration(s, twoLines)
+      val withTrialStart = s.copy(
+        trialStarts = s.trialStarts + 1,
+        versionInfoWritten = s.versionInfoWritten + 1,
+        totalLinesWritten = s.totalLinesWritten + 2
+      )
+      futureIteration(withTrialStart, twoLines)
     } else {
-      // if not a trial start just copy the line
-      futureIteration(s, line)
+      // if not a trial start just write the input line
+      val withWrite = s.copy(totalLinesWritten = s.totalLinesWritten + 1)
+      futureIteration(withWrite, line)
     }
   } catch {
     case NonFatal(t) => 
       logger.error(s"processTrialMetadata: Could not parse: ${line}\n")
       logger.error(t.toString)
-      futureIteration(s, line)
+      val withError = s.copy(
+        errors = s.errors +1,
+        totalLinesWritten = s.totalLinesWritten + 2
+      )
+      futureIteration(withError, line)
   }
 
   /** Replace DialogAgentMessage data extractions with fresh ones.
@@ -262,8 +277,14 @@ class DialogAgentReprocessor (
         )
       })
     }).flatten match {
-      case reprocessed::Nil => futureIteration(s, reprocessed)
-      case _ => reprocessDialogAgentErrorMetadata(s, line) 
+      case reprocessed::Nil =>
+        val withDialogAgent = s.copy(
+          dialogAgentMessagesWritten = s.dialogAgentMessagesWritten +1,
+          totalLinesWritten = s.totalLinesWritten +1
+        )
+        futureIteration(withDialogAgent, reprocessed)
+      case _ => 
+        reprocessDialogAgentErrorMetadata(s, line) 
     }
   }
 
@@ -292,11 +313,20 @@ class DialogAgentReprocessor (
         write(newMetadata)
       })
     }.flatten match {
-      case reprocessed::Nil => futureIteration(s, reprocessed)
+      case reprocessed::Nil => 
+        val withDialogAgentErrorReport = s.copy(
+          dialogAgentMessagesWritten = s.dialogAgentMessagesWritten +1,
+          totalLinesWritten = s.totalLinesWritten +1,
+          dialogAgentErrorReportsRead = s.dialogAgentErrorReportsRead +1
+        )
+        futureIteration(withDialogAgentErrorReport, reprocessed)
       case _ => 
         logger.error("reprocessDialogAgentErrorMetadata:")
         logger.error("Could not parse: {}\n",line)
-        futureIteration(s, line)
+        val withError = s.copy(
+          errors = s.errors+1,
+          totalLinesWritten = s.totalLinesWritten+1)
+        futureIteration(withError, line)
     }
   }
 
@@ -403,17 +433,18 @@ class DialogAgentReprocessor (
     val compSecs = runSecs - prepSecs
     logger.info("")
     logger.info("METADATA REPROCESSING COMPLETE:")
-    logger.info("Input directory:            %s".format(inputDirName))
-    logger.info("Output directory:           %s".format(outputDirName))
-    logger.info("Files reprocessed           %d".format(nFiles))
-    logger.info("Total lines read:           %d".format(s.totalLinesRead))
-    logger.info("Total lines written:        %d".format(s.totalLinesWritten))
-    logger.info("Dialog Agent lines written: %d".format(s.dialogAgentWritten))
-    logger.info("Version Info lines written: %d".format(s.versionInfoWritten))
-    logger.info("Trial starts seen:          %d".format(s.trialStarts))
-    logger.info("DAC server queries:         %d".format(s.dacQueries))
-    logger.info("Errors encountered:         %d".format(s.errorsEncountered))
-    logger.info("DialogAgent file scan:      %.1f minutes".format(prepSecs/60.0))
-    logger.info("Time to reprocess:          %.1f minutes".format(compSecs/60.0))
+    logger.info("Input directory:                 %s".format(inputDirName))
+    logger.info("Output directory:                %s".format(outputDirName))
+    logger.info("Files reprocessed                %d".format(nFiles))
+    logger.info("Trial starts read:               %d".format(s.trialStarts))
+    logger.info("Dialog Agent Error Reports read: %d".format(s.dialogAgentErrorReportsRead))
+    logger.info("Total lines read:                %d".format(s.totalLinesRead))
+    logger.info("Dialog Agent Messages written:   %d".format(s.dialogAgentMessagesWritten))
+    logger.info("Version Info messages written:   %d".format(s.versionInfoWritten))
+    logger.info("Total lines written:             %d".format(s.totalLinesWritten))
+    logger.info("DAC server queries:              %d".format(s.dacQueries))
+    logger.info("Processing errors                %d".format(s.errors))
+    logger.info("DialogAgent file scan:           %.1f minutes".format(prepSecs/60.0))
+    logger.info("Time to reprocess:               %.1f minutes".format(compSecs/60.0))
   }
 }
