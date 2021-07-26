@@ -168,7 +168,6 @@ class DialogAgentReprocessor (
   def iteration(s: RunState): Unit = {
     // if we have another line, run it.
     if(s.lineIterator.hasNext) {
-      logger.info("iteration, next line")
       processLine(s)
     }
     else {
@@ -177,7 +176,6 @@ class DialogAgentReprocessor (
 
       // if we have another file, run it
       if(s.fileIterator.hasNext) {
-        logger.info("iteration,  next file")
         // next file iteration
         val inputFileName = s.fileIterator.next
         val outputFileName = ta3FileName(inputFileName)
@@ -226,36 +224,35 @@ class DialogAgentReprocessor (
    * @param line JSON representation of one DialogAgentMessage struct
    * @return The original line always, with VersionInfo if trial start
    */
-  def processTrialMetadata(s: RunState, line: String): Unit = {
-
-    try {
+  def processTrialMetadata(s: RunState, line: String): Unit = try {
     // If this is the start of a trial, follow with a VersionInfo message 
     val trialMessage = read[TrialMessage](line)
     if(trialMessage.msg.sub_type == "start") {
 
-        // current timestamp
-        val timestamp = Clock.systemUTC.instant.toString
+      // current timestamp
+      val timestamp = Clock.systemUTC.instant.toString
 
-        // metadata timestamp
-        val metadataTimestamp = 
-          Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
+      // metadata timestamp
+      val metadataTimestamp = 
+        Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
 
-        val versionInfoMetadata = 
-          VersionInfoMetadata(this, trialMessage, timestamp)
+      val versionInfoMetadata = 
+        VersionInfoMetadata(this, trialMessage, timestamp)
 
-        val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
-        val outputJValue = versionInfoJValue.merge(metadataTimestamp)
-        val json = write(outputJValue)
-
-        val twoLines = s"${line}\n${json}"
-        futureIteration(s, twoLines)
-      }
-    } catch {
-      case NonFatal(t) => 
-        logger.error(s"processTrialMetadata: Could not parse: ${line}\n")
-        logger.error(t.toString)
-        futureIteration(s, line)
+      val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
+      val outputJValue = versionInfoJValue.merge(metadataTimestamp)
+      val json = write(outputJValue)
+      val twoLines = s"${line}\n${json}"
+      futureIteration(s, twoLines)
+    } else {
+      // if not a trial start just copy the line
+      futureIteration(s, line)
     }
+  } catch {
+    case NonFatal(t) => 
+      logger.error(s"processTrialMetadata: Could not parse: ${line}\n")
+      logger.error(t.toString)
+      futureIteration(s, line)
   }
 
   /** Replace DialogAgentMessage data extractions with fresh ones.
