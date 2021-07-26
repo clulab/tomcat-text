@@ -12,6 +12,7 @@ import org.json4s.jackson.Serialization.{read,write}
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 
@@ -32,7 +33,7 @@ case class Classification(name: String)
 
 
 class DacClient (
-  agent: DialogAgent, 
+  agent: DialogAgentReprocessor, 
   input: List[String],
   outputFileName: String
 ) extends LazyLogging {
@@ -54,6 +55,7 @@ class DacClient (
       logger.info("No more lines to process")
       fileWriter.close
       logger.info("filewriter closed")
+      system.terminate()  // fix sbt hang
     }
   }
 

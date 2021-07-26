@@ -138,7 +138,6 @@ class DialogAgentReprocessor (
    * @param inputFileName The namee of the file to be processed
    * @return a list of the parse results for each JSON line in the file
    */
-  // FIXME restore the count somehow
   def processFile(inputFileName: String): Int = {
     logger.info(s"Processing ${inputFileName}...")
     val outputFileName = ta3FileName(inputFileName)
