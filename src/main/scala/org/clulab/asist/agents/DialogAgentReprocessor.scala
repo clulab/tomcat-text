@@ -1,20 +1,28 @@
 package org.clulab.asist.agents
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl._
+import akka.http.scaladsl.model._
+import akka.stream.ActorMaterializer
+import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
-
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
 import java.time.Clock
-
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
-import org.json4s.JField
 import org.json4s.{Extraction,_}
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.{read,write}
+import org.json4s.JField
 
 import scala.annotation.tailrec
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -64,6 +72,10 @@ class DialogAgentReprocessor (
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent(args) with LazyLogging {
 
+  implicit val ec = ExecutionContext.global
+  implicit val system: ActorSystem = ActorSystem("test")
+
+
   val startTime = Clock.systemUTC.millis
   logger.info("Checking files for DialogAgent metadata...")
 
@@ -90,8 +102,6 @@ class DialogAgentReprocessor (
       logger.info("Lines to be processed: {}", totalInputLines)
 
       logger.info("Reprocessing files...")
-
-      val fileIterator = fileNames.iterator
 
       val startState = RunState(
         fileIterator = fileNames.iterator
@@ -154,95 +164,44 @@ class DialogAgentReprocessor (
     case NonFatal(t) => new MetadataLookahead
   }
 
-
-//    val outputLines = processLines(iterator, List()).reverse
-//    val length = outputLines.length
-//    logger.info(s"...lines processed: ${length}")
-
-    // only write the output file if we have output
-//    if(length > 0) {
-//      if(withClassifications) {
-
-        // for testing purposes, send the completed list of reprocessed
-        // metadata to an outside agent that will run it again with
-        // classifications.  If that works, inline the process.
-//        new DacClient(
-//          this, 
-//          outputLines, 
-//          outputFileName
-//        )
-
-//      } else {
-//        writeOutput(outputLines, outputFileName)
-//      }
-//    }
-
-//    length
-//  }
-
-//  def writeOutput(
-//    outputLines: List[String],
-//    outputFileName: String
-//  ): Unit = {
-
-    // FIXME dangerous, check if it got created
-
-//    outputLines.foreach(line => fileWriter.write(s"${line}\n"))
-//    fileWriter.close
-//  }
-
-  /** Process all the lines in a string iterator
-   * @param lines All the lines from an input file
-   * @return A list of all the lines, reprocessed
-   */
-//  @tailrec
-//  private def processLines(
-//    lines: Iterator[String],
-//    result: List[String]
-//  ): List[String] = if(!lines.hasNext) result
-//    else processLines(lines, processLine(lines.next,result))
-
-  /** process one input file
-   * @param inputFileName The namee of the file to be processed
-   * @return a list of the parse results for each JSON line in the file
-   */
-  /*
-  def reprocessFile(inputFileName: String): Unit = {
-    logger.info(s"Processing ${inputFileName}...")
-
-    if(iterator.hasNext) reprocessLine(iterator, fileWriter)
-  }
-  */
-
   // two dimensional iteration through files and their contents
   def iteration(s: RunState): Unit = {
+    // if we have another line, run it.
     if(s.lineIterator.hasNext) {
-      // next line iteration
+      logger.info("iteration, next line")
       processLine(s)
     }
-    else if(s.fileIterator.hasNext) {
-      // next file iteration
-      val inputFileName = s.fileIterator.next
-      val outputFileName = ta3FileName(inputFileName)
-      s.fileWriter.foreach(fw => fw.close)
-      val newState = RunState(
-        fileIterator = s.fileIterator,
-        lineIterator = LocalFileUtils.lineIterator(inputFileName),
-        fileWriter = Some(new PrintWriter(new File(outputFileName)))
-      )
-      processLine(newState)
-    }
     else {
-      // done
-      logger.info("No more files to process")
+      // otherwise shut the output down 
+      s.fileWriter.foreach(fw => fw.close)
 
-      // Shut down Actor system
-      // system.terminate() 
+      // if we have another file, run it
+      if(s.fileIterator.hasNext) {
+        logger.info("iteration,  next file")
+        // next file iteration
+        val inputFileName = s.fileIterator.next
+        val outputFileName = ta3FileName(inputFileName)
+        val newState = RunState(
+          fileIterator = s.fileIterator,
+          lineIterator = LocalFileUtils.lineIterator(inputFileName),
+          fileWriter = Some(new PrintWriter(new File(outputFileName)))
+        )
+        processLine(newState)
+      }
+      else {
+        // otherwise we are done
+        logger.info("iteration, done")
+        // done
+        logger.info("No more files to process")
 
-      // show full run statistics 
-      logger.info("Run statistics:")
-      logger.info("blah:")
-      logger.info("blah:")
+        // Shut down Actor system
+        system.terminate() 
+
+        // show full run statistics 
+        logger.info("Run statistics:")
+        logger.info("blah:")
+        logger.info("blah:")
+      }
     }
   }
 
@@ -258,10 +217,8 @@ class DialogAgentReprocessor (
     readMetadataLookahead(line).topic match {
       case `topicSubTrial` => processTrialMetadata(s, line)
       case `topicPubDialogAgent` => reprocessDialogAgentMetadata(s, line)
-      case `topicPubVersionInfo` => iteration(s) // VersionInfo lines deleted
-      case _ => // transcribe lines we don't process or reprocess
-        s.fileWriter.foreach(fw => fw.write(s"${line}\n"))
-        iteration(s)
+      case `topicPubVersionInfo` => futureIteration(s) // VersionInfo lines deleted
+      case _ => futureIteration(s, line) // transcribe unhandled cases
     }
   }
 
@@ -270,8 +227,6 @@ class DialogAgentReprocessor (
    * @return The original line always, with VersionInfo if trial start
    */
   def processTrialMetadata(s: RunState, line: String): Unit = {
-    // output the line in all cases.
-    s.fileWriter.foreach(fw => fw.write(s"${line}\n"))
 
     try {
     // If this is the start of a trial, follow with a VersionInfo message 
@@ -291,15 +246,15 @@ class DialogAgentReprocessor (
         val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
         val outputJValue = versionInfoJValue.merge(metadataTimestamp)
         val json = write(outputJValue)
-        s.fileWriter.foreach(fw => fw.write(s"${json}\n"))
+
+        val twoLines = s"${line}\n${json}"
+        futureIteration(s, twoLines)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"processTrialMetadata: Could not parse: ${line}\n")
         logger.error(t.toString)
-    }
-    finally {
-      iteration(s)
+        futureIteration(s, line)
     }
   }
 
@@ -329,9 +284,7 @@ class DialogAgentReprocessor (
         )
       })
     }).flatten match {
-      case reprocessed::Nil => 
-        s.fileWriter.foreach(fw => fw.write(s"${reprocessed}\n"))
-        iteration(s)
+      case reprocessed::Nil => futureIteration(s, reprocessed)
       case _ => reprocessDialogAgentErrorMetadata(s, line) 
     }
   }
@@ -361,14 +314,42 @@ class DialogAgentReprocessor (
         write(newMetadata)
       })
     }.flatten match {
-      case reprocessed::Nil => 
-        s.fileWriter.foreach(fw => fw.write(s"${reprocessed}\n"))
-        iteration(s)
+      case reprocessed::Nil => futureIteration(s, reprocessed)
       case _ => 
         logger.error("reprocessDialogAgentErrorMetadata:")
         logger.error("Could not parse: {}\n",line)
-        s.fileWriter.foreach(fw => fw.write(s"${line}\n"))
-        iteration(s)
+        futureIteration(s, line)
+    }
+  }
+
+  // schedule the next iteration
+  def futureIteration(s: RunState): Unit = {
+
+    // we need a new thread or will overflow the stack
+    val f: Future[RunState] = Future {s}
+
+    f onComplete {
+      case Success(fs: RunState) => 
+        iteration(fs)
+      case Failure(t) => 
+        logger.error(s"An error occured: ${t}")
+        iteration(s)  // worth a shot
+    }
+  }
+
+  // schedule the next iteration with output
+  def futureIteration(s: RunState, line: String): Unit = {
+
+    // we need a new thread or will overflow the stack
+    val f: Future[Tuple2[RunState, String]] = Future {(s, line)}
+
+    f onComplete {
+      case Success(t2: Tuple2[RunState, String]) => 
+        s.fileWriter.foreach(fw => fw.write(s"${t2._2}\n"))
+        iteration(t2._1)
+      case Failure(t) => 
+        logger.error(s"An error occured: ${t}")
+        iteration(s)  // worth a shot
     }
   }
 
