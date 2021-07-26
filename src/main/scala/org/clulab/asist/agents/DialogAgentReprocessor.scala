@@ -59,11 +59,16 @@ import scala.util.{Failure, Success}
 
 // A single struct to pass around as we process the files
 case class RunState(
-  fileIterator: Iterator[String] = Iterator(),
+  fileInfoIterator: Iterator[(String, Int)] = Iterator(),
   lineIterator: Iterator[String] = Iterator(),
-  fileWriter: Option[PrintWriter] = None
-
-  // keep statistics here
+  fileWriter: Option[PrintWriter] = None,
+  dialogAgentWritten: Int = 0,
+  versionInfoWritten: Int = 0,
+  trialStarts: Int = 0,
+  totalLinesRead: Int = 0,
+  totalLinesWritten: Int = 0,
+  dacQueries: Int = 0,
+  errorsEncountered: Int = 0
 )
 
 class DialogAgentReprocessor (
@@ -74,7 +79,6 @@ class DialogAgentReprocessor (
 
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("test")
-
 
   val startTime = Clock.systemUTC.millis
   logger.info("Checking files for DialogAgent metadata...")
@@ -95,42 +99,22 @@ class DialogAgentReprocessor (
 
       // give the user a heads up as to how much data will be run
       // TODO profile this call on a full bucket and see how long it takes.
-      val totalInputLines = 
-        fileNames.map(n =>LocalFileUtils.lineIterator(n).length).sum
+      val fileSizes = 
+        fileNames.map(n =>LocalFileUtils.lineIterator(n).length)
 
       logger.info("Files to be processed: {}", nFiles)
-      logger.info("Lines to be processed: {}", totalInputLines)
+      logger.info("Total Lines to be processed: {}", fileSizes.sum)
 
       logger.info("Reprocessing files...")
 
       val startState = RunState(
-        fileIterator = fileNames.iterator
+        fileInfoIterator = fileNames.zip(fileSizes).iterator
       )
 
       iteration(startState)
     } 
   }  else logger.error("No files with DialogAgent metadata were found")
 
-  /*
-      // be nice to count these
-      val totalLines = -1
-      fileNames.map(reprocessFile)
-
-      val stopTime = Clock.systemUTC.millis
-      val runSecs = (stopTime-startTime)/1000.0
-      val prepSecs = (reprocessingStartTime-startTime)/1000.0
-      val compSecs = runSecs - prepSecs
-      logger.info("")
-      logger.info("METADATA REPROCESSING COMPLETE:")
-      logger.info("Input directory:    %s".format(inputDirName))
-      logger.info("Output directory:   %s".format(outputDirName))
-      logger.info("Files reprocessed   %d".format(nFiles))
-      logger.info("Lines read:         %d".format(totalInputLines))
-      logger.info("Lines written:      %d".format(totalLines))
-      logger.info("DialogAgent scan:   %.1f minutes".format(prepSecs/60.0))
-      logger.info("Time to reprocess:  %.1f minutes".format(compSecs/60.0))
-    }
-*/
 
   //FIXME This routine takes a long time.  Maybe grep?
   /** Scan a string iterator for valid DialogAgent JSON
@@ -141,16 +125,10 @@ class DialogAgentReprocessor (
   private def fileHasDialogAgentMetadata(
     iter: Iterator[String],
     counter: Int
-  ): Boolean = if(!iter.hasNext) {
-    logger.info("No DialogAgent metadata found in {} lines", counter)
-    false 
-  }else {
-    val line = iter.next
-    val lookAhead = readMetadataLookahead(line)
-    if(lookAhead.topic == topicPubDialogAgent) {
-      logger.info("DialogAgent metadata found after searching {} lines", counter +1)
-      true
-    }
+  ): Boolean = if(!iter.hasNext) false
+  else {
+    val lookAhead = readMetadataLookahead(iter.next)
+    if(lookAhead.topic == topicPubDialogAgent) true
     else fileHasDialogAgentMetadata(iter, counter+1)
   }
 
@@ -175,30 +153,27 @@ class DialogAgentReprocessor (
       s.fileWriter.foreach(fw => fw.close)
 
       // if we have another file, run it
-      if(s.fileIterator.hasNext) {
+      if(s.fileInfoIterator.hasNext) {
         // next file iteration
-        val inputFileName = s.fileIterator.next
+        val fileInfo = s.fileInfoIterator.next
+
+        val inputFileName = fileInfo._1
+        val inputFileLines = fileInfo._2
         val outputFileName = ta3FileName(inputFileName)
-        val newState = RunState(
-          fileIterator = s.fileIterator,
+
+        val newState = s.copy(
           lineIterator = LocalFileUtils.lineIterator(inputFileName),
-          fileWriter = Some(new PrintWriter(new File(outputFileName)))
+          fileWriter = Some(new PrintWriter(new File(outputFileName))),
         )
+        val theKingsEnglish = if(inputFileLines == 1) "line" else "lines"
+        logger.info("Reading {} {} from {} ...", inputFileLines, theKingsEnglish, inputFileName)
         processLine(newState)
       }
       else {
-        // otherwise we are done
-        logger.info("iteration, done")
         // done
         logger.info("No more files to process")
-
-        // Shut down Actor system
         system.terminate() 
-
-        // show full run statistics 
-        logger.info("Run statistics:")
-        logger.info("blah:")
-        logger.info("blah:")
+        showReport(s)
       }
     }
   }
@@ -212,11 +187,17 @@ class DialogAgentReprocessor (
    */
   def processLine(s: RunState): Unit = {
     val line = s.lineIterator.next
+    // increment the number of metadata lines we have handled.
+    val withRead = s.copy(
+      totalLinesRead = s.totalLinesRead+1,
+    ) 
     readMetadataLookahead(line).topic match {
-      case `topicSubTrial` => processTrialMetadata(s, line)
-      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(s, line)
-      case `topicPubVersionInfo` => futureIteration(s) // VersionInfo lines deleted
-      case _ => futureIteration(s, line) // transcribe unhandled cases
+//      case `topicSubTrial` => processTrialMetadata(withRead, line)
+//      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(withRead, line)
+//      case `topicPubVersionInfo` => futureIteration(withRead) // VersionInfo lines deleted
+      case _ => 
+        val withWrite = withRead.copy(totalLinesWritten = withRead.totalLinesWritten+1)
+        futureIteration(withWrite, line) // transcribe unhandled cases
     }
   }
 
@@ -412,5 +393,27 @@ class DialogAgentReprocessor (
       logger.error(s"parseJValue: Could not parse: ${line}\n")
       logger.error(t.toString)
       None
+  }
+
+  // show run statistics 
+  def showReport(s: RunState): Unit = {
+    val stopTime = Clock.systemUTC.millis
+    val runSecs = (stopTime-startTime)/1000.0
+    val prepSecs = (reprocessingStartTime-startTime)/1000.0
+    val compSecs = runSecs - prepSecs
+    logger.info("")
+    logger.info("METADATA REPROCESSING COMPLETE:")
+    logger.info("Input directory:            %s".format(inputDirName))
+    logger.info("Output directory:           %s".format(outputDirName))
+    logger.info("Files reprocessed           %d".format(nFiles))
+    logger.info("Total lines read:           %d".format(s.totalLinesRead))
+    logger.info("Total lines written:        %d".format(s.totalLinesWritten))
+    logger.info("Dialog Agent lines written: %d".format(s.dialogAgentWritten))
+    logger.info("Version Info lines written: %d".format(s.versionInfoWritten))
+    logger.info("Trial starts seen:          %d".format(s.trialStarts))
+    logger.info("DAC server queries:         %d".format(s.dacQueries))
+    logger.info("Errors encountered:         %d".format(s.errorsEncountered))
+    logger.info("DialogAgent file scan:      %.1f minutes".format(prepSecs/60.0))
+    logger.info("Time to reprocess:          %.1f minutes".format(compSecs/60.0))
   }
 }
