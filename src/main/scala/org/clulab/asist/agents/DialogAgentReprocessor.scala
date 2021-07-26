@@ -13,6 +13,7 @@ import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.json4s.{Extraction,_}
 import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read,write}
 import org.json4s.JField
 
@@ -72,14 +73,21 @@ case class RunState(
   errors: Int = 0
 )
 
+// sent back by the DAC server
+case class Classification(name: String)
+
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent(args) with LazyLogging {
 
+  // actors
   implicit val ec = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("test")
+  implicit val system: ActorSystem = ActorSystem("DialogAgentReprocessor")
+
+  // json
+  implicit val formats = org.json4s.DefaultFormats
 
   val startTime = Clock.systemUTC.millis
   logger.info("Checking files for DialogAgent metadata...")
@@ -166,7 +174,14 @@ class DialogAgentReprocessor (
           fileWriter = Some(new PrintWriter(new File(outputFileName))),
         )
         val theKingsEnglish = if(inputFileLines == 1) "line" else "lines"
-        logger.info("Reading {} {} from {} ...", inputFileLines, theKingsEnglish, inputFileName)
+
+        logger.info(
+          "Reading {} {} from {} ...", 
+          inputFileLines, 
+          theKingsEnglish, 
+          inputFileName
+        )
+
         processLine(newState)
       }
       else {
@@ -194,7 +209,7 @@ class DialogAgentReprocessor (
     readMetadataLookahead(line).topic match {
       case `topicSubTrial` => processTrialMetadata(withRead, line)
       case `topicPubDialogAgent` => reprocessDialogAgentMetadata(withRead, line)
-      case `topicPubVersionInfo` => futureIteration(withRead) // VersionInfo lines deleted
+      case `topicPubVersionInfo` => futureIteration(withRead) // VersionInfo deleted
       case _ => 
         val withWrite = withRead.copy(
           totalLinesWritten = withRead.totalLinesWritten+1
@@ -277,12 +292,20 @@ class DialogAgentReprocessor (
         )
       })
     }).flatten match {
+      
+      // Successfully reprocessed the line as a current DialogAgentMessage 
       case reprocessed::Nil =>
         val withDialogAgent = s.copy(
           dialogAgentMessagesWritten = s.dialogAgentMessagesWritten +1,
           totalLinesWritten = s.totalLinesWritten +1
         )
-        futureIteration(withDialogAgent, reprocessed)
+        if(withClassifications) 
+          futureDacQuery(withDialogAgent, reprocessed)
+        else 
+          futureIteration(withDialogAgent, reprocessed)
+
+      // Could not reprocess the line, so the next thing to try is to see if
+      // it is an error report about a DialogAgentMessage 
       case _ => 
         reprocessDialogAgentErrorMetadata(s, line) 
     }
@@ -313,13 +336,21 @@ class DialogAgentReprocessor (
         write(newMetadata)
       })
     }.flatten match {
+
+      // Successfully recovered error report into a DialogAgentMessage
       case reprocessed::Nil => 
-        val withDialogAgentErrorReport = s.copy(
+        val withErrorRecovery = s.copy(
           dialogAgentMessagesWritten = s.dialogAgentMessagesWritten +1,
           totalLinesWritten = s.totalLinesWritten +1,
           dialogAgentErrorReportsRead = s.dialogAgentErrorReportsRead +1
         )
-        futureIteration(withDialogAgentErrorReport, reprocessed)
+        if(withClassifications) 
+          futureDacQuery(withErrorRecovery, reprocessed)
+        else 
+          futureIteration(withErrorRecovery, reprocessed)
+
+      // Could not reprocess the line as either a DialogAgentMessage or
+      // as a recoverable Dialog Agent Error Report
       case _ => 
         logger.error("reprocessDialogAgentErrorMetadata:")
         logger.error("Could not parse: {}\n",line)
@@ -341,7 +372,8 @@ class DialogAgentReprocessor (
         iteration(fs)
       case Failure(t) => 
         logger.error(s"An error occured: ${t}")
-        iteration(s)  // worth a shot
+        val withError = s.copy(errors = s.errors + 1)
+        iteration(withError) 
     }
   }
 
@@ -357,10 +389,60 @@ class DialogAgentReprocessor (
         iteration(t2._1)
       case Failure(t) => 
         logger.error(s"An error occured: ${t}")
-        iteration(s)  // worth a shot
+        val withError = s.copy(errors = s.errors + 1)
+        iteration(withError) 
     }
   }
 
+  // call the DAC for classification of this DialogAgentMessage
+  def futureDacQuery(s: RunState, json: String): Unit = {
+    logger.info("futureDacQuery")
+    val message = read[DialogAgentMessage](json)
+    val data = message.data
+    val requestJson = write(new DialogActClassifierMessage(
+      data.participant_id,
+      data.text,
+      data.extractions)
+    )
+    val request = HttpRequest(
+      uri = Uri("http://localhost:8000/classify"),
+      entity = HttpEntity(ContentTypes.`application/json`,requestJson)
+    )
+    val future: Future[HttpResponse] = Http().singleRequest(request)
+    val response: HttpResponse = Await.ready(future, 5 seconds).value.get.get
+
+    val futureClassification: Future[Classification] = response.entity.dataBytes
+      .runReduce(_ ++ _)
+      .map{ line =>
+        val ret = line.utf8String.split(" ").headOption.map(Classification)
+        val classification = ret.getOrElse(new Classification(""))
+        classification
+      }
+
+    futureClassification onComplete {
+      case Success(c: Classification) =>  
+        logger.info("futureClassification Success")
+        parseJValue(json).toList.map{metadata =>
+
+          val key = ".data.dialog_act_label"
+          val value = c.name
+          val map = Extraction.flatten(metadata)
+          val noKey = if(map.contains(key)) (map - key) else map
+          val newMap = noKey + (key->value)
+          val newJValue = Extraction.unflatten(newMap)
+          val newJson = newJValue.extract[String]
+
+          val withDac = s.copy(dacQueries = s.dacQueries + 1)
+
+          futureIteration(withDac, newJson)
+        }
+      case Failure(t) =>
+        logger.error("futureClassification onComplete failure")
+        logger.error(s"An error occured:  ${t}")
+        val withError = s.copy(errors = s.errors + 1)
+        futureIteration(withError, json)
+    }
+  }
 
   /* Update extractions for a DialogAgentMessageData struct
    * @param json A JSON representation of a DialogAgentMessageData struct
@@ -410,7 +492,6 @@ class DialogAgentReprocessor (
       case _ => outputFileName  // otherwise do not change the inputFileName
     })
   }
-
 
   /** Parse the line into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run
