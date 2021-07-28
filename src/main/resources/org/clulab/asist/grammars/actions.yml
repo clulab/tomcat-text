@@ -65,7 +65,7 @@ rules:
       agent: Entity? = >/${agents}/
 ## This one is not working right now, working on it -Remo
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
+  - import: org/clulab/asist/grammars/lvo_template_no_passive.yml
     vars:
       name: search
       template_priority: ${ rulepriority }

@@ -61,6 +61,8 @@
         - RoleSwitch
         - RoleDeclare
         - ReportLocation
+        - ReportItemStatus:
+            - ToolBroken
         - KnowledgeSharing:
           - RoomStatus:
             - RoomClear

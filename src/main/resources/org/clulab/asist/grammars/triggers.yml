@@ -81,9 +81,9 @@ rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
 
 search_spec_triggers: "search|service|searcher"
 
-search_triggers: "find|hunt|look|search|check"
+search_triggers: "hunt|look|search|check"
 
-self_triggers: "i|me"
+self_triggers: "i|me|my"
 
 sight_triggers: "see|observe|glimpse"
 
