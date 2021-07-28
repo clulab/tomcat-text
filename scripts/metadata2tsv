@@ -48,7 +48,6 @@ if __name__ == "__main__":
             )
         )
     )
-
     for filepath in args.input:
 
         # Parse the filename components
@@ -62,6 +61,7 @@ if __name__ == "__main__":
         with open(filepath) as f:
             initial_timestamp = None
             for line in f:
+
                 # We are only interested in the final transcriptions, not the
                 # intermediate ones.
                 if '"sub_type":"start"' in line:
@@ -69,27 +69,29 @@ if __name__ == "__main__":
 
                 if "asr/final" in line or "userspeech" in line:
                     message = json.loads(line)
+
                     data = message["data"]
                     timestamp = message["msg"]["timestamp"]
                     timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
                     relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
-                    text = data["text"]
-                    if "asr/final" in line:
-                        participant_id = data["participant_id"]
-                    elif "userspeech" in line:
-                        participant_id = data["playername"]
-                    trial_uuid = message["msg"]["trial_id"]
-                    line = "\t".join(
-                        (
-                            team,
-                            trial,
-                            trial_uuid,
-                            condbtwn,
-                            condwin,
-                            timestamp,
-                            relative_timestamp,
-                            participant_id,
-                            text,
+                    if "text" in data:
+                        text = data["text"]
+                        if "asr/final" in line:
+                            participant_id = data["participant_id"]
+                        elif "userspeech" in line:
+                            participant_id = data["playername"]
+                        trial_uuid = message["msg"]["trial_id"]
+                        line = "\t".join(
+                            (
+                                team,
+                                trial,
+                                trial_uuid,
+                                condbtwn,
+                                condwin,
+                                timestamp,
+                                relative_timestamp,
+                                participant_id,
+                                text,
+                            )
                         )
-                    )
-                    print(line)
+                        print(line)
