@@ -6,7 +6,7 @@ import org.clulab.asist.agents.DialogAgent
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
+ *  Updated:  2021 July
  *
  *  Testbed version info, based on:
  *
@@ -31,10 +31,10 @@ case class VersionInfoDataMessageChannel(
 
 /** Part of the Info class */
 case class VersionInfoData(
-  agent_name: String = "Not Set", // "tomcat_textAnalyzer"
-  owner: String = "Not Set", // "University of Arizona"
-  version: String = "Not Set", // "2.0.0"
-  source: Seq[String] = List(), // "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
+  agent_name: String = "Not Set",
+  owner: String = "Not Set",
+  version: String = "Not Set",
+  source: Seq[String] = List(),
   dependencies: Seq[String] = List(),
   config: Seq[VersionInfoDataConfig] = List(),
   publishes: Seq[VersionInfoDataMessageChannel] = List(),
@@ -82,10 +82,10 @@ object VersionInfoMetadata {
   }
 }
 
-// Return a VersionInfo populated with the current DialogAgent testbed configuration
+// Return a VersionInfo populated with the current DialogAgent 
+// testbed configuration
 object VersionInfo 
 {
-
   // create a VersionInfo by copying some fields from the input CommonMsg
   def apply(
     da: DialogAgent,
@@ -97,7 +97,7 @@ object VersionInfo
         trial_id = trialMessage.msg.trial_id,
         timestamp = timestamp,
         source = da.dialogAgentSource,
-        sub_type = trialMessage.msg.sub_type,
+        sub_type = "versioninfo",
         version = da.dialogAgentVersion,
         replay_root_id = trialMessage.msg.replay_root_id,
         replay_id = trialMessage.msg.replay_id
@@ -131,9 +131,8 @@ object VersionInfo
       VersionInfoDataMessageChannel(
         topic = da.topicPubVersionInfo,
         message_type = "agent/versioninfo",
-        sub_type = "start"
+        sub_type = "versioninfo"
       )
-      // should we include the trial version info publication channel?
     ),
     subscribes = List(
       VersionInfoDataMessageChannel(
@@ -156,9 +155,6 @@ object VersionInfo
         message_type = "observation",
         sub_type = "asr"
       )
-        // should we incude the trial version info subscription channel?
     )
   )
-  
 }
-
