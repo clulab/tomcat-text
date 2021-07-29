@@ -97,7 +97,7 @@ class DialogAgentFile(
   def processMetadataFile(
     filename: String,
     output: PrintWriter
-  ): Unit = synchronized {
+  ): Unit = {
     logger.info("processMetadataFile")
     val bufferedSource = Source.fromFile(filename)
     val lines = bufferedSource.getLines
@@ -111,7 +111,7 @@ class DialogAgentFile(
     filename: String, 
     line: String, 
     output: PrintWriter
-  ): Unit = synchronized {
+  ): Unit = {
     val source_type = "message_bus" // file metadata originates there
 
     allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
