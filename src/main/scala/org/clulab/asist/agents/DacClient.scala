@@ -72,7 +72,7 @@ class DacClient (
 
     futureReply onComplete {
       case Success(a) =>
-        logger.info("Server reset replied successfully")
+        logger.info("DAC Server reset successfully")
         agent.iteration(agent.addDacReset(s))
       case Failure(t) =>
         logger.error(s"An error occured:  ${t}")

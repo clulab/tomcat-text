@@ -63,9 +63,13 @@ case class RunState(
   fileInfoIterator: Iterator[(String, Int)] = Iterator(),
   lineIterator: Iterator[String] = Iterator(),
   fileWriter: Option[PrintWriter] = None,
-  agentWrites: Int = 0, // DialogAgent messages written
-  agentReads: Int = 0, // Dialog Agent messages read
-  agentRecoveries: Int = 0, // Dialog Agent messages recovered from errors
+
+  // Dialog Agent Messages generated from Dialog Agent metadata
+  agentReprocessed: Int = 0,
+
+  // Dialog Agent Messages generated from Dialog Agent error reports
+  agentRecovered: Int = 0,
+
   infoWrites: Int = 0, // VersionInfo messages written at trial starts
   lineReads: Int = 0,  // total lines read
   lineWrites: Int = 0, // total lines written
@@ -294,7 +298,6 @@ class DialogAgentReprocessor (
    * @return The processed JSON line
    */
   def reprocessDialogAgentMetadata(s: RunState, line: String): Unit = {
-
     // parse the metadata text into AST to fix nonstandard JSON issues
     parseJValue(line).toList.map(metadata => {
       // if we have a data field, its DialogAgent metadata
@@ -320,9 +323,9 @@ class DialogAgentReprocessor (
       case reprocessed::Nil =>
         dacClient match {
           case Some(dc: DacClient) =>
-            dc.runClassification(addAgentWrite(s), reprocessed)
+            dc.runClassification(addAgentReprocessed(s), reprocessed)
           case None => 
-            futureIteration(addAgentWrite(s), reprocessed)
+            futureIteration(addAgentReprocessed(s), reprocessed)
         }
 
       // Could not reprocess the line, so the next thing to try is to see if
@@ -362,9 +365,9 @@ class DialogAgentReprocessor (
       case reprocessed::Nil => 
         dacClient match {
           case Some(dc: DacClient) =>
-            dc.runClassification(addAgentErrorRecovery(s), reprocessed)
+            dc.runClassification(addAgentRecovered(s), reprocessed)
           case None => 
-            futureIteration(addAgentErrorRecovery(s), reprocessed)
+            futureIteration(addAgentRecovered(s), reprocessed)
         }
 
       // Could not reprocess the line as either a DialogAgentMessage or
@@ -482,27 +485,25 @@ class DialogAgentReprocessor (
   // increment state variables as we go
   def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
   def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
-  def addAgentWrite(s: RunState): RunState = s.copy(agentWrites = s.agentWrites+1)
-  def addAgentRead(s: RunState): RunState = s.copy(agentReads = s.agentReads+1)
+  def addAgentReprocessed(s: RunState): RunState = s.copy(agentReprocessed = s.agentReprocessed+1)
   def addInfoWrite(s: RunState): RunState = s.copy(infoWrites = s.infoWrites + 1)
   def addLineRead(s: RunState): RunState = s.copy(lineReads = s.lineReads + 1)
-  def addLineWrite(s: RunState): RunState = s.copy(lineReads = s.lineReads + 1)
+  def addLineWrite(s: RunState): RunState = s.copy(lineWrites = s.lineWrites + 1)
   def addError(s: RunState): RunState = s.copy(errors = s.errors + 1)
-  def addAgentErrorRecovery(s: RunState): RunState = s.copy (
-    agentRecoveries = s.agentRecoveries+1,
-    agentWrites = s.agentWrites + 1
+  def addAgentRecovered(s: RunState): RunState = s.copy (
+    agentRecovered = s.agentRecovered+1,
+    agentReprocessed = s.agentReprocessed + 1
   )
 
   // show statistics for one file
   def stateReport(s: RunState): Unit = {
-    logger.info("Total lines read:         %d".format(s.lineReads))
-    logger.info("Total lines written:      %d".format(s.lineWrites))
-    logger.info("Agent lines read          %d".format(s.agentReads))
-    logger.info("Agent recoveries:         %d".format(s.agentRecoveries))
-    logger.info("Agent lines written       %d".format(s.agentWrites))
-    logger.info("Version Info written:     %d".format(s.infoWrites))
-    logger.info("DAC server resets:        %d".format(s.dacResets))
-    logger.info("DAC classifications:      %d".format(s.dacQueries))
+    logger.info("Total lines read:          %d".format(s.lineReads))
+    logger.info("Total lines written:       %d".format(s.lineWrites))
+    logger.info("DialogAgent lines written: %d".format(s.agentReprocessed))
+    logger.info("VersionInfo lines written: %d".format(s.infoWrites))
+    logger.info("DialogAgent error reports: %d".format(s.agentRecovered))
+    logger.info("DAC server resets:         %d".format(s.dacResets))
+    logger.info("DAC classifications:       %d".format(s.dacQueries))
   }
 
   // show statistics for entire run
@@ -513,13 +514,13 @@ class DialogAgentReprocessor (
     val compSecs = runSecs - prepSecs
     logger.info("")
     logger.info("METADATA REPROCESSING COMPLETE:")
-    logger.info("Output directory:         %s".format(outputDirName))
-    logger.info("Input directory:          %s".format(inputDirName))
-    logger.info("Input files present       %d".format(allFiles.length))
-    logger.info("Input Files reprocessed   %d".format(nFiles))
+    logger.info("Output directory:          %s".format(outputDirName))
+    logger.info("Input directory:           %s".format(inputDirName))
+    logger.info("Input files present        %d".format(allFiles.length))
+    logger.info("Input Files reprocessed    %d".format(nFiles))
     stateReport(s)
-    logger.info("Processing errors         %d".format(s.errors))
-    logger.info("DialogAgent file scan:    %.1f minutes".format(prepSecs/60.0))
-    logger.info("Time to reprocess:        %.1f minutes".format(compSecs/60.0))
+    logger.info("Processing errors          %d".format(s.errors))
+    logger.info("DialogAgent file scan:     %.1f minutes".format(prepSecs/60.0))
+    logger.info("Time to reprocess:         %.1f minutes".format(compSecs/60.0))
   }
 }
