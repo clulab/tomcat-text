@@ -1,8 +1,6 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl._
-import akka.http.scaladsl.model._
 import akka.stream.ActorMaterializer
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
@@ -75,7 +73,8 @@ case class RunState(
   lineWrites: Int = 0, // total lines written
   dacQueries: Int = 0, // DAC server responses
   dacResets: Int = 0, // DAC resets 
-  errors: Int = 0  // errors and exceptions encountered
+  errors: Int = 0,  // errors and exceptions encountered
+  terminated: Boolean = false // set true to end execution
 )
 
 class DialogAgentReprocessor (
@@ -180,8 +179,13 @@ class DialogAgentReprocessor (
 
   // Nested iteration through files and their lines of metadata 
   def iteration(s: RunState): Unit = {
+    // this can be set for instance if we lose contact with the DAC server
+    if(s.terminated) {
+      logger.info("File processing terminated.")
+      finish(s)
+    }
     // if we have another line, run it.
-    if(s.lineIterator.hasNext) {
+    else if(s.lineIterator.hasNext) {
       processLine(s)
     }
     else {
@@ -221,13 +225,17 @@ class DialogAgentReprocessor (
         }
       }
       else {
-        // done
         logger.info("All file processing has finished.")
-        finalReport(s)
-        system.terminate()
-        dacClient.foreach(dc => dc.shutdown)
+        finish(s)
       }
     }
+  }
+
+  // we are done
+  def finish(s: RunState) {
+    finalReport(s)
+    system.terminate()
+    dacClient.foreach(dc => dc.shutdown)
   }
 
 
@@ -482,6 +490,9 @@ class DialogAgentReprocessor (
       None
   }
 
+  // End processing
+  def terminate(s: RunState): RunState = s.copy(terminated = true)
+
   // increment state variables as we go
   def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
   def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
@@ -513,7 +524,7 @@ class DialogAgentReprocessor (
     val prepSecs = (reprocessingStartTime-startTime)/1000.0
     val compSecs = runSecs - prepSecs
     logger.info("")
-    logger.info("METADATA REPROCESSING COMPLETE:")
+    logger.info("METADATA REPROCESSING SUMMARY:")
     logger.info("Output directory:          %s".format(outputDirName))
     logger.info("Input directory:           %s".format(inputDirName))
     logger.info("Input files present        %d".format(allFiles.length))
