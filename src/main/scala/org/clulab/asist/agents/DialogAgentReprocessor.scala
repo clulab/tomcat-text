@@ -213,7 +213,7 @@ class DialogAgentReprocessor (
           case Some(dc: DacClient) => 
             dc.resetServer(newState)
           case None =>
-            future_iteration(newState)
+            futureIteration(newState)
         }
       }
       else {
