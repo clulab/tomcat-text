@@ -97,7 +97,7 @@ object VersionInfo
         trial_id = trialMessage.msg.trial_id,
         timestamp = timestamp,
         source = da.dialogAgentSource,
-        sub_type = trialMessage.msg.sub_type,
+        sub_type = "versioninfo",
         version = da.dialogAgentVersion,
         replay_root_id = trialMessage.msg.replay_root_id,
         replay_id = trialMessage.msg.replay_id
@@ -133,13 +133,12 @@ object VersionInfo
         message_type = "agent/versioninfo",
         sub_type = "start"
       )
-      // should we include the trial version info publication channel?
     ),
     subscribes = List(
       VersionInfoDataMessageChannel(
         topic = da.topicSubTrial,
         message_type = "trial",
-        sub_type = "start"
+        sub_type = "versioninfo"
       ),
       VersionInfoDataMessageChannel(
         topic = da.topicSubChat,
@@ -156,9 +155,6 @@ object VersionInfo
         message_type = "observation",
         sub_type = "asr"
       )
-        // should we incude the trial version info subscription channel?
     )
   )
-  
 }
-

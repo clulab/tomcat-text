@@ -63,34 +63,23 @@ case class RunState(
   fileInfoIterator: Iterator[(String, Int)] = Iterator(),
   lineIterator: Iterator[String] = Iterator(),
   fileWriter: Option[PrintWriter] = None,
-  agentOut: Int = 0, // DialogAgent messages written
-  errorsIn: Int = 0, // Dialog Agent error reports read
-  infoOut: Int = 0, // VersionInfo messages written
-  startsIn: Int = 0, // trial start messages read
-  linesIn: Int = 0,  // total lines read
-  linesOut: Int = 0, // total lines written
-  dacIn: Int = 0, // DAC server responses
+  agentWrites: Int = 0, // DialogAgent messages written
+  agentReads: Int = 0, // Dialog Agent messages read
+  agentRecoveries: Int = 0, // Dialog Agent messages recovered from errors
+  infoWrites: Int = 0, // VersionInfo messages written at trial starts
+  lineReads: Int = 0,  // total lines read
+  lineWrites: Int = 0, // total lines written
+  dacQueries: Int = 0, // DAC server responses
+  dacResets: Int = 0, // DAC resets 
   errors: Int = 0  // errors and exceptions encountered
 )
 
-// sent back by the DAC server
-case class Classification(name: String)
 
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent(args) with LazyLogging {
-
-  // hit these methods to increment the state variable as it moves around.
-  def bumpAgentOut(s: RunState): RunState = s.copy(agentOut = s.agentOut + 1)
-  def bumpErrorsIn(s: RunState): RunState = s.copy(errorsIn = s.errorsIn + 1)
-  def bumpInfoOut(s: RunState): RunState = s.copy(infoOut = s.infoOut + 1)
-  def bumpStartsIn(s: RunState): RunState = s.copy(startsIn = s.startsIn + 1)
-  def bumpLinesIn(s: RunState): RunState = s.copy(linesIn = s.linesIn + 1)
-  def bumpLinesOut(s: RunState): RunState = s.copy(linesOut = s.linesOut + 1)
-  def bumpDacIn(s: RunState): RunState = s.copy(dacIn = s.dacIn + 1)
-  def bumpErrors(s: RunState): RunState = s.copy(errors = s.errors + 1)
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -99,13 +88,40 @@ class DialogAgentReprocessor (
   // json
   implicit val formats = org.json4s.DefaultFormats
 
+  // Dialog Act Classifications, if needed
+  val dacClient = new DacClient(this)
+
+  // hit these methods to increment the state variable as it moves around.
+
+  @tailrec
+  private def findDialogAgentMetadataFiles(
+    allFiles: List[String],
+    result: List[String]
+  ): List[String] = allFiles match {
+    case head::tail =>
+      if(head.endsWith(".metadata") && 
+        fileHasDialogAgentMetadata(LocalFileUtils.lineIterator(head), 0)
+      ) {
+        println(head)
+        findDialogAgentMetadataFiles(tail, head::result)
+      }
+      else {
+        println("searching...")
+        findDialogAgentMetadataFiles(tail, result)
+      }
+    case _ => result
+  }
+
+  val allFiles: List[String] = LocalFileUtils.getFileNames(inputDirName)
+
+  logger.info("Files in input directory: {}", allFiles.length)
+
   val startTime = Clock.systemUTC.millis
+
   logger.info("Checking files for DialogAgent metadata...")
 
-  /* Find the names of files containing DialogAgent metadata */
-  val fileNames: List[String] = LocalFileUtils.getFileNames(inputDirName)
-    .filter(a => a.endsWith(".metadata"))
-    .filter(a => fileHasDialogAgentMetadata(LocalFileUtils.lineIterator(a), 0))
+  val fileNames = findDialogAgentMetadataFiles(allFiles, List())
+
 
   val nFiles = fileNames.length
   val reprocessingStartTime = Clock.systemUTC.millis
@@ -130,11 +146,7 @@ class DialogAgentReprocessor (
         fileInfoIterator = fileNames.zip(fileSizes).iterator
       )
 
-      // if we are using the DAC server, make sure it is alive first
-      if(withClassifications) 
-        resetDacServer(startState)
-      else 
-        iteration(startState)
+      iteration(startState)
     } 
   }  else logger.error("No files with DialogAgent metadata were found")
 
@@ -196,12 +208,12 @@ class DialogAgentReprocessor (
           inputFileName
         )
 
-        processLine(newState)
+        dacClient.resetServer(newState)
       }
       else {
         // done
         logger.info("All file processing has finished.")
-        showReport(s)
+        finalReport(s)
         system.terminate()
       }
     }
@@ -217,14 +229,13 @@ class DialogAgentReprocessor (
   def processLine(s: RunState): Unit = {
     val line = s.lineIterator.next
     // increment the number of metadata lines we have handled.
-    val withRead = bumpLinesIn(s)
+    val withRead = addLineRead(s)
     readMetadataLookahead(line).topic match {
       case `topicSubTrial` => processTrialMetadata(withRead, line)
       case `topicPubDialogAgent` => reprocessDialogAgentMetadata(withRead, line)
       case `topicPubVersionInfo` => futureIteration(withRead) // VersionInfo deleted
       case _ => 
-        val withWrite = bumpLinesOut(withRead)
-        futureIteration(withWrite, line) // transcribe unhandled cases
+        futureIteration(withRead, line) // transcribe unhandled cases
     }
   }
 
@@ -252,21 +263,23 @@ class DialogAgentReprocessor (
 
       val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
       val outputJValue = versionInfoJValue.merge(metadataTimestamp)
-      val json = write(outputJValue)
-      val twoLines = s"${line}\n${json}"  // 2 lines out
-      val withTrialStart = bumpStartsIn(bumpInfoOut(bumpLinesOut(bumpLinesOut(s))))
-      futureIteration(withTrialStart, twoLines)
+
+      val versionInfoJson = write(outputJValue)
+
+      // we write the original line and then the Version Info line
+      futureIteration(
+        addInfoWrite(s),
+        List(line, versionInfoJson)
+      )
     } else {
       // if not a trial start just write the input line
-      val withWrite = bumpLinesOut(s)
-      futureIteration(withWrite, line)
+      futureIteration(s, line)
     }
   } catch {
     case NonFatal(t) => 
       logger.error(s"processTrialMetadata: Could not parse: ${line}\n")
       logger.error(t.toString)
-      val withError = bumpErrors(bumpLinesOut(bumpLinesOut(s)))
-      futureIteration(withError, line)
+      futureIteration(addError(s), line)
   }
 
   /** Replace DialogAgentMessage data extractions with fresh ones.
@@ -298,11 +311,10 @@ class DialogAgentReprocessor (
       
       // Successfully reprocessed the line as a current DialogAgentMessage 
       case reprocessed::Nil =>
-        val withDialogAgent = bumpAgentOut(bumpLinesOut(s))
         if(withClassifications) 
-          futureDacQuery(withDialogAgent, reprocessed)
+          dacClient.runClassification(addAgentWrite(s), reprocessed)
         else 
-          futureIteration(withDialogAgent, reprocessed)
+          futureIteration(addAgentWrite(s), reprocessed)
 
       // Could not reprocess the line, so the next thing to try is to see if
       // it is an error report about a DialogAgentMessage 
@@ -339,19 +351,18 @@ class DialogAgentReprocessor (
 
       // Successfully recovered error report into a DialogAgentMessage
       case reprocessed::Nil => 
-        val withErrorRecovery = bumpAgentOut(bumpLinesOut(bumpErrorsIn(s)))
+        val agentRecovered = addAgentErrorRecovery(s)
         if(withClassifications) 
-          futureDacQuery(withErrorRecovery, reprocessed)
+          dacClient.runClassification(agentRecovered, reprocessed)
         else 
-          futureIteration(withErrorRecovery, reprocessed)
+          futureIteration(agentRecovered, reprocessed)
 
       // Could not reprocess the line as either a DialogAgentMessage or
       // as a recoverable Dialog Agent Error Report
       case _ => 
         logger.error("reprocessDialogAgentErrorMetadata:")
         logger.error("Could not parse: {}\n",line)
-        val withError = bumpErrors(bumpLinesOut(s))
-        futureIteration(withError, line)
+        futureIteration(addError(s), line)
     }
   }
 
@@ -366,91 +377,34 @@ class DialogAgentReprocessor (
         iteration(fs)
       case Failure(t) => 
         logger.error(s"An error occured: ${t}")
-        iteration(bumpErrors(s)) 
+        iteration(addError(s)) 
     }
   }
 
   // schedule the next iteration after writing to the output file
-  def futureIteration(s: RunState, line: String): Unit = {
+  def futureIteration(s: RunState, line: String): Unit = 
+    futureIteration(writeLine(s, line))
 
-    // we need a new thread or will overflow the stack
-    val f: Future[Tuple2[RunState, String]] = Future {(s, line)}
-
-    f onComplete {
-      case Success(t2: Tuple2[RunState, String]) => 
-        s.fileWriter.foreach(fw => fw.write(s"${t2._2}\n"))
-        iteration(t2._1)
-      case Failure(t) => 
-        logger.error(s"An error occured: ${t}")
-        iteration(bumpErrors(s)) 
-    }
+  // schedule the next iteration after writing to the output file
+  def futureIteration(s: RunState, lines: List[String]): Unit = lines match {
+    case line::tail => futureIteration(writeLine(s, line), tail)
+    case _ => futureIteration(s)
   }
 
-  // schedule the next iteration after reseting the DAC server
-  def resetDacServer(s: RunState): Unit = {
-    logger.info("Resetting DAC server at http://localhost:8000")
-
-    val request = HttpRequest(
-      uri = Uri("http://localhost:8000/reset-model"),
-      entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
-    val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-
-    val futureReply: Future[String] = response.entity.dataBytes
-      .runReduce(_ ++ _)
-      .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
-
-    futureReply onComplete {
-      case Success(a) =>
-        logger.info("Server reset replied successfully")
-        iteration(bumpDacIn(s))
-      case Failure(t) =>
-        logger.error(s"An error occured:  ${t}")
-    }
-  }
-
-  // call the DAC for classification of this DialogAgentMessage
-  def futureDacQuery(s: RunState, json: String): Unit = {
-    val message = read[DialogAgentMessage](json)
-    val data = message.data
-    val requestJson = write(new DialogActClassifierMessage(
-      data.participant_id,
-      data.text,
-      data.extractions)
-    )
-    val request = HttpRequest(
-      uri = Uri("http://localhost:8000/classify"),
-      entity = HttpEntity(ContentTypes.`application/json`,requestJson)
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
-    val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-    val futureClassification: Future[Classification] = response.entity.dataBytes
-      .runReduce(_ ++ _)
-      .map{ line =>
-        val ret = line.utf8String.split(" ").headOption.map(Classification)
-        ret.getOrElse(new Classification(""))
+  // write the line and add the outcome to the state
+  def writeLine(s: RunState, line: String): RunState = s.fileWriter match {
+    case Some(fw: PrintWriter) => 
+      try {
+        fw.write(s"${line}\n")
+        addLineWrite(s)
+      } catch {
+        case NonFatal(t) =>
+          logger.error(s"Error writing to output file:  ${t}")
+          addError(s)
       }
-
-    futureClassification onComplete {
-      case Success(c: Classification) =>  
-        parseJValue(json).toList.map{metadata =>
-          val label = c.name.replace("\"","")
-          val newData = data.copy(dialog_act_label = label)
-          val newMetadata = metadata.replace(
-            "data"::Nil,
-            Extraction.decompose(newData)
-          )
-          val newJson = write(newMetadata)
-
-          s.fileWriter.foreach(fw => fw.write(s"${newJson}\n"))
-
-          iteration(bumpDacIn(s))
-        }
-      case Failure(t) =>
-        logger.error(s"An error occured:  ${t}")
-        futureIteration(bumpErrors(s), json)
-    }
+    case _ => 
+      logger.error("write called without a PrintWriter")
+      addError(s)
   }
 
   /* Update extractions for a DialogAgentMessageData struct
@@ -515,24 +469,45 @@ class DialogAgentReprocessor (
       None
   }
 
-  // show run statistics 
-  def showReport(s: RunState): Unit = {
+  // increment state variables as we go
+  def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
+  def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
+  def addAgentWrite(s: RunState): RunState = s.copy(agentWrites = s.agentWrites+1)
+  def addAgentRead(s: RunState): RunState = s.copy(agentReads = s.agentReads+1)
+  def addInfoWrite(s: RunState): RunState = s.copy(infoWrites = s.infoWrites + 1)
+  def addLineRead(s: RunState): RunState = s.copy(lineReads = s.lineReads + 1)
+  def addLineWrite(s: RunState): RunState = s.copy(lineReads = s.lineReads + 1)
+  def addError(s: RunState): RunState = s.copy(errors = s.errors + 1)
+  def addAgentErrorRecovery(s: RunState): RunState = s.copy (
+    agentRecoveries = s.agentRecoveries+1,
+    agentWrites = s.agentWrites + 1
+  )
+
+  // show statistics for one file
+  def stateReport(s: RunState): Unit = {
+    logger.info("Total lines read:         %d".format(s.lineReads))
+    logger.info("Total lines written:      %d".format(s.lineWrites))
+    logger.info("Agent lines read          %d".format(s.agentReads))
+    logger.info("Agent recoveries:         %d".format(s.agentRecoveries))
+    logger.info("Agent lines written       %d".format(s.agentWrites))
+    logger.info("Version Info written:     %d".format(s.infoWrites))
+    logger.info("DAC server resets:        %d".format(s.dacResets))
+    logger.info("DAC classifications:      %d".format(s.dacQueries))
+  }
+
+  // show statistics for entire run
+  def finalReport(s: RunState): Unit = {
     val stopTime = Clock.systemUTC.millis
     val runSecs = (stopTime-startTime)/1000.0
     val prepSecs = (reprocessingStartTime-startTime)/1000.0
     val compSecs = runSecs - prepSecs
     logger.info("")
     logger.info("METADATA REPROCESSING COMPLETE:")
-    logger.info("Input directory:          %s".format(inputDirName))
     logger.info("Output directory:         %s".format(outputDirName))
-    logger.info("Files reprocessed         %d".format(nFiles))
-    logger.info("Total lines read:         %d".format(s.linesIn))
-    logger.info("Total lines written:      %d".format(s.linesOut))
-    logger.info("Trial starts read:        %d".format(s.startsIn))
-    logger.info("Agent Error Reports read: %d".format(s.errorsIn))
-    logger.info("Agent Messages written:   %d".format(s.agentOut))
-    logger.info("Version Info written:     %d".format(s.infoOut))
-    logger.info("DAC server responses:     %d".format(s.dacIn))
+    logger.info("Input directory:          %s".format(inputDirName))
+    logger.info("Input files present       %d".format(allFiles.length))
+    logger.info("Input Files reprocessed   %d".format(nFiles))
+    stateReport(s)
     logger.info("Processing errors         %d".format(s.errors))
     logger.info("DialogAgent file scan:    %.1f minutes".format(prepSecs/60.0))
     logger.info("Time to reprocess:        %.1f minutes".format(compSecs/60.0))
