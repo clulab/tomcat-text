@@ -11,6 +11,7 @@ package org.clulab.asist.messages
  *
  */
 
+// only what we need
 case class MetadataData(
 
   // From Chat metadata
@@ -45,12 +46,4 @@ case class Metadata(
 // If we recognize the topic we will process the message.
 case class MetadataLookahead(
   topic: String = ""
-)
-
-// used to get just the text out of the DialogAgent metadata 
-case class MetadataText(
-  text: String = ""
-)
-case class MetadataDataText(
-  data: MetadataText
 )

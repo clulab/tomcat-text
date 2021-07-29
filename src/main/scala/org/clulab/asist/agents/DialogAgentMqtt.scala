@@ -11,7 +11,7 @@ import scala.util.control.Exception._
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 June
+ * Updated:  2021 July
  *
  * This class reads input from the message bus on subscribed topics,
  * performs analysis on the input, and then publishes the analysis to
@@ -28,8 +28,7 @@ class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent 
-  with MessageBusClientListener { 
+) extends DialogAgent with MessageBusClientListener { 
 
   val source_type = "message_bus"
 
@@ -42,12 +41,23 @@ class DialogAgentMqtt(
     this
   )
 
+  /* async callback after DAC reset */
+  def publishVersionInfo(
+    json: String,
+  ): Unit = bus.publish(topicPubVersionInfo, json)
+
+  /* async callback after Dac classification */
+  def publishMessage(
+    json: String,
+  ): Unit = bus.publish(topicPubDialogAgent, json)
+
   // send VersionInfo if we receive a TrialMessage with subtype "start", 
   def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
     allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
       if(trialMessage.msg.sub_type == "start") {
         val timestamp = Clock.systemUTC.instant.toString
-        bus.publish(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
+        val versionInfo = VersionInfo(this, timestamp)
+//        dqm.enqueueReset(publishVersionInfo, versionInfo)
       }
     })
   )
@@ -59,21 +69,18 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = if(topic == topicSubTrial) trialMessageArrived(json) else {
-    json.split("\n").map(line => 
-      allCatch.opt(read[Metadata](line)).map(metadata => 
-        bus.publish(  // to Message Bus
-          topicPubDialogAgent,
-          writeJson( // to json
-            dialogAgentMessage( // to struct
-              source_type,
-              topic,
-              topic,
-              metadata
-            )
-          )
+  ): Unit = topic match {
+    case `topicSubTrial` => trialMessageArrived(json)
+    case _ => json.split("\n").map(line => 
+      allCatch.opt(read[Metadata](line)).map{metadata => 
+        val message = getDialogAgentMessage(
+          source_type,
+          topic,
+          topic,
+          metadata
         )
-      )
+//        dqm.enqueueClassification(publishMessage, message)
+      }
     )
   } 
 }

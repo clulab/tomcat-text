@@ -19,7 +19,11 @@ import scala.util.{Failure, Success}
  *
  * Updated:  2021 July
  *
- * Process a file or the first level of a directory of files.
+ * Process a file or the first level of a directory of files
+ *
+ * A file is processed by finding metadata elements published on any of the 
+ * DialogAgent subscribed topics and creating new DialogAgentMessages with 
+ * that data.
  *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
@@ -38,16 +42,14 @@ class DialogAgentFile(
     .getFileNames(inputFilename)
     .filter(f => f.contains("."))
     .filter(f => supported.contains(f.substring(f.lastIndexOf("."))))
-
-
   if(filenames.isEmpty) 
     logger.error("No valid input files found")
   else openFileWriter(outputFilename).foreach{fileWriter =>
     logger.info(s"Using input files: ${filenames.mkString(", ")}")
-    filenames.map(processFile(_, fileWriter))
-    fileWriter.close
+    filenames.foreach(file => processFile(file, fileWriter))
     logger.info("All operations completed successfully.")
-  } 
+    fileWriter.close 
+  }
 
   /** Create a file writer for a given filename
    *  @param filename a single input file
@@ -96,38 +98,47 @@ class DialogAgentFile(
     filename: String,
     output: PrintWriter
   ): Unit = {
-    val source_type = "message_bus" // file metadata originates there
+    logger.info("processMetadataFile")
     val bufferedSource = Source.fromFile(filename)
     val lines = bufferedSource.getLines
     while(lines.hasNext) {
-      val line = lines.next
-      allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
-        if(topicSubTrial == lookahead.topic) {
-          allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
-            if(trialMessage.msg.sub_type == "start") {
+      processMetadataLine(filename, lines.next, output)
+    }
+    bufferedSource.close
+  }
 
-              // FIXME get from metadata
-              val timestamp = Clock.systemUTC.instant.toString
+  def processMetadataLine(
+    filename: String, 
+    line: String, 
+    output: PrintWriter
+  ): Unit = {
+    val source_type = "message_bus" // file metadata originates there
 
-              output.write(write(VersionInfo(this, timestamp)))
-            }
-          }
-        }
-        else if(subscriptions.contains(lookahead.topic)) {
-          allCatch.opt(read[Metadata](line)).map{metadata =>
-            val message = dialogAgentMessage( // to struct
-              source_type,
-              filename,
-              lookahead.topic,
-              metadata
-            )
-            val json = writeJson(message) 
-            output.write(s"${json}\n") // to file
+    allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
+      logger.info(s"processMetadataFile with topic = ${lookahead.topic}")
+      if(topicSubTrial == lookahead.topic) {
+        allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
+          if(trialMessage.msg.sub_type == "start") {
+            val timestamp = Clock.systemUTC.instant.toString
+            val versionInfo = VersionInfo(this, timestamp)
+            val json = write(versionInfo)
+            output.write(s"${json}\n")
           }
         }
       }
+      else if(subscriptions.contains(lookahead.topic)) {
+        allCatch.opt(read[Metadata](line)).map{metadata =>
+          val message = getDialogAgentMessage(
+            source_type,
+            filename,
+            lookahead.topic,
+            metadata
+          )
+          val json = write(message)
+          output.write(s"${json}\n")
+        }
+      }
     }
-    bufferedSource.close
   }
 
   /** Manage one WebVtt file
@@ -148,10 +159,9 @@ class DialogAgentFile(
             output.write(s"${json}\n") // to file
         }
       )
-      case Failure(f) => {
+      case Failure(f) => 
         logger.error("VttDissector could not parse '%s'".format(filename))
         logger.error(f.toString)
-      }
     }
   }
 
@@ -171,10 +181,10 @@ class DialogAgentFile(
         val foo = head.split(':')
         if(foo.length == 1) {
           val text = lines.mkString(" ")
-          Some(dialogAgentMessage(source_type, filename, null, text))
+          Some(getDialogAgentMessage(source_type, filename, null, text))
         } else {
           val text = (foo(1)::tail).mkString(" ")
-          Some(dialogAgentMessage(source_type, filename, foo(0), text))
+          Some(getDialogAgentMessage(source_type, filename, foo(0), text))
         }
       }
       case _ => None  // FIXME: Is the multiple-line case really a showstopper?

@@ -35,6 +35,7 @@ case class DialogAgentMessageData(
   participant_id: String = null,
   asr_msg_id: String = null,
   text: String = null,
+  dialog_act_label: String  = null,  // Dialog Act Classifier query result.
   source: DialogAgentMessageDataSource,
   extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
 )
@@ -45,6 +46,7 @@ case class DialogAgentMessage (
   msg: CommonMsg,
   data: DialogAgentMessageData
 )
+
 object DialogAgentMessage {
   def readDialogAgentMessage(s: String): DialogAgentMessage = read[DialogAgentMessage](s)
 }

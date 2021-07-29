@@ -46,7 +46,7 @@ object LocalFileUtils {
   }
 
   /** Make sure we have a place to put the output files.
-   * @returns true if the output file directory was found or created
+   * @return true if the output file directory was found or created
    */
   def ensureDir(dirName: String): Boolean = {
     ensureDir(new File(dirName))
@@ -54,12 +54,14 @@ object LocalFileUtils {
 
   def ensureDir(dir: File): Boolean = {
     if(dir.exists) {
-      if(dir.isDirectory) true  // use existing dir
-      else {  // don't clobber non-dir file of the same name
-        logger.error(s"Can't create directory '${dir.getAbsolutePath}'")
-        logger.error("A file with the same name is in the way.")
-        false
-      }
+//      if(dir.isDirectory) true  // use existing dir
+//      else {  // don't clobber non-dir file of the same name
+//        logger.error(s"Can't create directory '${dir.getAbsolutePath}'")
+//        logger.error("A file with the same name is in the way.")
+//        false
+
+        true
+      
     }
     else {
       val ret = dir.mkdir // create dir if needed

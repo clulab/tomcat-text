@@ -138,7 +138,7 @@ object VersionInfo
       VersionInfoDataMessageChannel(
         topic = da.topicSubTrial,
         message_type = "trial",
-        sub_type = "start"
+        sub_type = "versioninfo"
       ),
       VersionInfoDataMessageChannel(
         topic = da.topicSubChat,

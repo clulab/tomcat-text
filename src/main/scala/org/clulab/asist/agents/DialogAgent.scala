@@ -1,11 +1,9 @@
 package org.clulab.asist.agents
 
-import java.time.Clock
-import com.typesafe.scalalogging.LazyLogging
-
-
 import ai.lum.common.ConfigFactory
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
+import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
@@ -16,7 +14,6 @@ import spray.json.JsonParser
 
 import scala.collection.immutable
 import scala.io.Source
-
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -30,7 +27,6 @@ import scala.io.Source
  *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 
-
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
   // Number of taxonomy matches to include with extractions
@@ -42,17 +38,12 @@ case class DialogAgentArgs(
   ta3Version: Option[Int] = None
 )
 
-
 class DialogAgent (
   val args: DialogAgentArgs = new DialogAgentArgs
 ) extends LazyLogging {
 
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
-
-  def nMatches = args.nMatches
-  def withClassifications = args.withClassifications
-  def ta3Version = args.ta3Version
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
@@ -78,6 +69,10 @@ class DialogAgent (
     topicPubDialogAgent,
     topicPubVersionInfo
   )
+
+  def nMatches = args.nMatches
+  def withClassifications = args.withClassifications
+  def ta3Version = args.ta3Version
 
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     if (pretty) {
@@ -143,14 +138,15 @@ class DialogAgent (
     text: String
   ): DialogAgentMessageData = 
     DialogAgentMessageData(
-      participant_id = participant_id,
-      asr_msg_id = asr_msg_id,
-      text = text,
+      participant_id,
+      asr_msg_id,
+      text,
+      dialog_act_label = null, // ...
       DialogAgentMessageDataSource(
-        source_type = source_type,
-        source_name = source_name
+        source_type,
+        source_name
       ),
-      extractions(text)
+      getExtractions(text)
     )
   
   /** map the mention label to the taxonomy map, the mappings are static
@@ -168,17 +164,17 @@ class DialogAgent (
   /** Return an array of all extractions found in the input text
    *  @param text Speech to analyze
    */
-  def extractions(text: String): Seq[DialogAgentMessageDataExtraction] = 
-    extractMentions(text).map(extraction)
+  def getExtractions(text: String): Seq[DialogAgentMessageDataExtraction] = 
+    extractMentions(text).map(getExtraction)
 
   /** Create a DialogAgent extraction from Extractor data 
    *  @param mention Contains text to analyze
    */
-  def extraction(mention: Mention): DialogAgentMessageDataExtraction = {
+  def getExtraction(mention: Mention): DialogAgentMessageDataExtraction = {
     val originalArgs = mention.arguments.toArray
     val extractionArguments = for {
       (role, ms) <- originalArgs
-      converted = ms.map(extraction)
+      converted = ms.map(getExtraction)
     } yield (role, converted)
     val extractionAttachments = mention.attachments.map(writeJson(_))
     val taxonomy_matches = taxonomyMatches(mention.label)
@@ -199,7 +195,7 @@ class DialogAgent (
    *  @param topic Originating process for message
    *  @param metadata Experiment data 
    */
-  def dialogAgentMessage(
+  def getDialogAgentMessage(
     source_type: String,
     source_name: String,
     topic: String,
@@ -240,7 +236,7 @@ class DialogAgent (
    *  @param participant_id The individual who has spoken
    *  @param text Spoken text to be analyzed
    */
-  def dialogAgentMessage(
+  def getDialogAgentMessage(
     source_type: String,
     source_name: String,
     participant_id: String,

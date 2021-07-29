@@ -1,8 +1,10 @@
 package org.clulab.asist
 
+import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._
 
 import scala.annotation.tailrec
+
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
