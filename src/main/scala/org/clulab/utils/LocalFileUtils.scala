@@ -54,12 +54,14 @@ object LocalFileUtils {
 
   def ensureDir(dir: File): Boolean = {
     if(dir.exists) {
-      if(dir.isDirectory) true  // use existing dir
-      else {  // don't clobber non-dir file of the same name
-        logger.error(s"Can't create directory '${dir.getAbsolutePath}'")
-        logger.error("A file with the same name is in the way.")
-        false
-      }
+//      if(dir.isDirectory) true  // use existing dir
+//      else {  // don't clobber non-dir file of the same name
+//        logger.error(s"Can't create directory '${dir.getAbsolutePath}'")
+//        logger.error("A file with the same name is in the way.")
+//        false
+
+        true
+      
     }
     else {
       val ret = dir.mkdir // create dir if needed

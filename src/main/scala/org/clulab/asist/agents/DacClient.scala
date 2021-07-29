@@ -41,6 +41,8 @@ class DacClient (
   val agent: DialogAgentReprocessor
 ) extends LazyLogging {
 
+  logger.info("DacClient is active!")
+
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DacClient")
@@ -113,11 +115,17 @@ class DacClient (
             Extraction.decompose(newData)
           )
           val newMetadataJson = write(newMetadata)
-          agent.futureIteration(agent.addDacQuery(s), newMetadataJson)
+          finishClassification(agent.addDacQuery(s), newMetadataJson)
         }
       case Failure(t) =>
         logger.error(s"An error occured:  ${t}")
-        agent.futureIteration(agent.addError(s), json)
+        finishClassification(agent.addError(s), json)
     }
+  }
+
+
+  def finishClassification(s: RunState, line: String): Unit = {
+    val done = agent.writeLine(s, line)
+    agent.iteration(done)
   }
 }

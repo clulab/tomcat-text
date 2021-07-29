@@ -58,7 +58,7 @@ import scala.util.{Failure, Success}
  *
  */
 
-// A single struct to pass around as we process the files
+// Advise the user of reprocessing status
 case class RunState(
   fileInfoIterator: Iterator[(String, Int)] = Iterator(),
   lineIterator: Iterator[String] = Iterator(),
@@ -74,7 +74,6 @@ case class RunState(
   errors: Int = 0  // errors and exceptions encountered
 )
 
-
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
@@ -89,9 +88,8 @@ class DialogAgentReprocessor (
   implicit val formats = org.json4s.DefaultFormats
 
   // Dialog Act Classifications, if needed
-  val dacClient = new DacClient(this)
-
-  // hit these methods to increment the state variable as it moves around.
+  val dacClient: Option[DacClient] = 
+    if(withClassifications) Some(new DacClient(this)) else None
 
   @tailrec
   private def findDialogAgentMetadataFiles(
@@ -208,13 +206,19 @@ class DialogAgentReprocessor (
           inputFileName
         )
 
-        dacClient.resetServer(newState)
+        dacClient match {
+          case Some(dc: DacClient) => 
+            dc.resetServer(newState)
+          case None =>
+            iteration(newState)
+        }
       }
       else {
         // done
         logger.info("All file processing has finished.")
         finalReport(s)
         system.terminate()
+        dacClient.foreach(dc => dc.shutdown)
       }
     }
   }
@@ -311,10 +315,12 @@ class DialogAgentReprocessor (
       
       // Successfully reprocessed the line as a current DialogAgentMessage 
       case reprocessed::Nil =>
-        if(withClassifications) 
-          dacClient.runClassification(addAgentWrite(s), reprocessed)
-        else 
-          futureIteration(addAgentWrite(s), reprocessed)
+        dacClient match {
+          case Some(dc: DacClient) =>
+            dc.runClassification(addAgentWrite(s), reprocessed)
+          case None => 
+            futureIteration(addAgentWrite(s), reprocessed)
+        }
 
       // Could not reprocess the line, so the next thing to try is to see if
       // it is an error report about a DialogAgentMessage 
@@ -351,11 +357,12 @@ class DialogAgentReprocessor (
 
       // Successfully recovered error report into a DialogAgentMessage
       case reprocessed::Nil => 
-        val agentRecovered = addAgentErrorRecovery(s)
-        if(withClassifications) 
-          dacClient.runClassification(agentRecovered, reprocessed)
-        else 
-          futureIteration(agentRecovered, reprocessed)
+        dacClient match {
+          case Some(dc: DacClient) =>
+            dc.runClassification(addAgentErrorRecovery(s), reprocessed)
+          case None => 
+            futureIteration(addAgentErrorRecovery(s), reprocessed)
+        }
 
       // Could not reprocess the line as either a DialogAgentMessage or
       // as a recoverable Dialog Agent Error Report
