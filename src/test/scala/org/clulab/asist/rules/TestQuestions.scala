@@ -43,9 +43,8 @@ class TestQuestions extends BaseTest {
   it should "find location questions with `location_moving_question` rule" in {
     val text = "Where did they go?"
     val mentions = extractor.extractFrom(text)
-    val they = DesiredMention("Entity", "they")
-    val move = DesiredMention("Move", "they go", Map("person" -> Seq(they)))
-    val desired1 = DesiredMention("LocationQuestion", "Where did they go", Map("topic" -> Seq(move)))
+    val move = DesiredMention("MoveTo", "go", Map.empty, Set(PAST_TENSE, AGENT_ENTITY))
+    val desired1 = DesiredMention("LocationQuestion", "Where did they go", Map("topic" -> Seq(move)), Set(PAST_TENSE))
     testMention(mentions, desired1)
   }
 
@@ -76,11 +75,10 @@ class TestQuestions extends BaseTest {
     "Do you see any rubble? " +
       "Can you save this guy? "
     val mentions = extractor.extractFrom(text)
-    val you = DesiredMention("You", "you")
     val rubble = DesiredMention("Rubble", "rubble")
     val person = DesiredMention("Victim", "guy")
-    val see = DesiredMention("Sight", "you see any rubble", Map("target" -> Seq(rubble), "agent" -> Seq(you)))
-    val save = DesiredMention("Save", "save this guy", Map("target" -> Seq(person)))
+    val see = DesiredMention("Sight", "see any rubble", Map("target" -> Seq(rubble)), Set(AGENT_YOU))
+    val save = DesiredMention("Save", "save this guy", Map("target" -> Seq(person)), Set(AGENT_YOU))
     val q1 = DesiredMention("YesNoQuestion", "Do you see any rubble", Map("topic" -> Seq(see)))
     val q2 = DesiredMention("YesNoQuestion", "Can you save this guy", Map("topic" -> Seq(save)))
     testMention(mentions, q1)

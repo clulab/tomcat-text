@@ -30,12 +30,12 @@ import scala.io.Source
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
   // Number of taxonomy matches to include with extractions
-  val nMatches: Int = 0,
+  nMatches: Int = 0,
   // Query the Dialog Act Classification server
-  val withClassifications: Boolean = false,
+  withClassifications: Boolean = false,
   // Optionally hard-set the TA3 version number of reprocessed .metadata files
   // If this value is not set, existing version numbers are incremented by 1
-  val ta3Version: Option[Int] = None
+  ta3Version: Option[Int] = None
 )
 
 class DialogAgent (
@@ -48,7 +48,7 @@ class DialogAgent (
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
-  val dialogAgentVersion = "2.0.0"
+  val dialogAgentVersion = "2.1.0"
 
   // metadata topics
   val topicSubChat = "minecraft/chat"
@@ -176,11 +176,13 @@ class DialogAgent (
       (role, ms) <- originalArgs
       converted = ms.map(getExtraction)
     } yield (role, converted)
+    val extractionAttachments = mention.attachments.map(writeJson(_))
     val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageDataExtraction(
       mention.label,
       mention.words.mkString(" "),
       extractionArguments.toMap,
+      extractionAttachments,
       mention.startOffset,
       mention.endOffset,
       taxonomy_matches
