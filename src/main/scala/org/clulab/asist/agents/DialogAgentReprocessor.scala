@@ -184,6 +184,9 @@ class DialogAgentReprocessor (
       // otherwise shut the output down 
       s.fileWriter.foreach(fw => fw.close)
 
+      // report status
+      stateReport(s)
+
       // if we have another file, run it
       if(s.fileInfoIterator.hasNext) {
         // next file iteration
@@ -210,7 +213,7 @@ class DialogAgentReprocessor (
           case Some(dc: DacClient) => 
             dc.resetServer(newState)
           case None =>
-            iteration(newState)
+            future_iteration(newState)
         }
       }
       else {
@@ -388,11 +391,11 @@ class DialogAgentReprocessor (
     }
   }
 
-  // schedule the next iteration after writing to the output file
+  // schedule the next iteration after writing the line to the output file
   def futureIteration(s: RunState, line: String): Unit = 
     futureIteration(writeLine(s, line))
 
-  // schedule the next iteration after writing to the output file
+  // schedule the next iteration after writing the lines to the output file
   def futureIteration(s: RunState, lines: List[String]): Unit = lines match {
     case line::tail => futureIteration(writeLine(s, line), tail)
     case _ => futureIteration(s)
