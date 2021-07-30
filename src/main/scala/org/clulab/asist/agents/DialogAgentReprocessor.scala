@@ -74,7 +74,7 @@ case class RunState(
   dacQueries: Int = 0, // DAC server responses
   dacResets: Int = 0, // DAC resets 
   errors: Int = 0,  // errors and exceptions encountered
-  terminated: Boolean = false // set true to end execution
+  terminated: Boolean = false // set true to halt processing
 )
 
 class DialogAgentReprocessor (
@@ -89,10 +89,6 @@ class DialogAgentReprocessor (
 
   // json
   implicit val formats = org.json4s.DefaultFormats
-
-  // Dialog Act Classifications, if needed
-  val dacClient: Option[DacClient] = 
-    if(withClassifications) Some(new DacClient(this)) else None
 
   @tailrec
   private def findDialogAgentMetadataFiles(
@@ -122,9 +118,13 @@ class DialogAgentReprocessor (
   logger.info("Checking files for DialogAgent metadata...")
 
   val fileNames = findDialogAgentMetadataFiles(allFiles, List())
-
-
   val nFiles = fileNames.length
+
+
+  // Dialog Act Classifications, if needed
+  val dacClient: Option[DacClient] = 
+    if(withClassifications && (nFiles > 0)) Some(new DacClient(this)) else None
+
   val reprocessingStartTime = Clock.systemUTC.millis
 
   // Only create the output directory if DialogAgent metadata exists
@@ -149,7 +149,10 @@ class DialogAgentReprocessor (
 
       iteration(startState)
     } 
-  }  else logger.error("No files with DialogAgent metadata were found")
+  }  else {
+    logger.error("No files with DialogAgent metadata were found")
+    finish(new RunState)
+  }
 
 
   /** Scan a string iterator for valid DialogAgent JSON
