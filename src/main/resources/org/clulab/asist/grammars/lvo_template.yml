@@ -8,6 +8,9 @@ rules:
       trigger = [lemma=/(?i)^(${ trigger })/]
       agent: Entity? = >/${agents}/
       target: ${ object_type } = >dobj
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/
 
   - name: passive-${name}
     priority: ${ template_priority }
