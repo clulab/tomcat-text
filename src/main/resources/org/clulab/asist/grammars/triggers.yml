@@ -79,7 +79,7 @@ room_twoword_second_word_regex: "(room|cafe|office|terrace|area|storage|coffee|c
 
 rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel"
 
-search_spec_triggers: "search|service|searcher"
+search_spec_triggers: "search|service|searcher|scout"
 
 search_triggers: "hunt|look|search|check"
 

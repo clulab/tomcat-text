@@ -65,7 +65,7 @@ rules:
     label: RoleDeclare
     example: "I am an engineer"
     pattern: |
-      trigger = [lemma=/(?i)^be/]
+      trigger = [lemma=/(?i)^be|Im/ & tag=VBP]
       target: Role = <cop
       agent: Entity = <cop >/(${agents})/
 
@@ -160,7 +160,21 @@ rules:
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
-               >/${preps}/
+               >/${preps}/|
+               >/advmod/
+
+
+  - name: found_victim_have
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "I have a victim here"
+    pattern: |
+      trigger =[lemma=/(?i)have/]
+      exists: Victim = >/${objects}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
 
 
 
