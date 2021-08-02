@@ -156,7 +156,7 @@ rules:
     label: KnowledgeSharing
     example: "I found a victim in the library"
     pattern: |
-      trigger =[lemma=/(?i)^find|found/]
+      trigger =[lemma=/(?i)^find|found|locate|spot/]
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
