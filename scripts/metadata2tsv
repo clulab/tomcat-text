@@ -64,22 +64,25 @@ if __name__ == "__main__":
 
                 # We are only interested in the final transcriptions, not the
                 # intermediate ones.
-                if '"sub_type":"start"' in line:
-                    initial_timestamp = json.loads(line)["msg"]["timestamp"]
+                message = json.loads(line)
+                # take a look at this
+                if "topic" not in message:
+                    continue
+                if message["tgopic"] == "trial" and message["msg"]["sub_type"] == "start":
+                    initial_timestamp = message["msg"]["timestamp"]
+                if message["topic"] != "agent/asr/final":
+                    continue
 
-                if "asr/final" in line or "userspeech" in line:
-                    message = json.loads(line)
 
+                if message["msg"]["sub_type"] == "asr:transcription":
                     data = message["data"]
-                    timestamp = message["msg"]["timestamp"]
-                    timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
-                    relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
-                    if "text" in data:
+                    if data["is_final"]:
+                        timestamp = message["msg"]["timestamp"]
+                        timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+                        relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
+
                         text = data["text"]
-                        if "asr/final" in line:
-                            participant_id = data["participant_id"]
-                        elif "userspeech" in line:
-                            participant_id = data["playername"]
+                        participant_id = data["participant_id"]
                         trial_uuid = message["msg"]["trial_id"]
                         line = "\t".join(
                             (
