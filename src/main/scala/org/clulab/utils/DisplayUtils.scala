@@ -143,4 +143,8 @@ object DisplayUtils {
       .escape(mentionToDisplayString(mention))
       .replaceAll(nl, "<br>")
       .replaceAll(tab, "&nbsp;&nbsp;&nbsp;&nbsp;")
+
+  def shortDisplay(m: Mention): String = {
+    s"${m.label}: ${m.text}"
+  }
 }
