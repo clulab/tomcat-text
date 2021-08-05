@@ -58,9 +58,11 @@ class DacClient (
 
       futureReply onComplete {
         case Success(a) =>
+          showStatus("Server Reset", response.status)
           logger.info("DAC Server reset successfully")
           agent.iteration(agent.addDacReset(s))
         case Failure(t) =>
+          showStatus("Server Reset", response.status)
           logger.error(s"An error occured:  ${t}")
           agent.iteration(agent.addError(s))
       }
@@ -72,6 +74,7 @@ class DacClient (
     }
   }
 
+
   // call the DAC for classification of this DialogAgentMessage
   def runClassification(
     s: RunState, 
@@ -79,10 +82,12 @@ class DacClient (
   ): Unit = {
     val message = read[DialogAgentMessage](json)
     val data = message.data
-    val requestJson = write(new DialogActClassifierMessage(
-      data.participant_id,
-      data.text,
-      data.extractions)
+    val requestJson = write(
+      new DialogActClassifierMessage(
+        Option(data.participant_id).getOrElse(""),
+        Option(data.text).getOrElse(""),
+        Option(data.extractions).getOrElse(Seq())
+      )
     )
     val request = HttpRequest(
       uri = Uri(s"${serverLocation}/classify"),
@@ -101,7 +106,7 @@ class DacClient (
 
       futureClassification onComplete {
         case Success(c: Classification) =>  
-          val foo = response.status
+          showStatus(message.header.timestamp, response.status)
           agent.parseJValue(json).toList.map{metadata =>
             val label = c.name.replace("\"","")
             val newData = data.copy(dialog_act_label = label)
@@ -110,22 +115,26 @@ class DacClient (
               Extraction.decompose(newData)
             )
             val newMetadataJson = write(newMetadata)
-            finishClassification(agent.addDacQuery(s), newMetadataJson)
+            val done = s.copy(dacQueries = s.dacQueries + 1)
+            agent.futureIteration(done, List(newMetadataJson))
           }
         case Failure(t) =>
+          showStatus(message.header.timestamp, response.status)
           logger.error(s"An error occured:  ${t}")
-          finishClassification(agent.addError(s), json)
+          val done = s.copy(errors = s.errors + 1)
+          agent.iteration(done)
       }
     } catch {
       case NonFatal(t) => 
-        logger.error("Error at: {}",t.toString)
-        agent.iteration(agent.terminate(s))
+        logger.error("Error processing {}", json)
+        logger.error("{}",t.toString)
+        val done = s.copy(terminated = true)
+        agent.iteration(done)
     }
   }
 
-  def finishClassification(s: RunState, line: String): Unit = {
-    val done = agent.writeLine(s, line)
-    agent.iteration(done)
+  def showStatus(annotation: String, sc: StatusCode): Unit = {
+    logger.info("{} HttpResponse status = {}", annotation, sc.value)
   }
 
   // shutdow the actor system
