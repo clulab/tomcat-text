@@ -121,7 +121,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(up|down|left|right)(ward|most|ish)?/] (?! [word=/(?i)now|away|here|there|over/])
+      [lemma=/\b(up|down|left|right)(ward|most|ish)?\b/ & !outgoing=xcomp & !tag=VBD] (?! [word=/(?i)now|away|here|there|over/])
 
   - name: relative_location
     priority: ${ second_priority }
