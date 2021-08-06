@@ -68,7 +68,7 @@ if __name__ == "__main__":
                 # take a look at this
                 if "topic" not in message:
                     continue
-                if message["tgopic"] == "trial" and message["msg"]["sub_type"] == "start":
+                if message["topic"] == "trial" and message["msg"]["sub_type"] == "start":
                     initial_timestamp = message["msg"]["timestamp"]
                 if message["topic"] != "agent/asr/final":
                     continue
