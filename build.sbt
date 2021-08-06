@@ -33,8 +33,6 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-slf4j"  % akkaVersion,
-    // Only if you are using Akka Testkit
-    "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
     "net.sf.saxon" % "saxon-dom" % "8.7",
     "org.slf4j" % "slf4j-api" % "1.7.10",
     "com.crowdscriber.captions" %% "caption-parser" % "0.1.5"
