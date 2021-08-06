@@ -57,6 +57,7 @@ rules:
       trigger = (?<! [mention=QuestionParticle]) [lemma=/(?i)^do|can|will|should|have|could/]
       topic: Action = <aux
       location: Location? = <aux >/${positional_preps}/
+      agent: Entity? = <aux >/(${agents})/
 
 #leave this here so I can remember how to do these complex dependencies
 #      first_action: Action? =
