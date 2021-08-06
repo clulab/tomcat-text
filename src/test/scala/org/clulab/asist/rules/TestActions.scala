@@ -47,7 +47,6 @@ class TestActions extends BaseTest {
     )
 
     testMention(mentions, save_mention)
-    testMention(mentions, deictic_mention)
   }
 
 

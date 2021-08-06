@@ -92,6 +92,7 @@ rules:
     priority: ${ rulepriority }
     label: Deictic
     type: token
+    keep: false
     pattern: |
       [lemma=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
 
