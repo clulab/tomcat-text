@@ -79,8 +79,8 @@ class TestQuestions extends BaseTest {
     val person = DesiredMention("Victim", "guy")
     val see = DesiredMention("Sight", "see any rubble", Map("target" -> Seq(rubble)), Set(AGENT_YOU))
     val save = DesiredMention("Save", "save this guy", Map("target" -> Seq(person)), Set(AGENT_YOU))
-    val q1 = DesiredMention("YesNoQuestion", "Do you see any rubble", Map("topic" -> Seq(see)))
-    val q2 = DesiredMention("YesNoQuestion", "Can you save this guy", Map("topic" -> Seq(save)))
+    val q1 = DesiredMention("YesNoQuestion", "Do you see any rubble", Map("topic" -> Seq(see)), Set(AGENT_YOU))
+    val q2 = DesiredMention("YesNoQuestion", "Can you save this guy", Map("topic" -> Seq(save)), Set(AGENT_YOU))
     testMention(mentions, q1)
     testMention(mentions, q2)
   }
