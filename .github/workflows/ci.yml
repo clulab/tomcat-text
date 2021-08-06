@@ -73,5 +73,5 @@ jobs:
 
     # SBT WebApp testing
     - name: SBT Webapp Test
-      run:  sbt webapp/test
+      run:  sbt webapp/run
 
