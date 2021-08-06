@@ -18,7 +18,7 @@ import scala.io.Source
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 July
+ *  Updated:  2021 August
  *
  *  Create extractions from text for the ToMCAT project.
  *
@@ -142,7 +142,7 @@ class DialogAgent (
       asr_msg_id,
       text,
       dialog_act_label = null, // ...
-      DialogAgentMessageDataSource(
+      DialogAgentMessageUtteranceSource(
         source_type,
         source_name
       ),
@@ -164,13 +164,13 @@ class DialogAgent (
   /** Return an array of all extractions found in the input text
    *  @param text Speech to analyze
    */
-  def getExtractions(text: String): Seq[DialogAgentMessageDataExtraction] = 
+  def getExtractions(text: String): Seq[DialogAgentMessageUtteranceExtraction] = 
     extractMentions(text).map(getExtraction)
 
   /** Create a DialogAgent extraction from Extractor data 
    *  @param mention Contains text to analyze
    */
-  def getExtraction(mention: Mention): DialogAgentMessageDataExtraction = {
+  def getExtraction(mention: Mention): DialogAgentMessageUtteranceExtraction = {
     val originalArgs = mention.arguments.toArray
     val extractionArguments = for {
       (role, ms) <- originalArgs
@@ -178,7 +178,7 @@ class DialogAgent (
     } yield (role, converted)
     val extractionAttachments = mention.attachments.map(writeJson(_))
     val taxonomy_matches = taxonomyMatches(mention.label)
-    DialogAgentMessageDataExtraction(
+    DialogAgentMessageUtteranceExtraction(
       mention.label,
       mention.words.mkString(" "),
       extractionArguments.toMap,

@@ -3,7 +3,7 @@ package org.clulab.asist.messages
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 July
+ *  Updated:  2021 August
  *
  *  Classifier messages
  *
@@ -14,7 +14,7 @@ package org.clulab.asist.messages
 case class DialogActClassifierMessage(
   participant_id: String = "",
   text: String = "",
-  extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
+  extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )
 
 // returned from DAC server
