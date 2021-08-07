@@ -47,7 +47,6 @@ class TestActions extends BaseTest {
     )
 
     testMention(mentions, save_mention)
-    testMention(mentions, deictic_mention)
   }
 
 
@@ -184,9 +183,11 @@ class TestActions extends BaseTest {
 
     val self_mention = DesiredMention("Self", "I")
     val infra_mention = DesiredMention(INFRASTRUCTURE, "hallway")
-    val report_loc_mention = DesiredMention("ReportLocation", "I am in the hallway",
-      Map("person" -> Seq(self_mention),
-        "location" -> Seq(infra_mention)))
+    val report_loc_mention = DesiredMention(
+      "ReportLocation", "am in the hallway",
+      Map("location" -> Seq(infra_mention)),
+      Set(AGENT_SELF)
+    )
 
     testMention(mentions, infra_mention)
     testMention(mentions, report_loc_mention)

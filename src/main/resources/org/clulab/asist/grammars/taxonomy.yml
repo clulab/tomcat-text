@@ -51,6 +51,7 @@
         - Sight
         - Craft
         - Communicate:
+          - Instruction
           - Question:
             - QuestionParticle
             - LocationQuestion
@@ -63,6 +64,8 @@
         - ReportLocation
         - ReportItemStatus:
             - ToolBroken
+            - DoorOpen
+            - DoorClosed
         - KnowledgeSharing:
           - RoomStatus:
             - RoomClear

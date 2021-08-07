@@ -123,7 +123,7 @@ rules:
     priority: ${ rulepriority }
     label: MoveFrom
     pattern: |
-      trigger = [lemma=/(?i)${ movefrom_triggers }/] | [lemma=go] /(away|from)/
+      trigger = [lemma=/(?i)${ movefrom_triggers }/ & !outgoing=/xcomp|dobj|ccomp/] | [lemma=go] /(away|from)/
       target: Deictic = >/nmod_(away|from)/ | >advmod
       agent: Entity? = >/${agents}/
 
@@ -131,8 +131,15 @@ rules:
     priority: ${ rulepriority }
     label: MoveFrom
     pattern: |
-      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/] | [lemma=go] /(away|from)/
-      target: Location? =  >/nmod_(away|from)/ | >/${objects}/
+      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|nmod|ccomp)/] | [lemma=go] /(away|from)/
+      target: Location =  (>/nmod_(away|from)/ | >/${objects}/) [!lemma=door]
+      agent: Entity? = >/${agents}/
+
+  - name: leave_no_location
+    priority: ${ rulepriority }
+    label: MoveFrom
+    pattern: |
+      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|dobj|nmod|ccomp)/] | [lemma=go] away
       agent: Entity? = >/${agents}/
 
   - name: enter_action
@@ -234,7 +241,7 @@ rules:
     priority: ${ rulepriority }
     label: Block
     pattern: |
-      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      trigger = [lemma=in] [tag=/DT|PRP/] [lemma=/(?i)^way\b/]
       source: Obstacle? = </nmod/ >/${agents}/
       target: Concept? = >nmod_of
 
@@ -243,6 +250,6 @@ rules:
     example: "There is a fire in the way of this door"
     label: Block
     pattern: |
-      trigger = [lemma=/(?i)in/] [tag=/DT|PRP/] [lemma=/(?i)way/]
+      trigger = [lemma=in] [tag=/DT|PRP/] [lemma=/(?i)^way\b/]
       source: Concept? = >/${agents}/
       target: Concept? = >nmod_of
