@@ -23,11 +23,17 @@ import scala.util.{Failure, Success}
  *
  */
 
+abstract trait DacUser extends RunStateManager {
+  def iteration(s: RunState): Unit
+  def writeLine(s: RunState, line: String): RunState
+}
+
+
 // sent back by the DAC server
 case class Classification(name: String)
 
 class DacClient (
-  val agent: DialogAgentReprocessor
+  val agent: DacUser
 ) extends LazyLogging {
 
   val serverLocation = "http://localhost:8000"
@@ -78,7 +84,8 @@ class DacClient (
   // call the DAC for classification of this DialogAgentMessage
   def runClassification(
     s: RunState, 
-    json: String
+    json: String,
+    metadata: JValue
   ): Unit = {
     val message = read[DialogAgentMessage](json)
     val data = message.data
@@ -107,17 +114,16 @@ class DacClient (
       futureClassification onComplete {
         case Success(c: Classification) =>  
           showStatus(message.header.timestamp, response.status)
-          agent.parseJValue(json).toList.map{metadata =>
-            val label = c.name.replace("\"","")
-            val newData = data.copy(dialog_act_label = label)
-            val newMetadata = metadata.replace(
-              "data"::Nil,
-              Extraction.decompose(newData)
-            )
-            val newMetadataJson = write(newMetadata)
-            val done = s.copy(dacQueries = s.dacQueries + 1)
-            agent.futureIteration(done, List(newMetadataJson))
-          }
+          val label = c.name.replace("\"","")
+          val newData = data.copy(dialog_act_label = label)
+          val newMetadata = metadata.replace(
+            "data"::Nil,
+            Extraction.decompose(newData)
+          )
+          val newMetadataJson = write(newMetadata)
+          val queried = s.copy(dacQueries = s.dacQueries + 1)
+          val done = agent.writeLine(queried, newMetadataJson)
+          agent.iteration(done)
         case Failure(t) =>
           showStatus(message.header.timestamp, response.status)
           logger.error(s"An error occured:  ${t}")
