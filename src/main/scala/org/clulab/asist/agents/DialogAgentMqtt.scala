@@ -6,7 +6,8 @@ import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 import org.json4s.jackson.Serialization.{read, write}
 
-import scala.util.control.Exception._
+import scala.collection.mutable.Queue
+import scala.util.control.NonFatal
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -24,13 +25,24 @@ import scala.util.control.Exception._
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
 
+
+case class BusMessage (
+  topic: String,
+  line: String
+)
+
+
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent with MessageBusClientListener { 
+) extends DialogAgent 
+    with DacUser
+    with MessageBusClientListener { 
 
   val source_type = "message_bus"
+
+  val queue: Queue[BusMessage] = new Queue 
 
   // this handles the message bus operations.  
   val bus = new MessageBusClient(
@@ -40,6 +52,14 @@ class DialogAgentMqtt(
     publications,
     this
   )
+
+
+  def iteration(s: RunState): Unit = {
+  }
+
+  def writeLine(s: RunState, line: String): RunState = {
+    s
+  }
 
   /* async callback after DAC reset */
   def publishVersionInfo(
@@ -51,17 +71,6 @@ class DialogAgentMqtt(
     json: String,
   ): Unit = bus.publish(topicPubDialogAgent, json)
 
-  // send VersionInfo if we receive a TrialMessage with subtype "start", 
-  def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
-    allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
-      if(trialMessage.msg.sub_type == "start") {
-        val timestamp = Clock.systemUTC.instant.toString
-        val versionInfo = VersionInfo(this, timestamp)
-//        dqm.enqueueReset(publishVersionInfo, versionInfo)
-      }
-    })
-  )
-
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
    *  @param json:  A metadata text string
@@ -69,18 +78,54 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     json: String
-  ): Unit = topic match {
-    case `topicSubTrial` => trialMessageArrived(json)
-    case _ => json.split("\n").map(line => 
-      allCatch.opt(read[Metadata](line)).map{metadata => 
-        val message = getDialogAgentMessage(
-          source_type,
-          topic,
-          topic,
-          metadata
-        )
-//        dqm.enqueueClassification(publishMessage, message)
-      }
+  ): Unit = {
+    json.split("\n").map{
+      line => queue.enqueue(BusMessage(topic, line))
+    }
+    iteration
+  }
+
+
+  // service the next input in line.
+  def iteration: Unit = {
+    // if the queue only contains the element we just added, there is no
+    // processing thread running.  Start one now.
+    if(queue.length == 1) {
+      processInput(queue.head)
+    }
+
+    // otherwise allow the returning processing thread to start the next.
+  }
+
+
+  def processInput(input: BusMessage): Unit = input.topic match {
+    case `topicSubTrial` => trialMessageArrived(input)
+    case _ => dialogAgentMessageArrived (input)
+  }
+
+  def dialogAgentMessageArrived(input: BusMessage): Unit = try {
+    val message = getDialogAgentMessage(
+      source_type,
+      input.topic,
+      input.topic,
+      read[Metadata](input.line)
     )
+    // publish it
+  } catch {
+    case NonFatal(t) => logger.error("Could not parse {}", input.line)
   } 
+
+  // send VersionInfo if we receive a TrialMessage with subtype "start", 
+  def trialMessageArrived(input: BusMessage): Unit = try {
+    val tm = read[TrialMessage](input.line)
+    if(tm.msg.sub_type == "start") {
+      val timestamp = Clock.systemUTC.instant.toString
+      val versionInfo = VersionInfo(this, timestamp)
+
+      // publish it
+    }
+  } catch {
+    case NonFatal(t) => logger.error("Could not parse {}", input.line)
+  }
+
 }

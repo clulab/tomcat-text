@@ -56,12 +56,14 @@ import scala.util.{Failure, Success}
  *
  */
 
-
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent(args) with RunStateManager with DacUser with LazyLogging {
+) extends DialogAgent(args)
+    with RunStateManager
+    with DacUser
+    with LazyLogging {
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -399,7 +401,7 @@ class DialogAgentReprocessor (
   }
 
   // Write all the lines in the input list then resume iterating
-  def futureIteration(s: RunState, lines: List[String]): Unit = {
+  private def futureIteration(s: RunState, lines: List[String]): Unit = {
 
     // we need a new thread or will overflow the stack
     val f: Future[RunState] = Future {s}  // make this the write method...
