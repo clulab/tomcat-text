@@ -221,7 +221,9 @@ class TomcatActions() extends Actions with LazyLogging {
     mention.label match {
       case MARKER_MEANING =>
         mention match {
-          case event: EventMention => Some(MarkerId(event.trigger.text))
+          case event: EventMention =>
+            val lemmaText = event.trigger.lemmas.get.mkString(" ")
+            Some(MarkerId(lemmaText))
           case _ =>
             logger.warn(s"MarkerMeaning mention found that wasn't an EventMention, no attachment created. (${mention.text})")
             None

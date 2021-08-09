@@ -5,7 +5,7 @@ import org.json4s.jackson.Serialization.read
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
+ *  Updated:  2021 August
  *
  *  Dialog Agent Message
  *
@@ -14,16 +14,16 @@ import org.json4s.jackson.Serialization.read
  */
 
 /** Part of the DialogAgentMessageData class */
-case class DialogAgentMessageDataSource(
+case class DialogAgentMessageUtteranceSource(
   source_type: String = null,
   source_name: String = null
 )
 
 /** Part of the DialogAgentMessageData class */
-case class DialogAgentMessageDataExtraction(
+case class DialogAgentMessageUtteranceExtraction(
   label: String = null,
   span: String = null,
-  arguments: Map[String, Seq[DialogAgentMessageDataExtraction]] = Map.empty,
+  arguments: Map[String, Seq[DialogAgentMessageUtteranceExtraction]] = Map.empty,
   attachments: Set[String] = Set.empty, // Json strings
   start_offset: Int = 0,
   end_offset: Int = 0,
@@ -36,8 +36,8 @@ case class DialogAgentMessageData(
   asr_msg_id: String = null,
   text: String = null,
   dialog_act_label: String  = null,  // Dialog Act Classifier query result.
-  source: DialogAgentMessageDataSource,
-  extractions:Seq[DialogAgentMessageDataExtraction] = Seq.empty
+  utterance_source: DialogAgentMessageUtteranceSource,
+  extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )
 
 /** Contains the full analysis data of one chat message */

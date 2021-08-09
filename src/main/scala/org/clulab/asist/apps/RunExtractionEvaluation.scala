@@ -9,6 +9,7 @@ import org.clulab.utils.LocalFileUtils
 import org.slf4j.LoggerFactory
 
 import scala.io.Source
+import scala.util.Random
 
 object RunExtractionEvaluation extends App {
 
@@ -16,14 +17,18 @@ object RunExtractionEvaluation extends App {
   val config = ConfigFactory.load()
   val inputDir = config.getString("DialogAgent.inputDir")
   val agent = new DialogAgentReprocessor(inputDir, "/dev/null")
+  val maxMentions = config.getInt("apps.eval.maxMentions")
+  val maxFiles = config.getInt("apps.eval.maxFiles")
   val files = LocalFileUtils.getFileNames(inputDir)
+  val filesSubset = Random.shuffle(files).slice(0, maxFiles)
   val mentions = for {
-    filename <- files.par
+    filename <- filesSubset.par
     mention <- getMentionsFromFile(filename)
   } yield mention
 
   val outputDir = config.getString("export.ruleAnnotationDir")
-  ExtractionEvaluation.exportExtractionAnnotationSheets(mentions.seq, outputDir)
+  val subset = Random.shuffle(mentions.seq).slice(0, maxMentions)
+  ExtractionEvaluation.exportExtractionAnnotationSheets(subset, outputDir)
 
 
   def getMentionsFromFile(filename: String): Seq[Mention] = {

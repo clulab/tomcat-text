@@ -6,7 +6,7 @@ rules:
     label: MarkerMeaning
     keep: true
     pattern: |
-      trigger = [lemma=/one|two|three|1|2|3/]
+      trigger = [lemma=/\b(one|two|three|1|2|3)\b/]
       meaning: Victim = <nummod? <nsubj >dobj?
 
   - name: marker_meaning_token
@@ -15,7 +15,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      @meaning:Victim /is|has|as|are|for/ for? (?<trigger> [lemma=/one|two|three|1|2|3/])
+      @meaning:Victim /is|has|as|are|for/ for? (?<trigger> [lemma=/\b(one|two|three|1|2|3)\b/])
 
   - name: marker_meaning_token_flipped
     priority: ${ rulepriority }
@@ -23,7 +23,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<trigger> [lemma=/one|two|three|1|2|3/]) [lemma=/be|say|show/] for? @meaning: Victim
+      (?<trigger> [lemma=/\b(one|two|three|1|2|3)\b/]) [lemma=/be|say|show/] for? @meaning: Victim
 
   - name: marker_meaning_two_misparsed
     priority: ${ rulepriority }
@@ -31,7 +31,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<trigger> [lemma=/to|too/]) [lemma=/be|say|show|indicate/] []{,2} @meaning: Victim
+      (?<trigger> [lemma=/\b(to|too)\b/]) [lemma=/\b(be|say|show|indicate)\b/] []{,2} @meaning: Victim
 
 
   # handle to instead of two

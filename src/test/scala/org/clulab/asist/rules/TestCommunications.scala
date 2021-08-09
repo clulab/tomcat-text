@@ -43,4 +43,27 @@ class TestCommunications extends BaseTest {
     testMention(mentions, cleared)
   }
 
+  passingTest should "Parse the found victim rule" in {
+    val text = "I found a victim in the library. "
+
+    val mentions = extractor.extractFrom(text)
+    val victim = DesiredMention("Victim", "victim")
+    val location = DesiredMention("Infrastructure", "library")
+    val ex1 = DesiredMention("KnowledgeSharing", "found a victim in the library", Map("location" -> Seq(location), "exists" -> Seq(victim)), Set(PAST_TENSE))
+
+    testMention(mentions, ex1)
+
+  }
+
+  passingTest should "Parse role switch events" in {
+    val text = "I'm switching to engineer. "
+
+    val mentions = extractor.extractFrom(text)
+    val engineer = DesiredMention("Engineer", "engineer")
+    val self = DesiredMention("Self","I")
+    val ex1 = DesiredMention("RoleSwitch", "switching to engineer", Map("target" -> Seq(engineer)),Set(AGENT_SELF))
+
+    testMention(mentions, ex1)
+
+  }
 }

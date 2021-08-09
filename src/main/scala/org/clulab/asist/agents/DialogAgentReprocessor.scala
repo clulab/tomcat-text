@@ -26,7 +26,7 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 July
+ * Updated:  2021 August
  *
  * Reprocess metadata JSON files by reading each line as a JValue and then 
  * processing according to the topic field.  Lines with topics not addressed
@@ -443,9 +443,9 @@ class DialogAgentReprocessor (
       participant_id = data.participant_id,
       asr_msg_id = data.asr_msg_id,
       text = data.text,
-      source = new DialogAgentMessageDataSource(
-        source_type = data.source.source_type,
-        source_name = data.source.source_name
+      utterance_source = new DialogAgentMessageUtteranceSource(
+        source_type = data.utterance_source.source_type,
+        source_name = data.utterance_source.source_name
       ),
       extractions = getExtractions(data.text)
     )
@@ -453,7 +453,9 @@ class DialogAgentReprocessor (
     case NonFatal(t) => {
       logger.error(s"reprocessDialogAgentMessageData could not parse ${json}")
       logger.error(t.toString)
-      new DialogAgentMessageData(source = new DialogAgentMessageDataSource)
+      new DialogAgentMessageData(
+        utterance_source = new DialogAgentMessageUtteranceSource
+      )
     }
   }
 
