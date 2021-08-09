@@ -1,62 +1,16 @@
 package org.clulab.asist.agents
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
-import java.io.{File, PrintWriter}
-import java.nio.file.Paths
-import java.time.Clock
-import org.clulab.asist.messages._
-import org.clulab.utils.LocalFileUtils
-import org.json4s.{Extraction,_}
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read,write}
-import org.json4s.JField
-
-import scala.annotation.tailrec
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.postfixOps
-import scala.util.control.NonFatal
-import scala.util.{Failure, Success}
+import java.io.PrintWriter
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Updated:  2021 August
  *
- * Reprocess metadata JSON files by reading each line as a JValue and then 
- * processing according to the topic field.  Lines with topics not addressed
- * below are copied to the output file.
- *
- * If an input file has no dialog agent related metadata, an output file is
- * not generated.  If there are no output files to be written, the output
- * directory is not created.
- *
- * Reprocessed DialogAgentMessage metadata is a copy of the existing metadata
- * with the extractions regenerated. 
- *
- * Reprocessed Dialog Agent error messages use the error.data field to generate
- * a new DialogAgentMessageData struct with new extractions.  This replaces
- * the error field to transform the metadata into DialogAgentMessage metadata.
- *
- * VersionInfo metadata with the DialogAgent topic are not reprocessed or 
- * copied to the output file.
- *
- * Trial Start metadata are copied to the output file followed by a new
- * VersionInfo metadata message with the DialogAgent topic.
- *
- * If a .metadata file ends with Vers-<N>.metadata, the corresponding file
- * in the output directory should end with Vers-<N+1>.metadata (instead of
- * preserving the original fileName). This is to comply with the TA3 file
- * naming scheme.
- *
+ * Keep track of ongoing Dialog Agent input processing
  */
 
-// Advise the user of reprocessing status
 case class RunState(
   fileInfoIterator: Iterator[(String, Int)] = Iterator(),
   lineIterator: Iterator[String] = Iterator(),
