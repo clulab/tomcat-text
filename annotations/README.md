@@ -1,0 +1,1 @@
+Visit the following link for information on setting up the Annotation Interface locally: [Local Setup](https://docs.google.com/document/d/1fO8somS78ZlG4aJLyXJzyaMhcpOoy69GcC6nhlu9aRM/edit?usp=sharing)
