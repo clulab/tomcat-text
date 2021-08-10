@@ -100,6 +100,15 @@ rules:
     label: MoveTo
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim
+    priority: ${ rulepriority }
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ move_victim_triggers })$/ & tag=/^V/]
+      victim: Victim = >/dobj/
       target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
       agent: Entity? = >/${agents}/
 

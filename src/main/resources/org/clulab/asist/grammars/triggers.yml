@@ -61,6 +61,8 @@ movefrom_triggers: "depart|exit|leave"
 
 moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
 
+move_victim_triggers: "move|transfer|transport"
+
 north_triggers: "north"
 
 open_triggers: "open"

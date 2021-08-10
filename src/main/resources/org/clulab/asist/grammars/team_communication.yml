@@ -88,7 +88,7 @@ rules:
     priority: ${ rulepriority }
     label: RoleSwitch
     pattern: |
-      trigger = [lemma=/change/]
+      trigger = [lemma=/change/ | word=/searching/]
       agent: Entity? = >/(${agents})/
       target: Role = >/nmod_to/
 
