@@ -13,6 +13,7 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.collection.mutable.Queue
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.language.postfixOps
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 
@@ -90,46 +91,18 @@ class DialogAgentMqtt(
   // The job in process is the queue head.  When the job finishes, remove
   // the queue head and start the next job.
   def finishJob: Unit = {
-
-    // thread the finish so we don't get stuck in recursion?
-    val f: Future[Queue[BusMessage]] = Future {queue}
-
-    f onComplete {
-      case Success(q: Queue[BusMessage]) =>
-        q.dequeue
-        iteration
-      case Failure(t) =>
-        logger.error(s"An error occured: ${t}")
-    }
+    queue.dequeue
+    iteration
   }
-
 
   // use the head of the queue as the next job.  Leave it in place
   // until the job finishes.
-  def iteration: Unit = if(!queue.isEmpty) queue.head.topic match {
+  def iteration: Unit = if(queue.isEmpty) {
+    // do nothing, no work left
+  } else queue.head.topic match {
     case `topicSubTrial` => processTrialMessage(queue.head)
     case _ => processDialogAgentMessage (queue.head)
   }
-
-  def processDialogAgentMessage(input: BusMessage): Unit = try {
-    val message = getDialogAgentMessage(
-      source_type,
-      input.topic,
-      input.topic,
-      read[Metadata](input.line)
-    )
-    if(withClassifications) {
-      // start async threaded job
-    }
-    else {
-      val json = write(message)
-      bus.publish(topicPubDialogAgent, json)
-      finishJob
-    }
-    // publish it
-  } catch {
-    case NonFatal(t) => logger.error("Could not parse {}", input.line)
-  } 
 
   // send VersionInfo if we receive a TrialMessage with subtype "start", 
   def processTrialMessage(input: BusMessage): Unit = try {
@@ -137,12 +110,13 @@ class DialogAgentMqtt(
     if(tm.msg.sub_type == "start") {
       val timestamp = Clock.systemUTC.instant.toString
       bus.publish(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
+      if(withClassifications) resetServer  // enter async execution
+      else finishJob  // no DAC 
     }
+    else finishJob  // no trial start
   } catch {
     case NonFatal(t) => logger.error("Could not parse {}", input.line)
-  } finally {
-    finishJob
-  }
+  } 
 
 
   // schedule the next iteration after reseting the DAC server
@@ -166,7 +140,7 @@ class DialogAgentMqtt(
         case Success(a) =>
           showStatus("Server Reset", response.status)
           logger.info("DAC Server reset successfully")
-          iteration
+          finishJob
         case Failure(t) =>
           showStatus("Server Reset", response.status)
           logger.error(s"An error occured:  ${t}")
@@ -181,26 +155,31 @@ class DialogAgentMqtt(
   }
 
 
-  // call the DAC for classification of this DialogAgentMessage
-  def runClassification(
-    json: String
-  ): Unit = try {
-    val message: DialogAgentMessage = read[DialogAgentMessage](json)
-    val metadata: JValue = parse(s""" ${json} """)
-    runClassification(message, metadata)
+  def processDialogAgentMessage(input: BusMessage): Unit = try {
+    val message = getDialogAgentMessage(
+      source_type,
+      input.topic,
+      input.topic,
+      read[Metadata](input.line)
+    )
+    if(withClassifications) {
+      val metadata: JValue = parse(s""" ${input.line} """)
+      runClassification(message, metadata)  // enter async execution
+    } else {
+      val json = write(message)
+      bus.publish(topicPubDialogAgent, json)
+      finishJob
+    }
   } catch {
-    case NonFatal(t) =>
-      logger.error("Could not parse {}", json)
-      logger.error(t.toString)
-  }
+    case NonFatal(t) => logger.error("Could not parse {}", input.line)
+  } 
 
 
-  // call the DAC for classification of this DialogAgentMessage
+  // Same as above but with known good arguments
   def runClassification(
     message: DialogAgentMessage,
     metadata: JValue
   ): Unit = {
-
     val data = message.data
     val requestJson = write(
       new DialogActClassifierMessage(
@@ -234,7 +213,7 @@ class DialogAgentMqtt(
             Extraction.decompose(newData)
           )
           bus.publish(topicPubDialogAgent,write(newMetadata))
-          iteration
+          finishJob
         case Failure(t) =>
           showStatus(message.header.timestamp, response.status)
           logger.error(s"An error occured:  ${t}")
