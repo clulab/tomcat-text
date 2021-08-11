@@ -1,13 +1,25 @@
 package org.clulab.asist.agents
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl._
+import akka.http.scaladsl.model._
+import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
-
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
+import org.json4s.{Extraction,_}
+import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
-
+import org.json4s.jackson.Serialization.{read,write}
+import org.json4s.JField
 import scala.collection.mutable.Queue
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
+import scala.language.postfixOps
 import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
+
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -25,20 +37,24 @@ import scala.util.control.NonFatal
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
 
-
 case class BusMessage (
   topic: String,
   line: String
 )
-
 
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent 
-    with DacUser
+    with LazyLogging
     with MessageBusClientListener { 
+
+  val serverLocation = "http://localhost:8000"
+
+  // actors
+  implicit val ec = ExecutionContext.global
+  implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
 
   val source_type = "message_bus"
 
@@ -53,24 +69,6 @@ class DialogAgentMqtt(
     this
   )
 
-
-  def iteration(s: RunState): Unit = {
-  }
-
-  def writeLine(s: RunState, line: String): RunState = {
-    s
-  }
-
-  /* async callback after DAC reset */
-  def publishVersionInfo(
-    json: String,
-  ): Unit = bus.publish(topicPubVersionInfo, json)
-
-  /* async callback after Dac classification */
-  def publishMessage(
-    json: String,
-  ): Unit = bus.publish(topicPubDialogAgent, json)
-
   /** Receive a message from the message bus
    *  @param topic:  The message bus topic where the message was published
    *  @param text:  A metadata text string, possibly multi-line
@@ -82,7 +80,7 @@ class DialogAgentMqtt(
 
     // if the queue is empty, there is no aynchronous job in
     // progress and it is safe to start a new one.
-    val noAsync = queue.isEmpty
+    val noJobRunning = queue.isEmpty
 
     // Each line of text is a discrete processing job ready to run
     text.split("\n").map{
@@ -90,24 +88,31 @@ class DialogAgentMqtt(
     }
 
     // start new async job if none are running
-    if(noAsync) nextJob
+    if(noJobRunning) iteration
+  }
+
+  // The job in process is the queue head.  When the job finishes, remove
+  // the queue head and start the next job.
+  def finishJob: Unit = {
+
+    // thread the finish so we don't get stuck in recursion?
+    val f: Future[Queue[BusMessage]] = Future {queue}
+
+    f onComplete {
+      case Success(q: Queue[BusMessage]) =>
+        q.dequeue
+        iteration
+      case Failure(t) =>
+        logger.error(s"An error occured: ${t}")
+    }
   }
 
 
   // use the head of the queue as the next job.  Leave it in place
   // until the job finishes.
-  def nextJob: Unit = if(!queue.isEmpty) processInput(queue.head)
-
-  // The job in process is the queue head.  When the job finishes, remove
-  // the queue head and start the next job.
-  def finishJob: Unit = {
-    queue.dequeue
-    nextJob
-  }
-
-  def processInput(input: BusMessage): Unit = input.topic match {
-    case `topicSubTrial` => processTrialMessage(input)
-    case _ => processDialogAgentMessage (input)
+  def iteration: Unit = if(!queue.isEmpty) queue.head.topic match {
+    case `topicSubTrial` => processTrialMessage(queue.head)
+    case _ => processDialogAgentMessage (queue.head)
   }
 
   def processDialogAgentMessage(input: BusMessage): Unit = try {
@@ -135,12 +140,125 @@ class DialogAgentMqtt(
     val tm = read[TrialMessage](input.line)
     if(tm.msg.sub_type == "start") {
       val timestamp = Clock.systemUTC.instant.toString
-      val versionInfo = VersionInfo(this, timestamp)
-      val json = write(versionInfo)
-      bus.publish(topicPubVersionInfo, json)
+      bus.publish(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
     }
-    finishJob
   } catch {
     case NonFatal(t) => logger.error("Could not parse {}", input.line)
+  } finally {
+    finishJob
+  }
+
+
+  // schedule the next iteration after reseting the DAC server
+  def resetServer(): Unit = {
+    logger.info("Resetting DAC server at {}",serverLocation)
+
+    val request = HttpRequest(
+      uri = Uri(s"${serverLocation}/reset-model"),
+      entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
+    )
+    val future: Future[HttpResponse] = Http().singleRequest(request)
+
+    try {
+      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+
+      val futureReply: Future[String] = response.entity.dataBytes
+        .runReduce(_ ++ _)
+        .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
+
+      futureReply onComplete {
+        case Success(a) =>
+          showStatus("Server Reset", response.status)
+          logger.info("DAC Server reset successfully")
+          iteration
+        case Failure(t) =>
+          showStatus("Server Reset", response.status)
+          logger.error(s"An error occured:  ${t}")
+          system.terminate
+      }
+    } catch {
+      case NonFatal(t) => 
+        logger.error("Could not reset DAC server at: {}",t.toString)
+        logger.error("Please ensure the DAC server is running")
+        system.terminate
+    }
+  }
+
+
+  // call the DAC for classification of this DialogAgentMessage
+  def runClassification(
+    json: String
+  ): Unit = try {
+    val message: DialogAgentMessage = read[DialogAgentMessage](json)
+    val metadata: JValue = parse(s""" ${json} """)
+    runClassification(message, metadata)
+  } catch {
+    case NonFatal(t) =>
+      logger.error("Could not parse {}", json)
+      logger.error(t.toString)
+  }
+
+
+  // call the DAC for classification of this DialogAgentMessage
+  def runClassification(
+    message: DialogAgentMessage,
+    metadata: JValue
+  ): Unit = {
+
+    val data = message.data
+    val requestJson = write(
+      new DialogActClassifierMessage(
+        Option(data.participant_id).getOrElse(""),
+        Option(data.text).getOrElse(""),
+        Option(data.extractions).getOrElse(Seq())
+      )
+    )
+    val request = HttpRequest(
+      uri = Uri(s"${serverLocation}/classify"),
+      entity = HttpEntity(ContentTypes.`application/json`,requestJson)
+    )
+    val future: Future[HttpResponse] = Http().singleRequest(request)
+
+    try {
+      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+      val futureClassification: Future[Classification] = response.entity.dataBytes
+        .runReduce(_ ++ _)
+        .map{ line =>
+          val ret = line.utf8String.split(" ").headOption.map(Classification)
+          ret.getOrElse(new Classification(""))
+        }
+
+      futureClassification onComplete {
+        case Success(c: Classification) =>  
+          showStatus(message.header.timestamp, response.status)
+          val label = c.name.replace("\"","")
+          val newData = data.copy(dialog_act_label = label)
+          val newMetadata = metadata.replace(
+            "data"::Nil,
+            Extraction.decompose(newData)
+          )
+          bus.publish(topicPubDialogAgent,write(newMetadata))
+          iteration
+        case Failure(t) =>
+          showStatus(message.header.timestamp, response.status)
+          logger.error(s"An error occured:  ${t}")
+          system.terminate
+      }
+    } catch {
+      case NonFatal(t) => 
+        logger.error("Error:  {}",t.toString)
+        system.terminate
+    }
+  }
+
+  def showStatus(annotation: String, sc: StatusCode): Unit = {
+    logger.info("{} HttpResponse status = {}", annotation, sc.value)
+  }
+
+  // shutdow the actor system
+  def shutdown(): Unit = {
+    logger.info("MQTT DAC client shutting down...")
+    Thread.sleep(5)
+    system.terminate()
   }
 }
