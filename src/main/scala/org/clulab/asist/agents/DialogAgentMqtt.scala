@@ -9,14 +9,10 @@ import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 import org.json4s.{Extraction,_}
 import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.{read, write}
-import org.json4s.jackson.Serialization.{read,write}
-import org.json4s.JField
 import scala.collection.mutable.Queue
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 
