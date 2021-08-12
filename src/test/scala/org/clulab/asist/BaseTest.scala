@@ -45,8 +45,9 @@ class BaseTest extends FlatSpec with Matchers {
     ms.filter(_.label matches label)
   }
 
-  def testMention(ms: Seq[Mention], desiredMention: DesiredMention): Unit = {
-    val found = ms.map(DesiredMention.fromMention(_))
+  def testMention(ms: Seq[Mention], desiredMention: DesiredMention, shallow: Boolean = false): Unit = {
+    if (shallow) assert(desiredMention.arguments.isEmpty)
+    val found = ms.map(DesiredMention.fromMention(_, shallow))
     found should contain(desiredMention)
   }
 
@@ -71,13 +72,16 @@ class BaseTest extends FlatSpec with Matchers {
     }
   }
   object DesiredMention {
-    def fromMention(m: Mention): DesiredMention = {
-      DesiredMention(m.label, m.text, m.arguments.map(arg =>
+    def fromMention(m: Mention, shallow: Boolean = false): DesiredMention = {
+      val args = if (shallow) Map.empty[String, Seq[DesiredMention]] else {
+        m.arguments.map(arg =>
           (
             arg._1,
             arg._2.map(one_mention => DesiredMention.fromMention(one_mention))
           )
-        ),
+        )
+      }
+      DesiredMention(m.label, m.text, args,
         m.attachments.map(_.toString)
       )
     }

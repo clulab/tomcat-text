@@ -198,13 +198,13 @@ class TomcatActions() extends Actions with LazyLogging {
       case event: EventMention =>
         val trigger = event.trigger
         if (hasVerb(trigger)) {
-          // most precise: look for negation coming from a token in the trigger
+          // most precise: look for tense coming from a token in the trigger
           tenseFrom(trigger, state)
         } else {
-          // backoff: look for negation in the span
+          // backoff: look for tense in the span
           tenseFrom(mention, state)
         }
-      case _ => // backoff: look for negation in the span
+      case _ => // backoff: look for tense in the span
         tenseFrom(mention, state)
     }
   }
@@ -257,7 +257,9 @@ class TomcatActions() extends Actions with LazyLogging {
   }
 
   def hasSubjectVerbInversion(mention: EventMention): Boolean = {
-    val triggerStart = mention.trigger.start
+    val trigger = mention.trigger
+    val triggerStart = trigger.start
+    val triggerIsVB = trigger.tags.exists(_.startsWith("V"))
 
     // first token index of all the arguments
     val leftMostArg = mention.arguments
@@ -272,7 +274,18 @@ class TomcatActions() extends Actions with LazyLogging {
     val actionAgents = action.attachments.collect{ case a: Agent => a.span.start }
     val leftMostAgentAttachment = if (actionAgents.isEmpty) 1000 else actionAgents.min
 
-    val leftMostAll = Seq(leftMostArg, leftMostAgentAttachment).min
+    val leftMostSubj = if (triggerIsVB) {
+      val outgoing = trigger.sentenceObj
+        .dependencies.get
+        .outgoingEdges
+        .slice(triggerStart, trigger.end)
+      outgoing.flatten
+        .filter(_._2.startsWith("nsubj")) // only subjects
+        .map(_._1) // get the dsts
+        .min  // leftmost
+    } else 1000
+
+    val leftMostAll = Seq(leftMostArg, leftMostAgentAttachment, leftMostSubj).min
     // check that trigger is to left of all args and any missed subjects
     triggerStart < leftMostAll
   }
@@ -280,6 +293,7 @@ class TomcatActions() extends Actions with LazyLogging {
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(mkVictimArg(_, Some(ENTITY)))
   }
+
 
   def mkVictimArg(mention: Mention, typeConstraint: Option[String]): Mention = {
     val newArgs = mention.arguments.toSeq.map { case (name, argMentions) =>

@@ -38,7 +38,6 @@ class CommitmentTest extends BaseTest {
       Set(AGENT_SELF, FUTURE_TENSE)
     )
     testMention(mentions, victim_mention)
-    testMention(mentions, deictic_mention)
     testMention(mentions, save_mention)
     testMention(mentions, commitment_mention)
   }

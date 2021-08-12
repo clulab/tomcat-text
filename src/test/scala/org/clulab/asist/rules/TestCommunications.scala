@@ -60,10 +60,44 @@ class TestCommunications extends BaseTest {
 
     val mentions = extractor.extractFrom(text)
     val engineer = DesiredMention("Engineer", "engineer")
-    val self = DesiredMention("Self","I")
     val ex1 = DesiredMention("RoleSwitch", "switching to engineer", Map("target" -> Seq(engineer)),Set(AGENT_SELF))
 
     testMention(mentions, ex1)
+
+  }
+
+  passingTest should "communicate open doors" in {
+    val text = """
+                 |I'm going to leave the door closed.
+                 |Close the door.
+                 |Shut the door when it's clear.
+                 |I opened the door.
+                 |the door was left open.
+                 |I left the room.
+                 |""".stripMargin
+
+    val mentions = extractor.extractFrom(text)
+    // sentence 1
+    var desired = DesiredMention(
+      "DoorClosed", "door closed",
+      Map("status" -> Seq(DesiredMention("Close", "closed", attachments = Set(PAST_TENSE)))),
+      Set(PAST_TENSE)) // isn't really, but a parser mistake tags `closed` as VBD
+    testMention(mentions.filter(_.sentence==0), desired)
+    // sentence 2
+    desired = DesiredMention("DoorClosed", "Close the door")
+    testMention(mentions.filter(_.sentence==1), desired, shallow = true)
+    // sentence 3
+    desired = DesiredMention("DoorClosed", "Shut the door")
+    testMention(mentions.filter(_.sentence==2), desired, shallow = true)
+    // sentence 4
+    desired = DesiredMention("DoorOpen", "opened the door", attachments = Set(PAST_TENSE))
+    testMention(mentions.filter(_.sentence==3), desired, shallow = true)
+    // sentence 5
+    desired = DesiredMention("DoorOpen", "door was left open", attachments = Set(PAST_TENSE))
+    testMention(mentions.filter(_.sentence==4), desired, shallow = true)
+    // sentence 6
+    mentions.toArray.filter(m => m.sentence==5 && Seq("DoorOpen", "DoorClosed").contains(m.label)) shouldBe empty
+
 
   }
 }

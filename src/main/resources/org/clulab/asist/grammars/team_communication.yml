@@ -2,12 +2,27 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
+  - name: instruction_command
+    priority: ${ rulepriority }
+    label: Instruction
+    pattern: |
+      trigger = (?<! I []*) [tag=VB & mention=Action] (?! []* I)
+      agent: Entity? = >/^nsubj/ [!mention=Self]
+
+  - name: instruction_command_topic
+    priority: ${ rulepriority }
+    label: Instruction
+    pattern: |
+      trigger = (?<! I []*) [tag=VB] (?! []* I)
+      agent: Entity? = >/^nsubj/ [!mention=Self]
+      topic: Action = >/dobj|ccomp/
+
   - name: prep_need_role
     priority: ${ rulepriority }
     label: Need
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
-      person: Entity? = >/nsubj*/
+      agent: Entity? = >/nsubj*/
       role: Role = >dobj
 
   - name: prep_need_item
@@ -15,7 +30,7 @@ rules:
     label: Need
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
-      person: Entity? = >/nsubj*/
+      agent: Entity? = >/nsubj*/
       item: Item = >dobj
 
   - name: prep_need_action
@@ -23,7 +38,7 @@ rules:
     label: Need
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
-      person: Entity? = >/nsubj*/
+      agent: Entity? = >/nsubj*/
       action: SimpleActions = >xcomp
 
 
@@ -32,7 +47,7 @@ rules:
     label: Continue
     pattern: |
       trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      person: Entity = >/${agents}/
+      agent: Entity = >/${agents}/
 
   - name: change_priority
     priority: ${ rulepriority }
@@ -40,7 +55,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
-      person: Entity? = >/${agents}/
+      agent: Entity? = >/${agents}/
 
   - name: change_priority2
     priority: ${ rulepriority }
@@ -48,7 +63,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Person = >dobj
-      person: Entity? = >/${agents}/
+      agent: Entity? = >/${agents}/
 ### split this one too to capture victim and person seperately
 
 
@@ -83,7 +98,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
       location: Location = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
-      person: Entity? =
+      agent: Entity? =
         </cop/
         >/nsubj/
 
@@ -94,8 +109,22 @@ rules:
       trigger = [lemma=/(?i)broken|break/]
       tool: Tool = >/nsubj|dobj/
 
+  - name: report_door_open
+    priority: ${ rulepriority }
+    label: DoorOpen
+    pattern: |
+      trigger = door
+      status: Concept = </nsubj/ >xcomp? [lemma=open] | <dobj [lemma=open]
 
-##--------------------------------- knowledge sharing
+  - name: report_door_closed
+    priority: ${ rulepriority }
+    label: DoorClosed
+    pattern: |
+      trigger = door
+      status: Concept = </nsubj/ >xcomp? [lemma=/\b(close|shut)\b/] | <dobj [lemma=/\b(close|shut)\b/]
+
+
+  ##--------------------------------- knowledge sharing
 
   - name: existential
     priority: ${ rulepriority }
