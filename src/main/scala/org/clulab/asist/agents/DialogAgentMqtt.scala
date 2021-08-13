@@ -17,15 +17,17 @@ import scala.language.postfixOps
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 
-
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 July
+ * Updated:  2021 August
  *
  * This class reads input from the message bus on subscribed topics,
  * performs analysis on the input, and then publishes the analysis to
  * the output topic.
+ *
+ * If the Dialog Act Classification argument is set, a server process is
+ * contacted via HTTP request for 
  *
  * Input and output are in json format.
  *
@@ -67,8 +69,8 @@ class DialogAgentMqtt(
   )
 
   /** Receive a message from the message bus
-   *  @param topic:  The message bus topic where the message was published
-   *  @param text:  A metadata text string, possibly multi-line
+   * @param topic:  The message bus topic where the message was published
+   * @param text:  A metadata text string, possibly multi-line
    */
   def messageArrived(
     topic: String,
@@ -79,32 +81,33 @@ class DialogAgentMqtt(
     // progress and it is safe to start a new one.
     val noJobRunning = queue.isEmpty
 
-    // Each line of text is a discrete processing job ready to run
+    // Each line of text becomes a discrete processing job ready to run
     text.split("\n").map{
       line => queue.enqueue(BusMessage(topic, line))
     }
 
     // start new async job if none are running
-    if(noJobRunning) iteration
+    if(noJobRunning) startJob
   }
 
-  // The job in process is the queue head.  When the job finishes, remove
-  // the queue head and start the next job.
-  def finishJob: Unit = {
+  /** When finished, remove the queue head and start the next job.  */
+  def finishJob: Unit = if(queue.isEmpty) {
+    logger.error("finishJob called with empty queue!")
+  } else {
     queue.dequeue
-    iteration
+    startJob
   }
 
-  // use the head of the queue as the next job.  Leave it in place
-  // until the job finishes.
-  def iteration: Unit = if(queue.isEmpty) {
-    // do nothing, no work left
-  } else queue.head.topic match {
+  /* Use the head of the queue as the next job. */
+  def startJob: Unit = if(!queue.isEmpty) queue.head.topic match {
     case `topicSubTrial` => processTrialMessage(queue.head)
     case _ => processDialogAgentMessage (queue.head)
-  }
+  }  // else all jobs are done.
 
-  // send VersionInfo if we receive a TrialMessage with subtype "start", 
+
+  /** send VersionInfo if we receive a TrialMessage with subtype "start", 
+   * @param input: Message bus traffic with topic and text
+   */
   def processTrialMessage(input: BusMessage): Unit = try {
     val tm = read[TrialMessage](input.line)
     if(tm.msg.sub_type == "start") {
@@ -118,8 +121,7 @@ class DialogAgentMqtt(
     case NonFatal(t) => logger.error("Could not parse {}", input.line)
   } 
 
-
-  // schedule the next iteration after reseting the DAC server
+  /** Reset the DAC server each time we send a VersionInfo message */
   def resetServer(): Unit = {
     logger.info("Resetting DAC server at {}",serverLocation)
 
@@ -154,7 +156,9 @@ class DialogAgentMqtt(
     }
   }
 
-
+  /** Send DialogAgentMessage for any subsribed topic except "trial" 
+   * @param input: Message bus traffic with topic and text
+   */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
     val message = getDialogAgentMessage(
       source_type,
@@ -174,8 +178,10 @@ class DialogAgentMqtt(
     case NonFatal(t) => logger.error("Could not parse {}", input.line)
   } 
 
-
-  // Same as above but with known good arguments
+  /** Same as above but with known good arguments
+   * @param message DialogAgentMessage composed from Message Bus input
+   * @param metadata Message Bus input parsed as JSON
+   */
   def runClassification(
     message: DialogAgentMessage,
     metadata: JValue
@@ -226,11 +232,15 @@ class DialogAgentMqtt(
     }
   }
 
+  /** Same as above but with known good arguments
+   * @param annotation Message regarding returned future
+   * @param sc Status of returned future
+   */
   def showStatus(annotation: String, sc: StatusCode): Unit = {
     logger.info("{} HttpResponse status = {}", annotation, sc.value)
   }
 
-  // shutdow the actor system
+  /** shutdow the asynchronous actor system */
   def shutdown(): Unit = {
     logger.info("MQTT DAC client shutting down...")
     Thread.sleep(5)

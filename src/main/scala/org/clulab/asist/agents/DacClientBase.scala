@@ -24,12 +24,8 @@ import scala.util.{Failure, Success}
  * Updated:  2021 July
  *
  * Manage communications with the Dialog Act Classification (DAC) server
- *
+ * @param agent Owner class with callback methods
  */
-
-// sent back by the DAC server
-//case class Classification(name: String)
-
 class DacClientBase (
   val agent: DacUser
 ) extends LazyLogging {
@@ -43,7 +39,9 @@ class DacClientBase (
   // json
   implicit val formats = org.json4s.DefaultFormats
 
-  // schedule the next iteration after reseting the DAC server
+  /** schedule the next iteration after reseting the DAC server
+   * @param s State of execution updated with result
+   */
   def resetServer(s: RunState): Unit = {
     logger.info("Resetting DAC server at {}",serverLocation)
 
@@ -70,13 +68,17 @@ class DacClientBase (
       }
     } catch {
       case NonFatal(t) => 
-        logger.error("Could not reset DAC server at: {}",t.toString)
+        logger.error("Error: {}",t.toString)
+        logger.error("Could not reset DAC server at: {}",serverLocation)
         logger.error("Please ensure the DAC server is running")
         agent.iteration(agent.terminate(s))
     }
   }
 
-  // call the DAC for classification of this DialogAgentMessage
+  /** call the DAC for classification of this DialogAgentMessage
+   * @param s State of execution updated with result
+   * @param json metadata line input
+   */
   def runClassification(
     s: RunState, 
     json: String
@@ -127,12 +129,16 @@ class DacClientBase (
     }
   }
 
+  /** Complete the DAC call for this line of metadata
+   * @param s State of execution updated with result
+   * @param json metadata line input
+   */
   def finishClassification(s: RunState, line: String): Unit = {
     val done = agent.writeLine(s, line)
     agent.iteration(done)
   }
 
-  // shutdow the actor system
+  /** shutdow the asynchronous actor system */
   def shutdown(): Unit = {
     logger.info("DAC client shutting down...")
     Thread.sleep(5)
@@ -151,5 +157,4 @@ class DacClientBase (
       logger.error(t.toString)
       None
   }
-
 }
