@@ -259,24 +259,30 @@ class DialogAgentReprocessor (
     // then follow with a VersionInfo message 
     if(trialMessage.msg.sub_type == "start") {
 
-      // current timestamp
-      val timestamp = Clock.systemUTC.instant.toString
+      // current timestamp string
+      val currentTimestamp = Clock.systemUTC.instant.toString
 
-      // metadata timestamp
+      // metadata timestamp JValue
       val metadataTimestamp = 
         Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
 
+      // VersionInfoMetadata struct
       val versionInfoMetadata = 
-        VersionInfoMetadata(this, trialMessage, timestamp)
+        VersionInfoMetadata(this, trialMessage, currentTimestamp)
 
+      // JSON representation of struct
       val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
+
+      // Merge of @timestamp into JSON 
       val outputJValue = versionInfoJValue.merge(metadataTimestamp)
 
+      // TODO Is this step needed?
       val versionInfoJson = write(outputJValue)
 
       // we write the original line and then the Version Info line
       val done = s.copy(infoWrites = s.infoWrites + 1)
       futureIteration(done, List(line, versionInfoJson))
+
     } else {
       // if not a trial start just write the input line
       futureIteration(s, List(line))
@@ -400,7 +406,7 @@ class DialogAgentReprocessor (
     }
   }
 
-  // Write all the lines in the input list then resume iterating
+  // Write all the lines in the input list then resume asynchronous iterating
   private def futureIteration(s: RunState, lines: List[String]): Unit = {
 
     // we need a new thread or will overflow the stack
