@@ -68,6 +68,11 @@ class DialogAgentMqtt(
     this
   )
 
+  def writeToMessageBus(
+    topic: String,
+    text: String
+  ): Unit = bus.publish(topic, text)
+
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
    * @param text:  A metadata text string, possibly multi-line
@@ -112,7 +117,7 @@ class DialogAgentMqtt(
     val tm = read[TrialMessage](input.line)
     if(tm.msg.sub_type == "start") {
       val timestamp = Clock.systemUTC.instant.toString
-      bus.publish(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
+      writeToMessageBus(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
       if(withClassifications) resetServer  // enter async execution
       else finishJob  // no DAC 
     }
@@ -167,11 +172,10 @@ class DialogAgentMqtt(
       read[Metadata](input.line)
     )
     if(withClassifications) {
-      val metadata: JValue = parse(s""" ${input.line} """)
-      runClassification(message, metadata)  // enter async execution
+      runClassification(message)  // enter async execution
     } else {
       val json = write(message)
-      bus.publish(topicPubDialogAgent, json)
+      writeToMessageBus(topicPubDialogAgent, json)
       finishJob
     }
   } catch {
@@ -183,8 +187,7 @@ class DialogAgentMqtt(
    * @param metadata Message Bus input parsed as JSON
    */
   def runClassification(
-    message: DialogAgentMessage,
-    metadata: JValue
+    message: DialogAgentMessage
   ): Unit = {
     val data = message.data
     val requestJson = write(
@@ -214,11 +217,8 @@ class DialogAgentMqtt(
           showStatus(message.header.timestamp, response.status)
           val label = c.name.replace("\"","")
           val newData = data.copy(dialog_act_label = label)
-          val newMetadata = metadata.replace(
-            "data"::Nil,
-            Extraction.decompose(newData)
-          )
-          bus.publish(topicPubDialogAgent,write(newMetadata))
+          val newMessage = message.copy(data = newData)
+          writeToMessageBus(topicPubDialogAgent,write(newMessage))
           finishJob
         case Failure(t) =>
           showStatus(message.header.timestamp, response.status)
