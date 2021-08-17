@@ -101,8 +101,9 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
       target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      direction: Direction? = >/advmod/
       agent: Entity? = >/${agents}/
-
+##### \\fixme: why is the direction argument not working??
   - name: move_keep_false
     priority: ${ rulepriority }
     label: Move

@@ -115,20 +115,45 @@ rules:
       trigger = [lemma=/(?i)^(${ zone_triggers })$/]
       num: Number = >/(conj_(and|or)|nummod)/
 
-  - name: directions
+  - name: up_directions
     priority: ${ first_priority }
-    label: Direction
+    label: Up
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/\b(up)(ward)?\b/ & !outgoing=xcomp & !tag=VBD] (?! [word=/(?i)now|away|here|there|over/])
+
+  - name: down_directions
+    priority: ${ first_priority }
+    label: Down
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/\b(down)(ward)?\b/ & !outgoing=xcomp & !tag=VBD] (?! [word=/(?i)now|away|here|there|over/])
+
+  - name: right_direction
+    priority: ${ first_priority }
+    label: Right
     type: token
     keep: true
     pattern: |
-      [lemma=/\b(up|down|left|right)(ward|most|ish)?\b/ & !outgoing=xcomp & !tag=VBD] (?! [word=/(?i)now|away|here|there|over/])
+      (?<= [word=/(?i)the/]) [word=/\b(right)\b/ & !outgoing=xcomp & !tag=VBD] |  [word=/\b(right)\b/ & !outgoing=xcomp & !tag=VBD] (?= [word=/(?i)of/])
+
+  - name: left_direction
+    priority: ${ first_priority }
+    label: Left
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=/(?i)the/]) [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] |  [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] (?= [word=/(?i)of/])
+
 
   - name: relative_location
     priority: ${ second_priority }
     label: Location
     pattern: |
       trigger = @Direction [lemma=/half|part|side|section/]?
-      target: Concept? = >/nmod_of/
+      target: Concept = >/nmod_of/
 
   - name: location_area
     priority: ${ second_priority }
