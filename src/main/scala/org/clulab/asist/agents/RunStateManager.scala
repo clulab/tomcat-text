@@ -16,11 +16,16 @@ case class RunState(
   lineIterator: Iterator[String] = Iterator(),
   fileWriter: Option[PrintWriter] = None,
 
+  // for the MQTT agent: TODO least-privilege these 
+  topic: String = "",
+  inputLine: String = "",
+  outputLine: String = "",
+
   // Dialog Agent Messages generated from Dialog Agent metadata
   reprocessed: Int = 0,
 
   // Dialog Agent Messages generated from Dialog Agent error reports
-  agentRecovered: Int = 0,
+  recovered: Int = 0,
 
   infoWrites: Int = 0, // VersionInfo messages written at trial starts
   lineReads: Int = 0,  // total lines read
@@ -32,28 +37,37 @@ case class RunState(
 )
 
 
+object RSM extends RunStateManager
+
 trait RunStateManager extends LazyLogging {
-  // End processing
-  def terminate(s: RunState): RunState = s.copy(terminated = true)
+  // set initial state
+  def setTopic(s: RunState, topic: String) = s.copy(topic = topic)
+  def setInputLine(s: RunState, line: String) = s.copy(inputLine = line)
+  def setOutputLine(s: RunState, line: String) = s.copy(outputLine = line)
 
   // increment state variables as we go
   def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
   def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
-  def addAgentReprocessed(s: RunState): RunState = s.copy(reprocessed = s.reprocessed+1)
+  def addReprocessed(s: RunState): RunState = s.copy(reprocessed = s.reprocessed+1)
+  def addRecovered(s: RunState): RunState = s.copy(recovered = s.recovered+1)
   def addInfoWrite(s: RunState): RunState = s.copy(infoWrites = s.infoWrites + 1)
   def addLineRead(s: RunState): RunState = s.copy(lineReads = s.lineReads + 1)
   def addLineWrite(s: RunState): RunState = s.copy(lineWrites = s.lineWrites + 1)
   def addError(s: RunState): RunState = s.copy(errors = s.errors + 1)
+
+  // End processing
+  def terminate(s: RunState): RunState = s.copy(terminated = true)
 
   // show statistics for one file
   def stateReport(s: RunState): Unit = {
     logger.info("Total lines read:              %d".format(s.lineReads))
     logger.info("Total lines written:           %d".format(s.lineWrites))
     logger.info("DialogAgent lines reprocessed: %d".format(s.reprocessed))
+    logger.info("DialogAgent lines recovered:   %d".format(s.recovered))
     logger.info("VersionInfo lines written:     %d".format(s.infoWrites))
-    logger.info("DialogAgent error recoveries:  %d".format(s.agentRecovered))
     logger.info("DAC server resets:             %d".format(s.dacResets))
-    logger.info("DAC classifications:           %d".format(s.dacQueries))
+    logger.info("DAC server classifications:    %d".format(s.dacQueries))
     logger.info("Processing errors              %d".format(s.errors))
   }
 }
+
