@@ -40,10 +40,10 @@ class TestQuestions extends BaseTest {
     testMention(mentions, desired6)
   }
 
-  failingTest should "find location questions with `location_moving_question` rule" in {
+  it should "find location questions with `location_moving_question` rule" in {
     val text = "Where did they go?"
     val mentions = extractor.extractFrom(text)
-    val move = DesiredMention("MoveTo", "go", Map.empty, Set(PAST_TENSE, AGENT_ENTITY))
+    val move = DesiredMention("Move", "go", Map.empty, Set(PAST_TENSE, AGENT_ENTITY))
     val desired1 = DesiredMention("LocationQuestion", "Where did they go", Map("topic" -> Seq(move)), Set(PAST_TENSE))
     testMention(mentions, desired1)
   } //fixme: we need to make an exception to the obligatory move argument for this, perhaps a movement rule that is not being kept

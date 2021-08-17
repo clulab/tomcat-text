@@ -5,6 +5,7 @@ rules:
   - name: instruction_command
     priority: ${ rulepriority }
     label: Instruction
+    keep: true
     pattern: |
       trigger = (?<! I []*) [tag=VB & mention=Action] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]

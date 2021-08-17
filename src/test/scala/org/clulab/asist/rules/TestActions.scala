@@ -68,10 +68,10 @@ class TestActions extends BaseTest {
   }
 
   passingTest should "Parse move events properly" in {
-    val doc = extractor.annotate("Let's run to the office.")
+    val doc = extractor.annotate("run to the office.")
     val mentions = extractor.extractFrom(doc)
     val location= DesiredMention("Infrastructure", "office")
-    val move_mention = DesiredMention("MoveTo", "run", Map("target" -> Seq(location)))
+    val move_mention = DesiredMention("MoveTo", "run to the office", Map("target" -> Seq(location)))
 
     testMention(mentions, move_mention)
   }
