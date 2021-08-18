@@ -24,11 +24,11 @@ import scala.util.{Failure, Success}
  */
 
 abstract trait DacAgent {
-  /** A line to be written to the output of an agent
+  /** Write the runstate output to the output for the extending class
    * @param rs The runState sent with the orignal message to the DAC client
    * @return A new run state updated with the status of the write operation
    */
-  def writeLine(rs: RunState): RunState
+  def writeOutput(rs: RunState): RunState
 
   /** States sent by the DAC server, if in use.
    * @param message A DialogAgentMessage with the dialog_act_label value set
@@ -71,7 +71,7 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"Server reset succeeded: ${response.status}")
-          val done = agent.writeLine(rs)
+          val done = agent.writeOutput(rs)
           agent.iteration(done)
         case Failure(t) =>
           logger.info(s"Server reset failed: ${response.status}")
@@ -126,7 +126,7 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           )
           val done1 = RSM.addDacQuery(rs)
           val done2 = RSM.setOutputLine(done1, write(newMetadata))
-          val done3 = agent.writeLine(done2)
+          val done3 = agent.writeOutput(done2)
           agent.iteration(done3)
         case Failure(t) =>
           logger.error(s"Server query failed: ${response.status}")

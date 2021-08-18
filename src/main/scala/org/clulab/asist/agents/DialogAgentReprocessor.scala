@@ -144,7 +144,9 @@ class DialogAgentReprocessor (
     counter: Int
   ): Boolean = if(!iter.hasNext) false
   else {
-    val lookAhead = readMetadataLookahead(iter.next)
+    val string = iter.next
+    logger.info(s"Checking ${string}")
+    val lookAhead = readMetadataLookahead(string)
     if(lookAhead.topic == topicPubDialogAgent) true
     else fileHasDialogAgentMetadata(iter, counter+1)
   }
@@ -414,30 +416,34 @@ class DialogAgentReprocessor (
   private def futureIteration(rs: RunState, lines: List[String]): Unit = {
 
     // we need a new thread or will overflow the stack
-    val f: Future[RunState] = Future {rs}  // make this the write method...
+    val f: Future[RunState] = 
+      Future {writeOutput(RSM.setOutputLines(rs, lines))}
 
     f onComplete {
-      case Success(fs: RunState) => lines match {
-        case line::tail => 
-          val done = RSM.setOutputLine(fs, line)
-          futureIteration(writeLine(done), tail)
-        case _ => iteration(fs)
-      }
+      case Success(fs: RunState) => 
+        iteration(fs)
       case Failure(t) => 
         logger.error(s"An error occured: ${t}")
         iteration(RSM.addError(rs)) 
     }
   }
 
-  /** A line to be written to the MessageBus
+
+  /** Write output lines to the Message Bus
    * @param rs The runState sent with the orignal message to the DAC client
    * @return The run state with the lineWrites var incremented by 1
    */
-  override def writeLine(rs: RunState): RunState = rs.fileWriter match {
+  override def writeOutput(rs: RunState): RunState = rs.fileWriter match {
     case Some(fw: PrintWriter) => 
       try {
-        fw.write(s"${rs.outputLine}\n")
-        RSM.addLineWrite(rs)
+        rs.outputLines match {
+          case line::tail =>
+            fw.write(s"${line}\n")
+            val rs1 = RSM.addLineWrite(rs)
+            val rs2 = RSM.setOutputLines(rs1, tail)
+            writeOutput(rs2)
+          case _ => rs
+        }
       } catch {
         case NonFatal(t) =>
           logger.error(s"Error writing to output file:  ${t}")

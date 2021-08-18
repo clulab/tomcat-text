@@ -75,10 +75,10 @@ class DialogAgentMqtt(
    * @param rs The runState sent with the orignal message to the DAC client
    * @return The run state with the lineWrites var incremented by 1
    */
-  override def writeLine(
+  override def writeOutput(
     rs: RunState
   ): RunState = {
-    writeToMessageBus(rs.topic, rs.outputLine)
+    rs.outputLines.foreach(line => writeToMessageBus(rs.topic, line))
     dequeue 
     RSM.addLineWrite(rs)
   }
@@ -167,12 +167,10 @@ class DialogAgentMqtt(
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, currentTimestamp)
       if(withClassifications) {
-        val rs = new RunState(
-          topic = topicPubVersionInfo,
-          inputLine = input.line,
-          outputLine = write(versionInfo)
-        )
-        dacClient.resetServer(this, rs)
+        val rs1 = RSM.setTopic(new RunState, topicPubVersionInfo)
+        val rs2 = RSM.setInputLine(rs1, input.line)
+        val rs3 = RSM.setOutputLine(rs2, write(versionInfo))
+        dacClient.resetServer(this, rs3)
       } else {
         writeToMessageBus(topicPubVersionInfo, write(versionInfo))
         finishJob  // no DAC 

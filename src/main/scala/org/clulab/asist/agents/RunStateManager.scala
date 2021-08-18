@@ -19,7 +19,7 @@ case class RunState(
   // for the MQTT agent: TODO least-privilege these 
   topic: String = "",
   inputLine: String = "",
-  outputLine: String = "",
+  outputLines: List[String] = List(),
 
   // Dialog Agent Messages generated from Dialog Agent metadata
   reprocessed: Int = 0,
@@ -43,7 +43,8 @@ trait RunStateManager extends LazyLogging {
   // set initial state
   def setTopic(s: RunState, topic: String) = s.copy(topic = topic)
   def setInputLine(s: RunState, line: String) = s.copy(inputLine = line)
-  def setOutputLine(s: RunState, line: String) = s.copy(outputLine = line)
+  def setOutputLine(s: RunState, line: String) = setOutputLines(s, List(line))
+  def setOutputLines(s: RunState, lines: List[String]) = s.copy(outputLines = lines)
 
   // increment state variables as we go
   def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
