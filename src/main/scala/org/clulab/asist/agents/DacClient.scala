@@ -23,18 +23,24 @@ import scala.util.{Failure, Success}
  *
  */
 
-abstract trait DacUser extends RunStateManager {
-  def iteration(s: RunState): Unit
-  def writeLine(s: RunState, line: String): RunState
+abstract trait DacAgent {
+  /** A line to be written to the output of an agent
+   * @param rs The runState sent with the orignal message to the DAC client
+   * @return A new run state updated with the status of the write operation
+   */
+  def writeLine(rs: RunState): RunState
+
+  /** States sent by the DAC server, if in use.
+   * @param message A DialogAgentMessage with the dialog_act_label value set
+   */
+  def iteration(rs: RunState): Unit
 }
 
 
 // sent back by the DAC server
 case class Classification(name: String)
 
-class DacClient (
-  val agent: DacUser
-) extends LazyLogging {
+class DacClient (agent: DacAgent) extends LazyLogging {
 
   val serverLocation = "http://localhost:8000"
 
@@ -46,8 +52,8 @@ class DacClient (
   implicit val formats = org.json4s.DefaultFormats
 
   // schedule the next iteration after reseting the DAC server
-  def resetServer(s: RunState): Unit = {
-    logger.info("Resetting DAC server at {}",serverLocation)
+  def resetServer(agent: DacAgent, rs: RunState): Unit = {
+    logger.info(s"Resetting DAC server at: ${serverLocation}")
 
     val request = HttpRequest(
       uri = Uri(s"${serverLocation}/reset-model"),
@@ -64,31 +70,29 @@ class DacClient (
 
       futureReply onComplete {
         case Success(a) =>
-          showStatus("Server Reset", response.status)
-          logger.info("DAC Server reset successfully")
-          agent.iteration(agent.addDacReset(s))
+          logger.info(s"Server reset succeeded: ${response.status}")
+          val done = agent.writeLine(rs)
+          agent.iteration(done)
         case Failure(t) =>
-          showStatus("Server Reset", response.status)
-          logger.error(s"An error occured:  ${t}")
-          agent.iteration(agent.addError(s))
+          logger.info(s"Server reset failed: ${response.status}")
+          agent.iteration(RSM.addError(rs))
       }
     } catch {
       case NonFatal(t) => 
-        logger.error("Could not reset DAC server at: {}",t.toString)
+        logger.info(s"Could not reset DAC server at: ${serverLocation}")
         logger.error("Please ensure the DAC server is running")
-        agent.iteration(agent.terminate(s))
+        agent.iteration(RSM.terminate(rs))
     }
   }
 
 
   // call the DAC for classification of this DialogAgentMessage
   def runClassification(
-    s: RunState, 
-    json: String,
+    agent: DacAgent,
+    rs: RunState, 
+    data: DialogAgentMessageData,
     metadata: JValue
   ): Unit = {
-    val message = read[DialogAgentMessage](json)
-    val data = message.data
     val requestJson = write(
       new DialogActClassifierMessage(
         Option(data.participant_id).getOrElse(""),
@@ -113,34 +117,31 @@ class DacClient (
 
       futureClassification onComplete {
         case Success(c: Classification) =>  
-          showStatus(message.header.timestamp, response.status)
+          logger.info(s"Server query succeeded: ${response.status}")
           val label = c.name.replace("\"","")
           val newData = data.copy(dialog_act_label = label)
           val newMetadata = metadata.replace(
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val newMetadataJson = write(newMetadata)
-          val queried = s.copy(dacQueries = s.dacQueries + 1)
-          val done = agent.writeLine(queried, newMetadataJson)
-          agent.iteration(done)
+          val done1 = RSM.addDacQuery(rs)
+          val done2 = RSM.setOutputLine(done1, write(newMetadata))
+          val done3 = agent.writeLine(done2)
+          agent.iteration(done3)
         case Failure(t) =>
-          showStatus(message.header.timestamp, response.status)
-          logger.error(s"An error occured:  ${t}")
-          val done = s.copy(errors = s.errors + 1)
+          logger.error(s"Server query failed: ${response.status}")
+          logger.error(s"Input Line: ${rs.inputLine}")
+          logger.error(s"Error: ${t.toString}")
+          val done = RSM.addError(rs)
           agent.iteration(done)
       }
     } catch {
       case NonFatal(t) => 
-        logger.error("Error processing {}", json)
-        logger.error("{}",t.toString)
-        val done = s.copy(terminated = true)
+        logger.error(s"Error processing: ${rs.inputLine}")
+        logger.error(t.toString)
+        val done = RSM.terminate(rs)
         agent.iteration(done)
     }
-  }
-
-  def showStatus(annotation: String, sc: StatusCode): Unit = {
-    logger.info("{} HttpResponse status = {}", annotation, sc.value)
   }
 
   // shutdow the actor system

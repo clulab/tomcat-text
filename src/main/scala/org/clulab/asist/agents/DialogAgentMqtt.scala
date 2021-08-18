@@ -46,6 +46,7 @@ class DialogAgentMqtt(
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent 
+    with DacAgent
     with LazyLogging
     with MessageBusClientListener { 
 
@@ -56,6 +57,8 @@ class DialogAgentMqtt(
   implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
 
   val source_type = "message_bus"
+
+  val dacClient = new DacClient(this)
 
   val queue: Queue[BusMessage] = new Queue 
 
@@ -68,10 +71,47 @@ class DialogAgentMqtt(
     this
   )
 
+  /** A line to be written to the MessageBus
+   * @param rs The runState sent with the orignal message to the DAC client
+   * @return The run state with the lineWrites var incremented by 1
+   */
+  override def writeLine(
+    rs: RunState
+  ): RunState = {
+    writeToMessageBus(rs.topic, rs.outputLine)
+    dequeue 
+    RSM.addLineWrite(rs)
+  }
+
+  def enqueue(job: BusMessage): Unit = {
+    logger.info("enqueue")
+    queue.enqueue(job)
+    logger.info(s"queue length is now ${queue.length}")
+  }
+
+  def dequeue: Unit = {
+    logger.info("dequeue")
+    queue.dequeue 
+    logger.info(s"queue length is now ${queue.length}")
+  }
+
+  /** States sent by the DAC server, if in use.
+   * @param message A DialogAgentMessage with the dialog_act_label value set
+   */
+  override def iteration(rs: RunState): Unit = startJob
+
+
+  /** provided so we can overload it in a test class */
   def writeToMessageBus(
     topic: String,
     text: String
-  ): Unit = bus.publish(topic, text)
+  ): Unit = {
+    logger.info("writeToMessageBus")
+    logger.info(s"  topic: ${topic}")
+    logger.info(s"  text: ${text}")
+
+    bus.publish(topic, text)
+  }
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -81,6 +121,7 @@ class DialogAgentMqtt(
     topic: String,
     text: String 
   ): Unit = {
+    logger.info("messageArrived")
 
     // if the queue is empty, there is no aynchronous job in
     // progress and it is safe to start a new one.
@@ -88,27 +129,34 @@ class DialogAgentMqtt(
 
     // Each line of text becomes a discrete processing job ready to run
     text.split("\n").map{
-      line => queue.enqueue(BusMessage(topic, line))
+      line => enqueue(BusMessage(topic, line))
     }
 
     // start new async job if none are running
     if(noJobRunning) startJob
   }
 
-  /** When finished, remove the queue head and start the next job.  */
-  def finishJob: Unit = if(queue.isEmpty) {
-    logger.error("finishJob called with empty queue!")
-  } else {
-    queue.dequeue
-    startJob
+  /* Use the head of the queue as the next job. */
+  def startJob: Unit = {
+    logger.info("startJob")
+
+    if(!queue.isEmpty) queue.head.topic match {
+      case `topicSubTrial` => processTrialMessage(queue.head)
+      case _ => processDialogAgentMessage (queue.head)
+    }  // else all jobs are done.
   }
 
-  /* Use the head of the queue as the next job. */
-  def startJob: Unit = if(!queue.isEmpty) queue.head.topic match {
-    case `topicSubTrial` => processTrialMessage(queue.head)
-    case _ => processDialogAgentMessage (queue.head)
-  }  // else all jobs are done.
+  /** When finished, remove the queue head and start the next job.  */
+  def finishJob: Unit = {
+    logger.info("finishJob")
 
+    if(queue.isEmpty) {
+      logger.error("finishJob called with empty queue!")
+    } else {
+      dequeue
+      startJob
+    }
+  }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
@@ -116,134 +164,49 @@ class DialogAgentMqtt(
   def processTrialMessage(input: BusMessage): Unit = try {
     val tm = read[TrialMessage](input.line)
     if(tm.msg.sub_type == "start") {
-      val timestamp = Clock.systemUTC.instant.toString
-      writeToMessageBus(topicPubVersionInfo, write(VersionInfo(this, timestamp)))
-      if(withClassifications) resetServer  // enter async execution
-      else finishJob  // no DAC 
+      val currentTimestamp = Clock.systemUTC.instant.toString
+      val versionInfo = VersionInfo(this, currentTimestamp)
+      if(withClassifications) {
+        val rs = new RunState(
+          topic = topicPubVersionInfo,
+          inputLine = input.line,
+          outputLine = write(versionInfo)
+        )
+        dacClient.resetServer(this, rs)
+      } else {
+        writeToMessageBus(topicPubVersionInfo, write(versionInfo))
+        finishJob  // no DAC 
+      }
     }
     else finishJob  // no trial start
   } catch {
-    case NonFatal(t) => logger.error("Could not parse {}", input.line)
+    case NonFatal(t) => logger.error(s"Could not parse: ${input.line}")
   } 
-
-  /** Reset the DAC server each time we send a VersionInfo message */
-  def resetServer(): Unit = {
-    logger.info("Resetting DAC server at {}",serverLocation)
-
-    val request = HttpRequest(
-      uri = Uri(s"${serverLocation}/reset-model"),
-      entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
-
-    try {
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-
-      val futureReply: Future[String] = response.entity.dataBytes
-        .runReduce(_ ++ _)
-        .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
-
-      futureReply onComplete {
-        case Success(a) =>
-          showStatus("Server Reset", response.status)
-          logger.info("DAC Server reset successfully")
-          finishJob
-        case Failure(t) =>
-          showStatus("Server Reset", response.status)
-          logger.error(s"An error occured:  ${t}")
-          system.terminate
-      }
-    } catch {
-      case NonFatal(t) => 
-        logger.error("Could not reset DAC server at: {}",t.toString)
-        logger.error("Please ensure the DAC server is running")
-        system.terminate
-    }
-  }
 
   /** Send DialogAgentMessage for any subsribed topic except "trial" 
    * @param input: Message bus traffic with topic and text
    */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
-    val message = getDialogAgentMessage(
-      source_type,
-      input.topic,
-      input.topic,
-      read[Metadata](input.line)
-    )
     if(withClassifications) {
-      runClassification(message)  // enter async execution
+      val data = readDialogAgentMessageData(input.line)
+      val metadata = parse(input.line)
+      val rs = (new RunState).copy (
+        topic = topicPubDialogAgent,
+        inputLine = input.line
+      )
+      dacClient.runClassification(this, rs, data, metadata) 
     } else {
+      val message = getDialogAgentMessage(
+        source_type,
+        input.topic,
+        input.topic,
+        read[Metadata](input.line)
+      )
       val json = write(message)
       writeToMessageBus(topicPubDialogAgent, json)
       finishJob
     }
   } catch {
-    case NonFatal(t) => logger.error("Could not parse {}", input.line)
+    case NonFatal(t) => logger.error(s"Could not parse: ${input.line}")
   } 
-
-  /** Same as above but with known good arguments
-   * @param message DialogAgentMessage composed from Message Bus input
-   * @param metadata Message Bus input parsed as JSON
-   */
-  def runClassification(
-    message: DialogAgentMessage
-  ): Unit = {
-    val data = message.data
-    val requestJson = write(
-      new DialogActClassifierMessage(
-        Option(data.participant_id).getOrElse(""),
-        Option(data.text).getOrElse(""),
-        Option(data.extractions).getOrElse(Seq())
-      )
-    )
-    val request = HttpRequest(
-      uri = Uri(s"${serverLocation}/classify"),
-      entity = HttpEntity(ContentTypes.`application/json`,requestJson)
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
-
-    try {
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-      val futureClassification: Future[Classification] = response.entity.dataBytes
-        .runReduce(_ ++ _)
-        .map{ line =>
-          val ret = line.utf8String.split(" ").headOption.map(Classification)
-          ret.getOrElse(new Classification(""))
-        }
-
-      futureClassification onComplete {
-        case Success(c: Classification) =>  
-          showStatus(message.header.timestamp, response.status)
-          val label = c.name.replace("\"","")
-          val newData = data.copy(dialog_act_label = label)
-          val newMessage = message.copy(data = newData)
-          writeToMessageBus(topicPubDialogAgent,write(newMessage))
-          finishJob
-        case Failure(t) =>
-          showStatus(message.header.timestamp, response.status)
-          logger.error(s"An error occured:  ${t}")
-          system.terminate
-      }
-    } catch {
-      case NonFatal(t) => 
-        logger.error("Error:  {}",t.toString)
-        system.terminate
-    }
-  }
-
-  /** Same as above but with known good arguments
-   * @param annotation Message regarding returned future
-   * @param sc Status of returned future
-   */
-  def showStatus(annotation: String, sc: StatusCode): Unit = {
-    logger.info("{} HttpResponse status = {}", annotation, sc.value)
-  }
-
-  /** shutdow the asynchronous actor system */
-  def shutdown(): Unit = {
-    logger.info("MQTT DAC client shutting down...")
-    Thread.sleep(5)
-    system.terminate()
-  }
 }
