@@ -40,13 +40,14 @@ case class RunState(
 object RSM extends RunStateManager
 
 trait RunStateManager extends LazyLogging {
-  // set initial state
+
+  // state setters
   def setTopic(s: RunState, topic: String) = s.copy(topic = topic)
   def setInputLine(s: RunState, line: String) = s.copy(inputLine = line)
   def setOutputLine(s: RunState, line: String) = setOutputLines(s, List(line))
   def setOutputLines(s: RunState, lines: List[String]) = s.copy(outputLines = lines)
 
-  // increment state variables as we go
+  // state incrementers
   def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
   def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
   def addReprocessed(s: RunState): RunState = s.copy(reprocessed = s.reprocessed+1)
@@ -59,7 +60,7 @@ trait RunStateManager extends LazyLogging {
   // End processing
   def terminate(s: RunState): RunState = s.copy(terminated = true)
 
-  // show statistics for one file
+  // show state
   def stateReport(s: RunState): Unit = {
     logger.info("Total lines read:              %d".format(s.lineReads))
     logger.info("Total lines written:           %d".format(s.lineWrites))
@@ -71,4 +72,3 @@ trait RunStateManager extends LazyLogging {
     logger.info("Processing errors              %d".format(s.errors))
   }
 }
-
