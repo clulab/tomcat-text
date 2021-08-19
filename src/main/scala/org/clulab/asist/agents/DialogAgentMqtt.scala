@@ -71,16 +71,21 @@ class DialogAgentMqtt(
     this
   )
 
-  /** A line to be written to the MessageBus
+  /** Lines to be written to the MessageBus
    * @param rs The runState sent with the orignal message to the DAC client
    * @return The run state with the lineWrites var incremented by 1
    */
   override def writeOutput(
     rs: RunState
-  ): RunState = {
-    rs.outputLines.foreach(line => writeToMessageBus(rs.topic, line))
-    dequeue 
-    RSM.addLineWrite(rs)
+  ): RunState = rs.outputLines match {
+    case line::tail =>
+      writeToMessageBus(rs.topic, line)
+      val rs1 = RSM.addLineWrite(rs)
+      val rs2 = RSM.setOutputLines(rs1, tail)
+      writeOutput(rs2)
+    case _ => 
+      dequeue 
+      rs
   }
 
   def enqueue(job: BusMessage): Unit = {
