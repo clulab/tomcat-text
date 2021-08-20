@@ -18,7 +18,24 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)${ medic_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
+      [word=/(?i)\b${ medic_triggers }\b/] [word=/(?i)(${ specialist_triggers })/]?
+
+  - name: medic_strict_token
+    priority: ${ rulepriority }
+    label: Medic
+    type: token
+    keep: true
+    pattern: |
+      /\bmedic\b/ [word=/(?i)(${ specialist_triggers })/]?
+
+
+  - name: medical_specialist
+    priority: ${ rulepriority }
+    label: Medic
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)medical/] [word=/(?i)(${ specialist_triggers })/]
 
   - name: engineer
     priority: ${ rulepriority }

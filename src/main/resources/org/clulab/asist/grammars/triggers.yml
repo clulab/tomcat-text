@@ -53,13 +53,15 @@ hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer"
 
 infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony"
 
-medic_triggers: "medic|paramedic|nurse|doctor|medical"
+medic_triggers: "paramedic|nurse|doctor"
 
 medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 movefrom_triggers: "depart|exit|leave"
 
 moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
+
+move_victim_triggers: "move|transfer|transport"
 
 north_triggers: "north"
 
