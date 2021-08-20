@@ -71,8 +71,8 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"Server reset succeeded: ${response.status}")
-          val done = agent.writeOutput(rs)
-          agent.iteration(done)
+          val rs1 = agent.writeOutput(rs)
+          agent.iteration(rs1)
         case Failure(t) =>
           logger.info(s"Server reset failed: ${response.status}")
           agent.iteration(RSM.addError(rs))
@@ -81,7 +81,8 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       case NonFatal(t) => 
         logger.info(s"Could not reset DAC server at: ${serverLocation}")
         logger.error("Please ensure the DAC server is running")
-        agent.iteration(RSM.terminate(rs))
+        val rs1 = RSM.terminate(rs)
+        agent.iteration(rs)
     }
   }
 
@@ -124,23 +125,23 @@ class DacClient (agent: DacAgent) extends LazyLogging {
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val done1 = RSM.addDacQuery(rs)
-          val done2 = RSM.setOutputLine(done1, write(newMetadata))
-          val done3 = agent.writeOutput(done2)
-          agent.iteration(done3)
+          val rs1 = RSM.addDacQuery(rs)
+          val rs2 = RSM.setOutputLine(rs1, write(newMetadata))
+          val rs3 = agent.writeOutput(rs2)
+          agent.iteration(rs3)
         case Failure(t) =>
           logger.error(s"Server query failed: ${response.status}")
           logger.error(s"Input Line: ${rs.inputLine}")
           logger.error(s"Error: ${t.toString}")
-          val done = RSM.addError(rs)
-          agent.iteration(done)
+          val rs1 = RSM.addError(rs)
+          agent.iteration(rs1)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Error processing: ${rs.inputLine}")
         logger.error(t.toString)
-        val done = RSM.terminate(rs)
-        agent.iteration(done)
+        val rs1 = RSM.terminate(rs)
+        agent.iteration(rs1)
     }
   }
 
