@@ -265,7 +265,7 @@ class DialogAgent (
     )
   }
 
-  /* Read a DialogAgentMessageData struct from JSON
+  /* Read a DialogAgentMessageData struct from JSON and replace the extractions
    * @param json A JSON representation of a DialogAgentMessageData struct
    * @return The JSON-defined struct or a defaut if the parsing fails.
    */
