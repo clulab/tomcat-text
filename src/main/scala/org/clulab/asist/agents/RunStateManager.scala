@@ -41,7 +41,7 @@ object RSM extends RunStateManager
 
 trait RunStateManager extends LazyLogging {
 
-  // state setters
+  // value setters
   def setTopic(s: RunState, topic: String) = s.copy(topic = topic)
   def setInputLine(s: RunState, line: String) = s.copy(inputLine = line)
   def setOutputLine(s: RunState, line: String) = setOutputLines(s, List(line))
@@ -60,15 +60,15 @@ trait RunStateManager extends LazyLogging {
   // End processing
   def terminate(s: RunState): RunState = s.copy(terminated = true)
 
-  // show state
-  def stateReport(s: RunState): Unit = {
-    logger.info("Total lines read:              %d".format(s.lineReads))
-    logger.info("Total lines written:           %d".format(s.lineWrites))
-    logger.info("DialogAgent lines reprocessed: %d".format(s.reprocessed))
-    logger.info("DialogAgent lines recovered:   %d".format(s.recovered))
-    logger.info("VersionInfo lines written:     %d".format(s.infoWrites))
-    logger.info("DAC server resets:             %d".format(s.dacResets))
-    logger.info("DAC server classifications:    %d".format(s.dacQueries))
-    logger.info("Processing errors              %d".format(s.errors))
-  }
+  // Return a list of each state variable
+  def stateReport(s: RunState): List[String] = List(
+    "Total lines read:              %d".format(s.lineReads),
+    "Total lines written:           %d".format(s.lineWrites),
+    "DialogAgent lines reprocessed: %d".format(s.reprocessed),
+    "DialogAgent lines recovered:   %d".format(s.recovered),
+    "VersionInfo lines written:     %d".format(s.infoWrites),
+    "DAC server resets:             %d".format(s.dacResets),
+    "DAC server classifications:    %d".format(s.dacQueries),
+    "Processing errors              %d".format(s.errors)
+  )
 }
