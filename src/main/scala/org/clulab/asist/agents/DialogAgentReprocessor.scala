@@ -155,7 +155,6 @@ class DialogAgentReprocessor (
    * @param rs State with input line loaded
    */
   def processLine(rs: RunState): Unit = {
-    logger.info("processLine")
     readMetadataLookahead(rs.inputLine).topic match {
       case `topicSubTrial` => processTrialMetadata(rs)
       case `topicPubDialogAgent` => reprocessDialogAgentMetadata(rs)
@@ -174,7 +173,6 @@ class DialogAgentReprocessor (
    * @return The original line always, with VersionInfo if trial start
    */
   def processTrialMetadata(rs: RunState): Unit = try {
-    logger.info("processTrialMetadata")
     val trialMessage = read[TrialMessage](rs.inputLine)
 
     // If this is the start of a trial, write the input line and 
@@ -227,7 +225,6 @@ class DialogAgentReprocessor (
     rs: RunState
   ): Unit = parseJValue(rs.inputLine) match {
     case Some(metadataJValue: JValue) =>
-      logger.info("found metadataJValue")
       reprocessDialogAgentMessage(rs, metadataJValue)
     case _ => reportProblem(rs, "Could not parse metadata")
   }
