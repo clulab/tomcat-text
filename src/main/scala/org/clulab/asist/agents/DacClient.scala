@@ -60,21 +60,19 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
     )
     val future: Future[HttpResponse] = Http().singleRequest(request)
-
     try {
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
-
       futureReply onComplete {
         case Success(a) =>
-          logger.info(s"Server reset succeeded: ${response.status}")
-          val rs1 = agent.writeOutput(rs)
-          agent.iteration(rs1)
+          logger.info(s"DAC server reset succeeded: ${response.status}")
+          val rs1 = RSM.addDacReset(rs)
+          val rs2 = agent.writeOutput(rs1)
+          agent.iteration(rs2)
         case Failure(t) =>
-          logger.info(s"Server reset failed: ${response.status}")
+          logger.info(s"DAC server reset failed: ${response.status}")
           agent.iteration(RSM.addError(rs))
       }
     } catch {
@@ -106,7 +104,6 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       entity = HttpEntity(ContentTypes.`application/json`,requestJson)
     )
     val future: Future[HttpResponse] = Http().singleRequest(request)
-
     try {
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
       val futureClassification: Future[Classification] = response.entity.dataBytes
@@ -115,10 +112,8 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           val ret = line.utf8String.split(" ").headOption.map(Classification)
           ret.getOrElse(new Classification(""))
         }
-
       futureClassification onComplete {
         case Success(c: Classification) =>  
-          logger.info(s"Server query succeeded: ${response.status}")
           val label = c.name.replace("\"","")
           val newData = data.copy(dialog_act_label = label)
           val newMetadata = metadata.replace(
@@ -130,7 +125,7 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           val rs3 = agent.writeOutput(rs2)
           agent.iteration(rs3)
         case Failure(t) =>
-          logger.error(s"Server query failed: ${response.status}")
+          logger.error(s"DAC Server classification failed: ${response.status}")
           logger.error(s"Input Line: ${rs.inputLine}")
           logger.error(s"Error: ${t.toString}")
           val rs1 = RSM.addError(rs)
