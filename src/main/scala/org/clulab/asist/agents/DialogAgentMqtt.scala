@@ -1,21 +1,33 @@
 package org.clulab.asist.agents
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl._
+import akka.http.scaladsl.model._
+import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
-
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
+import org.json4s.{Extraction,_}
+import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.{read, write}
-
-import scala.util.control.Exception._
+import scala.collection.mutable.Queue
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 July
+ * Updated:  2021 August
  *
  * This class reads input from the message bus on subscribed topics,
  * performs analysis on the input, and then publishes the analysis to
  * the output topic.
+ *
+ * If the Dialog Act Classification argument is set, a server process is
+ * contacted via HTTP request for 
  *
  * Input and output are in json format.
  *
@@ -24,63 +36,180 @@ import scala.util.control.Exception._
  * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
 
+case class BusMessage (
+  topic: String,
+  line: String
+)
+
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent with MessageBusClientListener { 
+) extends DialogAgent 
+    with DacAgent
+    with LazyLogging
+    with MessageBusClientListener { 
+
+  val serverLocation = "http://localhost:8000"
+
+  // actors
+  implicit val ec = ExecutionContext.global
+  implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
 
   val source_type = "message_bus"
 
+  val dacClient = new DacClient(this)
+
+  val queue: Queue[BusMessage] = new Queue 
+
   // this handles the message bus operations.  
   val bus = new MessageBusClient(
-    host, 
-    port, 
+    host,
+    port,
     subscriptions,
     publications,
     this
   )
 
-  /* async callback after DAC reset */
-  def publishVersionInfo(
-    json: String,
-  ): Unit = bus.publish(topicPubVersionInfo, json)
+  /** Lines to be written to the MessageBus
+   * @param rs The runState sent with the orignal message to the DAC client
+   * @return The run state with the lineWrites var incremented by 1
+   */
+  override def writeOutput(
+    rs: RunState
+  ): RunState = rs.outputLines match {
+    case line::tail =>
+      writeToMessageBus(rs.topic, line)
+      val rs1 = RSM.addLineWrite(rs)
+      val rs2 = RSM.setOutputLines(rs1, tail)
+      writeOutput(rs2)
+    case _ => 
+      dequeue 
+      rs
+  }
 
-  /* async callback after Dac classification */
-  def publishMessage(
-    json: String,
-  ): Unit = bus.publish(topicPubDialogAgent, json)
+  def enqueue(job: BusMessage): Unit = {
+    logger.info("enqueue")
+    queue.enqueue(job)
+    logger.info(s"queue length is now ${queue.length}")
+  }
 
-  // send VersionInfo if we receive a TrialMessage with subtype "start", 
-  def trialMessageArrived(json: String): Unit = json.split("\n").map(line =>
-    allCatch.opt(read[TrialMessage](line)).map(trialMessage => {
-      if(trialMessage.msg.sub_type == "start") {
-        val timestamp = Clock.systemUTC.instant.toString
-        val versionInfo = VersionInfo(this, timestamp)
-//        dqm.enqueueReset(publishVersionInfo, versionInfo)
-      }
-    })
-  )
+  def dequeue: Unit = {
+    logger.info("dequeue")
+    queue.dequeue 
+    logger.info(s"queue length is now ${queue.length}")
+  }
+
+  /** States sent by the DAC server, if in use.
+   * @param message A DialogAgentMessage with the dialog_act_label value set
+   */
+  override def iteration(rs: RunState): Unit = startJob
+
+
+  /** provided so we can overload it in a test class */
+  def writeToMessageBus(
+    topic: String,
+    text: String
+  ): Unit = {
+    logger.info("writeToMessageBus")
+    logger.info(s"  topic: ${topic}")
+    logger.info(s"  text: ${text}")
+
+    bus.publish(topic, text)
+  }
 
   /** Receive a message from the message bus
-   *  @param topic:  The message bus topic where the message was published
-   *  @param json:  A metadata text string
+   * @param topic:  The message bus topic where the message was published
+   * @param text:  A metadata text string, possibly multi-line
    */
   def messageArrived(
     topic: String,
-    json: String
-  ): Unit = topic match {
-    case `topicSubTrial` => trialMessageArrived(json)
-    case _ => json.split("\n").map(line => 
-      allCatch.opt(read[Metadata](line)).map{metadata => 
-        val message = getDialogAgentMessage(
-          source_type,
-          topic,
-          topic,
-          metadata
-        )
-//        dqm.enqueueClassification(publishMessage, message)
+    text: String 
+  ): Unit = {
+    logger.info("messageArrived")
+
+    // if the queue is empty, there is no aynchronous job in
+    // progress and it is safe to start a new one.
+    val noJobRunning = queue.isEmpty
+
+    // Each line of text becomes a discrete processing job ready to run
+    text.split("\n").map{
+      line => enqueue(BusMessage(topic, line))
+    }
+
+    // start new async job if none are running
+    if(noJobRunning) startJob
+  }
+
+  /* Use the head of the queue as the next job. */
+  def startJob: Unit = {
+    logger.info("startJob")
+
+    if(!queue.isEmpty) queue.head.topic match {
+      case `topicSubTrial` => processTrialMessage(queue.head)
+      case _ => processDialogAgentMessage (queue.head)
+    }  // else all jobs are done.
+  }
+
+  /** When finished, remove the queue head and start the next job.  */
+  def finishJob: Unit = {
+    logger.info("finishJob")
+
+    if(queue.isEmpty) {
+      logger.error("finishJob called with empty queue!")
+    } else {
+      dequeue
+      startJob
+    }
+  }
+
+  /** send VersionInfo if we receive a TrialMessage with subtype "start", 
+   * @param input: Message bus traffic with topic and text
+   */
+  def processTrialMessage(input: BusMessage): Unit = try {
+    val tm = read[TrialMessage](input.line)
+    if(tm.msg.sub_type == "start") {
+      val currentTimestamp = Clock.systemUTC.instant.toString
+      val versionInfo = VersionInfo(this, currentTimestamp)
+      if(withClassifications) {
+        val rs1 = RSM.setTopic(new RunState, topicPubVersionInfo)
+        val rs2 = RSM.setInputLine(rs1, input.line)
+        val rs3 = RSM.setOutputLine(rs2, write(versionInfo))
+        dacClient.resetServer(this, rs3)
+      } else {
+        writeToMessageBus(topicPubVersionInfo, write(versionInfo))
+        finishJob  // no DAC 
       }
-    )
+    }
+    else finishJob  // no trial start
+  } catch {
+    case NonFatal(t) => logger.error(s"Could not parse: ${input.line}")
+  } 
+
+  /** Send DialogAgentMessage for any subsribed topic except "trial" 
+   * @param input: Message bus traffic with topic and text
+   */
+  def processDialogAgentMessage(input: BusMessage): Unit = try {
+    if(withClassifications) {
+      val data = readDialogAgentMessageData(input.line)
+      val metadata = parse(input.line)
+      val rs = (new RunState).copy (
+        topic = topicPubDialogAgent,
+        inputLine = input.line
+      )
+      dacClient.runClassification(this, rs, data, metadata) 
+    } else {
+      val message = getDialogAgentMessage(
+        source_type,
+        input.topic,
+        input.topic,
+        read[Metadata](input.line)
+      )
+      val json = write(message)
+      writeToMessageBus(topicPubDialogAgent, json)
+      finishJob
+    }
+  } catch {
+    case NonFatal(t) => logger.error(s"Could not parse: ${input.line}")
   } 
 }

@@ -7,10 +7,19 @@ import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
+
 import org.json4s._
 import org.json4s.jackson.Serialization.{write, writePretty}
 import spray.json.DefaultJsonProtocol._
 import spray.json.JsonParser
+import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read,write}
+import org.json4s.JField
+
+
+import scala.util.control.NonFatal
+
 
 import scala.collection.immutable
 import scala.io.Source
@@ -176,7 +185,7 @@ class DialogAgent (
       (role, ms) <- originalArgs
       converted = ms.map(getExtraction)
     } yield (role, converted)
-    val extractionAttachments = mention.attachments.map(writeJson(_))
+    val extractionAttachments = mention.attachments.map(write(_))
     val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageUtteranceExtraction(
       mention.label,
@@ -254,5 +263,36 @@ class DialogAgent (
         text
       )
     )
+  }
+
+  /* Read a DialogAgentMessageData struct from JSON and replace the extractions
+   * @param json A JSON representation of a DialogAgentMessageData struct
+   * @return The JSON-defined struct or a defaut if the parsing fails.
+   */
+  def readDialogAgentMessageData(json: String): DialogAgentMessageData = try {
+    val data = read[DialogAgentMessageData](json)
+    data.copy(extractions = getExtractions(data.text))
+  } catch {
+    case NonFatal(t) => {
+      logger.error(s"readDialogAgentMessageData could not parse ${json}")
+      logger.error(t.toString)
+      new DialogAgentMessageData(
+        utterance_source = new DialogAgentMessageUtteranceSource
+      )
+    }
+  }
+
+
+  /** Parse a string into a JValue
+   * @param line Hopefully JSON but could be anything the user tries to run
+   * @return A JSON value parsed from the line or None
+   */
+  def parseJValue(line: String): Option[JValue] = try {
+    Some(parse(s""" ${line} """))
+  } catch {
+    case NonFatal(t) =>
+      logger.error(s"parseJValue: Could not parse: ${line}\n")
+      logger.error(t.toString)
+      None
   }
 }

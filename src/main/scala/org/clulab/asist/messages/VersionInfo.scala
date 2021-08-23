@@ -57,10 +57,10 @@ case class VersionInfoMetadata(
 
 object VersionInfoMetadata {
 
-  def apply(da: DialogAgent, timestamp: String): VersionInfoMetadata = {
-    val versionInfo = VersionInfo(da, timestamp)
+  def apply(agent: DialogAgent, timestamp: String): VersionInfoMetadata = {
+    val versionInfo = VersionInfo(agent, timestamp)
     VersionInfoMetadata(
-      topic = da.topicPubVersionInfo,
+      topic = agent.topicPubVersionInfo,
       header = versionInfo.header,
       msg = versionInfo.msg,
       data = versionInfo.data
@@ -68,13 +68,13 @@ object VersionInfoMetadata {
   }
 
   def apply(
-    da: DialogAgent, 
+    agent: DialogAgent, 
     trialMessage: TrialMessage,
     timestamp: String
   ): VersionInfoMetadata = {
-    val versionInfo = VersionInfo(da, trialMessage, timestamp)
+    val versionInfo = VersionInfo(agent, trialMessage, timestamp)
     VersionInfoMetadata(
-      topic = da.topicPubVersionInfo,
+      topic = agent.topicPubVersionInfo,
       header = versionInfo.header,
       msg = versionInfo.msg,
       data = versionInfo.data
@@ -88,35 +88,31 @@ object VersionInfo
 {
   // create a VersionInfo by copying some fields from the input CommonMsg
   def apply(
-    da: DialogAgent,
+    agent: DialogAgent,
     trialMessage: TrialMessage,
     timestamp: String): VersionInfo = VersionInfo(
-      da.commonHeader(timestamp),
-      CommonMsg(
-        experiment_id = trialMessage.msg.experiment_id,
-        trial_id = trialMessage.msg.trial_id,
+      agent.commonHeader(timestamp),
+      trialMessage.msg.copy(
         timestamp = timestamp,
-        source = da.dialogAgentSource,
+        source = agent.dialogAgentSource,
         sub_type = "versioninfo",
-        version = da.dialogAgentVersion,
-        replay_root_id = trialMessage.msg.replay_root_id,
-        replay_id = trialMessage.msg.replay_id
+        version = agent.dialogAgentVersion,
       ),
-      data(da)
+      data(agent)
     )
 
   def apply(
-    da: DialogAgent, 
+    agent: DialogAgent, 
     timestamp: String): VersionInfo = VersionInfo(
-      da.commonHeader(timestamp),
-      da.commonMsg(timestamp),
-      data(da)
+      agent.commonHeader(timestamp),
+      agent.commonMsg(timestamp),
+      data(agent)
     )
 
-  def data(da: DialogAgent): VersionInfoData = VersionInfoData(
+  def data(agent: DialogAgent): VersionInfoData = VersionInfoData(
     agent_name = "tomcat_textAnalyzer",
     owner = "University of Arizona",
-    version = da.dialogAgentVersion,
+    version = agent.dialogAgentVersion,
     source = List(
       "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
     ),
@@ -124,34 +120,34 @@ object VersionInfo
     config = List(),
     publishes = List(
       VersionInfoDataMessageChannel(
-        topic = da.topicPubDialogAgent,
-        message_type = da.dialogAgentMessageType,
-        sub_type = da.dialogAgentSubType
+        topic = agent.topicPubDialogAgent,
+        message_type = agent.dialogAgentMessageType,
+        sub_type = agent.dialogAgentSubType
       ),
       VersionInfoDataMessageChannel(
-        topic = da.topicPubVersionInfo,
+        topic = agent.topicPubVersionInfo,
         message_type = "agent/versioninfo",
         sub_type = "versioninfo"
       )
     ),
     subscribes = List(
       VersionInfoDataMessageChannel(
-        topic = da.topicSubTrial,
+        topic = agent.topicSubTrial,
         message_type = "trial",
         sub_type = "versioninfo"
       ),
       VersionInfoDataMessageChannel(
-        topic = da.topicSubChat,
+        topic = agent.topicSubChat,
         message_type = "chat",
         sub_type = "Event:Chat"
       ),
       VersionInfoDataMessageChannel(
-        topic = da.topicSubUazAsr,
+        topic = agent.topicSubUazAsr,
         message_type = "observation",
         sub_type = "asr"
       ),
       VersionInfoDataMessageChannel(
-        topic = da.topicSubAptimaAsr,
+        topic = agent.topicSubAptimaAsr,
         message_type = "observation",
         sub_type = "asr"
       )

@@ -1,9 +1,11 @@
 package org.clulab.utils
 
+//import java.net.ConnectException
 import com.typesafe.scalalogging.LazyLogging
-
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+
+import scala.util.control.NonFatal
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -41,11 +43,17 @@ class MessageBusClient(
   val subscriber: MqttAsyncClient = 
     new MqttAsyncClient(uri,"dialog_agent_publisher", new MemoryPersistence())
 
-  // Connect to the Message Bus
-  publisher.connect(new MqttConnectOptions)
-  subscriber.connect(new MqttConnectOptions).waitForCompletion
-  subscriptions.map(topic => subscriber.subscribe(topic, qos))
-  subscriber.setCallback(this)
+  // Try to connect to the Message Bus
+  try {
+    publisher.connect(new MqttConnectOptions)
+    subscriber.connect(new MqttConnectOptions).waitForCompletion
+    subscriptions.map(topic => subscriber.subscribe(topic, qos))
+    subscriber.setCallback(this)
+  }
+  catch {
+//    case e: ConnectException => logger.error("Could not connect to server at %s".format(uri))
+    case NonFatal(t) => logger.error("Error: %s".format(t))
+  }
 
   // Report status of our connection to the Message Bus
   if(subscriber.isConnected && publisher.isConnected) {
@@ -55,6 +63,7 @@ class MessageBusClient(
     logger.info("Running.")
   } else {
     logger.error("Could not connect to MQTT broker at %s".format(uri))
+    logger.error("Please check that the broker is running.")
     System.exit(1)
   }
 
