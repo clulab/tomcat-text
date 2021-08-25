@@ -79,7 +79,7 @@ class DialogAgentMqtt(
     rs: RunState
   ): RunState = rs.outputLines match {
     case line::tail =>
-      writeToMessageBus(rs.topic, line)
+      writeToMessageBus(rs.outputTopic, line)
       val rs1 = RSM.addLineWrite(rs)
       val rs2 = RSM.setOutputLines(rs1, tail)
       writeOutput(rs2)
@@ -89,15 +89,11 @@ class DialogAgentMqtt(
   }
 
   def enqueue(job: BusMessage): Unit = {
-    logger.info("enqueue")
     queue.enqueue(job)
-    logger.info(s"queue length is now ${queue.length}")
   }
 
   def dequeue: Unit = {
-    logger.info("dequeue")
     queue.dequeue 
-    logger.info(s"queue length is now ${queue.length}")
   }
 
   /** States sent by the DAC server, if in use.
@@ -111,9 +107,6 @@ class DialogAgentMqtt(
     topic: String,
     text: String
   ): Unit = {
-    logger.info("writeToMessageBus")
-    logger.info(s"  topic: ${topic}")
-    logger.info(s"  text: ${text}")
 
     bus.publish(topic, text)
   }
@@ -126,7 +119,6 @@ class DialogAgentMqtt(
     topic: String,
     text: String 
   ): Unit = {
-    logger.info("messageArrived")
 
     // if the queue is empty, there is no aynchronous job in
     // progress and it is safe to start a new one.
@@ -143,7 +135,6 @@ class DialogAgentMqtt(
 
   /* Use the head of the queue as the next job. */
   def startJob: Unit = {
-    logger.info("startJob")
 
     if(!queue.isEmpty) queue.head.topic match {
       case `topicSubTrial` => processTrialMessage(queue.head)
@@ -153,7 +144,6 @@ class DialogAgentMqtt(
 
   /** When finished, remove the queue head and start the next job.  */
   def finishJob: Unit = {
-    logger.info("finishJob")
 
     if(queue.isEmpty) {
       logger.error("finishJob called with empty queue!")
@@ -171,45 +161,49 @@ class DialogAgentMqtt(
     if(tm.msg.sub_type == "start") {
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, currentTimestamp)
+      val outputJson = write(versionInfo)
       if(withClassifications) {
-        val rs1 = RSM.setTopic(new RunState, topicPubVersionInfo)
+        val rs1 = RSM.setInputTopic(new RunState, input.topic)
         val rs2 = RSM.setInputLine(rs1, input.line)
-        val rs3 = RSM.setOutputLine(rs2, write(versionInfo))
-        dacClient.resetServer(this, rs3)
+        val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
+        val rs4 = RSM.setOutputLine(rs3, outputJson)
+        dacClient.resetServer(rs4)
       } else {
-        writeToMessageBus(topicPubVersionInfo, write(versionInfo))
+        writeToMessageBus(topicPubVersionInfo, outputJson)
         finishJob  // no DAC 
       }
     }
     else finishJob  // no trial start
   } catch {
-    case NonFatal(t) => logger.error(s"Could not parse: ${input.line}")
+    case NonFatal(t) => 
+      logger.error(s"Could not parse: ${input.line}")
+      finishJob
   } 
 
   /** Send DialogAgentMessage for any subsribed topic except "trial" 
    * @param input: Message bus traffic with topic and text
    */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
+    val message = getDialogAgentMessage(
+      source_type,
+      input.topic,
+      input.topic,
+      read[Metadata](input.line)
+    )
     if(withClassifications) {
-      val data = readDialogAgentMessageData(input.line)
-      val metadata = parse(input.line)
-      val rs = (new RunState).copy (
-        topic = topicPubDialogAgent,
-        inputLine = input.line
-      )
-      dacClient.runClassification(this, rs, data, metadata) 
+      val metadataJValue = parse(input.line)
+      val rs1 = RSM.setInputTopic(new RunState, input.topic)
+      val rs2 = RSM.setInputLine(rs1, input.line)
+      val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
+      dacClient.runClassification(rs3, message.data, metadataJValue) 
     } else {
-      val message = getDialogAgentMessage(
-        source_type,
-        input.topic,
-        input.topic,
-        read[Metadata](input.line)
-      )
-      val json = write(message)
-      writeToMessageBus(topicPubDialogAgent, json)
+      val outputJson = write(message)
+      writeToMessageBus(topicPubDialogAgent, outputJson)
       finishJob
     }
   } catch {
-    case NonFatal(t) => logger.error(s"Could not parse: ${input.line}")
+    case NonFatal(t) => 
+      logger.error(s"Could not parse: ${input.line}")
+      finishJob
   } 
 }

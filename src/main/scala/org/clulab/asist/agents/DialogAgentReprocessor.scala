@@ -107,9 +107,8 @@ class DialogAgentReprocessor (
   val nFiles = fileNames.length
   val fileSizes = fileNames.map(n =>LocalFileUtils.lineIterator(n).length)
   val reprocessingStartTime = Clock.systemUTC.millis
-  val startState = RunState(
-    fileInfoIterator = fileNames.zip(fileSizes).iterator
-  )
+  val fileInfo = fileNames.zip(fileSizes)
+  val startState = RSM.setFileInfoIterator(new RunState, fileInfo.iterator)
 
   // Only create the output directory if DialogAgent metadata exists
   if(nFiles > 0) {  
@@ -201,16 +200,17 @@ class DialogAgentReprocessor (
 
       // output the original line and then the Version Info line
       val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
-      val rs2 = RSM.addInfoWrite(rs1)
+      val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
       if(withClassifications) 
-        dacClient.foreach(_.resetServer(this, rs2))
+        dacClient.foreach(_.resetServer(rs2))
       else
        finishIteration(rs2)
     } else {
       // if not a trial start just transcribe the input line
       val rs1 = RSM.setOutputLine(rs, rs.inputLine)
-      finishIteration(rs1)
+      val rs2 = RSM.setOutputTopic(rs1, "")
+      finishIteration(rs2)
     }
   } catch {
     case NonFatal(t) =>
@@ -225,6 +225,7 @@ class DialogAgentReprocessor (
     rs: RunState
   ): Unit = parseJValue(rs.inputLine) match {
     case Some(metadataJValue: JValue) =>
+      val rs1 = RSM.setOutputTopic(rs, topicPubDialogAgent)
       reprocessDialogAgentMessage(rs, metadataJValue)
     case _ => reportProblem(rs, "Could not parse metadata")
   }
@@ -241,17 +242,16 @@ class DialogAgentReprocessor (
       case dataJObject: JObject => 
         val data = dataJObject.extract[DialogAgentMessageData]
         val newData = data.copy(extractions = getExtractions(data.text))
-        val rs1 = RSM.addReprocessed(rs)
         if(withClassifications) dacClient.foreach(
-          _.runClassification(this, rs1, newData, metadataJValue)
+          _.runClassification(rs, newData, metadataJValue)
         )
         else {
           val newMetadata = metadataJValue.replace(
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val rs2 = RSM.setOutputLine(rs1, write(newMetadata))
-          finishIteration(rs2)
+          val rs1 = RSM.setOutputLine(rs, write(newMetadata))
+          finishIteration(rs1)
         }
       case JNothing =>
         reprocessDialogAgentError(rs, metadataJValue)
@@ -274,10 +274,10 @@ class DialogAgentReprocessor (
         val newMetadata = metadataJValue.transformField {
           case ("error", _) => ("data", Extraction.decompose(data))
         }
-        val rs1 = RSM.addReprocessed(rs)
-        val rs2 = RSM.addRecovered(rs1)
+        val rs1 = RSM.addRecovered(rs)
+        val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
         if(withClassifications) dacClient.foreach(
-          _.runClassification(this, rs2, data, newMetadata)
+          _.runClassification(rs2, data, newMetadata)
         ) else {
           val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
           finishIteration(rs3)
@@ -315,8 +315,15 @@ class DialogAgentReprocessor (
         rs.outputLines match {
           case line::tail =>
             fw.write(s"${line}\n")
-            val rs1 = RSM.addLineWrite(rs)
-            val rs2 = RSM.setOutputLines(rs1, tail)
+            val rs1 = rs.outputTopic match {
+              case `topicPubVersionInfo` => 
+                RSM.addInfoWrite(rs)
+              case `topicPubDialogAgent` => 
+                RSM.addReprocessed(rs)
+              case _ => rs
+            }
+            val rs2 = RSM.addLineWrite(rs1)
+            val rs3 = RSM.setOutputLines(rs2, tail)
             writeOutput(rs2)
           case _ => rs
         }
@@ -355,16 +362,20 @@ class DialogAgentReprocessor (
         val inputFileName = fileInfo._1
         val inputFileLines = fileInfo._2
         val outputFileName = ta3FileName(inputFileName)
-        val rs1 = rs.copy(
-          lineIterator = LocalFileUtils.lineIterator(inputFileName),
-          fileWriter = Some(new PrintWriter(new File(outputFileName))),
-        )
+        val lineIterator = LocalFileUtils.lineIterator(inputFileName)
+        val fileWriter = Some(new PrintWriter(new File(outputFileName)))
+
         val advisory = if (inputFileLines == 1) 
           s"Reading 1 line from ${inputFileName}"
         else 
           s"Reading ${inputFileLines} lines from ${inputFileName}"
+
         logger.info(advisory)
-        iteration(rs1)
+
+        val rs1 = RSM.setLineIterator(rs, lineIterator)
+        val rs2 = RSM.setFileWriter(rs1, fileWriter)
+        val rs3 = RSM.addFileRead(rs2)
+        iteration(rs3)
       }
       // otherwise done
       else {
@@ -397,7 +408,6 @@ class DialogAgentReprocessor (
     logger.info("Output directory:              %s".format(outputDirName))
     logger.info("Input directory:               %s".format(inputDirName))
     logger.info("Input files present            %d".format(allFiles.length))
-    logger.info("Input Files reprocessed        %d".format(nFiles))
     stateReport.foreach(logger.info(_))
     logger.info("DialogAgent file scan:         %.1f minutes".format(prepSecs/60.0))
     logger.info("Time to reprocess:             %.1f minutes".format(compSecs/60.0))
