@@ -51,8 +51,10 @@ class DacClient (agent: DacAgent) extends LazyLogging {
   // json
   implicit val formats = org.json4s.DefaultFormats
 
-  // schedule the next iteration after reseting the DAC server
-  def resetServer(agent: DacAgent, rs: RunState): Unit = {
+  /** Reset the DAC server
+   * @param rs The current execution state of the agent
+   */
+  def resetServer(rs: RunState): Unit = {
     logger.info(s"Resetting DAC server at: ${serverLocation}")
 
     val request = HttpRequest(
@@ -73,21 +75,23 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           agent.iteration(rs2)
         case Failure(t) =>
           logger.info(s"DAC server reset failed: ${response.status}")
-          agent.iteration(RSM.addError(rs))
+          terminate(rs)
       }
     } catch {
       case NonFatal(t) => 
         logger.info(s"Could not reset DAC server at: ${serverLocation}")
         logger.error("Please ensure the DAC server is running")
-        val rs1 = RSM.terminate(rs)
-        agent.iteration(rs)
+        terminate(rs)
     }
   }
 
 
-  // call the DAC for classification of this DialogAgentMessage
+  /** call the DAC Server for classification of this DialogAgentMessage
+   * @param rs The current execution state of the agent
+   * @param data Part of the input line, includes text to be classified
+   * @param metadata Entire input line being processed by the agent
+   */
   def runClassification(
-    agent: DacAgent,
     rs: RunState, 
     data: DialogAgentMessageData,
     metadata: JValue
@@ -128,19 +132,26 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           logger.error(s"DAC Server classification failed: ${response.status}")
           logger.error(s"Input Line: ${rs.inputLine}")
           logger.error(s"Error: ${t.toString}")
-          val rs1 = RSM.addError(rs)
-          agent.iteration(rs1)
+          terminate(rs)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Error processing: ${rs.inputLine}")
         logger.error(t.toString)
-        val rs1 = RSM.terminate(rs)
-        agent.iteration(rs1)
+        terminate(rs)
     }
   }
 
-  // shutdow the actor system
+  /** end reprocessing due to error
+   * @param rs Run state to be returned to agent
+   */
+  def terminate(rs: RunState): Unit = {
+    val rs1 = RSM.addError(rs)
+    val rs2 = RSM.terminate(rs1)
+    agent.iteration(rs2)
+  }
+
+  /** shutdow the actor system, allowing time for actors to finish */
   def shutdown(): Unit = {
     logger.info("DAC client shutting down...")
     Thread.sleep(5)

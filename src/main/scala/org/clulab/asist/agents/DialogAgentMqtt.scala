@@ -79,7 +79,7 @@ class DialogAgentMqtt(
     rs: RunState
   ): RunState = rs.outputLines match {
     case line::tail =>
-      writeToMessageBus(rs.topic, line)
+      writeToMessageBus(rs.inputTopic, line)
       val rs1 = RSM.addLineWrite(rs)
       val rs2 = RSM.setOutputLines(rs1, tail)
       writeOutput(rs2)
@@ -171,13 +171,15 @@ class DialogAgentMqtt(
     if(tm.msg.sub_type == "start") {
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, currentTimestamp)
+      val outputJson = write(versionInfo)
       if(withClassifications) {
-        val rs1 = RSM.setTopic(new RunState, topicPubVersionInfo)
+        val rs1 = RSM.setInputTopic(new RunState, input.topic)
         val rs2 = RSM.setInputLine(rs1, input.line)
-        val rs3 = RSM.setOutputLine(rs2, write(versionInfo))
-        dacClient.resetServer(this, rs3)
+        val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
+        val rs4 = RSM.setOutputLine(rs3, outputJson)
+        dacClient.resetServer(rs4)
       } else {
-        writeToMessageBus(topicPubVersionInfo, write(versionInfo))
+        writeToMessageBus(topicPubVersionInfo, outputJson)
         finishJob  // no DAC 
       }
     }
@@ -193,11 +195,10 @@ class DialogAgentMqtt(
     if(withClassifications) {
       val data = readDialogAgentMessageData(input.line)
       val metadata = parse(input.line)
-      val rs = (new RunState).copy (
-        topic = topicPubDialogAgent,
-        inputLine = input.line
-      )
-      dacClient.runClassification(this, rs, data, metadata) 
+      val rs1 = RSM.setInputTopic(new RunState, input.topic)
+      val rs2 = RSM.setInputLine(rs1, input.line)
+      val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
+      dacClient.runClassification(rs3, data, metadata) 
     } else {
       val message = getDialogAgentMessage(
         source_type,
@@ -205,8 +206,8 @@ class DialogAgentMqtt(
         input.topic,
         read[Metadata](input.line)
       )
-      val json = write(message)
-      writeToMessageBus(topicPubDialogAgent, json)
+      val outputJson = write(message)
+      writeToMessageBus(topicPubDialogAgent, outputJson)
       finishJob
     }
   } catch {
