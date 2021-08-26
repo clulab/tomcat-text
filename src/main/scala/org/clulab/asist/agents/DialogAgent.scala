@@ -57,7 +57,7 @@ class DialogAgent (
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
-  val dialogAgentVersion = "2.2.0"
+  val dialogAgentVersion = "2.2.1"
 
   // metadata topics
   val topicSubChat = "minecraft/chat"
