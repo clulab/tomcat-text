@@ -43,7 +43,12 @@ case class Metadata(
   msg: MetadataMsg
 )
 
+case class MetadataLookaheadMsg(
+  timestamp: String = ""
+)
+
 // If we recognize the topic we will process the message.
 case class MetadataLookahead(
-  topic: String = ""
+  topic: String = "",
+  msg: MetadataLookaheadMsg = new MetadataLookaheadMsg
 )

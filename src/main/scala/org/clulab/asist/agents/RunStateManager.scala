@@ -20,6 +20,7 @@ case class RunState(
   inputLine: String = "",
   outputTopic: String = "",
   outputLines: List[String] = List(),
+  metadataLogs: List[MetadataLog] = List(),
 
   // Dialog Agent Messages generated from Dialog Agent metadata
   reprocessed: Int = 0,
@@ -83,16 +84,48 @@ trait RunStateManager extends LazyLogging {
     lines: List[String]
   ): RunState = s.copy(outputLines = lines)
 
+  def setMetadataLogs(
+    s: RunState,
+    logs: List[MetadataLog]
+  ): RunState = s.copy(metadataLogs = logs)
+
   // state incrementers
-  def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
-  def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
-  def addReprocessed(s: RunState): RunState = s.copy(reprocessed = s.reprocessed+1)
-  def addRecovered(s: RunState): RunState = s.copy(recovered = s.recovered+1)
-  def addInfoWrite(s: RunState): RunState = s.copy(infoWrites = s.infoWrites + 1)
-  def addLineRead(s: RunState): RunState = s.copy(lineReads = s.lineReads + 1)
-  def addLineWrite(s: RunState): RunState = s.copy(lineWrites = s.lineWrites + 1)
-  def addFileRead(s: RunState): RunState = s.copy(fileReads = s.fileReads + 1)
-  def addError(s: RunState): RunState = s.copy(errors = s.errors + 1)
+  def addDacReset(s: RunState): RunState = 
+    s.copy(dacResets = s.dacResets + 1)
+
+  def addDacQuery(s: RunState): RunState = 
+    s.copy(dacQueries = s.dacQueries + 1)
+
+  def addReprocessed(s: RunState): RunState =
+    s.copy(reprocessed = s.reprocessed+1)
+
+  def addRecovered(s: RunState): RunState =
+    s.copy(recovered = s.recovered+1)
+
+  def addInfoWrite(s: RunState): RunState =
+    s.copy(infoWrites = s.infoWrites + 1)
+
+  def addLineRead(s: RunState): RunState =
+    s.copy(lineReads = s.lineReads + 1)
+
+  def addLineWrite(s: RunState): RunState =
+    s.copy(lineWrites = s.lineWrites + 1)
+
+  def addFileRead(s: RunState): RunState =
+    s.copy(fileReads = s.fileReads + 1)
+
+  def addError(s: RunState): RunState =
+    s.copy(errors = s.errors + 1)
+
+  // Keep a list of topics encountered in the metadata and when they occurred
+  def logMetadata(
+    s: RunState, 
+    topic: String,
+    timestamp: String
+  ): RunState = {
+    val logs = MetadataLogger.logMetadata(topic, timestamp, s.metadataLogs)
+    setMetadataLogs(s, logs)
+  }
 
   // End processing
   def terminate(s: RunState): RunState = s.copy(terminated = true)

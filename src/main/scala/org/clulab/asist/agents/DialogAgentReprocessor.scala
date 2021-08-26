@@ -150,20 +150,23 @@ class DialogAgentReprocessor (
     case NonFatal(t) => new MetadataLookahead
   }
 
+
   /** Reprocess line if DialogAgent-related metadata, otherwise copy
    * @param rs State with input line loaded
    */
   def processLine(rs: RunState): Unit = {
-    readMetadataLookahead(rs.inputLine).topic match {
-      case `topicSubTrial` => processTrialMetadata(rs)
-      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(rs)
+    val ml = readMetadataLookahead(rs.inputLine)
+    val rs1 = RSM.logMetadata(rs, ml.topic, ml.msg.timestamp)
+    ml.topic match {
+      case `topicSubTrial` => processTrialMetadata(rs1)
+      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(rs1)
       case `topicPubVersionInfo` => 
         // Delete existing DialogAgent-generated VersionInfo
-        finishIteration(rs)
+        finishIteration(rs1)
       case _ => 
         // Trascribe Unhandled cases
-        val rs1 = RSM.setOutputLine(rs, rs.inputLine)
-        finishIteration(rs1) 
+        val rs2 = RSM.setOutputLine(rs1, rs.inputLine)
+        finishIteration(rs2) 
     }
   }
 
