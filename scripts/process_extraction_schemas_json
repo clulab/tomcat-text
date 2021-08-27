@@ -10,7 +10,9 @@ input_file = sys.argv[1]
 
 # Version of the dialog agent for which this documentation is being
 # generated.
-AGENT_VERSION = "2.0.0"
+
+#TODO - have this be read from a text file instead of hard-coded.
+AGENT_VERSION = "2.2.0"
 
 with open(input_file) as f:
     data = json.load(f)
