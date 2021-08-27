@@ -324,7 +324,7 @@ class DialogAgentReprocessor (
             }
             val rs2 = RSM.addLineWrite(rs1)
             val rs3 = RSM.setOutputLines(rs2, tail)
-            writeOutput(rs2)
+            writeOutput(rs3)
           case _ => rs
         }
       } catch {
