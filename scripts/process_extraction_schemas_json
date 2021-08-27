@@ -12,7 +12,7 @@ input_file = sys.argv[1]
 # generated.
 
 #TODO - have this be read from a text file instead of hard-coded.
-AGENT_VERSION = "2.2.0"
+AGENT_VERSION = "2.2.1"
 
 with open(input_file) as f:
     data = json.load(f)
