@@ -17,7 +17,7 @@ class DialogAgentStdin (
   override val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent { 
 
-  println("\nDialog Agent stdin extractor running.")
+  println(s"\nRunning Dialog Agent stdin extractor version ${dialogAgentVersion}")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")
 
   print("\n> ")

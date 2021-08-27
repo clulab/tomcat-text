@@ -50,6 +50,8 @@ class DialogAgentMqtt(
     with LazyLogging
     with MessageBusClientListener { 
 
+  logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
+
   val serverLocation = "http://localhost:8000"
 
   // actors
