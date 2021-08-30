@@ -43,16 +43,18 @@ libraryDependencies ++= Seq(
 )
 
 
-// trying to get interactive mode running for the DialogAgent
+// Allow the DialogAgent to run in interactive mode
 connectInput in run := true
 
 
 // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
 libraryDependencies += "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5"
 
-lazy val core = project in file(".")
+lazy val core: Project = (project in file("."))
+  .enablePlugins(BuildInfoPlugin)
 
-lazy val webapp = project
+
+lazy val webapp: Project = project
   .enablePlugins(PlayScala)
   .aggregate(core)
   .dependsOn(core)
