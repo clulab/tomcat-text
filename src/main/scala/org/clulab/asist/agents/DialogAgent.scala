@@ -1,28 +1,24 @@
 package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
+import buildinfo.BuildInfo
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
-
 import org.json4s._
-import org.json4s.jackson.Serialization.{write, writePretty}
-import spray.json.DefaultJsonProtocol._
-import spray.json.JsonParser
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read,write}
+import org.json4s.jackson.Serialization.{read, write, writePretty}
 import org.json4s.JField
-
-
-import scala.util.control.NonFatal
-
+import spray.json.DefaultJsonProtocol._
+import spray.json.JsonParser
 
 import scala.collection.immutable
 import scala.io.Source
+import scala.util.control.NonFatal
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -57,7 +53,7 @@ class DialogAgent (
   val dialogAgentMessageType = "event"
   val dialogAgentSource = "tomcat_textAnalyzer"
   val dialogAgentSubType = "Event:dialogue_event"
-  val dialogAgentVersion = "2.2.1"
+  val dialogAgentVersion = BuildInfo.version
 
   // metadata topics
   val topicSubChat = "minecraft/chat"

@@ -63,6 +63,8 @@ class DialogAgentReprocessor (
     with DacAgent
     with LazyLogging {
 
+  logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
+
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DialogAgentReprocessor")
