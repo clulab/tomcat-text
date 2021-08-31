@@ -100,7 +100,6 @@ class DialogAgentFile(
     filename: String,
     output: PrintWriter
   ): Unit = {
-    logger.info("processMetadataFile")
     val bufferedSource = Source.fromFile(filename)
     val lines = bufferedSource.getLines
     while(lines.hasNext) {
@@ -117,12 +116,11 @@ class DialogAgentFile(
     val source_type = "message_bus" // file metadata originates there
 
     allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
-      logger.info(s"processMetadataFile with topic = ${lookahead.topic}")
       if(topicSubTrial == lookahead.topic) {
         allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
           if(trialMessage.msg.sub_type == "start") {
             val timestamp = Clock.systemUTC.instant.toString
-            val versionInfo = VersionInfo(this, timestamp)
+            val versionInfo = VersionInfo(this, trialMessage, timestamp)
             val json = write(versionInfo)
             output.write(s"${json}\n")
           }

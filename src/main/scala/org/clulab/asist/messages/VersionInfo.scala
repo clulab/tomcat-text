@@ -6,7 +6,7 @@ import buildinfo.BuildInfo
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 July
+ *  Updated:  2021 August
  *
  *  Testbed version info, based on:
  *
@@ -41,13 +41,14 @@ case class VersionInfoData(
   subscribes: Seq[VersionInfoDataMessageChannel] = List()
 )
 
-/** Contains the full analysis data of one chat message */
+/** Contains the full data of the Version Info message */
 case class VersionInfo (
   header: CommonHeader,
   msg: CommonMsg,
   data: VersionInfoData
 ) 
 
+/** Same as VersionInfo but with Message Bus topic */
 case class VersionInfoMetadata(
   topic: String,
   header: CommonHeader,
@@ -56,17 +57,6 @@ case class VersionInfoMetadata(
 ) 
 
 object VersionInfoMetadata {
-
-  def apply(agent: DialogAgent, timestamp: String): VersionInfoMetadata = {
-    val versionInfo = VersionInfo(agent, timestamp)
-    VersionInfoMetadata(
-      topic = agent.topicPubVersionInfo,
-      header = versionInfo.header,
-      msg = versionInfo.msg,
-      data = versionInfo.data
-    )
-  }
-
   def apply(
     agent: DialogAgent, 
     trialMessage: TrialMessage,
@@ -101,14 +91,6 @@ object VersionInfo
         sub_type = "versioninfo",
         version = agent.dialogAgentVersion,
       ),
-      data(agent)
-    )
-
-  def apply(
-    agent: DialogAgent, 
-    timestamp: String): VersionInfo = VersionInfo(
-      agent.commonHeader(timestamp),
-      agent.commonMsg(timestamp),
       data(agent)
     )
 
