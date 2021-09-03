@@ -61,17 +61,31 @@ if __name__ == "__main__":
         # Process the file
         with open(filepath) as f:
             initial_timestamp = None
-            for line in f:
+            for i, line in enumerate(f):
                 # We are only interested in the final transcriptions, not the
                 # intermediate ones.
                 if '"sub_type":"start"' in line:
                     initial_timestamp = json.loads(line)["msg"]["timestamp"]
 
                 if "asr/final" in line or "userspeech" in line:
-                    message = json.loads(line)
+                    try:
+                        message = json.loads(line)
+                    except json.JSONDecodeError:
+                        raise RuntimeError(
+                                f"Unable to parse line {i+1} in {filepath} as JSON.\n"
+                                + line
+                                )
                     data = message["data"]
                     timestamp = message["msg"]["timestamp"]
-                    timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+                    try:
+                        timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+                    except TypeError:
+                        raise RuntimeError(
+                                f"Unable to parse timestamps in line {i+1} in {filepath}\n"
+                                +line+"\n"
+                                +f"Initial timestamp: {initial_timestamp}\n"
+                                +f"Timestamp: {timestamp}"
+                                )
                     relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
                     if "text" in data and "is_final" in data:
                         text = data["text"]
