@@ -9,7 +9,7 @@ data/fall2020_extractions.txt: scripts/run_fall2020_analysis
 extraction_schemas.json: scripts/build_docs
 	$<
 
-extraction_schemas_compact.md: scripts/process_extraction_schemas_json extraction_schemas.json
+extraction_schemas_compact.md: scripts/process_extraction_schemas_json extraction_schemas.json version.sbt
 	$^ > $@
 
 extraction_schemas.pdf: extraction_schemas_compact.md

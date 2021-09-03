@@ -61,35 +61,50 @@ if __name__ == "__main__":
         # Process the file
         with open(filepath) as f:
             initial_timestamp = None
-            for line in f:
+            for i, line in enumerate(f):
                 # We are only interested in the final transcriptions, not the
                 # intermediate ones.
-                if '"sub_type":"start"' in line:
+                try:
+                    message = json.loads(line)
+                except json.JSONDecodeError:
+                    raise RuntimeError(
+                            f"Unable to parse line {i+1} in {filepath} as JSON.\n"
+                            + line
+                            )
+
+                if message["msg"]["sub_type"] == "start":
                     initial_timestamp = json.loads(line)["msg"]["timestamp"]
 
-                if "asr/final" in line or "userspeech" in line:
-                    message = json.loads(line)
+                if "topic" in message and message["topic"] == "agent/asr/final":
                     data = message["data"]
                     timestamp = message["msg"]["timestamp"]
-                    timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+
+                    try:
+                        timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+                    except TypeError:
+                        raise RuntimeError(
+                                f"Unable to parse timestamps in line {i+1} in {filepath}\n"
+                                +line+"\n"
+                                +f"Initial timestamp: {initial_timestamp}\n"
+                                +f"Timestamp: {timestamp}"
+                                )
                     relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
-                    text = data["text"]
-                    if "asr/final" in line:
+
+                    if "text" in data and "is_final" in data:
+                        text = data["text"]
                         participant_id = data["participant_id"]
-                    elif "userspeech" in line:
-                        participant_id = data["playername"]
-                    trial_uuid = message["msg"]["trial_id"]
-                    line = "\t".join(
-                        (
-                            team,
-                            trial,
-                            trial_uuid,
-                            condbtwn,
-                            condwin,
-                            timestamp,
-                            relative_timestamp,
-                            participant_id,
-                            text,
+                        trial_uuid = message["msg"]["trial_id"]
+                        line = "\t".join(
+                            (
+                                team,
+                                trial,
+                                trial_uuid,
+                                condbtwn,
+                                condwin,
+                                timestamp,
+                                relative_timestamp,
+                                participant_id,
+                                text,
+                            )
                         )
-                    )
-                    print(line)
+                        print(line)
