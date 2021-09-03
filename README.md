@@ -12,7 +12,7 @@ piece of text, it will run the text through the system and visually display any
 mentions extracted by the system. The app will reload if it detects any changes
 to the rule files, so you can easily jump back and forth between writing rules
 and testing them. It also includes a syntax parse and specifies which rule
-generated each mention. 
+generated each mention.
 
 To open the webapp run the following command from the top level directory:
 ```
@@ -42,7 +42,7 @@ defaults to 0.
 ```
 
 In this mode, the Dialog Agent will prompt the user for text, and return the
-extractions directly.  
+extractions directly.
 
 
 An example of the agent running in stdin mode, with the number of taxonomy
@@ -73,7 +73,7 @@ gracefully shut down the agent.
 ### File mode
 
 To run the Dialog Agent with files, the user specifies the input and output
-filenames, and optionally the number of taxonomy matches to return.  
+filenames, and optionally the number of taxonomy matches to return.
 
 ```
   sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
@@ -85,8 +85,8 @@ deep, and only the .vtt and .metadata files are processed.  Input files are
 processed in alphabetical order.
 
 The output from the file(s) written to a single output file in the order of
-processing.  
-   
+processing.
+
 
 ### MQTT mode
 
@@ -98,16 +98,23 @@ then the host and port that the MQTT message broker is running on.
 ```
 
 
-### Reprocessing 
+### Reprocessing
 
 The Dialog Agent can reprocess metadata that it has already produced.  The new output
 will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
 
-```
-  sbt "runMain org.clulab.asist.RunDialogAgent reprocess inputDirectory outputDirectory"
-```
+    sbt "runMain org.clulab.asist.RunDialogAgent reprocess inputDirectory outputDirectory"
+
+### Run evaluation app
+
+To generate CSV files for evaluating the rules, set the
+`export.ruleAnnotationDir`  and `DialogAgent.inputDir` properties
+appropriately in `src/main/resources/application.conf`, and then
+run the following invocation
+
+    sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
 
 ## Metadata Input
 
@@ -117,7 +124,7 @@ fields are ignored.  Missing data are replaced with null values in the output
 JSON.
 
 
-#### Chat 
+#### Chat
 
 ```
 {
@@ -133,7 +140,7 @@ JSON.
     "text": string
   }
 }
-```  
+```
 
 #### UAZ ASR
 
@@ -176,7 +183,7 @@ When using the Message Bus, it is not necessary to include a "topic" JSON
 element.
 
 
-## Output 
+## Output
 
 The Dialog Agent will publish its analysis to the message bus in Chat Analysis
 Message JSON format.
