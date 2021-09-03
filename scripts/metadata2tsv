@@ -64,19 +64,21 @@ if __name__ == "__main__":
             for i, line in enumerate(f):
                 # We are only interested in the final transcriptions, not the
                 # intermediate ones.
-                if '"sub_type":"start"' in line:
+                try:
+                    message = json.loads(line)
+                except json.JSONDecodeError:
+                    raise RuntimeError(
+                            f"Unable to parse line {i+1} in {filepath} as JSON.\n"
+                            + line
+                            )
+
+                if message["msg"]["sub_type"] == "start":
                     initial_timestamp = json.loads(line)["msg"]["timestamp"]
 
-                if "asr/final" in line or "userspeech" in line:
-                    try:
-                        message = json.loads(line)
-                    except json.JSONDecodeError:
-                        raise RuntimeError(
-                                f"Unable to parse line {i+1} in {filepath} as JSON.\n"
-                                + line
-                                )
+                if "topic" in message and message["topic"] == "agent/asr/final":
                     data = message["data"]
                     timestamp = message["msg"]["timestamp"]
+
                     try:
                         timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
                     except TypeError:
@@ -87,12 +89,10 @@ if __name__ == "__main__":
                                 +f"Timestamp: {timestamp}"
                                 )
                     relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
+
                     if "text" in data and "is_final" in data:
                         text = data["text"]
-                        if "asr/final" in line:
-                            participant_id = data["participant_id"]
-                        elif "userspeech" in line:
-                            participant_id = data["playername"]
+                        participant_id = data["participant_id"]
                         trial_uuid = message["msg"]["trial_id"]
                         line = "\t".join(
                             (
