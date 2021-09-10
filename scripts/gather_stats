@@ -23,6 +23,8 @@ with open("all_extractions.txt") as f:
         num_extractions.append(len(extractions))
         for extraction in extractions:
             label = extraction["label"]
+            if label in ("Charlie", "Fire", "Infrastructure"):
+                print(label, extraction["span"])
             if label not in labels:
                 labels[label] = 1
             else:
@@ -30,12 +32,16 @@ with open("all_extractions.txt") as f:
 
 
 # Make histograms
-fig, ax = plt.subplots()
-ax.hist(num_extractions)
-plt.tight_layout()
-fig.savefig("num_extractions_hist.pdf")
+def make_num_extractions_hist():
+    fig, ax = plt.subplots(figsize=(4,4))
+    ax.hist(num_extractions, bins = len(set(num_extractions)), density= True)
+    # ax.set_yscale("log")
+    plt.tight_layout()
+    fig.savefig("num_extractions_hist.pdf")
 
-fig, ax = plt.subplots()
-ax.bar(range(len(labels)), labels.values(), tick_label = labels.keys())
-plt.tight_layout()
-fig.savefig("num_extractions_labels.pdf")
+
+if __name__ == "__main__":
+    # make_num_extractions_hist()
+
+    for k, v in sorted(labels.items(), key=lambda x: x[1]):
+        print(k, v)
