@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+import json
+from glob import glob
+from tqdm import tqdm
+from matplotlib import pyplot as plt
+
+plt.style.use("ggplot")
+
+# with open("all_extractions.txt", "w") as all_extractions:
+    # for file in tqdm(glob("/Users/adarsh/scratch/2021_09_10/metadatafiles/*.metadata")):
+        # with open(file) as f:
+            # for line in f:
+                # message = json.loads(line)
+                # if "data" in message and "extractions" in message["data"]:
+                    # all_extractions.write(json.dumps(message["data"]["extractions"])+"\n")
+
+num_extractions = []
+with open("all_extractions.txt") as f:
+    for line in f:
+        extractions = json.loads(line)
+        num_extractions.append(len(extractions))
+        # print(len(extractions))
+
+plt.hist(num_extractions)
+plt.tight_layout()
+plt.savefig("num_extractions.pdf")
+
