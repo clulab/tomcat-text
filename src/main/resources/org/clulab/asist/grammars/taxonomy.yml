@@ -74,7 +74,6 @@
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
           - Commitment:
             - MakeCommitment
-            - ProposeCommitment
           - Continue
           - MoveVictim
           - Need
@@ -101,10 +100,6 @@
     - Friend
     - Foe
     - Player:
-      - Alpha
-      - Bravo
-      - Charlie
-      - Delta
       - Red
       - Blue
       - Green

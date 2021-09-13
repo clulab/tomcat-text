@@ -2,15 +2,11 @@ after_precedence_triggers: "after"
 
 agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree"
 
-alpha_triggers: "alpha"
-
 attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
 before_precedence_triggers: "before"
 
 block_triggers: "block|obstruct"
-
-bravo_triggers: "bravo|brother"
 
 change_priority_triggers: "target|prioritize|focus"
 
@@ -26,8 +22,6 @@ craft_triggers: "craft|make|produce|brew|create"
 
 #deixis_triggers: "here|there|back|in|through"
 deixis_triggers: "here|there"
-
-delta_triggers: "delta"
 
 dem_pron_triggers: "this|that|those|these"
 
