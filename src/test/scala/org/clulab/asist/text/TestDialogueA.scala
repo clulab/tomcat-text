@@ -23,11 +23,6 @@ class TestDialogueA extends BaseTest {
 
   val mentions = extractor.extractFrom(text)
 
-  passingTest should "extract delta" in {
-    val delta = DesiredMention(DELTA, "Delta")
-    testMention(mentions, delta)
-  }
-
   failingTest should "extract long location" in {
     val location1 = DesiredMention(LOCATION, "right side of the map going up into 9 and 10")
     testMention(mentions, location1)
