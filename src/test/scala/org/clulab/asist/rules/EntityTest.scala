@@ -4,7 +4,7 @@ import org.clulab.asist.BaseTest
 
 class EntityTest extends BaseTest {
 
-  passingTest should "Recognize person and victim" in {
+  failingTest should "Recognize person and victim" in {
     val doc = extractor.annotate("Look at this dude. My guy where are the victims?")
     val mentions = extractor.extractFrom(doc)
 
