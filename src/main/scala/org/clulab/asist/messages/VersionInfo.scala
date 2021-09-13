@@ -1,12 +1,12 @@
 package org.clulab.asist.messages
 
 import org.clulab.asist.agents.DialogAgent
-
+import buildinfo.BuildInfo
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 July
+ *  Updated:  2021 August
  *
  *  Testbed version info, based on:
  *
@@ -18,22 +18,22 @@ import org.clulab.asist.agents.DialogAgent
 
 /** Configuration settings */
 case class VersionInfoDataConfig(
-  name: String = "Not Set",
-  value: String = "Not Set"
+  name: String = null,
+  value: String = null,
 )
 
 /** channel on the Message Bus */
 case class VersionInfoDataMessageChannel(
-  topic: String = "Not Set",
-  message_type: String = "Not Set",
-  sub_type: String = "Not Set"
+  topic: String = null,
+  message_type: String = null,
+  sub_type: String = null,
 )
 
 /** Part of the Info class */
 case class VersionInfoData(
-  agent_name: String = "Not Set",
-  owner: String = "Not Set",
-  version: String = "Not Set",
+  agent_name: String = null,
+  owner: String = null,
+  version: String = null,
   source: Seq[String] = List(),
   dependencies: Seq[String] = List(),
   config: Seq[VersionInfoDataConfig] = List(),
@@ -41,13 +41,14 @@ case class VersionInfoData(
   subscribes: Seq[VersionInfoDataMessageChannel] = List()
 )
 
-/** Contains the full analysis data of one chat message */
+/** Contains the full data of the Version Info message */
 case class VersionInfo (
   header: CommonHeader,
   msg: CommonMsg,
   data: VersionInfoData
 ) 
 
+/** Same as VersionInfo but with Message Bus topic */
 case class VersionInfoMetadata(
   topic: String,
   header: CommonHeader,
@@ -56,17 +57,6 @@ case class VersionInfoMetadata(
 ) 
 
 object VersionInfoMetadata {
-
-  def apply(agent: DialogAgent, timestamp: String): VersionInfoMetadata = {
-    val versionInfo = VersionInfo(agent, timestamp)
-    VersionInfoMetadata(
-      topic = agent.topicPubVersionInfo,
-      header = versionInfo.header,
-      msg = versionInfo.msg,
-      data = versionInfo.data
-    )
-  }
-
   def apply(
     agent: DialogAgent, 
     trialMessage: TrialMessage,
@@ -86,6 +76,9 @@ object VersionInfoMetadata {
 // testbed configuration
 object VersionInfo 
 {
+  val dataSource = 
+    s"https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:${BuildInfo.version}"
+
   // create a VersionInfo by copying some fields from the input CommonMsg
   def apply(
     agent: DialogAgent,
@@ -101,21 +94,11 @@ object VersionInfo
       data(agent)
     )
 
-  def apply(
-    agent: DialogAgent, 
-    timestamp: String): VersionInfo = VersionInfo(
-      agent.commonHeader(timestamp),
-      agent.commonMsg(timestamp),
-      data(agent)
-    )
-
   def data(agent: DialogAgent): VersionInfoData = VersionInfoData(
     agent_name = "tomcat_textAnalyzer",
     owner = "University of Arizona",
     version = agent.dialogAgentVersion,
-    source = List(
-      "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:2.0.0"
-    ),
+    source = List(dataSource),
     dependencies = List(),
     config = List(),
     publishes = List(

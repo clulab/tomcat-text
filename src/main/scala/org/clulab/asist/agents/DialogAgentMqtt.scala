@@ -162,7 +162,7 @@ class DialogAgentMqtt(
     val tm = read[TrialMessage](input.line)
     if(tm.msg.sub_type == "start") {
       val currentTimestamp = Clock.systemUTC.instant.toString
-      val versionInfo = VersionInfo(this, currentTimestamp)
+      val versionInfo = VersionInfo(this, tm, currentTimestamp)
       val outputJson = write(versionInfo)
       if(withClassifications) {
         val rs1 = RSM.setInputTopic(new RunState, input.topic)
