@@ -2,11 +2,9 @@
   - Tense:
       - PastTense
       - FutureTense
-  - NounPhrase
-  - Attribute
   - MarkerMeaning
-  - Number:
-    - Ordinal
+  - Number
+  - RoomTag
   - Switch
   - EventLike:
     - Plan
@@ -16,7 +14,29 @@
       - Inferred:
         - Deictic
       - Infrastructure:
-        - Room
+        - Room:
+            - StorageRoom
+            - NumberedRoom
+            - KingChrisOffice
+            - KingTerrace
+            - HerbalifeRoom
+            - Library
+            - ComputerFarm
+            - LimpingLambChophouse
+            - BreakArea
+            - BreakRoom
+            - SecurityOffice
+            - AmwayRoom
+            - MaryKayRoom
+            - JanitorCloset
+            - MensRoom
+            - WomensRoom
+            - DataStorage
+            - Lobby
+            - Office
+            - Buffet
+            - Kitchen
+            - SundollarCoffee
         - Door
         - Building
         - Hallway
@@ -24,11 +44,10 @@
         - Window
         - Floor
         - Ceiling
-        - Lever
         - Button
         - Zone
       - MapSection:
-        - center
+        - Center
     - Obstacle:
       - Rubble
       - Fire

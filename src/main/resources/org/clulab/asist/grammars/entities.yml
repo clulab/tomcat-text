@@ -91,6 +91,15 @@ rules:
     pattern: |
       (?<! other) [tag=CD]
 
+  - name: room_tags #this is here to provide the storage rooms with their [A-Z] arguments
+    example: "storage room *Q*"
+    priority: ${ rulepriority }
+    label: RoomTag
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^\b[A-Z]\b/]
+
   - name: deictic_detection
     priority: ${ rulepriority }
     label: Deictic
