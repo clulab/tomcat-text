@@ -15,6 +15,16 @@ rules:
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ infrastructure_triggers })/ & outgoing=compound]) |
       [lemma=/(?i)^(${ infrastructure_triggers })/]+
 
+  - name: room_detection
+    priority: ${ first_priority }
+    label: Room
+    type: token
+    keep: true
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^room/ & outgoing=compound]) |
+      [lemma=/(?i)^room/]|
+      ([tag=/^JJ/ & incoming=amod] [lemma=/(?i)^room/])
+
 
   - name: north
     priority: ${ first_priority }

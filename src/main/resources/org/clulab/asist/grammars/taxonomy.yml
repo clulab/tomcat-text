@@ -44,7 +44,7 @@
         #- #Floor
         #- #Ceiling
         - Zone
-      - MapSection:
+      - MapSection
        # - Center
     - Obstacle:
       - Rubble
@@ -144,6 +144,6 @@
       - Encouragement
       #- Politeness
       - Gratitude
-    - Negative:
+    - Negative
       #- Anger
       #- Worry

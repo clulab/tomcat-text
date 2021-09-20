@@ -45,7 +45,7 @@ foe_triggers: "zombie|mob|enemy|skeleton"
 
 hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer"
 
-infrastructure_triggers: "room|door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony"
+infrastructure_triggers: "door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony|hallway"
 
 medic_triggers: "paramedic|nurse|doctor"
 

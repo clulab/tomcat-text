@@ -21,7 +21,7 @@ class TestQuestions extends BaseTest {
     val others = DesiredMention("Entity", "others")
     val they = DesiredMention("Entity", "they")
     val it = DesiredMention("Entity", "it")
-    val backroom = DesiredMention("Infrastructure", "back room")
+    val backroom = DesiredMention("Room", "back room")
     val desired1 = DesiredMention("LocationQuestion", "Where is the other victim", Map("topic" -> Seq(victim)))
     val desired2 = DesiredMention("LocationQuestion", "Where is the other one", Map("topic" -> Seq(one)))
     val desired3 = DesiredMention("LocationQuestion", "Where are the others", Map("topic" -> Seq(others)))
