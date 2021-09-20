@@ -37,21 +37,18 @@
             - Buffet
             - Kitchen
             - SundollarCoffee
-        - Door
-        - Building
-        - Hallway
-        - Stairs
-        - Window
-        - Floor
-        - Ceiling
-        - Button
+       # - Door  #these are currently not used, but we have plans to use them in the future
+        #- #Hallway
+        #- #Stairs
+        #- #Window
+        #- #Floor
+        #- #Ceiling
         - Zone
       - MapSection:
-        - Center
+       # - Center
     - Obstacle:
       - Rubble
       - Fire
-      - BuildingCollapse
     - Action:
       - SimpleActions:
         - Block
@@ -63,12 +60,8 @@
         - Close
         - Push
         - Toggle
-        - Jump
-        - Extinguish
         - Save
-        - Defeat
         - Sight
-        - Craft
         - Communicate:
           - Instruction
           - Question:
@@ -97,7 +90,7 @@
           - MoveVictim
           - Need
           - Precedence
-          - Planning
+         # - Planning
           - OfferHelp
           - ShareKnowledge
   - Entity:
@@ -116,8 +109,6 @@
         - CriticalVictim
         - RegularVictim
         - NoVictim
-    - Friend
-    - Foe
     - Player:
       - Red
       - Blue
@@ -138,11 +129,6 @@
       - SouthWest
       - West
   - Item:
-    - Sword
-    - Shovel
-    - Sign
-    - WoodenDoor
-    - IronDoor
     - MarkerBlock:
         - RegularMarkerBlock
         - NoVictimMarkerBlock
@@ -153,11 +139,11 @@
       - Stretcher
       - Map
   - Sentiment:
-    - Uncertainty  # include the agent
+    #- Uncertainty  # include the agent
     - Positive:
       - Encouragement
-      - Politeness
+      #- Politeness
       - Gratitude
     - Negative:
-      - Anger
-      - Worry
+      #- Anger
+      #- Worry
