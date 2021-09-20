@@ -1,12 +1,15 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: person
-      priority: ${ rulepriority }
-      label: Person
-      trigger: ${ person_triggers }
+
+  - name: person_detection
+    priority: ${ rulepriority }
+    label: Person
+    type: token
+    keep: false
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ person_triggers })\b/ & outgoing=compound]) |
+              [lemma=/(?i)^(${ person_triggers })\b/]+
 
   - name: victim
     priority: ${ rulepriority }
@@ -54,7 +57,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/no/] [lemma=/one|victim/]
+      [lemma=/\bno\b/] [lemma=/\bone\b|victim/]
 
 
 

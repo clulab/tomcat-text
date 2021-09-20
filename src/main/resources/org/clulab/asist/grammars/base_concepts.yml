@@ -45,6 +45,15 @@ rules:
     pattern: |
       [lemma=/(?i)${ engineer_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
 
+  - name: engineer_alt
+    priority: ${ rulepriority }
+    label: Engineer
+    type: token
+    keep: true
+    pattern: |
+      ([word=/\bhammer\b/] [lemma=/(?i)^(${ person_triggers })/])
+
+
   # ------------- CALL SIGNS --------------------------
   - name: alpha
     priority: ${ rulepriority }
