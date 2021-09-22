@@ -1,0 +1,9 @@
+# Compose file for tomcat-text rule visualizer
+
+version: '3'
+services:
+  tomcat_rule_visualizer:
+    build: .
+    ports:
+      - "9000:9000"
+    entrypoint: sbt webapp/run ~
