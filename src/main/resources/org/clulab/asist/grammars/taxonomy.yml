@@ -2,11 +2,9 @@
   - Tense:
       - PastTense
       - FutureTense
-  - NounPhrase
-  - Attribute
   - MarkerMeaning
-  - Number:
-    - Ordinal
+  - Number
+  - RoomTag
   - Switch
   - EventLike:
     - Plan
@@ -16,23 +14,41 @@
       - Inferred:
         - Deictic
       - Infrastructure:
-        - Room
-        - Door
-        - Building
-        - Hallway
-        - Stairs
-        - Window
-        - Floor
-        - Ceiling
-        - Lever
-        - Button
+        - Room:
+            - StorageRoom
+            - NumberedRoom
+            - KingChrisOffice
+            - KingTerrace
+            - HerbalifeRoom
+            - Library
+            - ComputerFarm
+            - LimpingLambChophouse
+            - BreakArea
+            - BreakRoom
+            - SecurityOffice
+            - AmwayRoom
+            - MaryKayRoom
+            - JanitorCloset
+            - MensRoom
+            - WomensRoom
+            - DataStorage
+            - Lobby
+            - Office
+            - Buffet
+            - Kitchen
+            - SundollarCoffee
+       # - Door  #these are currently not used, but we have plans to use them in the future
+        #- #Hallway
+        #- #Stairs
+        #- #Window
+        #- #Floor
+        #- #Ceiling
         - Zone
-      - MapSection:
-        - center
+      - MapSection
+       # - Center
     - Obstacle:
       - Rubble
       - Fire
-      - BuildingCollapse
     - Action:
       - SimpleActions:
         - Block
@@ -44,12 +60,8 @@
         - Close
         - Push
         - Toggle
-        - Jump
-        - Extinguish
         - Save
-        - Defeat
         - Sight
-        - Craft
         - Communicate:
           - Instruction
           - Question:
@@ -74,12 +86,11 @@
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
           - Commitment:
             - MakeCommitment
-            - ProposeCommitment
           - Continue
           - MoveVictim
           - Need
           - Precedence
-          - Planning
+         # - Planning
           - OfferHelp
           - ShareKnowledge
   - Entity:
@@ -98,13 +109,7 @@
         - CriticalVictim
         - RegularVictim
         - NoVictim
-    - Friend
-    - Foe
     - Player:
-      - Alpha
-      - Bravo
-      - Charlie
-      - Delta
       - Red
       - Blue
       - Green
@@ -124,11 +129,6 @@
       - SouthWest
       - West
   - Item:
-    - Sword
-    - Shovel
-    - Sign
-    - WoodenDoor
-    - IronDoor
     - MarkerBlock:
         - RegularMarkerBlock
         - NoVictimMarkerBlock
@@ -139,11 +139,11 @@
       - Stretcher
       - Map
   - Sentiment:
-    - Uncertainty  # include the agent
+    #- Uncertainty  # include the agent
     - Positive:
       - Encouragement
-      - Politeness
+      #- Politeness
       - Gratitude
-    - Negative:
-      - Anger
-      - Worry
+    - Negative
+      #- Anger
+      #- Worry

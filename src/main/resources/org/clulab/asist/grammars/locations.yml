@@ -1,6 +1,10 @@
 vars: org/clulab/asist/grammars/vars.yml
 
+
 rules:
+  - import: org/clulab/asist/grammars/rooms.yml
+    #we're importing this here to keep the files clean and uncluttered
+
 
   - name: infrastructure_detection
     priority: ${ first_priority }
@@ -11,30 +15,16 @@ rules:
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ infrastructure_triggers })/ & outgoing=compound]) |
       [lemma=/(?i)^(${ infrastructure_triggers })/]+
 
-  - name: rooms_mwe_surface
+  - name: room_detection
     priority: ${ first_priority }
-    label: Infrastructure
+    label: Room
     type: token
     keep: true
     pattern: |
-      /${room_singleword_surface_regex}/ |
-      /(?i)${room_twoword_first_word_regex}/ [tag=/POS/]? /(?i)${room_twoword_second_word_regex}/
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^room/ & outgoing=compound]) |
+      [lemma=/(?i)^room/]|
+      ([tag=/^JJ/ & incoming=amod] [lemma=/(?i)^room/])
 
-  - name: storage_room_numb
-    priority: ${ first_priority }
-    label: Infrastructure
-    type: token
-    keep: true
-    pattern: |
-      [word=/(?i)storage/] [word=/(?i)room/]? /(?i)^[A-Z]/
-
-  - name: room_numbered
-    priority: ${ first_priority }
-    label: Infrastructure
-    keep: true
-    pattern: |
-      trigger = [lemma=/(?i)^room/]
-      number: Number = >/nummod/
 
   - name: north
     priority: ${ first_priority }
