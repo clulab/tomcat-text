@@ -7,3 +7,5 @@ services:
     ports:
       - "9000:9000"
     entrypoint: sbt webapp/run ~
+    network_mode: host
+    stdin_open: true
