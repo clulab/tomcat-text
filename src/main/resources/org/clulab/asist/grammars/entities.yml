@@ -172,7 +172,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(red)/]
+      [lemma=/(?i)^(red)/] | /RAD/
 
   - name: blue
     label: Blue

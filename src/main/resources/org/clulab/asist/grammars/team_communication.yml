@@ -190,6 +190,7 @@ rules:
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
+               >/${objects}/ >/${positional_preps_liberal}/|
                >/${preps}/|
                >/advmod/
 

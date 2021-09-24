@@ -9,8 +9,14 @@ rules:
       trigger = [lemma=/(?i)^(${ where_triggers })/]
       topic: Entity =
         <advmod [lemma=be]
+        >/nsubj|dobj|nmod/ |
+        <advmod [lemma=be]
         >/nsubj|dobj|nmod/
+        >dep |
+        <advmod [lemma=be]
+        <cop
       location: Location? = >/${positional_preps}/
+# the second entity version is there so we can capture cases such as "where are you at green?" and extract green as the entity
 
   - name: location_moving_question
     example: "Where did you go?"
