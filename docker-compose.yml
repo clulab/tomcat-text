@@ -6,6 +6,17 @@ services:
     build: .
     ports:
       - "9000:9000"
-    entrypoint: sbt webapp/run ~
+    entrypoint: sbt webapp/run
+
+    # Allow localhost access in order to set up reverse proxy
     network_mode: host
+
+    # Prevent the Play app from automatically stopping
     stdin_open: true
+
+    # Allocate enough memory for NLP
+    environment:
+      - JAVA_OPTS=-Xmx16g
+
+    # Restart the service on server reboots, etc
+    restart: unless-stopped
