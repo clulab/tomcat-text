@@ -96,6 +96,8 @@ class HomeController @Inject() (cc: ControllerComponents)
       mentions,
       causalEvents
     ) // we only handle a single sentence
+
+    // Return JSON
     Ok(json)
   }
 
