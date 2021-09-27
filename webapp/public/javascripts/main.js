@@ -318,10 +318,10 @@ head.ready(function() {
 
     $('form').submit(function (event) {
 
-        // stop the form from submitting the normal way and refreshing the page
+        // Stop the form from submitting the normal way and refreshing the page
         event.preventDefault();
 
-        // collect form data
+        // Sollect form data
         var formData = {
             'sent': $('textarea[name=text]').val()
         }
@@ -331,10 +331,10 @@ head.ready(function() {
             return;
         }
 
-        // show spinner
+        // Show spinner
         document.getElementById("overlay").style.display = "block";
 
-        // process the form
+        // Process the form
         $.ajax({
             type: 'GET',
             url: 'parseSentence',
@@ -343,7 +343,7 @@ head.ready(function() {
             encode: true
         })
         .fail(function () {
-            // hide spinner
+            // Hide spinner
             document.getElementById("overlay").style.display = "none";
             alert("error");
         })
@@ -353,7 +353,8 @@ head.ready(function() {
             eidosMentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.eidosMentions)]);
             document.getElementById("groundedAdj").innerHTML = data.mentionDetails;
             document.getElementById("parse").innerHTML = data.parse;
-            // hide spinner
+
+            // Hide spinner
             document.getElementById("overlay").style.display = "none";
         });
 

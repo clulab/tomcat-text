@@ -2,18 +2,24 @@ package controllers
 
 import javax.inject._
 import org.clulab.asist.extraction.TomcatRuleEngine
-import org.clulab.odin.{Attachment, EventMention, Mention, RelationMention, TextBoundMention}
+import org.clulab.odin.{
+  Attachment,
+  EventMention,
+  Mention,
+  RelationMention,
+  TextBoundMention
+}
 import org.clulab.processors.{Document, Sentence}
 import org.clulab.utils.DisplayUtils
 import play.api.mvc._
 import play.api.libs.json._
 
-/**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
+/** This controller creates an `Action` to handle HTTP requests to the
+  * application's home page.
+  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject() (cc: ControllerComponents)
+    extends AbstractController(cc) {
 
   // Initialize the EidosSystem
   // -------------------------------------------------
@@ -25,19 +31,21 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   type Trigger = String
 
-  /**
-   * Create an Action to render an HTML page.
-   *
-   * The configuration in the `routes` file means that this method
-   * will be called when the application receives a `GET` request with
-   * a path of `/`.
-   */
-  def index(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index())
+  /** Create an Action to render an HTML page.
+    *
+    * The configuration in the `routes` file means that this method
+    * will be called when the application receives a `GET` request with
+    * a path of `/`.
+    */
+  def index(): Action[AnyContent] = Action {
+    implicit request: Request[AnyContent] =>
+      Ok(views.html.index())
   }
 
   // fixme
-  def getEntityLinkerEvents(mentions: Vector[Mention]): Vector[(Trigger, Map[String, String])] = {
+  def getEntityLinkerEvents(
+      mentions: Vector[Mention]
+  ): Vector[(Trigger, Map[String, String])] = {
     val events = mentions.filter(_ matches "Event")
     val entityLinkingEvents = events.map { e =>
       val event = e.asInstanceOf[EventMention]
@@ -52,15 +60,20 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
     entityLinkingEvents
   }
-  
-  def processPlaySentence(ieSystem: TomcatRuleEngine, text: String): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
+
+  def processPlaySentence(
+      ieSystem: TomcatRuleEngine,
+      text: String
+  ): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
     // preprocessing
-    println(s"Processing sentence : ${text}" )
+    println(s"Processing sentence : ${text}")
     val doc = ieSystem.annotate(text)
 
     println(s"DOC : ${doc}")
     // extract mentions from annotated document
-    val mentions = ieSystem.extractFrom(doc).sortBy(m => (m.sentence, m.getClass.getSimpleName))
+    val mentions = ieSystem
+      .extractFrom(doc)
+      .sortBy(m => (m.sentence, m.getClass.getSimpleName))
     println(s"Done extracting the mentions ... ")
     println(s"They are : ${mentions.map(m => m.text).mkString(",\t")}")
 
@@ -74,15 +87,25 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   def parseSentence(text: String) = Action {
     val (doc, mentions, causalEvents) = processPlaySentence(ieSystem, text)
-    println(s"Sentence returned from processPlaySentence : ${doc.sentences.head.getSentenceText}")
-    val json = mkJson(text, doc, mentions, causalEvents) // we only handle a single sentence
+    println(
+      s"Sentence returned from processPlaySentence : ${doc.sentences.head.getSentenceText}"
+    )
+    val json = mkJson(
+      text,
+      doc,
+      mentions,
+      causalEvents
+    ) // we only handle a single sentence
+
+    // Return JSON
     Ok(json)
   }
 
   protected def mkParseObj(sentence: Sentence, sb: StringBuilder): Unit = {
     def getTdAt(option: Option[Array[String]], n: Int): String = {
-      val text = if (option.isEmpty) ""
-      else option.get(n)
+      val text =
+        if (option.isEmpty) ""
+        else option.get(n)
 
       "<td>" + xml.Utility.escape(text) + "</td>"
     }
@@ -101,7 +124,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   protected def mkParseObj(doc: Document): String = {
-      val header =
+    val header =
       """
         |  <tr>
         |    <th>Word</th>
@@ -112,22 +135,27 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
         |    <th>Chunk</th>
         |  </tr>
       """.stripMargin
-      val sb = new StringBuilder(header)
+    val sb = new StringBuilder(header)
 
-      doc.sentences.foreach(mkParseObj(_, sb))
-      sb.toString
+    doc.sentences.foreach(mkParseObj(_, sb))
+    sb.toString
   }
 
-  def mkJson(text: String, doc: Document, mentions: Vector[Mention], causalEvents: Vector[(String, Map[String, String])] ): JsValue = {
+  def mkJson(
+      text: String,
+      doc: Document,
+      mentions: Vector[Mention],
+      causalEvents: Vector[(String, Map[String, String])]
+  ): JsValue = {
     println("Found mentions (in mkJson):")
     mentions.foreach(DisplayUtils.displayMention)
 
     val sent = doc.sentences.head
     val syntaxJsonObj = Json.obj(
-        "text" -> text,
-        "entities" -> mkJsonFromTokens(doc),
-        "relations" -> mkJsonFromDependencies(doc)
-      )
+      "text" -> text,
+      "entities" -> mkJsonFromTokens(doc),
+      "relations" -> mkJsonFromDependencies(doc)
+    )
     val eidosJsonObj = mkJsonForEidos(text, sent, mentions)
     val mentionsDetails = mkMentionDetailTextDisplay(mentions, causalEvents)
     val parseObj = mkParseObj(doc)
@@ -140,12 +168,14 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
-  def mkMentionDetailTextDisplay(mentions: Vector[Mention],
-                                 causalEvents: Vector[(String, Map[String, String])]): String = {
+  def mkMentionDetailTextDisplay(
+      mentions: Vector[Mention],
+      causalEvents: Vector[(String, Map[String, String])]
+  ): String = {
     var objectToReturn = ""
 
     // Mention display format
-    if (mentions.nonEmpty){
+    if (mentions.nonEmpty) {
       objectToReturn += "<h2>Extractions:</h2>"
       for (m <- mentions) {
         objectToReturn += s"${DisplayUtils.webAppMention(m)}"
@@ -156,17 +186,31 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     objectToReturn
   }
 
-  def mkJsonForEidos(sentenceText: String, sent: Sentence, mentions: Vector[Mention]): Json.JsValueWrapper = {
+  def mkJsonForEidos(
+      sentenceText: String,
+      sent: Sentence,
+      mentions: Vector[Mention]
+  ): Json.JsValueWrapper = {
     val topLevelTBM = mentions.flatMap {
       case m: TextBoundMention => Some(m)
       // FIXME: real brat solution for the display
-      case r: RelationMention => Some(new TextBoundMention(r.labels, r.tokenInterval, r.sentence, r.document, r.keep, r.foundBy))
+      case r: RelationMention =>
+        Some(
+          new TextBoundMention(
+            r.labels,
+            r.tokenInterval,
+            r.sentence,
+            r.document,
+            r.keep,
+            r.foundBy
+          )
+        )
       case _ => None
     }
     // collect event mentions for display
     val events = mentions.flatMap {
       case m: EventMention => Some(m)
-      case _ => None
+      case _               => None
     }
     // collect triggers for event mentions
     val triggers = events.flatMap { e =>
@@ -182,15 +226,22 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
       a <- e.arguments.values.flatten
     } yield a match {
       case m: TextBoundMention => m
-      case m: RelationMention => new TextBoundMention(m.labels, m.tokenInterval, m.sentence, m.document, m.keep, m.foundBy)
+      case m: RelationMention =>
+        new TextBoundMention(
+          m.labels,
+          m.tokenInterval,
+          m.sentence,
+          m.document,
+          m.keep,
+          m.foundBy
+        )
       case m: EventMention => m.trigger
     }
     // generate id for each textbound mention
-    val tbMentionToId = (entities ++ triggers ++ topLevelTBM)
-        .distinct
-      .zipWithIndex
-      .map { case (m, i) => (m, i + 1) }
-      .toMap
+    val tbMentionToId =
+      (entities ++ triggers ++ topLevelTBM).distinct.zipWithIndex.map {
+        case (m, i) => (m, i + 1)
+      }.toMap
     // return brat output
     Json.obj(
       "text" -> sentenceText,
@@ -200,12 +251,18 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
-  def mkJsonFromEntities(mentions: Vector[TextBoundMention], tbmToId: Map[TextBoundMention, Int]): Json.JsValueWrapper = {
+  def mkJsonFromEntities(
+      mentions: Vector[TextBoundMention],
+      tbmToId: Map[TextBoundMention, Int]
+  ): Json.JsValueWrapper = {
     val entities = mentions.map(m => mkJsonFromTextBoundMention(m, tbmToId(m)))
     Json.arr(entities: _*)
   }
 
-  def mkJsonFromTextBoundMention(m: TextBoundMention, i: Int): Json.JsValueWrapper = {
+  def mkJsonFromTextBoundMention(
+      m: TextBoundMention,
+      i: Int
+  ): Json.JsValueWrapper = {
     Json.arr(
       s"T$i",
       HomeController.statefulRepresentation(m).label,
@@ -213,7 +270,10 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
-  def mkJsonFromEventMentions(ee: Seq[EventMention], tbmToId: Map[TextBoundMention, Int]): Json.JsValueWrapper = {
+  def mkJsonFromEventMentions(
+      ee: Seq[EventMention],
+      tbmToId: Map[TextBoundMention, Int]
+  ): Json.JsValueWrapper = {
     var i = 0
     val jsonEvents = for (e <- ee) yield {
       i += 1
@@ -222,7 +282,11 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Json.arr(jsonEvents: _*)
   }
 
-  def mkJsonFromEventMention(ev: EventMention, i: Int, tbmToId: Map[TextBoundMention, Int]): Json.JsValueWrapper = {
+  def mkJsonFromEventMention(
+      ev: EventMention,
+      i: Int,
+      tbmToId: Map[TextBoundMention, Int]
+  ): Json.JsValueWrapper = {
     Json.arr(
       s"E$i",
       s"T${tbmToId(ev.trigger)}",
@@ -230,14 +294,25 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
-  def mkArgMentions(ev: EventMention, tbmToId: Map[TextBoundMention, Int]): Seq[Json.JsValueWrapper] = {
+  def mkArgMentions(
+      ev: EventMention,
+      tbmToId: Map[TextBoundMention, Int]
+  ): Seq[Json.JsValueWrapper] = {
     val args = for {
       argRole <- ev.arguments.keys
       m <- ev.arguments(argRole)
     } yield {
       val arg = m match {
         case m: TextBoundMention => m
-        case m: RelationMention => new TextBoundMention(m.labels, m.tokenInterval, m.sentence, m.document, m.keep, m.foundBy)
+        case m: RelationMention =>
+          new TextBoundMention(
+            m.labels,
+            m.tokenInterval,
+            m.sentence,
+            m.document,
+            m.keep,
+            m.foundBy
+          )
         case m: EventMention => m.trigger
       }
       mkArgMention(argRole, s"T${tbmToId(arg)}")
@@ -260,7 +335,11 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Json.arr(tokens: _*)
   }
 
-  def mkJsonFromToken(sent: Sentence, offset: Int, i: Int): Json.JsValueWrapper = {
+  def mkJsonFromToken(
+      sent: Sentence,
+      offset: Int,
+      i: Int
+  ): Json.JsValueWrapper = {
     Json.arr(
       s"T${offset + i + 1}", // token id (starts at one, not zero)
       sent.tags.get(i), // lets assume that tags are always available
@@ -273,12 +352,18 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
     val rels = doc.sentences.flatMap { sent =>
       var relId = 0
-      val deps = sent.dependencies.get // lets assume that dependencies are always available
+      val deps =
+        sent.dependencies.get // lets assume that dependencies are always available
       val rels = for {
         governor <- deps.outgoingEdges.indices
         (dependent, label) <- deps.outgoingEdges(governor)
       } yield {
-        val json = mkJsonFromDependency(offset + relId, offset + governor, offset + dependent, label)
+        val json = mkJsonFromDependency(
+          offset + relId,
+          offset + governor,
+          offset + dependent,
+          label
+        )
         relId += 1
         json
       }
@@ -288,7 +373,12 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Json.arr(rels: _*)
   }
 
-  def mkJsonFromDependency(relId: Int, governor: Int, dependent: Int, label: String): Json.JsValueWrapper = {
+  def mkJsonFromDependency(
+      relId: Int,
+      governor: Int,
+      dependent: Int,
+      label: String
+  ): Json.JsValueWrapper = {
     Json.arr(
       s"R$relId",
       label,
@@ -299,7 +389,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
-  def tab():String = "&nbsp;&nbsp;&nbsp;&nbsp;"
+  def tab(): String = "&nbsp;&nbsp;&nbsp;&nbsp;"
 }
 
 object HomeController {
@@ -308,13 +398,14 @@ object HomeController {
   def statefulRepresentation(m: Mention): Mention = {
     val stateAffix = ""
 
-
     // If you found something, append the affix to top label and add to the Seq of labels
     if (stateAffix.nonEmpty) {
       val modifiedLabels = Seq(m.label ++ stateAffix) ++ m.labels
       val out = m match {
-        case tb: TextBoundMention => m.asInstanceOf[TextBoundMention].copy(labels = modifiedLabels)
-        case rm: RelationMention => m.asInstanceOf[RelationMention].copy(labels = modifiedLabels)
+        case tb: TextBoundMention =>
+          m.asInstanceOf[TextBoundMention].copy(labels = modifiedLabels)
+        case rm: RelationMention =>
+          m.asInstanceOf[RelationMention].copy(labels = modifiedLabels)
         case em: EventMention => em.copy(labels = modifiedLabels)
       }
 
