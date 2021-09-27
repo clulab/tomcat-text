@@ -38,9 +38,9 @@ rules:
   # Extract the locations
   - import: org/clulab/asist/grammars/locations.yml
     vars:
-      first_priority: "4-5"
-      second_priority: "6"
-      third_priority: "7"
+      first_priority: "4+"
+      second_priority: "5"
+      third_priority: "6"
 
   # Extract the base_concepts
   - import: org/clulab/asist/grammars/base_concepts.yml
@@ -80,12 +80,12 @@ rules:
   # Extract questions
   - import: org/clulab/asist/grammars/questions.yml
     vars:
-      rulepriority: "5-11"
+      rulepriority: "6+"
 
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
     vars:
-      rulepriority: "5-11"
+      rulepriority: "6+"
 
   # Extract temporal extractions
   - import: org/clulab/asist/grammars/temporal_extractions.yml
