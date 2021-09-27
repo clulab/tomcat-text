@@ -90,4 +90,6 @@ rules:
   # Extract temporal extractions
   - import: org/clulab/asist/grammars/temporal_extractions.yml
     vars:
-      rulepriority: "9+"
+      rulepriority: "10+"
+      earlypriority: "9+"
+
