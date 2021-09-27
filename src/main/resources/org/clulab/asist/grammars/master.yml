@@ -80,12 +80,12 @@ rules:
   # Extract questions
   - import: org/clulab/asist/grammars/questions.yml
     vars:
-      rulepriority: "5+"
+      rulepriority: "5-11"
 
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
     vars:
-      rulepriority: "5+"
+      rulepriority: "5-11"
 
   # Extract temporal extractions
   - import: org/clulab/asist/grammars/temporal_extractions.yml

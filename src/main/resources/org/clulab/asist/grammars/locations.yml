@@ -16,7 +16,7 @@ rules:
       [lemma=/(?i)^(${ infrastructure_triggers })/]+
 
   - name: room_detection
-    priority: ${ first_priority }
+    priority: ${ second_priority }
     label: Room
     type: token
     keep: true
