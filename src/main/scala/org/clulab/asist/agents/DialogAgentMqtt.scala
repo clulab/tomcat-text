@@ -1,5 +1,7 @@
 package org.clulab.asist.agents
 
+import ai.lum.common.ConfigFactory
+import com.typesafe.config.Config
 import akka.actor.ActorSystem
 import akka.http.scaladsl._
 import akka.http.scaladsl.model._
@@ -50,9 +52,10 @@ class DialogAgentMqtt(
     with LazyLogging
     with MessageBusClientListener { 
 
+  private val config: Config = ConfigFactory.load()
   logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
 
-  val serverLocation = "http://localhost:8000"
+  val serverLocation = config.getString("DialogAgent.dacServerURL") 
 
   // actors
   implicit val ec = ExecutionContext.global
