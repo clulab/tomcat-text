@@ -47,37 +47,25 @@ var collData = {
     {
             "type"   : "NounPhrase",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": baseNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
         {
             "type"   : "NounPhrase-Inc",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": increaseNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
         {
             "type"   : "NounPhrase-Dec",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": decreaseNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
         {
             "type"   : "NounPhrase-Quant",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": quantifiedNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
      ],
@@ -310,7 +298,7 @@ head.ready(function() {
         $.extend({}, docData),
         webFontURLs
     );
-    var eidosMentionsLiveDispatcher = Util.embed('eidosMentions',
+    var mentionsLiveDispatcher = Util.embed('mentions',
         $.extend({'collection': null}, collData),
         $.extend({}, docData),
         webFontURLs
@@ -350,8 +338,10 @@ head.ready(function() {
         .done(function (data) {
             console.log(data);
             syntaxLiveDispatcher.post('requestRenderData', [$.extend({}, data.syntax)]);
-            eidosMentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.eidosMentions)]);
-            document.getElementById("groundedAdj").innerHTML = data.mentionDetails;
+            mentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.mentions)]);
+            document.getElementById("extractions").innerHTML = data.mentionDetails;
+            document.getElementById("extractionJsons").innerHTML = 
+                "<h2>Message</h2>"+JSON.stringify(JSON.parse(data.extractionJsons), undefined, 2);
             document.getElementById("parse").innerHTML = data.parse;
 
             // Hide spinner

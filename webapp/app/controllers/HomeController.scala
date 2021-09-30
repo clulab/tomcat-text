@@ -1,6 +1,8 @@
 package controllers
 
 import javax.inject._
+import org.clulab.asist.agents.DialogAgent
+import org.clulab.asist.agents.DialogAgentArgs
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.odin.{
   Attachment,
@@ -14,6 +16,20 @@ import org.clulab.utils.DisplayUtils
 import play.api.mvc._
 import play.api.libs.json._
 
+import org.clulab.asist.messages._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write, writePretty}
+
+import org.json4s.JField
+import spray.json.DefaultJsonProtocol._
+import spray.json.JsonParser
+
+import scala.collection.immutable
+import scala.io.Source
+import scala.util.control.NonFatal
+
 /** This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
   */
@@ -21,12 +37,17 @@ import play.api.libs.json._
 class HomeController @Inject() (cc: ControllerComponents)
     extends AbstractController(cc) {
 
-  // Initialize the EidosSystem
+  implicit val formats = DefaultFormats
+  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
+      writePretty(a)
+  }
+
+  // Initialize the TomcatRuleEngine
   // -------------------------------------------------
-  println("[AsistEngine] Initializing the AsistEngine ...")
-  val ieSystem = new TomcatRuleEngine()
-  var proc = ieSystem.proc
-  println("[AsistEngine] Completed Initialization ...")
+  println("[TomcatRuleEngine] Initializing the TomcatRuleEngine ...")
+  val engine = new TomcatRuleEngine()
+  val agent = new DialogAgent(new DialogAgentArgs(), engine)
+  println("[TomcatRuleEngine] Completed initialization ...")
   // -------------------------------------------------
 
   type Trigger = String
@@ -42,10 +63,10 @@ class HomeController @Inject() (cc: ControllerComponents)
       Ok(views.html.index())
   }
 
-  // fixme
+  // FIXME
   def getEntityLinkerEvents(
-      mentions: Vector[Mention]
-  ): Vector[(Trigger, Map[String, String])] = {
+      mentions: Seq[Mention]
+  ): Seq[(Trigger, Map[String, String])] = {
     val events = mentions.filter(_ matches "Event")
     val entityLinkingEvents = events.map { e =>
       val event = e.asInstanceOf[EventMention]
@@ -62,18 +83,28 @@ class HomeController @Inject() (cc: ControllerComponents)
   }
 
   def processPlaySentence(
-      ieSystem: TomcatRuleEngine,
+      engine: TomcatRuleEngine,
       text: String
-  ): (Document, Vector[Mention], Vector[(Trigger, Map[String, String])]) = {
+  ): (Document, Seq[Mention], Seq[(Trigger, Map[String, String])], String) = {
     // preprocessing
     println(s"Processing sentence : ${text}")
-    val doc = ieSystem.annotate(text)
+    val doc = engine.annotate(text)
+
 
     println(s"DOC : ${doc}")
-    // extract mentions from annotated document
-    val mentions = ieSystem
-      .extractFrom(doc)
-      .sortBy(m => (m.sentence, m.getClass.getSimpleName))
+    // Extract mentions from annotated document
+    val mentions = agent.extractMentions(doc) 
+    val extractions = agent.getExtractions(mentions)
+    val message = agent.dialogAgentMessageData(
+      "",
+      "",
+      "",
+      "",
+      text,
+      extractions
+    )
+
+    val extractionJsons = write(message)
     println(s"Done extracting the mentions ... ")
     println(s"They are : ${mentions.map(m => m.text).mkString(",\t")}")
 
@@ -82,11 +113,11 @@ class HomeController @Inject() (cc: ControllerComponents)
 
     println("DONE .... ")
     // return the sentence and all the mentions extracted ... TODO: fix it to process all the sentences in the doc
-    (doc, mentions.sortBy(_.start), events)
+    (doc, mentions.sortBy(_.start), events, extractionJsons)
   }
 
   def parseSentence(text: String) = Action {
-    val (doc, mentions, causalEvents) = processPlaySentence(ieSystem, text)
+    val (doc, mentions, events, extractionJsons) = processPlaySentence(engine, text)
     println(
       s"Sentence returned from processPlaySentence : ${doc.sentences.head.getSentenceText}"
     )
@@ -94,11 +125,13 @@ class HomeController @Inject() (cc: ControllerComponents)
       text,
       doc,
       mentions,
-      causalEvents
-    ) // we only handle a single sentence
+      events,
+    ) // We only handle a single sentence
+
+    val updatedJson = json.as[JsObject]  ++ Json.obj("extractionJsons" -> extractionJsons)
 
     // Return JSON
-    Ok(json)
+    Ok(updatedJson)
   }
 
   protected def mkParseObj(sentence: Sentence, sb: StringBuilder): Unit = {
@@ -107,7 +140,7 @@ class HomeController @Inject() (cc: ControllerComponents)
         if (option.isEmpty) ""
         else option.get(n)
 
-      "<td>" + xml.Utility.escape(text) + "</td>"
+        "<td>" + xml.Utility.escape(text) + "</td>"
     }
 
     sentence.words.indices.foreach { i =>
@@ -126,6 +159,7 @@ class HomeController @Inject() (cc: ControllerComponents)
   protected def mkParseObj(doc: Document): String = {
     val header =
       """
+        <h2>Parse:</h2>
         |  <tr>
         |    <th>Word</th>
         |    <th>Tag</th>
@@ -144,8 +178,8 @@ class HomeController @Inject() (cc: ControllerComponents)
   def mkJson(
       text: String,
       doc: Document,
-      mentions: Vector[Mention],
-      causalEvents: Vector[(String, Map[String, String])]
+      mentions: Seq[Mention],
+      events: Seq[(String, Map[String, String])],
   ): JsValue = {
     println("Found mentions (in mkJson):")
     mentions.foreach(DisplayUtils.displayMention)
@@ -156,21 +190,21 @@ class HomeController @Inject() (cc: ControllerComponents)
       "entities" -> mkJsonFromTokens(doc),
       "relations" -> mkJsonFromDependencies(doc)
     )
-    val eidosJsonObj = mkJsonForEidos(text, sent, mentions)
-    val mentionsDetails = mkMentionDetailTextDisplay(mentions, causalEvents)
+    val mentionsJsonObj = mkMentionsJsonObj(text, sent, mentions)
+    val mentionsDetails = mkMentionDetailTextDisplay(mentions, events)
     val parseObj = mkParseObj(doc)
 
     Json.obj(
       "syntax" -> syntaxJsonObj,
-      "eidosMentions" -> eidosJsonObj,
+      "mentions" -> mentionsJsonObj,
       "mentionDetails" -> mentionsDetails,
-      "parse" -> parseObj
+      "parse" -> parseObj,
     )
   }
 
   def mkMentionDetailTextDisplay(
-      mentions: Vector[Mention],
-      causalEvents: Vector[(String, Map[String, String])]
+      mentions: Seq[Mention],
+      events: Seq[(String, Map[String, String])]
   ): String = {
     var objectToReturn = ""
 
@@ -186,10 +220,10 @@ class HomeController @Inject() (cc: ControllerComponents)
     objectToReturn
   }
 
-  def mkJsonForEidos(
+  def mkMentionsJsonObj(
       sentenceText: String,
       sent: Sentence,
-      mentions: Vector[Mention]
+      mentions: Seq[Mention]
   ): Json.JsValueWrapper = {
     val topLevelTBM = mentions.flatMap {
       case m: TextBoundMention => Some(m)
@@ -207,12 +241,12 @@ class HomeController @Inject() (cc: ControllerComponents)
         )
       case _ => None
     }
-    // collect event mentions for display
+    // Collect event mentions for display
     val events = mentions.flatMap {
       case m: EventMention => Some(m)
       case _               => None
     }
-    // collect triggers for event mentions
+    // Collect triggers for event mentions
     val triggers = events.flatMap { e =>
       val argTriggers = for {
         a <- e.arguments.values
@@ -252,7 +286,7 @@ class HomeController @Inject() (cc: ControllerComponents)
   }
 
   def mkJsonFromEntities(
-      mentions: Vector[TextBoundMention],
+      mentions: Seq[TextBoundMention],
       tbmToId: Map[TextBoundMention, Int]
   ): Json.JsValueWrapper = {
     val entities = mentions.map(m => mkJsonFromTextBoundMention(m, tbmToId(m)))
