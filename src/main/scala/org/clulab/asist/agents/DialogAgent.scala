@@ -63,7 +63,7 @@ class DialogAgent (
   val topicSubAptimaAsr = "status/asistdataingester/userspeech"
   val topicSubTrial = "trial"
   val topicPubDialogAgent = config.getString("DialogAgent.outputTopic")
-  val topicPubVersionInfo = "agent/tomcat_textAnalyzer/versioninfo"
+  val topicPubVersionInfo = config.getString("DialogAgent.versionInfoTopic")
 
   val subscriptions = List(
     topicSubChat,
