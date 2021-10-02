@@ -43,7 +43,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)${ engineer_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
+      [lemma=/(?i)${ engineer_triggers }/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: engineer_alt
     priority: ${ rulepriority }
@@ -60,4 +60,4 @@ rules:
     priority: ${ rulepriority }
     type: token
     pattern: |
-      [lemma=/(?i)plan|strategy/]
+      [lemma=/(?i)\bplan\b|strategy/]

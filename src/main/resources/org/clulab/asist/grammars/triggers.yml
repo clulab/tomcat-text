@@ -12,7 +12,7 @@ change_priority_triggers: "target|prioritize|focus"
 
 charlie_triggers: "charlie"
 
-clear_triggers: "clear|remove|clear|break"
+clear_triggers: "clear|remove|clear|break|excavate"
 
 close_triggers: "close|shut"
 
@@ -33,7 +33,7 @@ encouragement_triggers1: "good|well|perfect|amazing|excellent|great|awesome"
 
 encouragement_triggers2: "job|done|work"
 
-engineer_triggers: "hazmat|engineer" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
+engineer_triggers: "hazmat|engineer|heavy" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
 
 exist_triggers: "be"
 
@@ -43,7 +43,7 @@ fire_triggers: "fire|blaze|flame"
 
 foe_triggers: "zombie|mob|enemy|skeleton"
 
-hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer"
+hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer|shovel"
 
 infrastructure_triggers: "door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony|hallway"
 
@@ -73,7 +73,7 @@ room_twoword_first_word_regex: "(cubicle|sundollar|Herbalife|limping lamb|lamb|s
 
 room_twoword_second_word_regex: "(room|cafe|office|terrace|area|storage|coffee|chophouse)"
 
-rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel|gravel"
+rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel|gravel|pile"
 
 search_spec_triggers: "search|service|searcher|scout"
 
@@ -105,7 +105,7 @@ triage_triggers: "save|triage|heal|help|get|rescue"
 
 triage_triggers_strict: "save|triage|heal|rescue"
 
-victim_triggers: "victim|patient"
+victim_triggers: "victim|patient|person"
 
 west_triggers: "west"
 

@@ -27,6 +27,14 @@ rules:
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
 
+  - name: critical_solitary
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<=a|an|some) [word=/(?i)critical/]
+
   - name: critical_injured_victim
     priority: ${ rulepriority }
     label: CriticalVictim
