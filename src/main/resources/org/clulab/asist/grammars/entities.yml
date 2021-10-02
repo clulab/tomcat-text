@@ -106,7 +106,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
+      [word=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
 
   # minecraft door switch, e.g.
   - name: switch
