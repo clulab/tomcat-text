@@ -43,7 +43,7 @@ rules:
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = >nsubj
-      location: Location? = >/${positional_preps_+advmod}/
+      location: Location? = >/${positional_preps_liberal+advmod}/
 
   - name: information_gathering_question_clarification
     example: "What is the plan?"
