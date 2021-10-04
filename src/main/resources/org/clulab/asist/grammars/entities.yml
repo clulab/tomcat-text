@@ -27,6 +27,14 @@ rules:
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
 
+  - name: critical_solitary
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<=a|an|some) [word=/(?i)critical/]
+
   - name: critical_injured_victim
     priority: ${ rulepriority }
     label: CriticalVictim
@@ -106,7 +114,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
+      [word=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
 
   # minecraft door switch, e.g.
   - name: switch
@@ -172,7 +180,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(red)/]
+      [lemma=/(?i)^(red)/] | /RAD/
 
   - name: blue
     label: Blue
