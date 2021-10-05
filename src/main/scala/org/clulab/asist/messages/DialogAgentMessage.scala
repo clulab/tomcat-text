@@ -27,7 +27,7 @@ case class DialogAgentMessageUtteranceExtraction(
   attachments: Set[String] = Set.empty, // Json strings
   start_offset: Int = 0,
   end_offset: Int = 0,
-  taxonomy_matches: Seq[(String, String)] = Seq.empty
+  rule: String = null, // The rule used to produce the extraction.
 )
 
 /** Part of the DialogAgentMessage class */

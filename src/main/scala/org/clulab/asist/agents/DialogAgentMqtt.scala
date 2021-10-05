@@ -35,7 +35,6 @@ import scala.util.{Failure, Success}
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
- * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
  */
 
 case class BusMessage (
@@ -67,7 +66,7 @@ class DialogAgentMqtt(
 
   val queue: Queue[BusMessage] = new Queue 
 
-  // this handles the message bus operations.  
+  // This handles the message bus operations.  
   val bus = new MessageBusClient(
     host,
     port,
@@ -185,7 +184,7 @@ class DialogAgentMqtt(
       finishJob
   } 
 
-  /** Send DialogAgentMessage for any subsribed topic except "trial" 
+  /** Send DialogAgentMessage for any subscribed topic except "trial" 
    * @param input: Message bus traffic with topic and text
    */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
