@@ -341,7 +341,8 @@ head.ready(function() {
             mentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.mentions)]);
             document.getElementById("extractions").innerHTML = data.mentionDetails;
             document.getElementById("extractionJsons").innerHTML = 
-                "<h2>Message</h2>"+JSON.stringify(JSON.parse(data.extractionJsons), undefined, 2);
+                "<h2>Example message published to the message bus</h2>"+
+                JSON.stringify(JSON.parse(data.extractionJsons), undefined, 2);
             document.getElementById("parse").innerHTML = data.parse;
 
             // Hide spinner

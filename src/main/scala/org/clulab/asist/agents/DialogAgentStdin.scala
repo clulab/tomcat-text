@@ -10,7 +10,6 @@ import java.util.Scanner
  *  An interactive Dialog Agent that will return extractions for text entered
  *  on the command line
  *
- *  @param nMatches Number of taxonomy_matches to return (up to 5)
  */
 
 class DialogAgentStdin (

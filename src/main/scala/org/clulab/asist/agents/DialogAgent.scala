@@ -30,14 +30,12 @@ import scala.util.control.NonFatal
  *
  *  https://github.com/clulab/tomcat-text/blob/master/README.md
  *
- *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
-  // Number of taxonomy matches to include with extractions
-  nMatches: Int = 0,
-  // Query the Dialog Act Classification server
+  // Set this to true to include dialogue act classifications from the TAMU
+  // Dialog Act Classification server.
   withClassifications: Boolean = false,
   // Optionally hard-set the TA3 version number of reprocessed .metadata files
   // If this value is not set, existing version numbers are incremented by 1
@@ -77,7 +75,6 @@ class DialogAgent (
     topicPubVersionInfo
   )
 
-  def nMatches = args.nMatches
   def withClassifications = args.withClassifications
   def ta3Version = args.ta3Version
 
@@ -88,11 +85,6 @@ class DialogAgent (
       write(a)
     }
   }
-
-  // Load the taxonomy map from resource file
-  val taxonomy_map = JsonParser(
-    Source.fromResource("taxonomy_map.json").mkString
-  ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
 
   // Create the engine and run it to get lazy init out of the way 
   logger.info("Initializing Extractor (this may take a few seconds) ...")
@@ -190,18 +182,6 @@ class DialogAgent (
       extractions
     )
  
-  /** Map the mention label to the taxonomy map, the mappings are static
-   * and computed ahead of time and stored sorted // FIXME: is this true?.
-   * @param mentionLabel For taxonomy mapping
-   */
-  def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = 
-    if(nMatches == 0) Seq() 
-    else {
-      val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
-      val seq = matches.map(x => (x("term") -> x("score"))).toSeq
-      seq.take(nMatches)
-    }
-
   /** Return an array of all extractions found in the input text
    *  @param text Text to analyze
    */
@@ -221,7 +201,6 @@ class DialogAgent (
       converted = ms.map(getExtraction)
     } yield (role, converted)
     val extractionAttachments = mention.attachments.map(write(_))
-    val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageUtteranceExtraction(
       mention.label,
       mention.words.mkString(" "),
@@ -229,7 +208,7 @@ class DialogAgent (
       extractionAttachments,
       mention.startOffset,
       mention.endOffset,
-      taxonomy_matches
+      mention.foundBy,
     )
   }
 

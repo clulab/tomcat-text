@@ -1,8 +1,10 @@
 package controllers
 
+import java.time.Clock
 import javax.inject._
 import org.clulab.asist.agents.DialogAgent
 import org.clulab.asist.agents.DialogAgentArgs
+import org.clulab.asist.messages.DialogAgentMessage
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.odin.{
   Attachment,
@@ -86,7 +88,7 @@ class HomeController @Inject() (cc: ControllerComponents)
       engine: TomcatRuleEngine,
       text: String
   ): (Document, Seq[Mention], Seq[(Trigger, Map[String, String])], String) = {
-    // preprocessing
+    // Preprocessing
     println(s"Processing sentence : ${text}")
     val doc = engine.annotate(text)
 
@@ -95,14 +97,29 @@ class HomeController @Inject() (cc: ControllerComponents)
     // Extract mentions from annotated document
     val mentions = agent.extractMentions(doc) 
     val extractions = agent.getExtractions(mentions)
-    val message = agent.dialogAgentMessageData(
-      "",
-      "",
-      "",
-      "",
+    val messageData = agent.dialogAgentMessageData(
+      "P00012",
+      "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
+      "message_bus",
+      "agent/asr/final",
       text,
       extractions
     )
+    val timestamp = Clock.systemUTC.instant.toString
+    val message = DialogAgentMessage(
+      CommonHeader(timestamp, agent.dialogAgentMessageType, agent.dialogAgentVersion),
+      CommonMsg(
+        experiment_id = "367624f8-81cd-4661-a03f-b61908c39581",
+        trial_id = "78822ceb-448a-436e-a1f1-f154f2066261",
+        timestamp = timestamp,
+        source = "tomcat_textAnalyzer",
+        sub_type = "Event:dialogue_event",
+        version = agent.dialogAgentVersion,
+        replay_root_id = "",
+        replay_id = "",
+      ),
+      messageData
+      )
 
     val extractionJsons = write(message)
     println(s"Done extracting the mentions ... ")
