@@ -21,7 +21,7 @@ case class DialogAgentMessageUtteranceSource(
 
 /** Part of the DialogAgentMessageData class */
 case class DialogAgentMessageUtteranceExtraction(
-  label: String = null,
+  labels: Seq[String] = Seq.empty,
   span: String = null,
   arguments: Map[String, Seq[DialogAgentMessageUtteranceExtraction]] = Map.empty,
   attachments: Set[String] = Set.empty, // Json strings
