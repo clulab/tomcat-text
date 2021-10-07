@@ -202,7 +202,7 @@ class DialogAgent (
     } yield (role, converted)
     val extractionAttachments = mention.attachments.map(write(_))
     DialogAgentMessageUtteranceExtraction(
-      mention.label,
+      mention.labels,
       mention.words.mkString(" "),
       extractionArguments.toMap,
       extractionAttachments,

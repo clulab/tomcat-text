@@ -179,14 +179,14 @@ message bus.
 ```json
 {
   "header": {
-    "timestamp": "2021-10-05T17:09:53.184Z",
+    "timestamp": "2021-10-07T18:27:42.843Z",
     "message_type": "event",
     "version": "2.3.0"
   },
   "msg": {
     "experiment_id": "367624f8-81cd-4661-a03f-b61908c39581",
     "trial_id": "78822ceb-448a-436e-a1f1-f154f2066261",
-    "timestamp": "2021-10-05T17:09:53.184Z",
+    "timestamp": "2021-10-07T18:27:42.843Z",
     "source": "tomcat_textAnalyzer",
     "sub_type": "Event:dialogue_event",
     "version": "2.3.0",
@@ -196,7 +196,7 @@ message bus.
   "data": {
     "participant_id": "P00012",
     "asr_msg_id": "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
-    "text": "I'm going to save this critical victim.",
+    "text": "I'm going to room 204.",
     "dialog_act_label": null,
     "utterance_source": {
       "source_type": "message_bus",
@@ -204,37 +204,102 @@ message bus.
     },
     "extractions": [
       {
-        "label": "CriticalVictim",
-        "span": "critical victim",
-        "arguments": {},
-        "attachments": [],
-        "start_offset": 23,
-        "end_offset": 38,
-        "rule": "critical_victim"
-      },
-      {
-        "label": "Save",
-        "span": "save this critical victim",
+        "labels": [
+          "MoveTo",
+          "Move",
+          "SimpleActions",
+          "Action",
+          "EventLike",
+          "Concept"
+        ],
+        "span": "going to room 204",
         "arguments": {
           "target": [
             {
-              "label": "CriticalVictim",
-              "span": "critical victim",
-              "arguments": {},
+              "labels": [
+                "NumberedRoom",
+                "Room",
+                "Infrastructure",
+                "Location",
+                "EventLike",
+                "Concept"
+              ],
+              "span": "room 204",
+              "arguments": {
+                "number": [
+                  {
+                    "labels": [
+                      "Number",
+                      "Concept"
+                    ],
+                    "span": "204",
+                    "arguments": {},
+                    "attachments": [],
+                    "start_offset": 18,
+                    "end_offset": 21,
+                    "rule": "numbers"
+                  }
+                ]
+              },
               "attachments": [],
-              "start_offset": 23,
-              "end_offset": 38,
-              "rule": "critical_victim"
+              "start_offset": 13,
+              "end_offset": 21,
+              "rule": "room_numbered"
             }
           ]
         },
         "attachments": [
-          "{\"text\":\"I\",\"agentType\":\"Self\",\"labels\":[\"Self\",\"Entity\",\"Concept\"],\"span\":[0]}",
-          "{\"value\":\"future\"}"
+          "{\"text\":\"I\",\"agentType\":\"Self\",\"labels\":[\"Self\",\"Entity\",\"Concept\"],\"span\":[0]}"
         ],
+        "start_offset": 4,
+        "end_offset": 21,
+        "rule": "move_nmod_action"
+      },
+      {
+        "labels": [
+          "NumberedRoom",
+          "Room",
+          "Infrastructure",
+          "Location",
+          "EventLike",
+          "Concept"
+        ],
+        "span": "room 204",
+        "arguments": {
+          "number": [
+            {
+              "labels": [
+                "Number",
+                "Concept"
+              ],
+              "span": "204",
+              "arguments": {},
+              "attachments": [],
+              "start_offset": 18,
+              "end_offset": 21,
+              "rule": "numbers"
+            }
+          ]
+        },
+        "attachments": [],
         "start_offset": 13,
-        "end_offset": 38,
-        "rule": "triage"
+        "end_offset": 21,
+        "rule": "room_numbered"
+      },
+      {
+        "labels": [
+          "Room",
+          "Infrastructure",
+          "Location",
+          "EventLike",
+          "Concept"
+        ],
+        "span": "room",
+        "arguments": {},
+        "attachments": [],
+        "start_offset": 13,
+        "end_offset": 17,
+        "rule": "room_detection"
       }
     ]
   }
