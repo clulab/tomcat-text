@@ -13,7 +13,7 @@ class TestCommunications extends BaseTest {
 
     val mentions = extractor.extractFrom(text)
     val medkit = DesiredMention("MedKit", "medkit")
-    val location = DesiredMention("Infrastructure", "library")
+    val location = DesiredMention("Library", "library")
     val ex1 = DesiredMention("KnowledgeSharing", "There is a medkit in the library", Map("location" -> Seq(location), "exists" -> Seq(medkit)))
 
     testMention(mentions, ex1)
@@ -38,7 +38,7 @@ class TestCommunications extends BaseTest {
   passingTest should "find RoomClear event with `room_clear` rule" in {
     val text = "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
     val mentions = extractor.extractFrom(text)
-    val cleared = DesiredMention("RoomClear", "room is clear", Map("target" -> Seq(DesiredMention(INFRASTRUCTURE, "room"))))
+    val cleared = DesiredMention("RoomClear", "room is clear", Map("target" -> Seq(DesiredMention("Room", "room"))))
 
     testMention(mentions, cleared)
   }
@@ -48,7 +48,7 @@ class TestCommunications extends BaseTest {
 
     val mentions = extractor.extractFrom(text)
     val victim = DesiredMention("Victim", "victim")
-    val location = DesiredMention("Infrastructure", "library")
+    val location = DesiredMention("Library", "library")
     val ex1 = DesiredMention("KnowledgeSharing", "found a victim in the library", Map("location" -> Seq(location), "exists" -> Seq(victim)), Set(PAST_TENSE))
 
     testMention(mentions, ex1)

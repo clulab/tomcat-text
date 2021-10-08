@@ -1,5 +1,7 @@
 package org.clulab.asist.messages
 
+import org.clulab.odin.Attachment
+
 import org.json4s.jackson.Serialization.read
 
 /**
@@ -21,13 +23,13 @@ case class DialogAgentMessageUtteranceSource(
 
 /** Part of the DialogAgentMessageData class */
 case class DialogAgentMessageUtteranceExtraction(
-  label: String = null,
+  labels: Seq[String] = Seq.empty,
   span: String = null,
   arguments: Map[String, Seq[DialogAgentMessageUtteranceExtraction]] = Map.empty,
-  attachments: Set[String] = Set.empty, // Json strings
+  attachments: Set[Attachment] = Set.empty, // Json strings
   start_offset: Int = 0,
   end_offset: Int = 0,
-  taxonomy_matches: Seq[(String, String)] = Seq.empty
+  rule: String = null, // The rule used to produce the extraction.
 )
 
 /** Part of the DialogAgentMessage class */

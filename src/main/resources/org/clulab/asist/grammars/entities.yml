@@ -1,12 +1,15 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: person
-      priority: ${ rulepriority }
-      label: Person
-      trigger: ${ person_triggers }
+
+  - name: person_detection
+    priority: ${ rulepriority }
+    label: Person
+    type: token
+    keep: false
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ person_triggers })\b/ & outgoing=compound]) |
+              [lemma=/(?i)^(${ person_triggers })\b/]+
 
   - name: victim
     priority: ${ rulepriority }
@@ -23,6 +26,14 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
+
+  - name: critical_solitary
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<=a|an|some) [word=/(?i)critical/]
 
   - name: critical_injured_victim
     priority: ${ rulepriority }
@@ -54,7 +65,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/no/] [lemma=/one|victim/]
+      [lemma=/\bno\b/] [lemma=/\bone\b|victim/]
 
 
 
@@ -88,13 +99,22 @@ rules:
     pattern: |
       (?<! other) [tag=CD]
 
+  - name: room_tags #this is here to provide the storage rooms with their [A-Z] arguments
+    example: "storage room *Q*"
+    priority: ${ rulepriority }
+    label: RoomTag
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^\b[A-Z]\b/]
+
   - name: deictic_detection
     priority: ${ rulepriority }
     label: Deictic
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
+      [word=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
 
   # minecraft door switch, e.g.
   - name: switch
@@ -160,7 +180,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(red)/]
+      [lemma=/(?i)^(red)/] | /RAD/
 
   - name: blue
     label: Blue

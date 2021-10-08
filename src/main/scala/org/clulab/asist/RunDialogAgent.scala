@@ -27,12 +27,11 @@ object RunDialogAgent extends App {
     "",
     "usage:",
     "",
-    "  RunDialogAgent {mqtt host port [-m taxonomy_matches]}",
-    "                 {stdin [-m taxonomy_matches]}",
-    "                 {file inputfile outputfile [-m taxonomy_matches]}",
-    "                 {reprocess inputdir outputdir [-m taxonomy_matches] [-v ta3_version_number]}",
+    "  RunDialogAgent {mqtt host port}",
+    "                 {stdin}",
+    "                 {file inputfile outputfile}",
+    "                 {reprocess inputdir outputdir [-v ta3_version_number]}",
     "",
-    "       -m : maximum number of taxonomy matches, up to 5.  Defaults to 0.",
     "       -v : Set the TA3 version number of reprocessed metadata files.",
     "            If not set, existing TA3 version numbers are incremented by 1",
     "inputfile : supported file extensions are .vtt and .metadata",
@@ -78,7 +77,6 @@ object RunDialogAgent extends App {
    * @return An Args struct populated per the arg list
    */
   def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
-    nMatches = intArg(l, "-m").getOrElse(0),
     ta3Version = intArg(l, "-v"),
     withClassifications = l.contains("--with-classifications")
   )

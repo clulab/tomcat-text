@@ -1,6 +1,7 @@
 package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
+import org.clulab.processors.Document
 import buildinfo.BuildInfo
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
@@ -29,14 +30,12 @@ import scala.util.control.NonFatal
  *
  *  https://github.com/clulab/tomcat-text/blob/master/README.md
  *
- *  @param nMatches maximum number of taxonomy_matches to return (up to 5)
  */
 
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
-  // Number of taxonomy matches to include with extractions
-  nMatches: Int = 0,
-  // Query the Dialog Act Classification server
+  // Set this to true to include dialogue act classifications from the TAMU
+  // Dialog Act Classification server.
   withClassifications: Boolean = false,
   // Optionally hard-set the TA3 version number of reprocessed .metadata files
   // If this value is not set, existing version numbers are incremented by 1
@@ -44,15 +43,16 @@ case class DialogAgentArgs(
 )
 
 class DialogAgent (
-  val args: DialogAgentArgs = new DialogAgentArgs
+  val args: DialogAgentArgs = new DialogAgentArgs,
+  val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
   private val config: Config = ConfigFactory.load()
   private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
   val dialogAgentMessageType = "event"
-  val dialogAgentSource = "tomcat_textAnalyzer"
-  val dialogAgentSubType = "Event:dialogue_event"
+  val dialogAgentSource = config.getString("DialogAgent.msgSource") 
+  val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
   val dialogAgentVersion = BuildInfo.version
 
   // metadata topics
@@ -60,8 +60,8 @@ class DialogAgent (
   val topicSubUazAsr = "agent/asr/final"
   val topicSubAptimaAsr = "status/asistdataingester/userspeech"
   val topicSubTrial = "trial"
-  val topicPubDialogAgent = "agent/dialog"
-  val topicPubVersionInfo = "agent/tomcat_textAnalyzer/versioninfo"
+  val topicPubDialogAgent = config.getString("DialogAgent.outputTopic")
+  val topicPubVersionInfo = config.getString("DialogAgent.versionInfoTopic")
 
   val subscriptions = List(
     topicSubChat,
@@ -75,7 +75,6 @@ class DialogAgent (
     topicPubVersionInfo
   )
 
-  def nMatches = args.nMatches
   def withClassifications = args.withClassifications
   def ta3Version = args.ta3Version
 
@@ -87,15 +86,10 @@ class DialogAgent (
     }
   }
 
-  // Load the taxonomy map from resource file
-  val taxonomy_map = JsonParser(
-    Source.fromResource("taxonomy_map.json").mkString
-  ).convertTo[immutable.Map[String, Array[immutable.Map[String, String]]]]
-
-  // Create the extractor and run it to get lazy init out of the way 
+  // Create the engine and run it to get lazy init out of the way 
   logger.info("Initializing Extractor (this may take a few seconds) ...")
-  val extractor = new TomcatRuleEngine()
-  extractor.extractFrom("green victim")
+  //val engine = new TomcatRuleEngine()
+  engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
 
   /** Create a CommonHeader data structure 
@@ -123,8 +117,14 @@ class DialogAgent (
    * @return sequence of Odin Mentions
    */
   def extractMentions(text: String): Seq[Mention] = {
-    extractor
+    engine
       .extractFrom(Option(text).getOrElse(""), keepText = true)
+      .sortBy(m => (m.sentence, m.label))
+  }
+
+  def extractMentions(doc: Document): Seq[Mention] = {
+    engine
+      .extractFrom(doc)
       .sortBy(m => (m.sentence, m.label))
   }
 
@@ -153,24 +153,43 @@ class DialogAgent (
       ),
       getExtractions(text)
     )
-  
-  /** map the mention label to the taxonomy map, the mappings are static
-   * and computed ahead of time and stored sorted // FIXME: is this true?.
-   * @param mentionLabel For taxonomy mapping
-   */
-  def taxonomyMatches(mentionLabel: String): Seq[(String, String)] = 
-    if(nMatches == 0) Seq() 
-    else {
-      val matches = taxonomy_map.getOrElse(mentionLabel, Array.empty)
-      val seq = matches.map(x => (x("term") -> x("score"))).toSeq
-      seq.take(nMatches)
-    }
 
+   /** Create the data component of the DialogAgentMessage structure
+   *  @param participant_id human subject who created the text
+   *  @param asr_msg_id from the Automated Speech Recognition system
+   *  @param source_type Source of message data, either message_bus or a file
+   *  @param source_name topic or filename
+   *  @param text The text to be analyzed by the pipeline 
+   *  @param extractions extractions obtained from the text
+   */
+  def dialogAgentMessageData(
+    participant_id: String,
+    asr_msg_id: String, 
+    source_type: String,
+    source_name: String,
+    text: String,
+    extractions: Seq[DialogAgentMessageUtteranceExtraction]
+  ): DialogAgentMessageData = 
+    DialogAgentMessageData(
+      participant_id,
+      asr_msg_id,
+      text,
+      dialog_act_label = null, // ...
+      DialogAgentMessageUtteranceSource(
+        source_type,
+        source_name
+      ),
+      extractions
+    )
+ 
   /** Return an array of all extractions found in the input text
-   *  @param text Speech to analyze
+   *  @param text Text to analyze
    */
   def getExtractions(text: String): Seq[DialogAgentMessageUtteranceExtraction] = 
     extractMentions(text).map(getExtraction)
+
+  def getExtractions(mentions: Seq[Mention]): Seq[DialogAgentMessageUtteranceExtraction] = 
+    mentions.map(getExtraction)
 
   /** Create a DialogAgent extraction from Extractor data 
    *  @param mention Contains text to analyze
@@ -181,16 +200,14 @@ class DialogAgent (
       (role, ms) <- originalArgs
       converted = ms.map(getExtraction)
     } yield (role, converted)
-    val extractionAttachments = mention.attachments.map(write(_))
-    val taxonomy_matches = taxonomyMatches(mention.label)
     DialogAgentMessageUtteranceExtraction(
-      mention.label,
+      mention.labels,
       mention.words.mkString(" "),
       extractionArguments.toMap,
-      extractionAttachments,
+      mention.attachments,
       mention.startOffset,
       mention.endOffset,
-      taxonomy_matches
+      mention.foundBy,
     )
   }
 

@@ -7,12 +7,14 @@ import json
 from datetime import datetime
 
 input_file = sys.argv[1]
+version_file = sys.argv[2]
 
 # Version of the dialog agent for which this documentation is being
 # generated.
 
 #TODO - have this be read from a text file instead of hard-coded.
-AGENT_VERSION = "2.2.1"
+with open(version_file) as f:
+    agent_version = f.read().split()[-1].replace('"', "")
 
 with open(input_file) as f:
     data = json.load(f)
@@ -86,7 +88,7 @@ Extractions
 
 ```
 """.format(
-            agent_version=AGENT_VERSION, date=datetime.utcnow()
+            agent_version=agent_version, date=datetime.utcnow()
         )
     )
 

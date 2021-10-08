@@ -9,8 +9,14 @@ rules:
       trigger = [lemma=/(?i)^(${ where_triggers })/]
       topic: Entity =
         <advmod [lemma=be]
+        >/nsubj|dobj|nmod/ |
+        <advmod [lemma=be]
         >/nsubj|dobj|nmod/
+        >dep |
+        <advmod [lemma=be]
+        <cop
       location: Location? = >/${positional_preps}/
+# the second entity version is there so we can capture cases such as "where are you at green?" and extract green as the entity
 
   - name: location_moving_question
     example: "Where did you go?"
@@ -28,7 +34,7 @@ rules:
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = <nsubj [lemma=/be|do/] >dep
-      location: Location? = <nsubj [lemma=/be|do/] >dep >/${positional_preps}/
+      location: Location? = <nsubj [lemma=/be|do/] >dep >/${positional_preps_+advmod}/
 
   - name: information_gathering_question_that2
     example: "What's that over there?"
@@ -37,7 +43,7 @@ rules:
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = >nsubj
-      location: Location? = >/${positional_preps}/
+      location: Location? = >/${positional_preps_liberal+advmod}/
 
   - name: information_gathering_question_clarification
     example: "What is the plan?"
@@ -56,7 +62,7 @@ rules:
     pattern: |
       trigger = (?<! [mention=QuestionParticle]) [lemma=/(?i)^do|can|will|should|have|could/]
       topic: Action = <aux
-      location: Location? = <aux >/${positional_preps}/
+      location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
 
 #leave this here so I can remember how to do these complex dependencies

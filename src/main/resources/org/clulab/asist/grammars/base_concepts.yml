@@ -43,44 +43,21 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)${ engineer_triggers }/] [word=/(?i)(${ specialist_triggers })/]?
+      [lemma=/(?i)${ engineer_triggers }/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
-  # ------------- CALL SIGNS --------------------------
-  - name: alpha
+  - name: engineer_alt
     priority: ${ rulepriority }
-    label: Alpha
+    label: Engineer
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ alpha_triggers })/]
+      ([word=/\bhammer\b/] [lemma=/(?i)^(${ person_triggers })/])
 
-  - name: bravo
-    priority: ${ rulepriority }
-    label: Bravo
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ bravo_triggers })/]
 
-  - name: delta
-    priority: ${ rulepriority }
-    label: Delta
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ delta_triggers })/]
-
-  - name: charlie
-    priority: ${ rulepriority }
-    label: Charlie
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)(${ charlie_triggers })/]
 
   - name: plan_base
     label: Plan
     priority: ${ rulepriority }
     type: token
     pattern: |
-      [lemma=/(?i)plan|strategy/]
+      [lemma=/(?i)\bplan\b|strategy/]

@@ -30,7 +30,11 @@ report: "cite|give|mention|provide|report"
 
 search_relations: ">nmod_in|>nmod_within|>nmod_around|>nmod_beneath"
 
-positional_preps: "nmod_(behind|beneath|in|in_front_of|on|over|under)|dep"
+positional_preps: "nmod_(behind|beneath|in|in_front_of|on|over|under|dep)"
+
+positional_preps_liberal+advmod: "nmod_(behind|beneath|in|in_front_of|on|over|under|[a-z]+)|dep|advmod"
+
+positional_preps_liberal: "nmod_(behind|beneath|in|in_front_of|on|over|under|[a-z]+)|dep"
 
 positional_preps_+advmod: "nmod_(behind|beneath|in|in_front_of|on|over|under)|advmod"
 

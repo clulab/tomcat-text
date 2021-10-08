@@ -12,12 +12,12 @@ piece of text, it will run the text through the system and visually display any
 mentions extracted by the system. The app will reload if it detects any changes
 to the rule files, so you can easily jump back and forth between writing rules
 and testing them. It also includes a syntax parse and specifies which rule
-generated each mention. 
+generated each mention.
 
 To open the webapp run the following command from the top level directory:
-```
-sbt webapp/run
-```
+
+    sbt webapp/run
+
 Then navigate to the specified port using your web browser.
 
 
@@ -29,24 +29,16 @@ output extracted events of interest for a particular domain.  Sources of Dialog
 Agent input text are files, the MQTT message bus, and interactively from a
 terminal.
 
-In all cases, a final optional argument of "-m n" can be used to control the
-number of taxonomy matches in extractions, where n can range from 0 to 5, and
-defaults to 0.
-
-
 
 ### Stdin mode
 
-```
-  sbt "runMain org.clulab.asist.RunDialogAgent stdin"
-```
+to start the DialogAgent in `stdin` mode, invoke the following:
+
+    sbt "runMain org.clulab.asist.RunDialogAgent stdin"
 
 In this mode, the Dialog Agent will prompt the user for text, and return the
-extractions directly.  
+extractions directly.
 
-
-An example of the agent running in stdin mode, with the number of taxonomy
-matches at the default setting of zero
 
 ```
 
@@ -54,12 +46,12 @@ Dialog Agent stdin extractor running.
 Enter plaintext for extraction, [CTRL-D] to exit.
 
 > I see a green victim!
-{"label":"Self","span":"I","arguments":{},"start_offset":0,"end_offset":1,"taxonomy_matches":[]}
-{"label":"Victim","span":"victim","arguments":{},"start_offset":14,"end_offset":20,"taxonomy_matches":[]}
+{"label":"Self","span":"I","arguments":{},"start_offset":0,"end_offset":1}
+{"label":"Victim","span":"victim","arguments":{},"start_offset":14,"end_offset":20}
 
 > There is rubble here.
-{"label":"Rubble","span":"rubble","arguments":{},"start_offset":9,"end_offset":15,"taxonomy_matches":[]}
-{"label":"Deictic","span":"here","arguments":{},"start_offset":16,"end_offset":20,"taxonomy_matches":[]}
+{"label":"Rubble","span":"rubble","arguments":{},"start_offset":9,"end_offset":15}
+{"label":"Deictic","span":"here","arguments":{},"start_offset":16,"end_offset":20}
 
 >
 
@@ -73,51 +65,54 @@ gracefully shut down the agent.
 ### File mode
 
 To run the Dialog Agent with files, the user specifies the input and output
-filenames, and optionally the number of taxonomy matches to return.  
+filenames.
 
-```
-  sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
-```
+    sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
 
 Supported input file types are WebVtt(.vtt), and ToMCAT metadata (.metadata).
 A directory can be specified as input.  Directories are traversed one level
-deep, and only the .vtt and .metadata files are processed.  Input files are
+deep, and only the `.vtt` and `.metadata` files are processed.  Input files are
 processed in alphabetical order.
 
 The output from the file(s) written to a single output file in the order of
-processing.  
-   
+processing.
+
 
 ### MQTT mode
 
-To run the Dialog Agent on the MQTT Message Bus, specify the mqtt run mode,
+To run the Dialog Agent on an MQTT message bus, specify the `mqtt` run mode,
 then the host and port that the MQTT message broker is running on.
 
-```
-  sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
-```
+    sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
 
 
-### Reprocessing 
+### Reprocessing
 
 The Dialog Agent can reprocess metadata that it has already produced.  The new output
 will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
 
-```
-  sbt "runMain org.clulab.asist.RunDialogAgent reprocess inputDirectory outputDirectory"
-```
+    sbt "runMain org.clulab.asist.RunDialogAgent reprocess inputDirectory outputDirectory"
+
+### Run evaluation app
+
+To generate CSV files for evaluating the rules, set the
+`export.ruleAnnotationDir`  and `DialogAgent.inputDir` properties
+appropriately in `src/main/resources/application.conf`, and then
+run the following invocation
+
+    sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
 
 ## Metadata Input
 
-Metadata read by the Dialog Agent, either from .metadata files or the Message
-Bus, are expected to include the following JSON fields.  Extra structures and
+Messages read by the Dialog Agent, either from `.metadata` files or the message
+bus, are expected to include the following JSON fields.  Extra structures and
 fields are ignored.  Missing data are replaced with null values in the output
 JSON.
 
 
-#### Chat 
+#### Chat
 
 ```
 {
@@ -133,7 +128,7 @@ JSON.
     "text": string
   }
 }
-```  
+```
 
 #### UAZ ASR
 
@@ -172,70 +167,139 @@ JSON.
 }
 ```
 
-When using the Message Bus, it is not necessary to include a "topic" JSON
+When using the message bus, it is not necessary to include a `topic` JSON
 element.
 
 
-## Output 
+## Output
 
-The Dialog Agent will publish its analysis to the message bus in Chat Analysis
-Message JSON format.
+See below for an example of an output JSON message that is published to the
+message bus.
 
 ```json
 {
   "header": {
-    "timestamp": "2021-02-11T19:22:23.494Z",
+    "timestamp": "2021-10-07T18:27:42.843Z",
     "message_type": "event",
-    "version": "0.1"
+    "version": "2.3.0"
   },
   "msg": {
-    "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
-    "trial_id": "123e4567-e89b-12d3-a456-426655440000",
-    "timestamp": "2019-12-26T14:05:02.1412Z",
+    "experiment_id": "367624f8-81cd-4661-a03f-b61908c39581",
+    "trial_id": "78822ceb-448a-436e-a1f1-f154f2066261",
+    "timestamp": "2021-10-07T18:27:42.843Z",
     "source": "tomcat_textAnalyzer",
     "sub_type": "Event:dialogue_event",
-    "version": "0.1",
-    "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
-    "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234"
+    "version": "2.3.0",
+    "replay_root_id": "",
+    "replay_id": ""
   },
   "data": {
-    "participant_id": "Participant 21",
-    "asr_msg_id": "59678a5f-9c5b-451f-8506-04bc020f2cf3",
-    "text": "Five because at least I know there was one yellow victim that died so",
-    "source": {
-      "source_type": "vtt_file",
-      "source_name": "AudioTranscript.vtt"
+    "participant_id": "P00012",
+    "asr_msg_id": "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
+    "text": "I'm going to room 204.",
+    "dialog_act_label": null,
+    "utterance_source": {
+      "source_type": "message_bus",
+      "source_name": "agent/asr/final"
     },
     "extractions": [
       {
-        "label": "Sight",
-        "span": "was one yellow victim",
-        "arguments": "Victim",
-        "start_offset": 20,
-        "end_offset": 25,
-        "taxonomy_matches": [
-          {
-            "stop-triaging": "11.709686762798679"
-          },
-          {
-            "no-victims-spotted": "10.767969549025242"
-          }
-        ]
+        "labels": [
+          "MoveTo",
+          "Move",
+          "SimpleActions",
+          "Action",
+          "EventLike",
+          "Concept"
+        ],
+        "span": "going to room 204",
+        "arguments": {
+          "target": [
+            {
+              "labels": [
+                "NumberedRoom",
+                "Room",
+                "Infrastructure",
+                "Location",
+                "EventLike",
+                "Concept"
+              ],
+              "span": "room 204",
+              "arguments": {
+                "number": [
+                  {
+                    "labels": [
+                      "Number",
+                      "Concept"
+                    ],
+                    "span": "204",
+                    "arguments": {},
+                    "attachments": [],
+                    "start_offset": 18,
+                    "end_offset": 21,
+                    "rule": "numbers"
+                  }
+                ]
+              },
+              "attachments": [],
+              "start_offset": 13,
+              "end_offset": 21,
+              "rule": "room_numbered"
+            }
+          ]
+        },
+        "attachments": [
+          "{\"text\":\"I\",\"agentType\":\"Self\",\"labels\":[\"Self\",\"Entity\",\"Concept\"],\"span\":[0]}"
+        ],
+        "start_offset": 4,
+        "end_offset": 21,
+        "rule": "move_nmod_action"
       },
       {
-        "label": "Victim",
-        "span": "victim",
-        "arguments": "",
-        "start_offset": 60,
-        "end_offset": 75,
-        "taxonomy_matches": [
-          {
-            "stop-triaging-victim": "18.593763750341402"
-          },
-          {
-            "start-triaging-victim": "17.326888048081006"
-          }
-        ]
+        "labels": [
+          "NumberedRoom",
+          "Room",
+          "Infrastructure",
+          "Location",
+          "EventLike",
+          "Concept"
+        ],
+        "span": "room 204",
+        "arguments": {
+          "number": [
+            {
+              "labels": [
+                "Number",
+                "Concept"
+              ],
+              "span": "204",
+              "arguments": {},
+              "attachments": [],
+              "start_offset": 18,
+              "end_offset": 21,
+              "rule": "numbers"
+            }
+          ]
+        },
+        "attachments": [],
+        "start_offset": 13,
+        "end_offset": 21,
+        "rule": "room_numbered"
+      },
+      {
+        "labels": [
+          "Room",
+          "Infrastructure",
+          "Location",
+          "EventLike",
+          "Concept"
+        ],
+        "span": "room",
+        "arguments": {},
+        "attachments": [],
+        "start_offset": 13,
+        "end_offset": 17,
+        "rule": "room_detection"
       }
     ]
   }

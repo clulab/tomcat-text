@@ -10,7 +10,6 @@ import java.util.Scanner
  *  An interactive Dialog Agent that will return extractions for text entered
  *  on the command line
  *
- *  @param nMatches Number of taxonomy_matches to return (up to 5)
  */
 
 class DialogAgentStdin (
@@ -22,12 +21,12 @@ class DialogAgentStdin (
 
   print("\n> ")
 
-  // console input
+  // Console input
   val input = new Scanner(System.in)
 
   // Read keyboard input until user hits [CTRL-D]
   while (input.hasNextLine){
-    val extractions = extractor.extractFrom(input.nextLine, keepText = true)
+    val extractions = engine.extractFrom(input.nextLine, keepText = true)
     extractions.map(getExtraction).map(f => println(writeJson(f)))
     print("\n> ")
   }

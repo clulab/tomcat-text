@@ -20,12 +20,12 @@ class BaseConceptTest extends BaseTest {
   }
 
   passingTest should "Recognize call-sign entities" in {
-    val doc = extractor.annotate("Hello alpha. Yes Delta. I'm Bravo.")
+    val doc = extractor.annotate("Hello green. Yes Blue. I'm Red.")
     val mentions = extractor.extractFrom(doc)
 
-    val alpha_mention = DesiredMention("Alpha", "alpha")
-    val delta_mention = DesiredMention("Delta", "Delta")
-    val bravo_mention = DesiredMention("Bravo", "Bravo")
+    val alpha_mention = DesiredMention("Red", "Red")
+    val delta_mention = DesiredMention("Green", "green")
+    val bravo_mention = DesiredMention("Blue", "Blue")
 
     testMention(mentions, alpha_mention)
     testMention(mentions, delta_mention)

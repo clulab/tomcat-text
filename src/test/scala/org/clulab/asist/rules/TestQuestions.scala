@@ -21,7 +21,7 @@ class TestQuestions extends BaseTest {
     val others = DesiredMention("Entity", "others")
     val they = DesiredMention("Entity", "they")
     val it = DesiredMention("Entity", "it")
-    val backroom = DesiredMention("Infrastructure", "back room")
+    val backroom = DesiredMention("Room", "back room")
     val desired1 = DesiredMention("LocationQuestion", "Where is the other victim", Map("topic" -> Seq(victim)))
     val desired2 = DesiredMention("LocationQuestion", "Where is the other one", Map("topic" -> Seq(one)))
     val desired3 = DesiredMention("LocationQuestion", "Where are the others", Map("topic" -> Seq(others)))
@@ -60,12 +60,22 @@ class TestQuestions extends BaseTest {
     val that = DesiredMention("DemPron", "that")
     val there = DesiredMention("Deictic", "there")
     val plan = DesiredMention("Plan", "plan")  // fixme: one day these should be a proper label in the taxonomy
-    val q1 = DesiredMention("Question", "What's that over there", Map("topic" -> Seq(that), "location" -> Seq(there)))
+    //val q1 = DesiredMention("Question", "What's that over there", Map("topic" -> Seq(that), "location" -> Seq(there)))
     val q2 = DesiredMention("Question", "What is the plan", Map("topic" -> Seq(plan)))
     val q3 = DesiredMention("Question", "What is that", Map("topic" -> Seq(that)))
-    testMention(mentions, q1)
+    //testMention(mentions, q1)
     testMention(mentions, q2)
     testMention(mentions, q3)
+  }
+
+  it should "handle contracted information gathering questions" in {
+    val text = "What's that over there?"
+    val mentions = extractor.extractFrom(text)
+    val that = DesiredMention("DemPron", "that")
+    val there = DesiredMention("Deictic", "there")
+    val quest1 = DesiredMention("Question", "What's that over there", Map("topic" -> Seq(that), "location" ->Seq(there)))
+
+    testMention(mentions,quest1)
   }
 
   it should "handle Yes_No questions" in {

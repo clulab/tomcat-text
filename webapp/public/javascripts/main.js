@@ -47,37 +47,25 @@ var collData = {
     {
             "type"   : "NounPhrase",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": baseNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
         {
             "type"   : "NounPhrase-Inc",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": increaseNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
         {
             "type"   : "NounPhrase-Dec",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": decreaseNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
         {
             "type"   : "NounPhrase-Quant",
             "labels" : ["NounPhrase", "NP"],
-            // Blue is a nice colour for a person?
-            //"bgColor": "thistle",
             "bgColor": quantifiedNounPhraseColor,
-            // Use a slightly darker version of the bgColor for the border
             "borderColor": "darken"
         },
      ],
@@ -310,7 +298,7 @@ head.ready(function() {
         $.extend({}, docData),
         webFontURLs
     );
-    var eidosMentionsLiveDispatcher = Util.embed('eidosMentions',
+    var mentionsLiveDispatcher = Util.embed('mentions',
         $.extend({'collection': null}, collData),
         $.extend({}, docData),
         webFontURLs
@@ -318,10 +306,10 @@ head.ready(function() {
 
     $('form').submit(function (event) {
 
-        // stop the form from submitting the normal way and refreshing the page
+        // Stop the form from submitting the normal way and refreshing the page
         event.preventDefault();
 
-        // collect form data
+        // Sollect form data
         var formData = {
             'sent': $('textarea[name=text]').val()
         }
@@ -331,10 +319,10 @@ head.ready(function() {
             return;
         }
 
-        // show spinner
+        // Show spinner
         document.getElementById("overlay").style.display = "block";
 
-        // process the form
+        // Process the form
         $.ajax({
             type: 'GET',
             url: 'parseSentence',
@@ -343,17 +331,21 @@ head.ready(function() {
             encode: true
         })
         .fail(function () {
-            // hide spinner
+            // Hide spinner
             document.getElementById("overlay").style.display = "none";
             alert("error");
         })
         .done(function (data) {
             console.log(data);
             syntaxLiveDispatcher.post('requestRenderData', [$.extend({}, data.syntax)]);
-            eidosMentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.eidosMentions)]);
-            document.getElementById("groundedAdj").innerHTML = data.mentionDetails;
+            mentionsLiveDispatcher.post('requestRenderData', [$.extend({}, data.mentions)]);
+            document.getElementById("extractions").innerHTML = data.mentionDetails;
+            document.getElementById("extractionJsons").innerHTML = 
+                "<h2>Example message published to the message bus</h2>"+
+                JSON.stringify(JSON.parse(data.extractionJsons), undefined, 2);
             document.getElementById("parse").innerHTML = data.parse;
-            // hide spinner
+
+            // Hide spinner
             document.getElementById("overlay").style.display = "none";
         });
 
