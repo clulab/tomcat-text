@@ -1,4 +1,5 @@
 package org.clulab.asist.messages
+
 import org.clulab.odin.Attachment
 
 import org.json4s.jackson.Serialization.read
