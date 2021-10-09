@@ -17,8 +17,5 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = (?<= [tag=VBP & lemma=be]) [tag=VBG]
-      # the first thing in the parantheses is a look behind so it's going to look at everything that came before.
-      # both inside the square brackets are constraints applied to a single token. A token comes before that is the tag restraints
-      # and the verb "to be"
       agent: Entity = >/${agents}/
       target: Action? = >/${objects_complements}/
