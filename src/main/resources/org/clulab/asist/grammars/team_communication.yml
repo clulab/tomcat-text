@@ -216,3 +216,24 @@ rules:
     example: "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
     pattern: |
       @target:Infrastructure [lemma=be] (?<trigger> clear)
+
+
+  - name: i_am_stuck
+    priority: ${ rulepriority }
+    label: Stuck
+    example: "I'm stuck. I am frozen"
+    pattern: |
+      trigger = [word=/(?i)^immobilized|^frozen|^stuck/]
+      agent: Entity? = >/${agents}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
+
+  - name: cant_move
+    priority: ${ rulepriority }
+    label: Stuck
+    type: token
+    example: "I can't move"
+    pattern: |
+      @target:Self [lemma=can] [lemma=not] (?<trigger> move)
