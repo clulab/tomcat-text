@@ -76,10 +76,10 @@
         - Clear
         - RoleSwitch
         - RoleDeclare
-        - ReportLocation
         - ReportStatus:
             - Stuck
-            - NeedHelp
+            - HelpRequest
+            - ReportLocation
         - ReportItemStatus:
             - ToolBroken
             - DoorOpen

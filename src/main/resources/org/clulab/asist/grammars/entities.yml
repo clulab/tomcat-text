@@ -11,6 +11,14 @@ rules:
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ person_triggers })\b/ & outgoing=compound]) |
               [lemma=/(?i)^(${ person_triggers })\b/]+
 
+  - name: generic_person
+    priority: ${ rulepriority }
+    label: Person
+    type: token
+    keep: false
+    pattern: |
+      [word=/someone|anyone/]
+
   - name: victim
     priority: ${ rulepriority }
     label: Victim

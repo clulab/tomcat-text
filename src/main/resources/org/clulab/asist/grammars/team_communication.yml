@@ -237,3 +237,26 @@ rules:
     example: "I can't move"
     pattern: |
       @target:Self [lemma=can] [lemma=not] (?<trigger> move)
+
+
+  - name: "HelpRequests_simple"
+    label: HelpRequest
+    example: "I need help."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN/]
+      agent: Entity? = >/${agents}/
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "HelpRequests_complex"
+    label: HelpRequest
+    example: "Can you help me?"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = (?<= [word=/(?i)can|could|will|would/] []) [lemma=/assist|help/]
+      agent: Entity? = >dobj
+      helper: Entity? = >nsubj
+      location: Location? = >/${preps}/|
+               >/advmod/
+
