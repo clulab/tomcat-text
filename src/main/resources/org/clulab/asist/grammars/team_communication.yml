@@ -5,14 +5,16 @@ rules:
   - name: instruction_command
     priority: ${ rulepriority }
     label: Instruction
+    example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! I []*) [tag=VB & mention=Action] (?! []* I)
+      trigger = (?<! (I|[tag=MD]|to) []*) [tag=VB & mention=Action] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
   - name: instruction_command_topic
     priority: ${ rulepriority }
     label: Instruction
+    example: "Help him save the victim!"
     pattern: |
       trigger = (?<! I []*) [tag=VB] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]
