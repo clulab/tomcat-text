@@ -50,7 +50,8 @@
       - Rubble
       - Fire
     - Action:
-      - SimpleActions:
+      - GenericAction
+      - SimpleAction:
         - Block
         - Move:
           - MoveTo
@@ -81,7 +82,7 @@
         - KnowledgeSharing:
           - RoomStatus:
             - RoomClear
-      - ComplexActions:
+      - ComplexAction:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
           - Commitment:

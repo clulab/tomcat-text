@@ -61,6 +61,7 @@ rules:
   - import: org/clulab/asist/grammars/actions.yml
     vars:
       rulepriority: "8"
+      genericpriority: "9"
 
   # Extract the planning terms, COMMENTED OUT WHILE FILE IS EMPTY
   #- import: org/clulab/asist/grammars/planning.yml
