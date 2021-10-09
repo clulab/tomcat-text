@@ -7,7 +7,9 @@
   - RoomTag
   - Switch
   - EventLike:
-    - Plan
+    - Plan:
+        - ContingentPlanGALLUP
+        - DeliberatePlanGALLUP
     - Time:
       - TimeUnit
     - Location:

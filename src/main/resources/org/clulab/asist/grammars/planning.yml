@@ -2,3 +2,23 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
+  - name: "ConditionalIF"
+    label: ContingentPlanGALLUP
+    priority: ${ rulepriority }
+    example: "If we remove the rubble, we can save the victim."
+    pattern: |
+      trigger = [word=if]|[word=If]
+      condition: Action = <mark
+      solution: Action = <mark <advcl_if
+
+  - name: "DeliberateFut"
+    label: DeliberatePlanGALLUP
+    example: "I am going to save this guy."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = (?<= [tag=VBP & lemma=be]) [tag=VBG]
+      # the first thing in the parantheses is a look behind so it's going to look at everything that came before.
+      # both inside the square brackets are constraints applied to a single token. A token comes before that is the tag restraints
+      # and the verb "to be"
+      agent: Entity = >/${agents}/
+      target: Action? = >/${objects_complements}/

@@ -6,6 +6,8 @@ conjunctions: "appos|conj|conj_|cc"
 
 complements: "xcomp|ccomp"
 
+objects_complements: "xcomp|ccomp|dobj"
+
 noun_modifiers: "amod|compound|name" #removed dep
 
 negTriggers: "not"
