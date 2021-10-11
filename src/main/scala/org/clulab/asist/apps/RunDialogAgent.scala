@@ -38,6 +38,7 @@ object RunDialogAgent extends App {
     "            (also handles directories containing files with those extensions)",
     "inputdir  : A directory of .metadata files to be reprocessed by the DialogAgent",
     "outputdir : A directory where reprocessed .metadata files will be saved.",
+    "--with-classifications : Include classifications from the TAMU dialogue act classifier.",
     ""
   )
 
