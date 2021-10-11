@@ -1,4 +1,4 @@
-package org.clulab.asist
+package org.clulab.asist.apps
 
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._

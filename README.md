@@ -34,7 +34,7 @@ terminal.
 
 to start the DialogAgent in `stdin` mode, invoke the following:
 
-    sbt "runMain org.clulab.asist.RunDialogAgent stdin"
+    sbt "runMain org.clulab.asist.apps.RunDialogAgent stdin"
 
 In this mode, the Dialog Agent will prompt the user for text, and return the
 extractions directly.
@@ -67,7 +67,7 @@ gracefully shut down the agent.
 To run the Dialog Agent with files, the user specifies the input and output
 filenames.
 
-    sbt "runMain org.clulab.asist.RunDialogAgent file inputfile outputfile"
+    sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
 
 Supported input file types are WebVtt(.vtt), and ToMCAT metadata (.metadata).
 A directory can be specified as input.  Directories are traversed one level
@@ -83,7 +83,7 @@ processing.
 To run the Dialog Agent on an MQTT message bus, specify the `mqtt` run mode,
 then the host and port that the MQTT message broker is running on.
 
-    sbt "runMain org.clulab.asist.RunDialogAgent mqtt hostname port"
+    sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
 
 
 ### Reprocessing
@@ -93,7 +93,7 @@ will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
 
-    sbt "runMain org.clulab.asist.RunDialogAgent reprocess inputDirectory outputDirectory"
+    sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
 
 ### Run evaluation app
 
