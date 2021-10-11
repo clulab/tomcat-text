@@ -3,12 +3,19 @@
 # This script builds the dialog agent image and deploys it to the Aptima Gitlab
 # instance.
 
-VERSION="2.0.0"
+# Set the ROOT environment variable, assuming that the directory structure
+# mirrors that of the git repository.
+ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
+export ROOT
+
+# Get version number from version.sbt
+VERSION=$(cat $ROOT/version.sbt | cut -d'"' -f2)
+
 GITLAB_URL=gitlab.asist.aptima.com:5050
 DOCKER_IMAGE="${GITLAB_URL}/asist/testbed/uaz_dialog_agent:${VERSION}"
 
 docker login "$GITLAB_URL"
 
 echo "Building ${DOCKER_IMAGE}"
-docker build -t "$DOCKER_IMAGE" .
+docker build -t "$DOCKER_IMAGE" . -f Dockerfile.agent
 docker push "$DOCKER_IMAGE"

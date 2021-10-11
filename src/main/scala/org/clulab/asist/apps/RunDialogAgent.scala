@@ -1,4 +1,4 @@
-package org.clulab.asist
+package org.clulab.asist.apps
 
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._
@@ -38,6 +38,7 @@ object RunDialogAgent extends App {
     "            (also handles directories containing files with those extensions)",
     "inputdir  : A directory of .metadata files to be reprocessed by the DialogAgent",
     "outputdir : A directory where reprocessed .metadata files will be saved.",
+    "--with-classifications : Include classifications from the TAMU dialogue act classifier.",
     ""
   )
 
