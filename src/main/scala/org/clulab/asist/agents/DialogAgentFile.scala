@@ -5,7 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
 import org.clulab.asist.messages._
-import org.clulab.asist.RunDialogAgent
+import org.clulab.asist.apps.RunDialogAgent
 import org.clulab.utils.LocalFileUtils
 import org.json4s.jackson.Serialization.{read, write}
 

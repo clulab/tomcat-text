@@ -20,6 +20,9 @@ To open the webapp run the following command from the top level directory:
 
 Then navigate to the specified port using your web browser.
 
+You can also run the Dockerized version of the webapp by running
+
+    docker-compose up -f docker-compose.webapp.yml
 
 
 # Dialog Agent
