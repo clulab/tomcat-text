@@ -25,8 +25,6 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 August
- *
  * Reprocess metadata JSON files by reading each line as a JValue and then 
  * processing according to the topic field.  Lines with topics not addressed
  * below are copied to the output file.
@@ -73,8 +71,13 @@ class DialogAgentReprocessor (
   implicit val formats = org.json4s.DefaultFormats
 
   // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = 
-    if(tdacEnabled) Some (new DacClient(this)) else None
+  val dacClient: Option[DacClient] = if(tdacEnabled) {
+    logger.info(s"TDAC enabled, server URL: ${tdacServerUrl}")
+    Some (new DacClient(this))
+  } else {
+    logger.info("TDAC not enabled")
+    None
+  }
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
