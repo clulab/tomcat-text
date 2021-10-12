@@ -37,24 +37,22 @@ import scala.util.{Failure, Success}
  * @param port MQTT network port to connect to.
  */
 
-case class BusMessage (
-  topic: String,
-  line: String
-)
 
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent 
-    with DacAgent
+) extends DacAgent (args)
     with LazyLogging
     with MessageBusClientListener { 
 
+  case class BusMessage (
+    topic: String,
+    line: String
+  )
+
   private val config: Config = ConfigFactory.load()
   logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
-
-  val serverLocation = config.getString("DialogAgent.dacServerURL") 
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -62,11 +60,10 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
-  val dacClient = new DacClient(this)
-
+  // enqueue messages if they're coming in too fast.
   val queue: Queue[BusMessage] = new Queue 
 
-  // This handles the message bus operations.  
+  // communication with Message Bus
   val bus = new MessageBusClient(
     host,
     port,
@@ -92,26 +89,24 @@ class DialogAgentMqtt(
       rs
   }
 
-  def enqueue(job: BusMessage): Unit = {
-    queue.enqueue(job)
-  }
+  /** Add a Message Bus job to the queue 
+   *  @param job Job to add
+   */
+  def enqueue(job: BusMessage): Unit = queue.enqueue(job)
 
-  def dequeue: Unit = {
-    queue.dequeue 
-  }
+  /** Take the next job off the queue.  Do this after processing the job */
+  def dequeue: Unit = queue.dequeue 
 
   /** States sent by the DAC server, if in use.
    * @param message A DialogAgentMessage with the dialog_act_label value set
    */
   override def iteration(rs: RunState): Unit = startJob
 
-
   /** provided so we can overload it in a test class */
   def writeToMessageBus(
     topic: String,
     text: String
   ): Unit = {
-
     bus.publish(topic, text)
   }
 
@@ -143,7 +138,8 @@ class DialogAgentMqtt(
     if(!queue.isEmpty) queue.head.topic match {
       case `topicSubTrial` => processTrialMessage(queue.head)
       case _ => processDialogAgentMessage (queue.head)
-    }  // else all jobs are done.
+    }  
+    // else all jobs are done.
   }
 
   /** When finished, remove the queue head and start the next job.  */
@@ -166,15 +162,16 @@ class DialogAgentMqtt(
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, tm, currentTimestamp)
       val outputJson = write(versionInfo)
-      if(withClassifications) {
-        val rs1 = RSM.setInputTopic(new RunState, input.topic)
-        val rs2 = RSM.setInputLine(rs1, input.line)
-        val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
-        val rs4 = RSM.setOutputLine(rs3, outputJson)
-        dacClient.resetServer(rs4)
-      } else {
-        writeToMessageBus(topicPubVersionInfo, outputJson)
-        finishJob  // no DAC 
+      dacClient match {
+        case Some(dc: DacClient) =>
+          val rs1 = RSM.setInputTopic(new RunState, input.topic)
+          val rs2 = RSM.setInputLine(rs1, input.line)
+          val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
+          val rs4 = RSM.setOutputLine(rs3, outputJson)
+          dc.resetServer(rs4)
+        case None =>
+          writeToMessageBus(topicPubVersionInfo, outputJson)
+          finishJob  // no DAC 
       }
     }
     else finishJob  // no trial start
@@ -185,7 +182,7 @@ class DialogAgentMqtt(
   } 
 
   /** Send DialogAgentMessage for any subscribed topic except "trial" 
-   * @param input: Message bus traffic with topic and text
+   * @param input: Incoming traffic on Message Bus
    */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
     val message = getDialogAgentMessage(
@@ -194,16 +191,17 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.line)
     )
-    if(withClassifications) {
-      val metadataJValue = parse(input.line)
-      val rs1 = RSM.setInputTopic(new RunState, input.topic)
-      val rs2 = RSM.setInputLine(rs1, input.line)
-      val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
-      dacClient.runClassification(rs3, message.data, metadataJValue) 
-    } else {
-      val outputJson = write(message)
-      writeToMessageBus(topicPubDialogAgent, outputJson)
-      finishJob
+    dacClient match {
+      case Some(dc: DacClient) =>
+        val metadataJValue = parse(input.line)
+        val rs1 = RSM.setInputTopic(new RunState, input.topic)
+        val rs2 = RSM.setInputLine(rs1, input.line)
+        val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
+        dc.runClassification(rs3, message.data, metadataJValue)
+      case None => 
+        val outputJson = write(message)
+        writeToMessageBus(topicPubDialogAgent, outputJson)
+        finishJob
     }
   } catch {
     case NonFatal(t) => 

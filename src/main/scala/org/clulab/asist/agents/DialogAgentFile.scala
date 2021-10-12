@@ -33,7 +33,7 @@ import scala.util.{Failure, Success}
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
-  override val args: DialogAgentArgs = new DialogAgentArgs
+  val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
   logger.info(s"DialogAgentFile version ${dialogAgentVersion}")

@@ -25,8 +25,6 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 August
- *
  * Reprocess metadata JSON files by reading each line as a JValue and then 
  * processing according to the topic field.  Lines with topics not addressed
  * below are copied to the output file.
@@ -59,9 +57,7 @@ class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent(args)
-    with DacAgent
-    with LazyLogging {
+) extends DacAgent(args) with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
 
@@ -71,10 +67,6 @@ class DialogAgentReprocessor (
 
   // json
   implicit val formats = org.json4s.DefaultFormats
-
-  // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = 
-    if(withClassifications) Some (new DacClient(this)) else None
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
@@ -204,10 +196,10 @@ class DialogAgentReprocessor (
       val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
-      if(withClassifications) 
-        dacClient.foreach(_.resetServer(rs2))
-      else
-       finishIteration(rs2)
+      dacClient match {
+        case Some(dc: DacClient) => dc.resetServer(rs2)
+        case None => finishIteration(rs2)
+      }
     } else {
       // if not a trial start just transcribe the input line
       val rs1 = RSM.setOutputLine(rs, rs.inputLine)
@@ -244,16 +236,16 @@ class DialogAgentReprocessor (
       case dataJObject: JObject => 
         val data = dataJObject.extract[DialogAgentMessageData]
         val newData = data.copy(extractions = getExtractions(data.text))
-        if(withClassifications) dacClient.foreach(
-          _.runClassification(rs, newData, metadataJValue)
-        )
-        else {
-          val newMetadata = metadataJValue.replace(
-            "data"::Nil,
-            Extraction.decompose(newData)
-          )
-          val rs1 = RSM.setOutputLine(rs, write(newMetadata))
-          finishIteration(rs1)
+        dacClient match {
+          case Some(dc: DacClient) => 
+            dc.runClassification(rs, newData, metadataJValue)
+          case None => 
+            val newMetadata = metadataJValue.replace(
+              "data"::Nil,
+              Extraction.decompose(newData)
+            )
+            val rs1 = RSM.setOutputLine(rs, write(newMetadata))
+            finishIteration(rs1)
         }
       case JNothing =>
         reprocessDialogAgentError(rs, metadataJValue)
@@ -278,11 +270,12 @@ class DialogAgentReprocessor (
         }
         val rs1 = RSM.addRecovered(rs)
         val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
-        if(withClassifications) dacClient.foreach(
-          _.runClassification(rs2, data, newMetadata)
-        ) else {
-          val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
-          finishIteration(rs3)
+        dacClient match {
+          case Some(dc: DacClient) => 
+            dc.runClassification(rs2, data, newMetadata)
+          case None =>
+            val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
+            finishIteration(rs3)
         }
       case _ =>
         reportProblem(rs, "Expected error/data field not found in metadata")
@@ -443,7 +436,7 @@ class DialogAgentReprocessor (
     val regex = """Vers-(\d+).metadata""".r
     regex.replaceAllIn(outputFileName, _ match {
       case regex(version) => 
-        val newVersion: Int = ta3Version.getOrElse(version.toInt +1)
+        val newVersion: Int = args.ta3Version.getOrElse(version.toInt +1)
         s"Vers-${newVersion}.metadata"
       case _ => outputFileName  // otherwise do not change the inputFileName
     })

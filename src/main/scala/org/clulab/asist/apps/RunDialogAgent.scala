@@ -21,6 +21,10 @@ import scala.annotation.tailrec
  */
 
 object RunDialogAgent extends App {
+
+  val ta3Version = "-v"
+  val tdacEnabled = "--with-classifications"
+  val tdacServerUrl = "--tdac-server-url"
   
   // splash page if args are not understood
   val usageText = List(
@@ -32,13 +36,14 @@ object RunDialogAgent extends App {
     "                 {file inputfile outputfile}",
     "                 {reprocess inputdir outputdir [-v ta3_version_number]}",
     "",
-    "       -v : Set the TA3 version number of reprocessed metadata files.",
+    s"       $ta3Version : Set the TA3 version number of reprocessed metadata files.",
     "            If not set, existing TA3 version numbers are incremented by 1",
     "inputfile : supported file extensions are .vtt and .metadata",
     "            (also handles directories containing files with those extensions)",
     "inputdir  : A directory of .metadata files to be reprocessed by the DialogAgent",
     "outputdir : A directory where reprocessed .metadata files will be saved.",
-    "--with-classifications : Include classifications from the TAMU dialogue act classifier.",
+    s"$tdacEnabled  : Include classifications from the TAMU dialogue act classifier.",
+    s"$tdacServerUrl [URL] : Internet address of the TAMU dialogue act classifier.",
     ""
   )
 
@@ -51,8 +56,8 @@ object RunDialogAgent extends App {
    * @return the string value for the key, else None
    */
   @tailrec
-  def stringArg(l: List[String], key: String): Option[String] = l match {
-    case (k::v::_) => if (k == key) Some(v) else stringArg(l.tail, key)
+  def stringOptArg(l: List[String], key: String): Option[String] = l match {
+    case (k::v::_) => if (k == key) Some(v) else stringOptArg(l.tail, key)
     case _ => None
   }
 
@@ -62,25 +67,32 @@ object RunDialogAgent extends App {
    * @return the integer value for the key, else None
    */
   @tailrec
-  def intArg(l: List[String], key: String): Option[Int] = l match {
+  def intOptArg(l: List[String], key: String): Option[Int] = l match {
     case (k::v::_) =>
       if (k == key) {
         try Some(v.toInt)
         catch {
           case e: Exception => None
         }
-      } else intArg(l.tail, key)
+      } else intOptArg(l.tail, key)
     case _ => None
   }
 
   /** Compose the arguments used by the Dialog Agent
    * @param l A flat list of arguments
-   * @return An Args struct populated per the arg list
+   * @return A DialogAgentArgs struct populated per the input list
    */
-  def readArgs(l: List[String]): DialogAgentArgs = DialogAgentArgs(
-    ta3Version = intArg(l, "-v"),
-    withClassifications = l.contains("--with-classifications")
-  )
+  def readArgs(l: List[String]): DialogAgentArgs = {
+
+    val defaults = new DialogAgentArgs
+
+    DialogAgentArgs(
+      ta3Version = intOptArg(l, ta3Version),
+      tdacEnabled = l.contains(tdacEnabled),
+      tdacServerUrl = stringOptArg(l, tdacServerUrl)
+        .getOrElse(defaults.tdacServerUrl)
+      )
+  }
 
   /** Run the Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
@@ -88,7 +100,7 @@ object RunDialogAgent extends App {
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {
-      case ("mqtt"::host::port::l) =>
+      case ("mqtt"::host::port::l) => 
         Some(new DialogAgentMqtt(host, port, readArgs(l)))
       case ("file"::infile::outfile::l) =>
         Some(new DialogAgentFile(infile, outfile, readArgs(l)))

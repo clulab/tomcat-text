@@ -24,7 +24,7 @@ import scala.util.control.NonFatal
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 August
+ *  Updated:  2021 October
  *
  *  Create extractions from text for the ToMCAT project.
  *
@@ -34,16 +34,21 @@ import scala.util.control.NonFatal
 
 // A place to keep a growing number of settings for the Dialog Agent
 case class DialogAgentArgs(
-  // Set this to true to include dialogue act classifications from the TAMU
-  // Dialog Act Classification server.
-  withClassifications: Boolean = false,
+
   // Optionally hard-set the TA3 version number of reprocessed .metadata files
   // If this value is not set, existing version numbers are incremented by 1
-  ta3Version: Option[Int] = None
+  ta3Version: Option[Int] = None,
+
+  // Set this to true to include dialogue act classifications from the TAMU
+  // Dialog Act Classification server.
+  tdacEnabled: Boolean = false,
+
+  // Specify the URL of the TAMU Dialog Act Classification server.
+  tdacServerUrl: String = "http://localhost:8000"
 )
 
+
 class DialogAgent (
-  val args: DialogAgentArgs = new DialogAgentArgs,
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
@@ -74,9 +79,6 @@ class DialogAgent (
     topicPubDialogAgent,
     topicPubVersionInfo
   )
-
-  def withClassifications = args.withClassifications
-  def ta3Version = args.ta3Version
 
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     if (pretty) {
