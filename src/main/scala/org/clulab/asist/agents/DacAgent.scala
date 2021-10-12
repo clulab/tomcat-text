@@ -14,12 +14,14 @@ abstract class DacAgent (
   val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
+  val tdac = "TAMU Dialog Act Classifier (TDAC)"
+
   // Dialog Act Classification.  No instantiation if not used.
   val dacClient: Option[DacClient] = if(args.tdacEnabled) {
-    logger.info(s"TDAC enabled, server URL: ${args.tdacServerUrl}")
+    logger.info(s"Using ${tdac} server at ${args.tdacServerUrl}")
     Some (new DacClient(this))
   } else {
-    logger.info("TDAC not enabled")
+    logger.info(s"${tdac} not enabled")
     None
   }
 
