@@ -135,13 +135,10 @@ class DialogAgentMqtt(
   }
 
   /* Use the head of the queue as the next job. */
-  def startJob: Unit = {
-    if(!queue.isEmpty) queue.head.topic match {
-      case `topicSubTrial` => processTrialMessage(queue.head)
-      case _ => processDialogAgentMessage (queue.head)
-    }
-    // else all jobs are done.
-  }
+  def startJob: Unit = if(!queue.isEmpty) queue.head.topic match {
+    case `topicSubTrial` => processTrialMessage(queue.head)
+    case _ => processDialogAgentMessage (queue.head)
+  }  // else all jobs are done.
 
   /** When finished, remove the queue head and start the next job.  */
   def finishJob: Unit = if(!queue.isEmpty) {

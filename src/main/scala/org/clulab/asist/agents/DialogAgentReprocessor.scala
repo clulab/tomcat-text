@@ -340,7 +340,7 @@ class DialogAgentReprocessor (
     if(rs.terminated) {
       logger.info("File processing terminated.")
       finish(rs)
-    }
+   
     // if we have another line, run it.
     else if(rs.lineIterator.hasNext) {
       val rs1 = RSM.addLineRead(rs)
