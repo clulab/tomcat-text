@@ -7,7 +7,10 @@
   - RoomTag
   - Switch
   - EventLike:
-    - Plan
+    - Plan:
+        - ContingentPlan
+        - DeliberatePlan
+        - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
     - Time:
       - TimeUnit
     - Location:
@@ -50,7 +53,8 @@
       - Rubble
       - Fire
     - Action:
-      - SimpleActions:
+      - GenericAction
+      - SimpleAction:
         - Block
         - Move:
           - MoveTo
@@ -64,6 +68,22 @@
         - Sight
         - Communicate:
           - Instruction
+          - ReportStatus:
+            - Stuck
+            - ReportLocation
+            - RoleDeclare
+            - RoomStatus:
+                - RoomClear
+            - ReportItemStatus:
+              - ToolBroken
+              - DoorOpen
+              - DoorClosed
+          - KnowledgeSharing
+          - Need:
+            - NeedRole
+            - NeedItem
+            - NeedAction
+            - HelpRequest
           - Question:
             - QuestionParticle
             - LocationQuestion
@@ -72,27 +92,16 @@
           - Disagreement
         - Clear
         - RoleSwitch
-        - RoleDeclare
-        - ReportLocation
-        - ReportItemStatus:
-            - ToolBroken
-            - DoorOpen
-            - DoorClosed
-        - KnowledgeSharing:
-          - RoomStatus:
-            - RoomClear
-      - ComplexActions:
+      - ComplexAction:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
           - Commitment:
             - MakeCommitment
           - Continue
           - MoveVictim
-          - Need
           - Precedence
          # - Planning
           - OfferHelp
-          - ShareKnowledge
   - Entity:
     - Person
     - Other

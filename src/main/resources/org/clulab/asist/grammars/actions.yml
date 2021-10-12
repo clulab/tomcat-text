@@ -280,6 +280,14 @@ rules:
       source: Concept? = >/${agents}/
       target: Concept? = >nmod_of
 
+  - name: genericAction
+    label: GenericAction
+    priority: ${ genericpriority }
+    keep: false
+    pattern: |
+      trigger = [tag=/^V/]
+      target: Entity? = <dobj
+
 #\\ todo: #"put down marker block"
 #\\ todo: #review the instruction rule... "And going to go renew my hammer and then come back."
 #\\ todo: #mark rooms: "Oh, I should mark the rooms i'll mark them with a one if I get everything from." "All right, this is green, I will be putting a three if there's nobody in the room, so nobody accidentally goes in there."

@@ -5,14 +5,16 @@ rules:
   - name: instruction_command
     priority: ${ rulepriority }
     label: Instruction
+    example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! I []*) [tag=VB & mention=Action] (?! []* I)
+      trigger = (?<! (I|[tag=MD]|to) []*) [tag=VB & mention=Action] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
   - name: instruction_command_topic
     priority: ${ rulepriority }
     label: Instruction
+    example: "Help him save the victim!"
     pattern: |
       trigger = (?<! I []*) [tag=VB] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]
@@ -20,7 +22,7 @@ rules:
 
   - name: prep_need_role
     priority: ${ rulepriority }
-    label: Need
+    label: NeedRole
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -28,7 +30,7 @@ rules:
 
   - name: prep_need_item
     priority: ${ rulepriority }
-    label: Need
+    label: NeedItem
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -36,7 +38,7 @@ rules:
 
   - name: prep_need_action
     priority: ${ rulepriority }
-    label: Need
+    label: NeedAction
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -216,3 +218,47 @@ rules:
     example: "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
     pattern: |
       @target:Infrastructure [lemma=be] (?<trigger> clear)
+
+
+  - name: i_am_stuck
+    priority: ${ rulepriority }
+    label: Stuck
+    example: "I'm stuck. I am frozen"
+    pattern: |
+      trigger = [word=/(?i)^immobilized|^frozen|^stuck/]
+      agent: Entity? = >/${agents}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
+
+  - name: cant_move
+    priority: ${ rulepriority }
+    label: Stuck
+    type: token
+    example: "I can't move"
+    pattern: |
+      @target:Self [lemma=can] [lemma=not] (?<trigger> move)
+
+
+  - name: "HelpRequests_simple"
+    label: HelpRequest
+    example: "I need help."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN/]
+      agent: Entity? = >/${agents}/
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "HelpRequests_complex"
+    label: HelpRequest
+    example: "Can you help me?"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = (?<= [word=/(?i)can|could|will|would/] []) [lemma=/assist|help/]
+      agent: Entity? = >dobj
+      helper: Entity? = >nsubj
+      location: Location? = >/${preps}/|
+               >/advmod/
+

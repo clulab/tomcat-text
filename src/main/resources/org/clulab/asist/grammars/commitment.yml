@@ -7,6 +7,6 @@ rules:
     label: MakeCommitment
     action: preventSubjectVerbInversion
     pattern: |
-      trigger = [tag=/^MD/ & lemma=/^can|will/]
+      trigger = [tag=/^MD/ & lemma=/^can|will/] (?! [lemma=not])
       topic: Action = <aux
       agent: Entity? = <aux >nsubj
