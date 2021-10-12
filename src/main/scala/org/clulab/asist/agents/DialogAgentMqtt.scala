@@ -54,19 +54,19 @@ class DialogAgentMqtt(
   private val config: Config = ConfigFactory.load()
   logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
 
-  val serverLocation = config.getString("DialogAgent.dacServerURL") 
-
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
 
   val source_type = "message_bus"
 
+  // communication with TDAC server
   val dacClient = new DacClient(this)
 
+  // enqueue messages if they're coming in too fast.
   val queue: Queue[BusMessage] = new Queue 
 
-  // This handles the message bus operations.  
+  // communication with Message Bus
   val bus = new MessageBusClient(
     host,
     port,
@@ -92,26 +92,24 @@ class DialogAgentMqtt(
       rs
   }
 
-  def enqueue(job: BusMessage): Unit = {
-    queue.enqueue(job)
-  }
+  /** Add a Message Bus job to the queue 
+   *  @param job Job to add
+   */
+  def enqueue(job: BusMessage): Unit = queue.enqueue(job)
 
-  def dequeue: Unit = {
-    queue.dequeue 
-  }
+  /** Take the next job off the queue.  Do this after processing the job */
+  def dequeue: Unit = queue.dequeue 
 
   /** States sent by the DAC server, if in use.
    * @param message A DialogAgentMessage with the dialog_act_label value set
    */
   override def iteration(rs: RunState): Unit = startJob
 
-
   /** provided so we can overload it in a test class */
   def writeToMessageBus(
     topic: String,
     text: String
   ): Unit = {
-
     bus.publish(topic, text)
   }
 
@@ -143,7 +141,8 @@ class DialogAgentMqtt(
     if(!queue.isEmpty) queue.head.topic match {
       case `topicSubTrial` => processTrialMessage(queue.head)
       case _ => processDialogAgentMessage (queue.head)
-    }  // else all jobs are done.
+    }  
+    // else all jobs are done.
   }
 
   /** When finished, remove the queue head and start the next job.  */
@@ -185,7 +184,7 @@ class DialogAgentMqtt(
   } 
 
   /** Send DialogAgentMessage for any subscribed topic except "trial" 
-   * @param input: Message bus traffic with topic and text
+   * @param input: Incoming traffic on Message Bus
    */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
     val message = getDialogAgentMessage(
