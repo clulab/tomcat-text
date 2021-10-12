@@ -17,8 +17,6 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 July
- *
  * Process a file or the first level of a directory of files
  *
  * A file is processed by finding metadata elements published on any of the 

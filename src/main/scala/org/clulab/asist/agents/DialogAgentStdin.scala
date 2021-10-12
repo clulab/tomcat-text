@@ -5,8 +5,6 @@ import java.util.Scanner
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
- *
  *  An interactive Dialog Agent that will return extractions for text entered
  *  on the command line
  *
