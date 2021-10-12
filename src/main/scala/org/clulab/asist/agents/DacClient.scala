@@ -25,13 +25,11 @@ class DacClient (agent: DacAgent) extends LazyLogging {
   // sent back by the DAC server
   case class Classification(name: String)
 
-  val serverUrl = agent.tdacServerUrl
-
-  logger.info(s"TDAC enabled, server URL: $serverUrl")
+  val serverUrl = agent.serverUrl
 
   // actors
   implicit val ec = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("DacClient")
+  implicit val system: ActorSystem = ActorSystem("TdacClient")
 
   // json
   implicit val formats = org.json4s.DefaultFormats

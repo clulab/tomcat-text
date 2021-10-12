@@ -162,15 +162,16 @@ class DialogAgentMqtt(
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, tm, currentTimestamp)
       val outputJson = write(versionInfo)
-      if(tdacEnabled) {
-        val rs1 = RSM.setInputTopic(new RunState, input.topic)
-        val rs2 = RSM.setInputLine(rs1, input.line)
-        val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
-        val rs4 = RSM.setOutputLine(rs3, outputJson)
-        dacClient.foreach(_.resetServer(rs4))
-      } else {
-        writeToMessageBus(topicPubVersionInfo, outputJson)
-        finishJob  // no DAC 
+      dacClient match {
+        case Some(dc: DacClient) =>
+          val rs1 = RSM.setInputTopic(new RunState, input.topic)
+          val rs2 = RSM.setInputLine(rs1, input.line)
+          val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
+          val rs4 = RSM.setOutputLine(rs3, outputJson)
+          dc.resetServer(rs4)
+        case None =>
+          writeToMessageBus(topicPubVersionInfo, outputJson)
+          finishJob  // no DAC 
       }
     }
     else finishJob  // no trial start
@@ -190,16 +191,17 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.line)
     )
-    if(tdacEnabled) {
-      val metadataJValue = parse(input.line)
-      val rs1 = RSM.setInputTopic(new RunState, input.topic)
-      val rs2 = RSM.setInputLine(rs1, input.line)
-      val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
-      dacClient.foreach(_.runClassification(rs3, message.data, metadataJValue))
-    } else {
-      val outputJson = write(message)
-      writeToMessageBus(topicPubDialogAgent, outputJson)
-      finishJob
+    dacClient match {
+      case Some(dc: DacClient) =>
+        val metadataJValue = parse(input.line)
+        val rs1 = RSM.setInputTopic(new RunState, input.topic)
+        val rs2 = RSM.setInputLine(rs1, input.line)
+        val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
+        dc.runClassification(rs3, message.data, metadataJValue)
+      case None => 
+        val outputJson = write(message)
+        writeToMessageBus(topicPubDialogAgent, outputJson)
+        finishJob
     }
   } catch {
     case NonFatal(t) => 

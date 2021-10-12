@@ -6,6 +6,7 @@ import com.typesafe.scalalogging.LazyLogging
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * Extenders of this class can use the TAMU Dialog Act Classifier (TDAC)
+ * client variable state (Some, or None) to know if the TDAC is in use.  
  *
  */
 
@@ -14,8 +15,8 @@ abstract class DacAgent (
 ) extends DialogAgent with LazyLogging {
 
   // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = if(tdacEnabled) {
-    logger.info(s"TDAC enabled, server URL: ${tdacServerUrl}")
+  val dacClient: Option[DacClient] = if(args.tdacEnabled) {
+    logger.info(s"TDAC enabled, server URL: ${args.tdacServerUrl}")
     Some (new DacClient(this))
   } else {
     logger.info("TDAC not enabled")
@@ -33,9 +34,5 @@ abstract class DacAgent (
    */
   def iteration(rs: RunState): Unit
 
-  /** Return the URL of the TDAC server, eg "http://localhost:8000" */
-  def tdacServerUrl = args.tdacServerUrl
-  def tdacEnabled: Boolean = args.tdacEnabled
-
-
+  def serverUrl: String = args.tdacServerUrl
 }

@@ -100,7 +100,7 @@ object RunDialogAgent extends App {
    */
   def run(argList: List[String]): Option[DialogAgent] = {
     argList match {
-      case ("mqtt"::host::port::l) =>
+      case ("mqtt"::host::port::l) => 
         Some(new DialogAgentMqtt(host, port, readArgs(l)))
       case ("file"::infile::outfile::l) =>
         Some(new DialogAgentFile(infile, outfile, readArgs(l)))

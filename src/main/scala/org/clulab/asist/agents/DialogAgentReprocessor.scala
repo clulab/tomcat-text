@@ -196,10 +196,10 @@ class DialogAgentReprocessor (
       val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
-      if(tdacEnabled) 
-        dacClient.foreach(_.resetServer(rs2))
-      else
-       finishIteration(rs2)
+      dacClient match {
+        case Some(dc: DacClient) => dc.resetServer(rs2)
+        case None => finishIteration(rs2)
+      }
     } else {
       // if not a trial start just transcribe the input line
       val rs1 = RSM.setOutputLine(rs, rs.inputLine)
@@ -236,16 +236,16 @@ class DialogAgentReprocessor (
       case dataJObject: JObject => 
         val data = dataJObject.extract[DialogAgentMessageData]
         val newData = data.copy(extractions = getExtractions(data.text))
-        if(tdacEnabled) dacClient.foreach(
-          _.runClassification(rs, newData, metadataJValue)
-        )
-        else {
-          val newMetadata = metadataJValue.replace(
-            "data"::Nil,
-            Extraction.decompose(newData)
-          )
-          val rs1 = RSM.setOutputLine(rs, write(newMetadata))
-          finishIteration(rs1)
+        dacClient match {
+          case Some(dc: DacClient) => 
+            dc.runClassification(rs, newData, metadataJValue)
+          case None => 
+            val newMetadata = metadataJValue.replace(
+              "data"::Nil,
+              Extraction.decompose(newData)
+            )
+            val rs1 = RSM.setOutputLine(rs, write(newMetadata))
+            finishIteration(rs1)
         }
       case JNothing =>
         reprocessDialogAgentError(rs, metadataJValue)
@@ -270,11 +270,12 @@ class DialogAgentReprocessor (
         }
         val rs1 = RSM.addRecovered(rs)
         val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
-        if(tdacEnabled) dacClient.foreach(
-          _.runClassification(rs2, data, newMetadata)
-        ) else {
-          val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
-          finishIteration(rs3)
+        dacClient match {
+          case Some(dc: DacClient) => 
+            dc.runClassification(rs2, data, newMetadata)
+          case None =>
+            val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
+            finishIteration(rs3)
         }
       case _ =>
         reportProblem(rs, "Expected error/data field not found in metadata")
