@@ -8,8 +8,8 @@
   - Switch
   - EventLike:
     - Plan:
-        - ContingentPlanGALLUP
-        - DeliberatePlanGALLUP
+        - ContingentPlan
+        - DeliberatePlan
     - Time:
       - TimeUnit
     - Location:

@@ -2,8 +2,8 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
-  - name: "ConditionalIF"
-    label: ContingentPlanGALLUP
+  - name: "ConditionalIFGALLUP"
+    label: ContingentPlan
     priority: ${ rulepriority }
     example: "If we remove the rubble, we can save the victim."
     pattern: |
@@ -11,8 +11,8 @@ rules:
       condition: Action = <mark
       solution: Action = <mark <advcl_if
 
-  - name: "DeliberateFut"
-    label: DeliberatePlanGALLUP
+  - name: "DeliberateFutGALLUP"
+    label: DeliberatePlan
     example: "I am going to save this guy."
     priority: ${ rulepriority }
     pattern: |
