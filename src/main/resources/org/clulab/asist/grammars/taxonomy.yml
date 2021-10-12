@@ -67,6 +67,22 @@
         - Sight
         - Communicate:
           - Instruction
+          - ReportStatus:
+            - Stuck
+            - ReportLocation
+            - RoleDeclare
+            - RoomStatus:
+                - RoomClear
+            - ReportItemStatus:
+              - ToolBroken
+              - DoorOpen
+              - DoorClosed
+          - KnowledgeSharing
+          - Need:
+            - NeedRole
+            - NeedItem
+            - NeedAction
+            - HelpRequest
           - Question:
             - QuestionParticle
             - LocationQuestion
@@ -75,22 +91,6 @@
           - Disagreement
         - Clear
         - RoleSwitch
-        - RoleDeclare
-        - Need:
-            - NeedRole
-            - NeedItem
-            - NeedAction
-            - HelpRequest
-        - ReportStatus:
-            - Stuck
-            - ReportLocation
-        - ReportItemStatus:
-            - ToolBroken
-            - DoorOpen
-            - DoorClosed
-        - KnowledgeSharing:
-          - RoomStatus:
-            - RoomClear
       - ComplexAction:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -101,7 +101,6 @@
           - Precedence
          # - Planning
           - OfferHelp
-          - ShareKnowledge
   - Entity:
     - Person
     - Other
