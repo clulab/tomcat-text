@@ -37,19 +37,19 @@ import scala.util.{Failure, Success}
  * @param port MQTT network port to connect to.
  */
 
-case class BusMessage (
-  topic: String,
-  line: String
-)
 
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent 
-    with DacAgent
+) extends DacAgent (args)
     with LazyLogging
     with MessageBusClientListener { 
+
+  case class BusMessage (
+    topic: String,
+    line: String
+  )
 
   private val config: Config = ConfigFactory.load()
   logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
@@ -59,9 +59,6 @@ class DialogAgentMqtt(
   implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
 
   val source_type = "message_bus"
-
-  // communication with TDAC server
-  val dacClient = new DacClient(this)
 
   // enqueue messages if they're coming in too fast.
   val queue: Queue[BusMessage] = new Queue 
@@ -170,7 +167,7 @@ class DialogAgentMqtt(
         val rs2 = RSM.setInputLine(rs1, input.line)
         val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
         val rs4 = RSM.setOutputLine(rs3, outputJson)
-        dacClient.resetServer(rs4)
+        dacClient.foreach(_.resetServer(rs4))
       } else {
         writeToMessageBus(topicPubVersionInfo, outputJson)
         finishJob  // no DAC 
@@ -198,7 +195,7 @@ class DialogAgentMqtt(
       val rs1 = RSM.setInputTopic(new RunState, input.topic)
       val rs2 = RSM.setInputLine(rs1, input.line)
       val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
-      dacClient.runClassification(rs3, message.data, metadataJValue) 
+      dacClient.foreach(_.runClassification(rs3, message.data, metadataJValue))
     } else {
       val outputJson = write(message)
       writeToMessageBus(topicPubDialogAgent, outputJson)

@@ -17,7 +17,7 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Manage communications with the Dialog Act Classification (DAC) server
+ * Communications with the TAMU Dialog Act Classification (TDAC) server
  */
 
 class DacClient (agent: DacAgent) extends LazyLogging {
@@ -26,6 +26,8 @@ class DacClient (agent: DacAgent) extends LazyLogging {
   case class Classification(name: String)
 
   val serverUrl = agent.tdacServerUrl
+
+  logger.info(s"TDAC enabled, server URL: $serverUrl")
 
   // actors
   implicit val ec = ExecutionContext.global

@@ -48,7 +48,6 @@ case class DialogAgentArgs(
 )
 
 class DialogAgent (
-  val args: DialogAgentArgs = new DialogAgentArgs,
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
@@ -79,10 +78,6 @@ class DialogAgent (
     topicPubDialogAgent,
     topicPubVersionInfo
   )
-
-  def tdacEnabled: Boolean = args.tdacEnabled
-  def ta3Version: Option[Int] = args.ta3Version
-  def tdacServerUrl: String = args.tdacServerUrl
 
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     if (pretty) {

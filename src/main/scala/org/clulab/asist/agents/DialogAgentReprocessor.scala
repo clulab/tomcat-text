@@ -57,9 +57,7 @@ class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent(args)
-    with DacAgent
-    with LazyLogging {
+) extends DacAgent(args) with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
 
@@ -69,15 +67,6 @@ class DialogAgentReprocessor (
 
   // json
   implicit val formats = org.json4s.DefaultFormats
-
-  // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = if(tdacEnabled) {
-    logger.info(s"TDAC enabled, server URL: ${tdacServerUrl}")
-    Some (new DacClient(this))
-  } else {
-    logger.info("TDAC not enabled")
-    None
-  }
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
@@ -446,7 +435,7 @@ class DialogAgentReprocessor (
     val regex = """Vers-(\d+).metadata""".r
     regex.replaceAllIn(outputFileName, _ match {
       case regex(version) => 
-        val newVersion: Int = ta3Version.getOrElse(version.toInt +1)
+        val newVersion: Int = args.ta3Version.getOrElse(version.toInt +1)
         s"Vers-${newVersion}.metadata"
       case _ => outputFileName  // otherwise do not change the inputFileName
     })
