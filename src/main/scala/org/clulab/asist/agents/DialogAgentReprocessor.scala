@@ -380,6 +380,14 @@ class DialogAgentReprocessor (
     }
   }
 
+  /** Handle an error in processing
+   * @param rs: State of execution at current iteration
+   */
+  override def handleError(rs: RunState) {
+    val rs1 = RSM.addError(rs)
+    iteration(rs1)
+  }
+
   /** Graceful agent shutdown
    * @param rs: State of execution at current iteration
    */

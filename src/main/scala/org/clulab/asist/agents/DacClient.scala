@@ -58,13 +58,13 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           agent.iteration(rs2)
         case Failure(t) =>
           logger.info(s"DAC server reset failed: ${response.status}")
-          terminate(rs)
+          agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
         logger.info(s"Could not reset DAC server at: ${serverUrl}")
         logger.error("Please ensure the DAC server is running")
-        terminate(rs)
+        agent.handleError(rs)
     }
   }
 
@@ -115,23 +115,14 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           logger.error(s"DAC Server classification failed: ${response.status}")
           logger.error(s"Input Line: ${rs.inputLine}")
           logger.error(s"Error: ${t.toString}")
-          terminate(rs)
+          agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Error processing: ${rs.inputLine}")
         logger.error(t.toString)
-        terminate(rs)
+        agent.handleError(rs)
     }
-  }
-
-  /** end reprocessing due to error
-   * @param rs Run state to be returned to agent
-   */
-  def terminate(rs: RunState): Unit = {
-    val rs1 = RSM.addError(rs)
-    val rs2 = RSM.terminate(rs1)
-    agent.iteration(rs2)
   }
 
   /** shutdow the actor system, allowing time for actors to finish */

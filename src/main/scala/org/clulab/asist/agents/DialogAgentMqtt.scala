@@ -95,12 +95,14 @@ class DialogAgentMqtt(
   def enqueue(job: BusMessage): Unit = queue.enqueue(job)
 
   /** Take the next job off the queue.  Do this after processing the job */
-  def dequeue: Unit = queue.dequeue 
+  def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
 
   /** States sent by the DAC server, if in use.
    * @param message A DialogAgentMessage with the dialog_act_label value set
    */
   override def iteration(rs: RunState): Unit = startJob
+
+  override def handleError(rs: RunState): Unit = finishJob
 
   /** provided so we can overload it in a test class */
   def writeToMessageBus(
@@ -134,23 +136,17 @@ class DialogAgentMqtt(
 
   /* Use the head of the queue as the next job. */
   def startJob: Unit = {
-
     if(!queue.isEmpty) queue.head.topic match {
       case `topicSubTrial` => processTrialMessage(queue.head)
       case _ => processDialogAgentMessage (queue.head)
-    }  
+    }
     // else all jobs are done.
   }
 
   /** When finished, remove the queue head and start the next job.  */
-  def finishJob: Unit = {
-
-    if(queue.isEmpty) {
-      logger.error("finishJob called with empty queue!")
-    } else {
-      dequeue
-      startJob
-    }
+  def finishJob: Unit = if(!queue.isEmpty) {
+    dequeue
+    startJob
   }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
