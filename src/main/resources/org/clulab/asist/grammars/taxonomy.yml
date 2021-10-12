@@ -10,6 +10,7 @@
     - Plan:
         - ContingentPlan
         - DeliberatePlan
+        - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
     - Time:
       - TimeUnit
     - Location:
