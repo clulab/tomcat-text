@@ -166,7 +166,7 @@ class DialogAgentMqtt(
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, tm, currentTimestamp)
       val outputJson = write(versionInfo)
-      if(withClassifications) {
+      if(tdacEnabled) {
         val rs1 = RSM.setInputTopic(new RunState, input.topic)
         val rs2 = RSM.setInputLine(rs1, input.line)
         val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
@@ -194,7 +194,7 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.line)
     )
-    if(withClassifications) {
+    if(tdacEnabled) {
       val metadataJValue = parse(input.line)
       val rs1 = RSM.setInputTopic(new RunState, input.topic)
       val rs2 = RSM.setInputLine(rs1, input.line)

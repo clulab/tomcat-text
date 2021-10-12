@@ -74,7 +74,7 @@ class DialogAgentReprocessor (
 
   // Dialog Act Classification.  No instantiation if not used.
   val dacClient: Option[DacClient] = 
-    if(withClassifications) Some (new DacClient(this)) else None
+    if(tdacEnabled) Some (new DacClient(this)) else None
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
@@ -204,7 +204,7 @@ class DialogAgentReprocessor (
       val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
-      if(withClassifications) 
+      if(tdacEnabled) 
         dacClient.foreach(_.resetServer(rs2))
       else
        finishIteration(rs2)
@@ -244,7 +244,7 @@ class DialogAgentReprocessor (
       case dataJObject: JObject => 
         val data = dataJObject.extract[DialogAgentMessageData]
         val newData = data.copy(extractions = getExtractions(data.text))
-        if(withClassifications) dacClient.foreach(
+        if(tdacEnabled) dacClient.foreach(
           _.runClassification(rs, newData, metadataJValue)
         )
         else {
@@ -278,7 +278,7 @@ class DialogAgentReprocessor (
         }
         val rs1 = RSM.addRecovered(rs)
         val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
-        if(withClassifications) dacClient.foreach(
+        if(tdacEnabled) dacClient.foreach(
           _.runClassification(rs2, data, newMetadata)
         ) else {
           val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
