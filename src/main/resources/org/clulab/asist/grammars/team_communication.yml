@@ -22,7 +22,7 @@ rules:
 
   - name: prep_need_role
     priority: ${ rulepriority }
-    label: Need
+    label: NeedRole
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -30,7 +30,7 @@ rules:
 
   - name: prep_need_item
     priority: ${ rulepriority }
-    label: Need
+    label: NeedItem
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -38,7 +38,7 @@ rules:
 
   - name: prep_need_action
     priority: ${ rulepriority }
-    label: Need
+    label: NeedAction
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/

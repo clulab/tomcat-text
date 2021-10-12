@@ -76,9 +76,13 @@
         - Clear
         - RoleSwitch
         - RoleDeclare
+        - Need:
+            - NeedRole
+            - NeedItem
+            - NeedAction
+            - HelpRequest
         - ReportStatus:
             - Stuck
-            - HelpRequest
             - ReportLocation
         - ReportItemStatus:
             - ToolBroken
@@ -94,7 +98,6 @@
             - MakeCommitment
           - Continue
           - MoveVictim
-          - Need
           - Precedence
          # - Planning
           - OfferHelp
