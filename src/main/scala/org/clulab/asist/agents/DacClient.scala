@@ -1,12 +1,12 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl._
+import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
-import org.json4s.{Extraction,_}
-import org.json4s.jackson.Serialization.{read,write}
+import org.json4s.{Extraction, JValue}
+import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
@@ -17,32 +17,15 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 July
- *
  * Manage communications with the Dialog Act Classification (DAC) server
- *
  */
-
-abstract trait DacAgent {
-  /** Write the runstate output to the output for the extending class
-   * @param rs The runState sent with the orignal message to the DAC client
-   * @return A new run state updated with the status of the write operation
-   */
-  def writeOutput(rs: RunState): RunState
-
-  /** States sent by the DAC server, if in use.
-   * @param message A DialogAgentMessage with the dialog_act_label value set
-   */
-  def iteration(rs: RunState): Unit
-}
-
-
-// sent back by the DAC server
-case class Classification(name: String)
 
 class DacClient (agent: DacAgent) extends LazyLogging {
 
-  val serverLocation = "http://localhost:8000"
+  // sent back by the DAC server
+  case class Classification(name: String)
+
+  val serverUrl = agent.tdacServerUrl
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -55,10 +38,10 @@ class DacClient (agent: DacAgent) extends LazyLogging {
    * @param rs The current execution state of the agent
    */
   def resetServer(rs: RunState): Unit = {
-    logger.info(s"Resetting DAC server at: ${serverLocation}")
+    logger.info(s"Resetting DAC server at: ${serverUrl}")
 
     val request = HttpRequest(
-      uri = Uri(s"${serverLocation}/reset-model"),
+      uri = Uri(s"${serverUrl}/reset-model"),
       entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
     )
     val future: Future[HttpResponse] = Http().singleRequest(request)
@@ -79,7 +62,7 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       }
     } catch {
       case NonFatal(t) => 
-        logger.info(s"Could not reset DAC server at: ${serverLocation}")
+        logger.info(s"Could not reset DAC server at: ${serverUrl}")
         logger.error("Please ensure the DAC server is running")
         terminate(rs)
     }
@@ -104,7 +87,7 @@ class DacClient (agent: DacAgent) extends LazyLogging {
       )
     )
     val request = HttpRequest(
-      uri = Uri(s"${serverLocation}/classify"),
+      uri = Uri(s"${serverUrl}/classify"),
       entity = HttpEntity(ContentTypes.`application/json`,requestJson)
     )
     val future: Future[HttpResponse] = Http().singleRequest(request)
