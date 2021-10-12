@@ -36,14 +36,14 @@ object RunDialogAgent extends App {
     "                 {file inputfile outputfile}",
     "                 {reprocess inputdir outputdir [-v ta3_version_number]}",
     "",
-    s"       {$ta3Version} : Set the TA3 version number of reprocessed metadata files.",
+    s"       $ta3Version : Set the TA3 version number of reprocessed metadata files.",
     "            If not set, existing TA3 version numbers are incremented by 1",
     "inputfile : supported file extensions are .vtt and .metadata",
     "            (also handles directories containing files with those extensions)",
     "inputdir  : A directory of .metadata files to be reprocessed by the DialogAgent",
     "outputdir : A directory where reprocessed .metadata files will be saved.",
-    s"{$tdacEnabled} : Include classifications from the TAMU dialogue act classifier.",
-    s"{$tdacServerUrl} [URL] : path to TAMU dialogue act classifier].",
+    s"$tdacEnabled  : Include classifications from the TAMU dialogue act classifier.",
+    s"$tdacServerUrl [URL] : Internet address of the TAMU dialogue act classifier.",
     ""
   )
 
@@ -83,6 +83,7 @@ object RunDialogAgent extends App {
    * @return A DialogAgentArgs struct populated per the input list
    */
   def readArgs(l: List[String]): DialogAgentArgs = {
+
     val defaults = new DialogAgentArgs
 
     DialogAgentArgs(
