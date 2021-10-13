@@ -20,12 +20,10 @@ import scala.util.{Failure, Success}
  * Communications with the TAMU Dialog Act Classification (TDAC) server
  */
 
-class TdacClient (agent: TdacAgent) extends LazyLogging {
+class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
 
   // sent back by the TDAC server
   case class Classification(name: String)
-
-  val serverUrl = agent.serverUrl
 
   // actors
   implicit val ec = ExecutionContext.global

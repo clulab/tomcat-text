@@ -56,8 +56,10 @@ import scala.util.{Failure, Success}
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
-  override val args: DialogAgentArgs = new DialogAgentArgs
-) extends TdacAgent(args) with LazyLogging {
+  val ta3Version: Option[Int] = None,
+  override val tdacHost: Option[String] = None,
+  override val tdacPort: Option[String] = None
+) extends TdacAgent with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
 
@@ -445,7 +447,7 @@ class DialogAgentReprocessor (
     val regex = """Vers-(\d+).metadata""".r
     regex.replaceAllIn(outputFileName, _ match {
       case regex(version) => 
-        val newVersion: Int = args.ta3Version.getOrElse(version.toInt +1)
+        val newVersion: Int = ta3Version.getOrElse(version.toInt +1)
         s"Vers-${newVersion}.metadata"
       case _ => outputFileName  // otherwise do not change the inputFileName
     })

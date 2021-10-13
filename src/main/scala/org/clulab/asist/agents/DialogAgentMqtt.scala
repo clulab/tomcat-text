@@ -39,8 +39,9 @@ import scala.util.{Failure, Success}
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
-  override val args: DialogAgentArgs = new DialogAgentArgs
-) extends TdacAgent (args)
+  override val tdacHost: Option[String] = None,
+  override val tdacPort: Option[String] = None
+) extends TdacAgent
     with LazyLogging
     with MessageBusClientListener { 
 
