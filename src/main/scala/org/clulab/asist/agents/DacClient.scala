@@ -40,12 +40,12 @@ class DacClient (agent: DacAgent) extends LazyLogging {
   def resetServer(rs: RunState): Unit = {
     logger.info(s"Resetting DAC server at: ${serverUrl}")
 
-    val request = HttpRequest(
-      uri = Uri(s"${serverUrl}/reset-model"),
-      entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
     try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/reset-model"),
+        entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
@@ -61,6 +61,10 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           agent.handleError(rs)
       }
     } catch {
+      case IllegalUriException(t) =>
+        logger.error("Problem creating TDAC server URL, please check input args")
+        logger.error(t.toString)
+        agent.handleError(rs)
       case NonFatal(t) => 
         logger.info(s"Could not reset DAC server at: ${serverUrl}")
         logger.error("Please ensure the DAC server is running")
@@ -86,12 +90,12 @@ class DacClient (agent: DacAgent) extends LazyLogging {
         Option(data.extractions).getOrElse(Seq())
       )
     )
-    val request = HttpRequest(
-      uri = Uri(s"${serverUrl}/classify"),
-      entity = HttpEntity(ContentTypes.`application/json`,requestJson)
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
     try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/classify"),
+        entity = HttpEntity(ContentTypes.`application/json`,requestJson)
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
       val futureClassification: Future[Classification] = response.entity.dataBytes
         .runReduce(_ ++ _)
@@ -118,6 +122,10 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           agent.handleError(rs)
       }
     } catch {
+      case IllegalUriException(t) =>
+        logger.error("Problem creating TDAC server URL, please check input args")
+        logger.error(t.toString)
+        agent.handleError(rs)
       case NonFatal(t) => 
         logger.error(s"Error processing: ${rs.inputLine}")
         logger.error(t.toString)
