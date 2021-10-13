@@ -24,8 +24,6 @@ import scala.util.control.NonFatal
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 October
- *
  *  Create extractions from text for the ToMCAT project.
  *
  *  https://github.com/clulab/tomcat-text/blob/master/README.md

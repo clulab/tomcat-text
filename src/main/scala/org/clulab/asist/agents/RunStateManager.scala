@@ -6,8 +6,6 @@ import java.io.PrintWriter
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 August
- *
  * Keep track of ongoing Dialog Agent input processing
  */
 
