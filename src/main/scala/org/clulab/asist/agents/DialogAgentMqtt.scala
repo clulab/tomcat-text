@@ -61,6 +61,8 @@ class DialogAgentMqtt(
   // enqueue messages if they're coming in too fast.
   val queue: Queue[BusMessage] = new Queue 
 
+  logger.info("Initializing Message Bus connection...")
+
   // communication with Message Bus
   val bus = new MessageBusClient(
     host,
