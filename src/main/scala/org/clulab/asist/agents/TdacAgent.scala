@@ -10,7 +10,7 @@ import com.typesafe.scalalogging.LazyLogging
  *
  */
 
-abstract class DacAgent (
+abstract class TdacAgent (
   val args: DialogAgentArgs = new DialogAgentArgs
 ) extends DialogAgent with LazyLogging {
 
@@ -18,9 +18,9 @@ abstract class DacAgent (
   val serverUrl: String = args.tdacServerUrl
 
   // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = if(args.tdacEnabled) {
+  val tdacClient: Option[TdacClient] = if(args.tdacEnabled) {
     logger.info(s"Using ${tdac} server at ${args.tdacServerUrl}")
-    Some (new DacClient(this))
+    Some (new TdacClient(this))
   } else {
     logger.info(s"${tdac} not enabled")
     None

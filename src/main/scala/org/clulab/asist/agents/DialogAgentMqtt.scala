@@ -40,7 +40,7 @@ class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
   override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DacAgent (args)
+) extends TdacAgent (args)
     with LazyLogging
     with MessageBusClientListener { 
 
@@ -71,7 +71,7 @@ class DialogAgentMqtt(
   )
 
   /** Lines to be written to the MessageBus
-   * @param rs The runState sent with the orignal message to the DAC client
+   * @param rs The runState sent with the orignal message to the TDAC client
    * @return The run state with the lineWrites var incremented by 1
    */
   override def writeOutput(
@@ -95,7 +95,7 @@ class DialogAgentMqtt(
   /** Take the next job off the queue.  Do this after processing the job */
   def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
 
-  /** States sent by the DAC server, if in use.
+  /** States sent by the TDAC server, if in use.
    * @param message A DialogAgentMessage with the dialog_act_label value set
    */
   override def iteration(rs: RunState): Unit = startJob
@@ -153,8 +153,8 @@ class DialogAgentMqtt(
       val currentTimestamp = Clock.systemUTC.instant.toString
       val versionInfo = VersionInfo(this, tm, currentTimestamp)
       val outputJson = write(versionInfo)
-      dacClient match {
-        case Some(dc: DacClient) =>
+      tdacClient match {
+        case Some(dc: TdacClient) =>
           val rs1 = RSM.setInputTopic(new RunState, input.topic)
           val rs2 = RSM.setInputLine(rs1, input.line)
           val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
@@ -162,7 +162,7 @@ class DialogAgentMqtt(
           dc.resetServer(rs4)
         case None =>
           writeToMessageBus(topicPubVersionInfo, outputJson)
-          finishJob  // no DAC 
+          finishJob  // no TDAC 
       }
     }
     else finishJob  // no trial start
@@ -182,8 +182,8 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.line)
     )
-    dacClient match {
-      case Some(dc: DacClient) =>
+    tdacClient match {
+      case Some(dc: TdacClient) =>
         val metadataJValue = parse(input.line)
         val rs1 = RSM.setInputTopic(new RunState, input.topic)
         val rs2 = RSM.setInputLine(rs1, input.line)
