@@ -26,8 +26,8 @@ import scala.util.{Failure, Success}
  * performs analysis on the input, and then publishes the analysis to
  * the output topic.
  *
- * If the Dialog Act Classification argument is set, a server process is
- * contacted via HTTP request for 
+ * If the tdacUrlOpt argument is set, the TAMU Dialog Act Classifier will be 
+ * called for each DialogAgentMessage published.
  *
  * Input and output are in json format.
  *
@@ -72,8 +72,9 @@ class DialogAgentMqtt(
     this
   )
 
-  // communication with TDAC server if used
+
   tdacInit
+
 
   /** Lines to be written to the MessageBus
    * @param rs The runState sent with the orignal message to the TDAC client

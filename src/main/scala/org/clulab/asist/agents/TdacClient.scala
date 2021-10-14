@@ -47,14 +47,25 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
       futureReply onComplete {
-        case Success(a) => logger.info("TDAC server initialized")
-        case Failure(t) => logger.error("TDAC server initialization failed")
+        case Success(a) => 
+          logger.info("TDAC server initialized")
+        case Failure(t) => 
+          shutdown(t.toString)
       }
     } catch {
       case NonFatal(t) => 
-        logger.error("TDAC server initialization failed with an exception:")
-        logger.error(t.toString)
+        shutdown(t.toString)
     }
+  }
+
+  def shutdown(report: String): Unit = {
+    system.terminate
+    Thread.sleep(5000) // allow actor system to gracefully shut down
+    logger.error(report)
+    logger.info(s"The TDAC server was not found at ${serverUrl}")
+    logger.info("Please check that the server is running")
+    logger.info("The Agent is shutting down")
+    System.exit(0)
   }
 
 

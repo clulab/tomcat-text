@@ -66,7 +66,8 @@ class MessageBusClient(
   } else {
     logger.error(s"Could not connect to Message Bus at ${uri}")
     logger.error("Please check that the broker is running.")
-    System.exit(1)
+    logger.error("The Agent is shutting down.")
+    System.exit(0)
   }
 
   /** Publish a MQTT message to one topic
