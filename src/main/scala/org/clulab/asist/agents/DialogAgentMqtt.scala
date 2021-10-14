@@ -72,6 +72,9 @@ class DialogAgentMqtt(
     this
   )
 
+  // communication with TDAC server if used
+  tdacInit
+
   /** Lines to be written to the MessageBus
    * @param rs The runState sent with the orignal message to the TDAC client
    * @return The run state with the lineWrites var incremented by 1

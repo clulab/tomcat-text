@@ -17,12 +17,14 @@ abstract class TdacAgent (
   // Dialog Act Classification.  No instantiation if not used.
   val tdacClient: Option[TdacClient] = urlMaybe match {
     case Some(url) =>
-      logger.info(s"Using TDAC server at ${url}")
+      logger.info(s"TDAC server URL: ${url}")
       Some (new TdacClient(this, url))
     case None =>
       logger.info("TDAC not enabled")
       None
   }
+
+  def tdacInit: Unit = tdacClient.foreach(_.initServer)
 
   /** Write the runstate output to the output for the extending class
    * @param rs The current execution state of the agent

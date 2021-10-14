@@ -32,18 +32,44 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   // json
   implicit val formats = org.json4s.DefaultFormats
 
-  /** Reset the TDAC server
+  /** Reset the TDAC server outside of data processing
+   */
+  def initServer: Unit = {
+    logger.info("Initializing TDAC server...")
+    try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/reset-model"),
+        entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
+      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+      val futureReply: Future[String] = response.entity.dataBytes
+        .runReduce(_ ++ _)
+        .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
+      futureReply onComplete {
+        case Success(a) => logger.info("TDAC server initialized")
+        case Failure(t) => logger.error("TDAC server initialization failed")
+      }
+    } catch {
+      case NonFatal(t) => 
+        logger.error("TDAC server initialization failed with an exception:")
+        logger.error(t.toString)
+    }
+  }
+
+
+  /** Reset the TDAC server during processing
    * @param rs The current execution state of the agent
    */
   def resetServer(rs: RunState): Unit = {
     logger.info(s"Resetting TDAC server at: ${serverUrl}")
 
-    val request = HttpRequest(
-      uri = Uri(s"${serverUrl}/reset-model"),
-      entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
     try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/reset-model"),
+        entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
