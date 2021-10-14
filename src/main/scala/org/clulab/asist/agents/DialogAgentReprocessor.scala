@@ -62,6 +62,9 @@ class DialogAgentReprocessor (
 
   logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
 
+  // check the TDAC server connection
+  tdacInit
+
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DialogAgentReprocessor")
