@@ -29,8 +29,8 @@ case class RunState(
   infoWrites: Int = 0, // VersionInfo messages written 
   lineReads: Int = 0,  // total lines read
   lineWrites: Int = 0, // total lines written
-  dacQueries: Int = 0, // DAC server responses
-  dacResets: Int = 0, // DAC resets 
+  tdacQueries: Int = 0, // TDAC server responses
+  tdacResets: Int = 0, // TDAC resets 
   errors: Int = 0,  // errors and exceptions encountered
   terminated: Boolean = false // set true to halt processing
 )
@@ -82,8 +82,8 @@ trait RunStateManager extends LazyLogging {
   ): RunState = s.copy(outputLines = lines)
 
   // state incrementers
-  def addDacReset(s: RunState): RunState = s.copy(dacResets = s.dacResets + 1)
-  def addDacQuery(s: RunState): RunState = s.copy(dacQueries = s.dacQueries + 1)
+  def addDacReset(s: RunState): RunState = s.copy(tdacResets = s.tdacResets + 1)
+  def addDacQuery(s: RunState): RunState = s.copy(tdacQueries = s.tdacQueries + 1)
   def addReprocessed(s: RunState): RunState = s.copy(reprocessed = s.reprocessed+1)
   def addRecovered(s: RunState): RunState = s.copy(recovered = s.recovered+1)
   def addInfoWrite(s: RunState): RunState = s.copy(infoWrites = s.infoWrites + 1)
@@ -103,8 +103,8 @@ trait RunStateManager extends LazyLogging {
     "DialogAgent lines reprocessed: %d".format(s.reprocessed),
     "DialogAgent lines recovered:   %d".format(s.recovered),
     "VersionInfo lines written:     %d".format(s.infoWrites),
-    "DAC server resets:             %d".format(s.dacResets),
-    "DAC server classifications:    %d".format(s.dacQueries),
+    "TDAC server resets:            %d".format(s.tdacResets),
+    "TDAC server classifications:   %d".format(s.tdacQueries),
     "Processing errors              %d".format(s.errors)
   )
 }

@@ -56,10 +56,14 @@ import scala.util.{Failure, Success}
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
-  override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DacAgent(args) with LazyLogging {
+  val ta3Version: Option[Int] = None,
+  val tdacUrl: Option[String] = None,
+) extends TdacAgent(tdacUrl) with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
+
+  // check the TDAC server connection
+  tdacInit
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -196,8 +200,8 @@ class DialogAgentReprocessor (
       val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
-      dacClient match {
-        case Some(dc: DacClient) => dc.resetServer(rs2)
+      tdacClient match {
+        case Some(tc: TdacClient) => tc.resetServer(rs2)
         case None => finishIteration(rs2)
       }
     } else {
@@ -236,9 +240,9 @@ class DialogAgentReprocessor (
       case dataJObject: JObject => 
         val data = dataJObject.extract[DialogAgentMessageData]
         val newData = data.copy(extractions = getExtractions(data.text))
-        dacClient match {
-          case Some(dc: DacClient) => 
-            dc.runClassification(rs, newData, metadataJValue)
+        tdacClient match {
+          case Some(tc: TdacClient) => 
+            tc.runClassification(rs, newData, metadataJValue)
           case None => 
             val newMetadata = metadataJValue.replace(
               "data"::Nil,
@@ -270,9 +274,9 @@ class DialogAgentReprocessor (
         }
         val rs1 = RSM.addRecovered(rs)
         val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
-        dacClient match {
-          case Some(dc: DacClient) => 
-            dc.runClassification(rs2, data, newMetadata)
+        tdacClient match {
+          case Some(tc: TdacClient) => 
+            tc.runClassification(rs2, data, newMetadata)
           case None =>
             val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
             finishIteration(rs3)
@@ -336,7 +340,7 @@ class DialogAgentReprocessor (
    * @param rs: State of execution at current iteration
    */
   override def iteration(rs: RunState): Unit = {
-    // this can be set for instance if we lose contact with the DAC server
+    // this can be set for instance if we lose contact with the TDAC server
     if(rs.terminated) {
       logger.info("File processing terminated.")
       finish(rs)
@@ -394,7 +398,7 @@ class DialogAgentReprocessor (
    */
   def finish(rs: RunState) {
     system.terminate()
-    dacClient.foreach(_.shutdown)
+    tdacClient.foreach(_.shutdown)
     finalReport(rs)
   }
 
@@ -445,7 +449,7 @@ class DialogAgentReprocessor (
     val regex = """Vers-(\d+).metadata""".r
     regex.replaceAllIn(outputFileName, _ match {
       case regex(version) => 
-        val newVersion: Int = args.ta3Version.getOrElse(version.toInt +1)
+        val newVersion: Int = ta3Version.getOrElse(version.toInt +1)
         s"Vers-${newVersion}.metadata"
       case _ => outputFileName  // otherwise do not change the inputFileName
     })

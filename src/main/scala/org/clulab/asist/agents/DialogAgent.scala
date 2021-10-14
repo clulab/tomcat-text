@@ -30,22 +30,6 @@ import scala.util.control.NonFatal
  *
  */
 
-// A place to keep a growing number of settings for the Dialog Agent
-case class DialogAgentArgs(
-
-  // Optionally hard-set the TA3 version number of reprocessed .metadata files
-  // If this value is not set, existing version numbers are incremented by 1
-  ta3Version: Option[Int] = None,
-
-  // Set this to true to include dialogue act classifications from the TAMU
-  // Dialog Act Classification server.
-  tdacEnabled: Boolean = false,
-
-  // Specify the URL of the TAMU Dialog Act Classification server.
-  tdacServerUrl: String = "http://localhost:8000"
-)
-
-
 class DialogAgent (
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {

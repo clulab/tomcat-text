@@ -10,9 +10,7 @@ import java.util.Scanner
  *
  */
 
-class DialogAgentStdin (
-  val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent { 
+class DialogAgentStdin extends DialogAgent { 
 
   println(s"\nRunning Dialog Agent stdin extractor version ${dialogAgentVersion}")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")

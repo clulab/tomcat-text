@@ -10,21 +10,21 @@ import com.typesafe.scalalogging.LazyLogging
  *
  */
 
-abstract class DacAgent (
-  val args: DialogAgentArgs = new DialogAgentArgs
+abstract class TdacAgent (
+  val urlMaybe: Option[String] = None
 ) extends DialogAgent with LazyLogging {
-
-  val tdac: String = "TAMU Dialog Act Classifier (TDAC)"
-  val serverUrl: String = args.tdacServerUrl
-
+  
   // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = if(args.tdacEnabled) {
-    logger.info(s"Using ${tdac} server at ${args.tdacServerUrl}")
-    Some (new DacClient(this))
-  } else {
-    logger.info(s"${tdac} not enabled")
-    None
+  val tdacClient: Option[TdacClient] = urlMaybe match {
+    case Some(url) =>
+      logger.info(s"TDAC server URL: ${url}")
+      Some (new TdacClient(this, url))
+    case None =>
+      logger.info("TDAC not enabled")
+      None
   }
+
+  def tdacInit: Unit = tdacClient.foreach(_.initServer)
 
   /** Write the runstate output to the output for the extending class
    * @param rs The current execution state of the agent
