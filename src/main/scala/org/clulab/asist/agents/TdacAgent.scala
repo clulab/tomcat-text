@@ -11,18 +11,15 @@ import com.typesafe.scalalogging.LazyLogging
  */
 
 abstract class TdacAgent (
-  val tdacHost: Option[String] = None,
-  val tdacPort: Option[String] = None
+  val urlMaybe: Option[String] = None
 ) extends DialogAgent with LazyLogging {
   
-
   // Dialog Act Classification.  No instantiation if not used.
-  val tdacClient: Option[TdacClient] = List(tdacHost, tdacPort).flatten match {
-    case (host::port) =>
-      val url = s"${host}:${port}"
+  val tdacClient: Option[TdacClient] = urlMaybe match {
+    case Some(url) =>
       logger.info(s"Using TDAC server at ${url}")
       Some (new TdacClient(this, url))
-    case _ =>
+    case None =>
       logger.info("TDAC not enabled")
       None
   }

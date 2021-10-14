@@ -51,14 +51,15 @@ object RunDialogAgent extends App {
    * @param argList A flat list of keys and values
    * @return The value if the key is found, else None
    */
+  @tailrec
   def ta3Version(arglist: List[String]): Option[Int] = arglist match {
     case "-v"::version::l =>
       try Some(version.toInt)
       catch {
         case e: Exception => None
       }
-    case head::tail =>
-      ta3Version(tail)
+    case head::l =>
+      ta3Version(l)
     case _ => None
   }
 
@@ -66,15 +67,15 @@ object RunDialogAgent extends App {
    * @param argList A flat list of keys and values
    * @return The server and port values if the key is found, else (None, None)
    */
-  def tdacUrl(
-    arglist: List[String]
-  ): Tuple2[Option[String], Option[String]] = arglist match {
-    case "--tdac"::tdacHost::tdacPort::l =>
-      (Some(tdacHost), Some(tdacPort))
-    case head::tail =>
-      tdacUrl(tail)
+  @tailrec
+  def tdacUrl(arglist: List[String]): Option[String] = arglist match {
+    case "--tdac"::httpHost::port::l =>
+      val host = httpHost.replace("http://","")
+      Some(s"http://${host}:${port}")
+    case head::l =>
+      tdacUrl(l)
     case _ => 
-      (None, None)
+      None
   }
 
   /** Run the Dialog Agent per user args.
@@ -84,7 +85,7 @@ object RunDialogAgent extends App {
   def run(argList: List[String]): Option[DialogAgent] = argList match {
     case ("mqtt"::host::port::l) => 
       val tdac = tdacUrl(l)
-      Some(new DialogAgentMqtt(host, port, tdac._1, tdac._2))
+      Some(new DialogAgentMqtt(host, port, tdac))
     case ("file"::infile::outfile::l) =>
       Some(new DialogAgentFile(infile, outfile))
     case ("stdin"::l) =>
@@ -92,7 +93,7 @@ object RunDialogAgent extends App {
     case ("reprocess"::indir::outdir::l) =>
       val ta3  = ta3Version(l)
       val tdac = tdacUrl(l)
-      Some(new DialogAgentReprocessor(indir, outdir, ta3, tdac._1, tdac._2))
+      Some(new DialogAgentReprocessor(indir, outdir, ta3, tdac))
     case _ =>
       usageText.foreach(println)
       None
