@@ -106,7 +106,7 @@ class HomeController @Inject() (cc: ControllerComponents)
     )
     val timestamp = Clock.systemUTC.instant.toString
     val message = DialogAgentMessage(
-      CommonHeader(timestamp, agent.dialogAgentMessageType, agent.dialogAgentVersion),
+      CommonHeader(timestamp, agent.dialogAgentMessageType),
       CommonMsg(
         experiment_id = "367624f8-81cd-4661-a03f-b61908c39581",
         trial_id = "78822ceb-448a-436e-a1f1-f154f2066261",
