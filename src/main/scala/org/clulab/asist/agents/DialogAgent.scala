@@ -72,7 +72,6 @@ class DialogAgent (
 
   // Create the engine and run it to get lazy init out of the way 
   logger.info("Initializing Extractor (this may take a few seconds) ...")
-  //val engine = new TomcatRuleEngine()
   engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
 
@@ -81,8 +80,7 @@ class DialogAgent (
    */
   def commonHeader(timestamp: String): CommonHeader = CommonHeader(
     timestamp = timestamp,
-    message_type = dialogAgentMessageType,
-    version = dialogAgentVersion
+    message_type = dialogAgentMessageType
   )
 
   /** Create a CommonMsg data structure 
