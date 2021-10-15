@@ -3,7 +3,6 @@ package controllers
 import java.time.Clock
 import javax.inject._
 import org.clulab.asist.agents.DialogAgent
-import org.clulab.asist.agents.DialogAgentArgs
 import org.clulab.asist.messages.DialogAgentMessage
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.odin.{
@@ -48,7 +47,7 @@ class HomeController @Inject() (cc: ControllerComponents)
   // -------------------------------------------------
   println("[TomcatRuleEngine] Initializing the TomcatRuleEngine ...")
   val engine = new TomcatRuleEngine()
-  val agent = new DialogAgent(new DialogAgentArgs(), engine)
+  val agent = new DialogAgent(engine)
   println("[TomcatRuleEngine] Completed initialization ...")
   // -------------------------------------------------
 
