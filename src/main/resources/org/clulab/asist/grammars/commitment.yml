@@ -4,6 +4,7 @@ rules:
 
   - name: commit_to_something
     priority: ${ rulepriority }
+    example: "I can save this guy"
     label: MakeCommitment
     action: preventSubjectVerbInversion
     pattern: |
@@ -13,6 +14,7 @@ rules:
 
   - name: commit_to_something_plan-type
     priority: ${ rulepriority }
+    example: "I will save this guy"
     label: DeliberatePlan
     action: preventSubjectVerbInversion
     pattern: |
