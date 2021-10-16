@@ -7,10 +7,6 @@
   - RoomTag
   - Switch
   - EventLike:
-    - Plan:
-        - ContingentPlan
-        - DeliberatePlan
-        - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
     - Time:
       - TimeUnit
     - Location:
@@ -88,6 +84,12 @@
             - QuestionParticle
             - LocationQuestion
             - YesNoQuestion
+          - Plan:
+              - ContingentPlan
+              - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
+              - Commitment:
+                - MakeCommitment
+                - DeliberatePlan
           - Agreement
           - Disagreement
         - Clear
@@ -95,8 +97,6 @@
       - ComplexAction:
           - Search         # Seach(Location)
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
-          - Commitment:
-            - MakeCommitment
           - Continue
           - MoveVictim
           - Precedence

@@ -7,6 +7,15 @@ rules:
     label: MakeCommitment
     action: preventSubjectVerbInversion
     pattern: |
-      trigger = [tag=/^MD/ & lemma=/^can|will/] (?! [lemma=not])
+      trigger = [tag=/^MD/ & lemma=/^can/] (?! [lemma=not])
+      topic: Action = <aux
+      agent: Entity? = <aux >nsubj
+
+  - name: commit_to_something_plan-type
+    priority: ${ rulepriority }
+    label: DeliberatePlan
+    action: preventSubjectVerbInversion
+    pattern: |
+      trigger = [tag=/^MD/ & lemma=/^will/] (?! [lemma=not])
       topic: Action = <aux
       agent: Entity? = <aux >nsubj
