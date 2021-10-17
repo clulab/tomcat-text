@@ -33,7 +33,7 @@ class CommitmentTest extends BaseTest {
           "location" -> Seq(deictic_mention)),
       Set(AGENT_SELF, FUTURE_TENSE)
     )
-    val commitment_mention = DesiredMention("MakeCommitment", "will rescue the victim in here",
+    val commitment_mention = DesiredMention("DeliberatePlan", "will rescue the victim in here",
       Map("topic" -> Seq(save_mention)),
       Set(AGENT_SELF, FUTURE_TENSE)
     )
