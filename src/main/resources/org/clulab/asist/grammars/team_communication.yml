@@ -8,7 +8,7 @@ rules:
     example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! (I|[tag=MD]|to) []*) [tag=VB & mention=Action] (?! []* I)
+      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$/]|to|[lemma=do]you) []*)) [tag=VB & mention=Action] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
   - name: instruction_command_topic
@@ -16,7 +16,7 @@ rules:
     label: Instruction
     example: "Help him save the victim!"
     pattern: |
-      trigger = (?<! I []*) [tag=VB] (?! []* I)
+      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$/]|to) []*)) [tag=VB & mention=Action] (?! []* I)
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/
 
