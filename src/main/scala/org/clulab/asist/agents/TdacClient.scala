@@ -88,7 +88,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
-          val rs1 = RSM.addDacReset(rs)
+          val rs1 = RSM.addTdacReset(rs)
           val rs2 = agent.writeOutput(rs1)
           agent.iteration(rs2)
         case Failure(t) =>
@@ -142,7 +142,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val rs1 = RSM.addDacQuery(rs)
+          val rs1 = RSM.addTdacQuery(rs)
           val rs2 = RSM.setOutputLine(rs1, write(newMetadata))
           val rs3 = agent.writeOutput(rs2)
           agent.iteration(rs3)
