@@ -24,26 +24,13 @@ import scala.util.control.NonFatal
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 August
- *
  *  Create extractions from text for the ToMCAT project.
  *
  *  https://github.com/clulab/tomcat-text/blob/master/README.md
  *
  */
 
-// A place to keep a growing number of settings for the Dialog Agent
-case class DialogAgentArgs(
-  // Set this to true to include dialogue act classifications from the TAMU
-  // Dialog Act Classification server.
-  withClassifications: Boolean = false,
-  // Optionally hard-set the TA3 version number of reprocessed .metadata files
-  // If this value is not set, existing version numbers are incremented by 1
-  ta3Version: Option[Int] = None
-)
-
 class DialogAgent (
-  val args: DialogAgentArgs = new DialogAgentArgs,
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
@@ -75,9 +62,6 @@ class DialogAgent (
     topicPubVersionInfo
   )
 
-  def withClassifications = args.withClassifications
-  def ta3Version = args.ta3Version
-
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     if (pretty) {
       writePretty(a)
@@ -88,7 +72,6 @@ class DialogAgent (
 
   // Create the engine and run it to get lazy init out of the way 
   logger.info("Initializing Extractor (this may take a few seconds) ...")
-  //val engine = new TomcatRuleEngine()
   engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
 
@@ -97,8 +80,7 @@ class DialogAgent (
    */
   def commonHeader(timestamp: String): CommonHeader = CommonHeader(
     timestamp = timestamp,
-    message_type = dialogAgentMessageType,
-    version = dialogAgentVersion
+    message_type = dialogAgentMessageType
   )
 
   /** Create a CommonMsg data structure 

@@ -1,12 +1,12 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl._
+import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
-import org.json4s.{Extraction,_}
-import org.json4s.jackson.Serialization.{read,write}
+import org.json4s.{Extraction, JValue}
+import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
@@ -17,76 +17,94 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 July
- *
- * Manage communications with the Dialog Act Classification (DAC) server
- *
+ * Communications with the TAMU Dialog Act Classification (TDAC) server
  */
 
-abstract trait DacAgent {
-  /** Write the runstate output to the output for the extending class
-   * @param rs The runState sent with the orignal message to the DAC client
-   * @return A new run state updated with the status of the write operation
-   */
-  def writeOutput(rs: RunState): RunState
+class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
 
-  /** States sent by the DAC server, if in use.
-   * @param message A DialogAgentMessage with the dialog_act_label value set
-   */
-  def iteration(rs: RunState): Unit
-}
-
-
-// sent back by the DAC server
-case class Classification(name: String)
-
-class DacClient (agent: DacAgent) extends LazyLogging {
-
-  val serverLocation = "http://localhost:8000"
+  // sent back by the TDAC server
+  case class Classification(name: String)
 
   // actors
   implicit val ec = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("DacClient")
+  implicit val system: ActorSystem = ActorSystem("TdacClient")
 
   // json
   implicit val formats = org.json4s.DefaultFormats
 
-  /** Reset the DAC server
+  /** Reset the TDAC server outside of data processing
+   */
+  def initServer: Unit = {
+    logger.info("Initializing TDAC server...")
+    try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/reset-model"),
+        entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
+      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+      val futureReply: Future[String] = response.entity.dataBytes
+        .runReduce(_ ++ _)
+        .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
+      futureReply onComplete {
+        case Success(a) => 
+          logger.info("TDAC server initialized")
+        case Failure(t) => 
+          shutdown(t.toString)
+      }
+    } catch {
+      case NonFatal(t) => 
+        shutdown(t.toString)
+    }
+  }
+
+  def shutdown(report: String): Unit = {
+    system.terminate
+    Thread.sleep(5000) // allow actor system to gracefully shut down
+    logger.error(report)
+    logger.info(s"The TDAC server was not found at ${serverUrl}")
+    logger.info("Please check that the server is running")
+    logger.info("The Agent is shutting down")
+    System.exit(0)
+  }
+
+
+  /** Reset the TDAC server during processing
    * @param rs The current execution state of the agent
    */
   def resetServer(rs: RunState): Unit = {
-    logger.info(s"Resetting DAC server at: ${serverLocation}")
+    logger.info(s"Resetting TDAC server at: ${serverUrl}")
 
-    val request = HttpRequest(
-      uri = Uri(s"${serverLocation}/reset-model"),
-      entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
     try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/reset-model"),
+        entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
       futureReply onComplete {
         case Success(a) =>
-          logger.info(s"DAC server reset succeeded: ${response.status}")
+          logger.info(s"TDAC server reset succeeded: ${response.status}")
           val rs1 = RSM.addDacReset(rs)
           val rs2 = agent.writeOutput(rs1)
           agent.iteration(rs2)
         case Failure(t) =>
-          logger.info(s"DAC server reset failed: ${response.status}")
-          terminate(rs)
+          logger.info(s"TDAC server reset failed: ${response.status}")
+          agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
-        logger.info(s"Could not reset DAC server at: ${serverLocation}")
-        logger.error("Please ensure the DAC server is running")
-        terminate(rs)
+        logger.info(s"Could not reset TDAC server at: ${serverUrl}")
+        logger.error("Please ensure the TDAC server is running")
+        agent.handleError(rs)
     }
   }
 
 
-  /** call the DAC Server for classification of this DialogAgentMessage
+  /** call the TDAC Server for classification of this DialogAgentMessage
    * @param rs The current execution state of the agent
    * @param data Part of the input line, includes text to be classified
    * @param metadata Entire input line being processed by the agent
@@ -103,12 +121,12 @@ class DacClient (agent: DacAgent) extends LazyLogging {
         Option(data.extractions).getOrElse(Seq())
       )
     )
-    val request = HttpRequest(
-      uri = Uri(s"${serverLocation}/classify"),
-      entity = HttpEntity(ContentTypes.`application/json`,requestJson)
-    )
-    val future: Future[HttpResponse] = Http().singleRequest(request)
     try {
+      val request = HttpRequest(
+        uri = Uri(s"${serverUrl}/classify"),
+        entity = HttpEntity(ContentTypes.`application/json`,requestJson)
+      )
+      val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
       val futureClassification: Future[Classification] = response.entity.dataBytes
         .runReduce(_ ++ _)
@@ -129,31 +147,22 @@ class DacClient (agent: DacAgent) extends LazyLogging {
           val rs3 = agent.writeOutput(rs2)
           agent.iteration(rs3)
         case Failure(t) =>
-          logger.error(s"DAC Server classification failed: ${response.status}")
+          logger.error(s"TDAC Server classification failed: ${response.status}")
           logger.error(s"Input Line: ${rs.inputLine}")
           logger.error(s"Error: ${t.toString}")
-          terminate(rs)
+          agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Error processing: ${rs.inputLine}")
         logger.error(t.toString)
-        terminate(rs)
+        agent.handleError(rs)
     }
-  }
-
-  /** end reprocessing due to error
-   * @param rs Run state to be returned to agent
-   */
-  def terminate(rs: RunState): Unit = {
-    val rs1 = RSM.addError(rs)
-    val rs2 = RSM.terminate(rs1)
-    agent.iteration(rs2)
   }
 
   /** shutdow the actor system, allowing time for actors to finish */
   def shutdown(): Unit = {
-    logger.info("DAC client shutting down...")
+    logger.info("TDAC client shutting down...")
     Thread.sleep(5)
     system.terminate()
   }

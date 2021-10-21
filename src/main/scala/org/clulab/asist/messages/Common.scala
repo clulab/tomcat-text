@@ -13,7 +13,7 @@ package org.clulab.asist.messages
 case class CommonHeader(
   timestamp: String = null, // "2019-12-26T12:47:23.1234Z"
   message_type: String = null, // "event"
-  version: String = null // "1.0"
+  version: String = "1.1" // Should track the common header version in the Aptima Gitlab repo
 )
 
 /* This is not the complete CommonMsg struct, it only contains the fields we use

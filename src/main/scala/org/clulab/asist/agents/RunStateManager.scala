@@ -6,8 +6,6 @@ import java.io.PrintWriter
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 August
- *
  * Keep track of ongoing Dialog Agent input processing
  */
 
@@ -32,8 +30,8 @@ case class RunState(
   infoWrites: Int = 0, // VersionInfo messages written 
   lineReads: Int = 0,  // total lines read
   lineWrites: Int = 0, // total lines written
-  dacQueries: Int = 0, // DAC server responses
-  dacResets: Int = 0, // DAC resets 
+  tdacQueries: Int = 0, // TDAC server responses
+  tdacResets: Int = 0, // TDAC resets 
   errors: Int = 0,  // errors and exceptions encountered
   terminated: Boolean = false // set true to halt processing
 )
@@ -126,7 +124,6 @@ trait RunStateManager extends LazyLogging {
     val logs = MetadataLogger.logMetadata(topic, timestamp, s.metadataLogs)
     setMetadataLogs(s, logs)
   }
-
   // End processing
   def terminate(s: RunState): RunState = s.copy(terminated = true)
 
@@ -138,8 +135,8 @@ trait RunStateManager extends LazyLogging {
     "DialogAgent lines reprocessed: %d".format(s.reprocessed),
     "DialogAgent lines recovered:   %d".format(s.recovered),
     "VersionInfo lines written:     %d".format(s.infoWrites),
-    "DAC server resets:             %d".format(s.dacResets),
-    "DAC server classifications:    %d".format(s.dacQueries),
+    "TDAC server resets:            %d".format(s.tdacResets),
+    "TDAC server classifications:   %d".format(s.tdacQueries),
     "Processing errors              %d".format(s.errors)
   )
 }

@@ -57,14 +57,17 @@ class MessageBusClient(
 
   // Report status of our connection to the Message Bus
   if(subscriber.isConnected && publisher.isConnected) {
-    logger.info("Connected to MQTT broker at %s".format(uri))
-    logger.info("Subscribed to: %s".format(subscriptions.mkString(", ")))
-    logger.info("Publishing on: %s".format(publications.mkString(", ")))
-    logger.info("Running.")
+    val subs = subscriptions.mkString(", ")
+    val pubs = publications.mkString(", ")
+    logger.info(s"Message Bus URI: ${uri}")
+    logger.info(s"Subscriptions: ${subs}")
+    logger.info(s"Publications: ${pubs}")
+    logger.info("Connected to Message Bus.")
   } else {
-    logger.error("Could not connect to MQTT broker at %s".format(uri))
+    logger.error(s"Could not connect to Message Bus at ${uri}")
     logger.error("Please check that the broker is running.")
-    System.exit(1)
+    logger.error("The Agent is shutting down.")
+    System.exit(0)
   }
 
   /** Publish a MQTT message to one topic

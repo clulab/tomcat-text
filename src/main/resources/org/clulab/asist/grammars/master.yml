@@ -61,11 +61,12 @@ rules:
   - import: org/clulab/asist/grammars/actions.yml
     vars:
       rulepriority: "8"
+      genericpriority: "9"
 
   # Extract the planning terms, COMMENTED OUT WHILE FILE IS EMPTY
-  #- import: org/clulab/asist/grammars/planning.yml
-  #  vars:
-  #    rulepriority: "5"
+  - import: org/clulab/asist/grammars/planning.yml
+    vars:
+      rulepriority: "10+"
 
   # Extract the complex events, COMMENTED OUT WHILE FILE IS EMPTY
   #- import: org/clulab/asist/grammars/complex_actions.yml

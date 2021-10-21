@@ -5,7 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
 import org.clulab.asist.messages._
-import org.clulab.asist.RunDialogAgent
+import org.clulab.asist.apps.RunDialogAgent
 import org.clulab.utils.LocalFileUtils
 import org.json4s.jackson.Serialization.{read, write}
 
@@ -16,8 +16,6 @@ import scala.util.{Failure, Success}
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
- *
- * Updated:  2021 July
  *
  * Process a file or the first level of a directory of files
  *
@@ -32,8 +30,7 @@ import scala.util.{Failure, Success}
 
 class DialogAgentFile(
   val inputFilename: String = "",
-  val outputFilename: String = "",
-  override val args: DialogAgentArgs = new DialogAgentArgs
+  val outputFilename: String = ""
 ) extends DialogAgent with LazyLogging {
 
   logger.info(s"DialogAgentFile version ${dialogAgentVersion}")

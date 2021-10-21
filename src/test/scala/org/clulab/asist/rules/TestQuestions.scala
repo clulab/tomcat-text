@@ -59,7 +59,7 @@ class TestQuestions extends BaseTest {
 
     val that = DesiredMention("DemPron", "that")
     val there = DesiredMention("Deictic", "there")
-    val plan = DesiredMention("Plan", "plan")  // fixme: one day these should be a proper label in the taxonomy
+    val plan = DesiredMention("PlanLanguage", "plan")
     //val q1 = DesiredMention("Question", "What's that over there", Map("topic" -> Seq(that), "location" -> Seq(there)))
     val q2 = DesiredMention("Question", "What is the plan", Map("topic" -> Seq(plan)))
     val q3 = DesiredMention("Question", "What is that", Map("topic" -> Seq(that)))

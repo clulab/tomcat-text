@@ -25,8 +25,6 @@ import scala.util.{Failure, Success}
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Updated:  2021 August
- *
  * Reprocess metadata JSON files by reading each line as a JValue and then 
  * processing according to the topic field.  Lines with topics not addressed
  * below are copied to the output file.
@@ -58,12 +56,14 @@ import scala.util.{Failure, Success}
 class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
-  override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent(args)
-    with DacAgent
-    with LazyLogging {
+  val ta3Version: Option[Int] = None,
+  val tdacUrl: Option[String] = None,
+) extends TdacAgent(tdacUrl) with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
+
+  // check the TDAC server connection
+  tdacInit
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -71,10 +71,6 @@ class DialogAgentReprocessor (
 
   // json
   implicit val formats = org.json4s.DefaultFormats
-
-  // Dialog Act Classification.  No instantiation if not used.
-  val dacClient: Option[DacClient] = 
-    if(withClassifications) Some (new DacClient(this)) else None
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
@@ -207,10 +203,10 @@ class DialogAgentReprocessor (
       val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
-      if(withClassifications) 
-        dacClient.foreach(_.resetServer(rs2))
-      else
-       finishIteration(rs2)
+      tdacClient match {
+        case Some(tc: TdacClient) => tc.resetServer(rs2)
+        case None => finishIteration(rs2)
+      }
     } else {
       // if not a trial start just transcribe the input line
       val rs1 = RSM.setOutputLine(rs, rs.inputLine)
@@ -247,16 +243,16 @@ class DialogAgentReprocessor (
       case dataJObject: JObject => 
         val data = dataJObject.extract[DialogAgentMessageData]
         val newData = data.copy(extractions = getExtractions(data.text))
-        if(withClassifications) dacClient.foreach(
-          _.runClassification(rs, newData, metadataJValue)
-        )
-        else {
-          val newMetadata = metadataJValue.replace(
-            "data"::Nil,
-            Extraction.decompose(newData)
-          )
-          val rs1 = RSM.setOutputLine(rs, write(newMetadata))
-          finishIteration(rs1)
+        tdacClient match {
+          case Some(tc: TdacClient) => 
+            tc.runClassification(rs, newData, metadataJValue)
+          case None => 
+            val newMetadata = metadataJValue.replace(
+              "data"::Nil,
+              Extraction.decompose(newData)
+            )
+            val rs1 = RSM.setOutputLine(rs, write(newMetadata))
+            finishIteration(rs1)
         }
       case JNothing =>
         reprocessDialogAgentError(rs, metadataJValue)
@@ -281,11 +277,12 @@ class DialogAgentReprocessor (
         }
         val rs1 = RSM.addRecovered(rs)
         val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
-        if(withClassifications) dacClient.foreach(
-          _.runClassification(rs2, data, newMetadata)
-        ) else {
-          val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
-          finishIteration(rs3)
+        tdacClient match {
+          case Some(tc: TdacClient) => 
+            tc.runClassification(rs2, data, newMetadata)
+          case None =>
+            val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
+            finishIteration(rs3)
         }
       case _ =>
         reportProblem(rs, "Expected error/data field not found in metadata")
@@ -346,11 +343,12 @@ class DialogAgentReprocessor (
    * @param rs: State of execution at current iteration
    */
   override def iteration(rs: RunState): Unit = {
-    // this can be set for instance if we lose contact with the DAC server
+    // this can be set for instance if we lose contact with the TDAC server
     if(rs.terminated) {
       logger.info("File processing terminated.")
       finish(rs)
     }
+   
     // if we have another line, run it.
     else if(rs.lineIterator.hasNext) {
       val rs1 = RSM.addLineRead(rs)
@@ -390,12 +388,20 @@ class DialogAgentReprocessor (
     }
   }
 
+  /** Handle an error in processing
+   * @param rs: State of execution at current iteration
+   */
+  override def handleError(rs: RunState) {
+    val rs1 = RSM.addError(rs)
+    iteration(rs1)
+  }
+
   /** Graceful agent shutdown
    * @param rs: State of execution at current iteration
    */
   def finish(rs: RunState) {
     system.terminate()
-    dacClient.foreach(_.shutdown)
+    tdacClient.foreach(_.shutdown)
     finalReport(rs)
   }
 

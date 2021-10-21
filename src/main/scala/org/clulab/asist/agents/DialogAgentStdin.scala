@@ -5,16 +5,12 @@ import java.util.Scanner
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
- *
  *  An interactive Dialog Agent that will return extractions for text entered
  *  on the command line
  *
  */
 
-class DialogAgentStdin (
-  override val args: DialogAgentArgs = new DialogAgentArgs
-) extends DialogAgent { 
+class DialogAgentStdin extends DialogAgent { 
 
   println(s"\nRunning Dialog Agent stdin extractor version ${dialogAgentVersion}")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")
