@@ -12,7 +12,7 @@ import org.clulab.odin.Mention
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write, writePretty}
+import org.json4s.jackson.Serialization.{read, write}
 import org.json4s.JField
 import spray.json.DefaultJsonProtocol._
 import spray.json.JsonParser
@@ -35,7 +35,6 @@ class DialogAgent (
 ) extends LazyLogging {
 
   private val config: Config = ConfigFactory.load()
-  private val pretty: Boolean = config.getBoolean("DialogAgent.pretty_json")
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = config.getString("DialogAgent.msgSource") 
@@ -62,18 +61,15 @@ class DialogAgent (
     topicPubVersionInfo
   )
 
-  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = {
-    if (pretty) {
-      writePretty(a)
-    } else {
-      write(a)
-    }
-  }
-
   // Create the engine and run it to get lazy init out of the way 
   logger.info("Initializing Extractor (this may take a few seconds) ...")
   engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
+
+  /** Translate a structure to JSON text
+   *  @param a The structure to be translated
+   */
+  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
 
   /** Create a CommonHeader data structure 
    *  @param timestamp When this data was created
