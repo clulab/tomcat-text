@@ -174,7 +174,7 @@ class DialogAgentMqtt(
     else finishJob  // no trial start
   } catch {
     case NonFatal(t) => 
-      logger.error(s"Could not parse: ${input.line}")
+      logger.error(s"Could not parse input from topic ${input.topic}: ${input.line}")
       finishJob
   } 
 
@@ -202,7 +202,7 @@ class DialogAgentMqtt(
     }
   } catch {
     case NonFatal(t) => 
-      logger.error(s"Could not parse: ${input.line}")
+      logger.error(s"Could not parse input from topic ${input.topic}: ${input.line}")
       finishJob
   } 
 }
