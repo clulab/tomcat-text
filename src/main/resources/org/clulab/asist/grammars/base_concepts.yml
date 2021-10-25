@@ -64,7 +64,7 @@ rules:
 
 
   - name: plan_base
-    label: Plan
+    label: PlanLanguage
     priority: ${ rulepriority }
     type: token
     pattern: |
