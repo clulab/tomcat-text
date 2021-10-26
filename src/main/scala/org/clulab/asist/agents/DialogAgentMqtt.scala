@@ -129,7 +129,7 @@ class DialogAgentMqtt(
     // progress and it is safe to start a new one.
     val noJobRunning = queue.isEmpty
 
-    // Place the nes messsage behind any others in the processing queue
+    // Place the new messsage behind any others in the processing queue
     enqueue(BusMessage(topic, text))
 
     // start new async job if none are running
