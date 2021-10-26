@@ -25,29 +25,27 @@ def sync_asist_data(dataset):
 
     os.makedirs(data_dir, exist_ok=True)
 
-
     extensions_to_exclude = {
         "sav",
         "pdf",
         "qsf",
         "mp4",
         "m4a",
-        "wav", # .wav files starting from study 2 onwards
-        "txt", # QC trial messages
-        "metadata", # from study 2 onwards
+        "wav",  # .wav files starting from study 2 onwards
+        "txt",  # QC trial messages
+        "metadata",  # from study 2 onwards
         "tsv",
         "png",
         "PNG",
         "xlsx",
         "zip",
         "csv",
-        "fov", # Extension for fov messages from study 1
+        "fov",  # Extension for fov messages from study 1
         "docx",
     }
 
     if gcs_dir != "study-1_2020.08":
         extensions_to_exclude.remove("metadata")
-
 
     # Construct a regex for gsutil rsync exclusion
     exclusion_regex = (
@@ -55,7 +53,13 @@ def sync_asist_data(dataset):
     )
 
     if gcs_dir == "study-2_2021.06":
-        exclusion_regex = exclusion_regex+"|.*FoV*"
+        exclusion_regex = (
+            exclusion_regex
+            + "|.*FoV*"
+            + "|.*Competency*"
+            + "|.*Training*"
+            + "|.*\.vtt$"
+        )
 
     run(
         [
@@ -80,11 +84,11 @@ if __name__ == "__main__":
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
 
-    help_text = "Dataset to sync. 1: Study 1, 2: Study 2 pilot, 3: Study 2 HSR data"
-
-    parser.add_argument(
-        "dataset", type=int, help=help_text, choices=(1, 2, 3)
+    help_text = (
+        "Dataset to sync. 1: Study 1, 2: Study 2 pilot, 3: Study 2 HSR data"
     )
+
+    parser.add_argument("dataset", type=int, help=help_text, choices=(1, 2, 3))
     args = parser.parse_args()
 
     # Study 1 GCS dir: study-1_2020.08
