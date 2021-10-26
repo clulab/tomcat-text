@@ -13,11 +13,11 @@ rules:
       [word=/(?i)(${ search_spec_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: evacuator
-      priority: ${ rulepriority }
-      label: Searcher
-      type: token
-      keep: true
-      pattern: |
+    priority: ${ rulepriority }
+    label: Searcher
+    type: token
+    keep: true
+    pattern: |
         [word=/(?i)(${ evacuator_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
   - name: medic
