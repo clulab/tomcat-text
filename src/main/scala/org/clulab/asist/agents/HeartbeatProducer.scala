@@ -24,23 +24,23 @@ import scala.language.postfixOps
 class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
 
   // Actor concurrency system
-  implicit val ec:ExecutionContext = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
+  private implicit val ec:ExecutionContext = ExecutionContext.global
+  private implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
   import system.dispatcher  // from var now in scope
 
   // An optional instance of a HeartbeatMessage that when defined will 
-  // be published with current timestamps
-  var heartbeatMessageMaybe: Option[HeartbeatMessage] = None
+  // be published with current timestamps. Setting this to None will stop
+  // the publication of heartbeat messages
+  private var heartbeatMessageMaybe: Option[HeartbeatMessage] = None
 
-  // Start the beat on a fixed delay interval. The heartbeat method will be
-  // called on the beat interval, always.  Whether or not a heartbeat message
-  // is published depends on whether it is defined.
-  val topicHeartbeat: String = agent.topicPubHeartbeat
-  val startDelaySeconds: Long = 0
-  val beatIntervalSeconds: Long = agent.config.getInt("DialogAgent.heartbeatSeconds")
+  // Start the beat on a fixed delay interval. The heartbeat message is 
+  // published only if defined.
+  private val topicHeartbeat: String = agent.topicPubHeartbeat
+  private val startSeconds: Long = 0
+  private val beatSeconds: Long = agent.config.getInt("DialogAgent.heartbeatSeconds")
   system.scheduler.scheduleWithFixedDelay(
-    startDelaySeconds seconds, 
-    beatIntervalSeconds seconds
+    startSeconds seconds, 
+    beatSeconds seconds
   ) {
     new Runnable {
       def run() = heartbeat
@@ -58,37 +58,41 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   }
 
   /** Stop producing heartbeat messages */
-  def stop(): Unit = {
+  def stop: Unit = {
     // setting this to None stops the publication of HeartbeatMessages
     heartbeatMessageMaybe = None
   }
 
   /** Will send a HeartbeatMessage if one is defined */
-  def heartbeat(): Unit = {
+  private def heartbeat: Unit = 
     heartbeatMessageMaybe.foreach(publishHeartbeatMessage(_))
-  }
 
-  /** publish a HeartbeatMessage on the Message Bus
+  /** Return a string representing the current time */
+  private def now: String = Clock.systemUTC.instant.toString
+
+  /** publish the HeartbeatMessage with current time to the Message Bus
    *  @param hm A heartbeat message with Testbed Parameters
    */
-  def publishHeartbeatMessage(hm: HeartbeatMessage): Unit = {
-    logger.info("publishHeartbeatMessage")
-    // We send the same HeartbeatMessage every time, all that changes
-    // is the timestamps
-    val timestamp = Clock.systemUTC.instant.toString
-    val currentHeartbeatMessage = HeartbeatMessage(
+  private def publishHeartbeatMessage(hm: HeartbeatMessage): Unit = 
+    agent.publish(topicHeartbeat, agent.writeJson(copyHeartbeatMessage(hm, now)))
+
+  /** create a copy of the heartbeat message new timestamps
+   *  @param hm The HeartbeatMessage to copy
+   *  @param timestamp the new timestamp
+   */
+  private def copyHeartbeatMessage(
+    hm: HeartbeatMessage, 
+    timestamp: String
+  ): HeartbeatMessage = HeartbeatMessage(
       hm.header.copy(timestamp = timestamp),
       hm.msg.copy(timestamp = timestamp),
       hm.data
     )
 
-    agent.publish(topicHeartbeat, agent.writeJson(currentHeartbeatMessage))
-  }
-
   /** Create a HeartbeatMessage with Testbed parameters
    *  @param tm Trial start message from the Testbed
    */
-  def createHeartbeatMessage(
+  private def createHeartbeatMessage(
     tm: TrialMessage
   ): HeartbeatMessage = HeartbeatMessage(
     CommonHeader(
