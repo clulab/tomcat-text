@@ -76,9 +76,9 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   private def publishHeartbeatMessage(hm: HeartbeatMessage): Unit = 
     agent.publish(topicHeartbeat, agent.writeJson(copyHeartbeatMessage(hm, now)))
 
-  /** create a copy of the heartbeat message new timestamps
+  /** return a copy of the heartbeat message with replaced timestamps
    *  @param hm The HeartbeatMessage to copy
-   *  @param timestamp the new timestamp
+   *  @param timestamp the new timestamp to use
    */
   private def copyHeartbeatMessage(
     hm: HeartbeatMessage, 
