@@ -34,20 +34,21 @@ class DialogAgent (
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
-  private val config: Config = ConfigFactory.load()
+  val config: Config = ConfigFactory.load()
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = config.getString("DialogAgent.msgSource") 
   val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
   val dialogAgentVersion = BuildInfo.version
 
-  // metadata topics
+  // Message Bus topics
   val topicSubChat = "minecraft/chat"
   val topicSubUazAsr = "agent/asr/final"
   val topicSubAptimaAsr = "status/asistdataingester/userspeech"
   val topicSubTrial = "trial"
   val topicPubDialogAgent = config.getString("DialogAgent.outputTopic")
   val topicPubVersionInfo = config.getString("DialogAgent.versionInfoTopic")
+  val topicPubHeartbeat = config.getString("DialogAgent.heartbeatTopic")
 
   val subscriptions = List(
     topicSubChat,
@@ -58,7 +59,8 @@ class DialogAgent (
 
   val publications = List(
     topicPubDialogAgent,
-    topicPubVersionInfo
+    topicPubVersionInfo,
+    topicPubHeartbeat
   )
 
   // Create the engine and run it to get lazy init out of the way 
