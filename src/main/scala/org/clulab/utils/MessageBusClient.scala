@@ -1,6 +1,5 @@
 package org.clulab.utils
 
-//import java.net.ConnectException
 import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
@@ -15,19 +14,20 @@ import scala.util.control.NonFatal
  * Simplified subscription (read) and publication (write) to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
+ */
+
+/** extend this trait to use the client */
+trait MessageBusClientListener {
+  def messageArrived(topic: String, json: String): Unit
+}
+
+/** A client that manages publishing and subscribing to the Message Bus
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
  * @param subscriptions MQTT topics from which messages to process are read.
  * @param publications MQTT topic for publishing processed messages
  * @param listener A MessageBusClientListener that will process messages
  */
-
-// extend this in your message bus communicator class
-trait MessageBusClientListener {
-  def messageArrived(topic: String, json: String): Unit
-}
-
-// instantiate one of these in your message bus communicator class
 class MessageBusClient(
   val host: String = "",
   val port: String = "",
