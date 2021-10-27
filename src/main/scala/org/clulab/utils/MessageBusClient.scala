@@ -1,6 +1,5 @@
 package org.clulab.utils
 
-//import java.net.ConnectException
 import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.paho.client.mqttv3._
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
@@ -15,19 +14,20 @@ import scala.util.control.NonFatal
  * Simplified subscription (read) and publication (write) to message bus topics
  * Based on the Eclipse Paho MQTT API: www.eclipse.org/paho/files/javadoc
  *
+ */
+
+/** Classes extending this trait can create an instance of the client */
+trait MessageBusClientListener {
+  def messageArrived(topic: String, json: String): Unit
+}
+
+/** A client that manages publishing and subscribing to the Message Bus
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
  * @param subscriptions MQTT topics from which messages to process are read.
  * @param publications MQTT topic for publishing processed messages
  * @param listener A MessageBusClientListener that will process messages
  */
-
-// extend this in your message bus communicator class
-trait MessageBusClientListener {
-  def messageArrived(topic: String, json: String): Unit
-}
-
-// instantiate one of these in your message bus communicator class
 class MessageBusClient(
   val host: String = "",
   val port: String = "",
@@ -38,10 +38,16 @@ class MessageBusClient(
 
   val uri = "tcp://%s:%s".format(host,port)
   val qos = 2 // highest quality of service, send msg exactly once.
-  val publisher: MqttClient = 
-    new MqttClient(uri, "dialog_agent_subscriber", new MemoryPersistence()) 
-  val subscriber: MqttAsyncClient = 
-    new MqttAsyncClient(uri,"dialog_agent_publisher", new MemoryPersistence())
+  val publisher: MqttClient = new MqttClient(
+    uri, 
+    "dialog_agent_subscriber", 
+    new MemoryPersistence()
+  ) 
+  val subscriber: MqttAsyncClient = new MqttAsyncClient(
+    uri,
+    "dialog_agent_publisher", 
+    new MemoryPersistence()
+  )
 
   // Try to connect to the Message Bus
   try {
@@ -51,18 +57,16 @@ class MessageBusClient(
     subscriber.setCallback(this)
   }
   catch {
-//    case e: ConnectException => logger.error("Could not connect to server at %s".format(uri))
-    case NonFatal(t) => logger.error("Error: %s".format(t))
+    case NonFatal(t) => 
+      logger.error("Could not connect to Message Bus at %s".format(uri))
+      logger.error("Error: %s".format(t))
   }
 
   // Report status of our connection to the Message Bus
   if(subscriber.isConnected && publisher.isConnected) {
-    val subs = subscriptions.mkString(", ")
-    val pubs = publications.mkString(", ")
-    logger.info(s"Message Bus URI: ${uri}")
-    logger.info(s"Subscriptions: ${subs}")
-    logger.info(s"Publications: ${pubs}")
-    logger.info("Connected to Message Bus.")
+    subscriptions.foreach(s => logger.info(s"Subscribed to topic: ${s}"))
+    publications.foreach(p => logger.info(s"Publishing on topic: ${p}"))
+    logger.info(s"Connected to Message Bus at ${uri}")
   } else {
     logger.error(s"Could not connect to Message Bus at ${uri}")
     logger.error("Please check that the broker is running.")
@@ -77,10 +81,9 @@ class MessageBusClient(
   def publish(topic: String, text: String): Unit = try {
     publisher.publish(topic, new MqttMessage(text.getBytes))
   } catch {
-    case t: Throwable => { 
+    case NonFatal(t) =>
       logger.error("Could not publish to %s".format(topic))
       logger.error(t.toString)
-    }
   } 
 
   /** Called when the connection to the server is lost.
@@ -104,9 +107,8 @@ class MessageBusClient(
   override def messageArrived(topic: String, mm: MqttMessage): Unit = try {
     listener.messageArrived(topic, mm.toString)
   } catch {
-    case t: Throwable => {
+    case NonFatal(t) =>
       logger.error("Problem reading message on %s".format(topic))
       logger.error(t.toString)
-    }
   }
 }
