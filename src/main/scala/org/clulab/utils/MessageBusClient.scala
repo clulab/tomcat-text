@@ -16,7 +16,7 @@ import scala.util.control.NonFatal
  *
  */
 
-/** extend this trait to use the client */
+/** Classes extending this trait can create an instance of the client */
 trait MessageBusClientListener {
   def messageArrived(topic: String, json: String): Unit
 }
