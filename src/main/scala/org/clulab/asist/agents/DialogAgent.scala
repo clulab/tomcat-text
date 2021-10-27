@@ -68,7 +68,7 @@ class DialogAgent (
   engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
 
-  /** Translate a structure to JSON text
+  /** Translate a structure to single-line JSON text
    *  @param a The structure to be translated
    */
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
@@ -274,7 +274,6 @@ class DialogAgent (
       )
     }
   }
-
 
   /** Parse a string into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run
