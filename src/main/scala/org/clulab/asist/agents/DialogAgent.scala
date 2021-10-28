@@ -34,20 +34,21 @@ class DialogAgent (
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
-  private val config: Config = ConfigFactory.load()
+  val config: Config = ConfigFactory.load()
 
   val dialogAgentMessageType = "event"
   val dialogAgentSource = config.getString("DialogAgent.msgSource") 
   val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
   val dialogAgentVersion = BuildInfo.version
 
-  // metadata topics
+  // Message Bus topics
   val topicSubChat = "minecraft/chat"
   val topicSubUazAsr = "agent/asr/final"
   val topicSubAptimaAsr = "status/asistdataingester/userspeech"
   val topicSubTrial = "trial"
   val topicPubDialogAgent = config.getString("DialogAgent.outputTopic")
   val topicPubVersionInfo = config.getString("DialogAgent.versionInfoTopic")
+  val topicPubHeartbeat = config.getString("DialogAgent.heartbeatTopic")
 
   val subscriptions = List(
     topicSubChat,
@@ -58,7 +59,8 @@ class DialogAgent (
 
   val publications = List(
     topicPubDialogAgent,
-    topicPubVersionInfo
+    topicPubVersionInfo,
+    topicPubHeartbeat
   )
 
   // Create the engine and run it to get lazy init out of the way 
@@ -66,7 +68,7 @@ class DialogAgent (
   engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
 
-  /** Translate a structure to JSON text
+  /** Translate a structure to single-line JSON text
    *  @param a The structure to be translated
    */
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
@@ -272,7 +274,6 @@ class DialogAgent (
       )
     }
   }
-
 
   /** Parse a string into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run

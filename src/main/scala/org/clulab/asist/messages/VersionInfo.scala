@@ -111,6 +111,11 @@ object VersionInfo
         topic = agent.topicPubVersionInfo,
         message_type = "agent/versioninfo",
         sub_type = "versioninfo"
+      ),
+      VersionInfoDataMessageChannel(
+        topic = agent.topicPubHeartbeat,
+        message_type = "status",
+        sub_type = "heartbeat"
       )
     ),
     subscribes = List(

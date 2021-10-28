@@ -148,13 +148,13 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           agent.iteration(rs3)
         case Failure(t) =>
           logger.error(s"TDAC Server classification failed: ${response.status}")
-          logger.error(s"Input Line: ${rs.inputLine}")
+          logger.error(s"Input Text: ${rs.inputText}")
           logger.error(s"Error: ${t.toString}")
           agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
-        logger.error(s"Error processing: ${rs.inputLine}")
+        logger.error(s"Error processing: ${rs.inputText}")
         logger.error(t.toString)
         agent.handleError(rs)
     }

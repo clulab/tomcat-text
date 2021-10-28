@@ -33,8 +33,8 @@ import scala.util.{Failure, Success}
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
+ * @param tdacUrlOpt TDAC server URL and port, optional
  */
-
 
 class DialogAgentMqtt(
   val host: String = "",
@@ -44,21 +44,24 @@ class DialogAgentMqtt(
     with LazyLogging
     with MessageBusClientListener { 
 
+  // A single Message Bus message
   case class BusMessage (
     topic: String,
-    line: String
+    text: String // may contain newlines
   )
 
-  private val config: Config = ConfigFactory.load()
   logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
 
-  // actors
-  implicit val ec = ExecutionContext.global
+  // Actor concurrency system
+  implicit val ec:ExecutionContext = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
+
+  // Testbed heartbeat
+  val heartbeatProducer = new HeartbeatProducer(this)
 
   val source_type = "message_bus"
 
-  // enqueue messages if they're coming in too fast.
+  // enqueue messages from the bus if they're coming in too fast.
   val queue: Queue[BusMessage] = new Queue 
 
   logger.info("Initializing Message Bus connection...")
@@ -72,9 +75,7 @@ class DialogAgentMqtt(
     this
   )
 
-
   tdacInit
-
 
   /** Lines to be written to the MessageBus
    * @param rs The runState sent with the orignal message to the TDAC client
@@ -84,7 +85,7 @@ class DialogAgentMqtt(
     rs: RunState
   ): RunState = rs.outputLines match {
     case line::tail =>
-      writeToMessageBus(rs.outputTopic, line)
+      publish(rs.outputTopic, line)
       val rs1 = RSM.addLineWrite(rs)
       val rs2 = RSM.setOutputLines(rs1, tail)
       writeOutput(rs2)
@@ -108,8 +109,11 @@ class DialogAgentMqtt(
 
   override def handleError(rs: RunState): Unit = finishJob
 
-  /** provided so we can overload it in a test class */
-  def writeToMessageBus(
+  /** Write to the Message Bus
+   * @param topic:  The message bus topic on which to publish the message
+   * @param text:  A JSON message structure
+   */
+  def publish(
     topic: String,
     text: String
   ): Unit = {
@@ -152,27 +156,38 @@ class DialogAgentMqtt(
    * @param input: Message bus traffic with topic and text
    */
   def processTrialMessage(input: BusMessage): Unit = try {
-    val tm = read[TrialMessage](input.line)
-    if(tm.msg.sub_type == "start") {
-      val currentTimestamp = Clock.systemUTC.instant.toString
-      val versionInfo = VersionInfo(this, tm, currentTimestamp)
-      val outputJson = write(versionInfo)
-      tdacClient match {
-        case Some(dc: TdacClient) =>
-          val rs1 = RSM.setInputTopic(new RunState, input.topic)
-          val rs2 = RSM.setInputLine(rs1, input.line)
-          val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
-          val rs4 = RSM.setOutputLine(rs3, outputJson)
-          dc.resetServer(rs4)
-        case None =>
-          writeToMessageBus(topicPubVersionInfo, outputJson)
-          finishJob  // no TDAC 
-      }
+    val trialMessage = read[TrialMessage](input.text)
+    trialMessage.msg.sub_type match {
+
+      // trial start message, reset the TDAC and start heartbeat
+      case "start" =>
+        heartbeatProducer.start(trialMessage)
+        val currentTimestamp = Clock.systemUTC.instant.toString
+        val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
+        val outputJson = write(versionInfo)
+        tdacClient match {
+          case Some(tc: TdacClient) =>
+            val rs1 = RSM.setInputTopic(new RunState, input.topic)
+            val rs2 = RSM.setInputText(rs1, input.text)
+            val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
+            val rs4 = RSM.setOutputLine(rs3, outputJson)
+            tc.resetServer(rs4)
+          case None =>  // no TDAC
+            publish(topicPubVersionInfo, outputJson)
+            finishJob 
+        }
+
+      // trial stop message, stop heartbeat
+      case "stop" =>
+        heartbeatProducer.stop 
+        finishJob
+
+      // other trial messages 
+      case _ => finishJob 
     }
-    else finishJob  // no trial start
   } catch {
     case NonFatal(t) => 
-      logger.error(s"Could not parse input from topic ${input.topic}: ${input.line}")
+      reportError(input, t.toString)
       finishJob
   } 
 
@@ -184,23 +199,33 @@ class DialogAgentMqtt(
       source_type,
       input.topic,
       input.topic,
-      read[Metadata](input.line)
+      read[Metadata](input.text)
     )
     tdacClient match {
-      case Some(dc: TdacClient) =>
-        val metadataJValue = parse(input.line)
+      case Some(tc: TdacClient) =>
+        val metadataJValue = parse(input.text)
         val rs1 = RSM.setInputTopic(new RunState, input.topic)
-        val rs2 = RSM.setInputLine(rs1, input.line)
+        val rs2 = RSM.setInputText(rs1, input.text)
         val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
-        dc.runClassification(rs3, message.data, metadataJValue)
-      case None => 
+        tc.runClassification(rs3, message.data, metadataJValue)
+      case None =>  // no TDAC
         val outputJson = write(message)
-        writeToMessageBus(topicPubDialogAgent, outputJson)
+        publish(topicPubDialogAgent, outputJson)
         finishJob
     }
   } catch {
     case NonFatal(t) => 
-      logger.error(s"Could not parse input from topic ${input.topic}: ${input.line}")
+      reportError(input, t.toString)
       finishJob
   } 
+
+  /** Report an error in parsing a message
+   *  @param input The message that led to the problem
+   *  @param t The problem
+   */
+  def reportError(input: BusMessage, report: String): Unit = {
+    val preamble = "Could not parse input text"
+    logger.error(s"${preamble} from topic ${input.topic}: ${input.text}")
+    logger.error(report)
+  }
 }
