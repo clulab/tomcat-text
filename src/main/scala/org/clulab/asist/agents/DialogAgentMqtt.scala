@@ -33,6 +33,7 @@ import scala.util.{Failure, Success}
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
+ * @param tdacUrlOpt TDAC server URL and port, optional
  */
 
 class DialogAgentMqtt(
@@ -46,7 +47,7 @@ class DialogAgentMqtt(
   // A single Message Bus message
   case class BusMessage (
     topic: String,
-    line: String // may contain newlines
+    text: String // may contain newlines
   )
 
   logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
@@ -155,7 +156,7 @@ class DialogAgentMqtt(
    * @param input: Message bus traffic with topic and text
    */
   def processTrialMessage(input: BusMessage): Unit = try {
-    val trialMessage = read[TrialMessage](input.line)
+    val trialMessage = read[TrialMessage](input.text)
     trialMessage.msg.sub_type match {
 
       // trial start message, reset the TDAC and start heartbeat
@@ -167,7 +168,7 @@ class DialogAgentMqtt(
         tdacClient match {
           case Some(tc: TdacClient) =>
             val rs1 = RSM.setInputTopic(new RunState, input.topic)
-            val rs2 = RSM.setInputLine(rs1, input.line)
+            val rs2 = RSM.setInputText(rs1, input.text)
             val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
             val rs4 = RSM.setOutputLine(rs3, outputJson)
             tc.resetServer(rs4)
@@ -198,16 +199,16 @@ class DialogAgentMqtt(
       source_type,
       input.topic,
       input.topic,
-      read[Metadata](input.line)
+      read[Metadata](input.text)
     )
     tdacClient match {
       case Some(tc: TdacClient) =>
-        val metadataJValue = parse(input.line)
+        val metadataJValue = parse(input.text)
         val rs1 = RSM.setInputTopic(new RunState, input.topic)
-        val rs2 = RSM.setInputLine(rs1, input.line)
+        val rs2 = RSM.setInputText(rs1, input.text)
         val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
         tc.runClassification(rs3, message.data, metadataJValue)
-      case None => 
+      case None =>  // no TDAC
         val outputJson = write(message)
         publish(topicPubDialogAgent, outputJson)
         finishJob
@@ -223,8 +224,8 @@ class DialogAgentMqtt(
    *  @param t The problem
    */
   def reportError(input: BusMessage, report: String): Unit = {
-    val preamble = "Could not parse input message"
-    logger.error(s"${preamble} from topic ${input.topic}: ${input.line}")
+    val preamble = "Could not parse input text"
+    logger.error(s"${preamble} from topic ${input.topic}: ${input.text}")
     logger.error(report)
   }
 }

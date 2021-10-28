@@ -152,7 +152,7 @@ class DialogAgentReprocessor (
    * @param rs State with input line loaded
    */
   def processLine(rs: RunState): Unit = {
-    readMetadataLookahead(rs.inputLine).topic match {
+    readMetadataLookahead(rs.inputText).topic match {
       case `topicSubTrial` => processTrialMetadata(rs)
       case `topicPubDialogAgent` => reprocessDialogAgentMetadata(rs)
       case `topicPubVersionInfo` => 
@@ -160,7 +160,7 @@ class DialogAgentReprocessor (
         finishIteration(rs)
       case _ => 
         // Trascribe Unhandled cases
-        val rs1 = RSM.setOutputLine(rs, rs.inputLine)
+        val rs1 = RSM.setOutputLine(rs, rs.inputText)
         finishIteration(rs1) 
     }
   }
@@ -170,7 +170,7 @@ class DialogAgentReprocessor (
    * @return The original line always, with VersionInfo if trial start
    */
   def processTrialMetadata(rs: RunState): Unit = try {
-    val trialMessage = read[TrialMessage](rs.inputLine)
+    val trialMessage = read[TrialMessage](rs.inputText)
 
     // If this is the start of a trial, write the input line and 
     // then follow with a VersionInfo message 
@@ -197,7 +197,7 @@ class DialogAgentReprocessor (
       val versionInfoJson = write(outputJValue)
 
       // output the original line and then the Version Info line
-      val rs1 = RSM.setOutputLines(rs, List(rs.inputLine, versionInfoJson))
+      val rs1 = RSM.setOutputLines(rs, List(rs.inputText, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
  
       tdacClient match {
@@ -206,7 +206,7 @@ class DialogAgentReprocessor (
       }
     } else {
       // if not a trial start just transcribe the input line
-      val rs1 = RSM.setOutputLine(rs, rs.inputLine)
+      val rs1 = RSM.setOutputLine(rs, rs.inputText)
       val rs2 = RSM.setOutputTopic(rs1, "")
       finishIteration(rs2)
     }
@@ -221,7 +221,7 @@ class DialogAgentReprocessor (
    */
   def reprocessDialogAgentMetadata(
     rs: RunState
-  ): Unit = parseJValue(rs.inputLine) match {
+  ): Unit = parseJValue(rs.inputText) match {
     case Some(metadataJValue: JValue) =>
       val rs1 = RSM.setOutputTopic(rs, topicPubDialogAgent)
       reprocessDialogAgentMessage(rs, metadataJValue)
@@ -346,10 +346,10 @@ class DialogAgentReprocessor (
       finish(rs)
     }
    
-    // if we have another line, run it.
+    // if we have another metadata line, run it.
     else if(rs.lineIterator.hasNext) {
       val rs1 = RSM.addLineRead(rs)
-      val rs2 = RSM.setInputLine(rs1, rs.lineIterator.next)
+      val rs2 = RSM.setInputText(rs1, rs.lineIterator.next)
       processLine(rs2)
     }
     else {
@@ -426,8 +426,8 @@ class DialogAgentReprocessor (
    * @param report: A description of what happened
    */
   def reportProblem(rs: RunState, report: String): Unit = {
-    logger.error(s"${report}: ${rs.inputLine}")
-    val rs1 = RSM.setOutputLine(rs, rs.inputLine)
+    logger.error(s"${report}: ${rs.inputText}")
+    val rs1 = RSM.setOutputLine(rs, rs.inputText)
     val rs2 = RSM.addError(rs1)
     finishIteration(rs2)
   }

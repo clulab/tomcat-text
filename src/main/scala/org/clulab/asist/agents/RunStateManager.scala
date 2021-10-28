@@ -15,7 +15,7 @@ case class RunState(
   fileWriter: Option[PrintWriter] = None,
 
   inputTopic: String = "",
-  inputLine: String = "",
+  inputText: String = "",
   outputTopic: String = "",
   outputLines: List[String] = List(),
 
@@ -66,10 +66,10 @@ trait RunStateManager extends LazyLogging {
     topic: String
   ): RunState = s.copy(outputTopic = topic)
 
-  def setInputLine(
+  def setInputText(
     s: RunState,
-    line: String
-  ): RunState = s.copy(inputLine = line)
+    text: String
+  ): RunState = s.copy(inputText = text)
 
   def setOutputLine(
     s: RunState, 
