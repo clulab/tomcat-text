@@ -49,7 +49,7 @@ case class HeartbeatMessageData(
 
 /** Contains the complete specification for a Heartbeat message */
 case class HeartbeatMessage (
-  header: CommonHeader = new CommonHeader("","",""),
+  header: CommonHeader = new CommonHeader("","status",""),
   msg: HeartbeatMessageMsg = new HeartbeatMessageMsg,
   data: HeartbeatMessageData = new HeartbeatMessageData
 ) 
