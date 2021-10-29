@@ -35,6 +35,8 @@ encouragement_triggers2: "job|done|work"
 
 engineer_triggers: "hazmat|engineer|heavy" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
 
+evacuator_triggers: "evacuator|evac|rescuer|savior"
+
 exist_triggers: "be"
 
 extinguish_triggers: "extinguish|put|stop"
