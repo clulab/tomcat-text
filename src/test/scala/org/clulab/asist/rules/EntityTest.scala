@@ -8,10 +8,8 @@ class EntityTest extends BaseTest {
     val doc = extractor.annotate("My guy where are the victims?")
     val mentions = extractor.extractFrom(doc)
 
-    val person2_mention = DesiredMention("Person", "guy")
     val victim_mention = DesiredMention("Victim", "victims")
 
-    testMention(mentions, person2_mention)
     testMention(mentions, victim_mention)
   }
 
