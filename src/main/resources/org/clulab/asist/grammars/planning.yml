@@ -16,6 +16,6 @@ rules:
     example: "I am going to save this guy."
     priority: ${ rulepriority }
     pattern: |
-      trigger = (?<= [tag=VBP & lemma=be]) [tag=VBG]
+      trigger = (?<= [tag=VBP & lemma=be]) [tag=VBG] (?! to @Location)
       agent: Entity = >/${agents}/
-      target: Action? = >/${objects_complements}/
+      target: Action = >/${objects_complements}/
