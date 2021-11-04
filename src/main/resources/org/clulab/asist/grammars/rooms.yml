@@ -5,7 +5,7 @@
 - name: storage_room_numb
   priority: ${ second_priority }
   label: StorageRoom
-  #type: token
+  example: "storage room Z"
   keep: true
   pattern: |
     trigger= [word=/(?i)storage/] [word=/(?i)room/]?
@@ -14,6 +14,7 @@
 - name: room_numbered
   priority: ${ second_priority }
   label: NumberedRoom
+  example: "room 2"
   keep: true
   pattern: |
     trigger = [lemma=/(?i)^room/]
