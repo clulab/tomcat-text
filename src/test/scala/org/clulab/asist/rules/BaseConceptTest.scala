@@ -32,5 +32,20 @@ class BaseConceptTest extends BaseTest {
     testMention(mentions, bravo_mention)
   }
 
+  passingTest should "Recognize numbered room and storage room" in {
+    val doc = extractor.annotate("Check storage room Z and room 2.")
+    val mentions = extractor.extractFrom(doc)
+
+    val roomTag_mention = DesiredMention("RoomTag", "Z")
+    val number_mention = DesiredMention("Number", "2")
+    val storageRoom_mention = DesiredMention("StorageRoom", "storage room Z",
+      Map("number" -> Seq(roomTag_mention)))
+    val numberedRoom_mention = DesiredMention("NumberedRoom", "room 2",
+      Map("number" -> Seq(number_mention)))
+
+    testMention(mentions, storageRoom_mention)
+    testMention(mentions, numberedRoom_mention)
+  }
+
 
 }
