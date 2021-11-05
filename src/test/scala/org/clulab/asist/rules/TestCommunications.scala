@@ -100,23 +100,4 @@ class TestCommunications extends BaseTest {
 
 
   }
-
-  passingTest should "parse instructions" in {
-    val text = "Come help me here!"
-    val mentions = extractor.extractFrom(text)
-    val action = DesiredMention("GenericAction", "help")
-    val inst = DesiredMention("Instruction", "Come help", Map("topic" -> Seq(action)))
-
-    testMention(mentions, inst)
-  }
-
-  passingTest should "parse instructions with a topic" in {
-    val text = "Help him save the victim!"
-    val mentions = extractor.extractFrom(text)
-    val victim = DesiredMention("Victim","victim")
-    val save = DesiredMention("Save", "save the victim", Map("target" -> Seq(victim)),Set(AGENT_OTHER))
-    val inst = DesiredMention("Instruction", "Help him save the victim", Map("topic" -> Seq(save)))
-
-    testMention(mentions, inst)
-  }
 }
