@@ -22,6 +22,7 @@ class BaseTest extends FlatSpec with Matchers {
   val AGENT_YOU: String = "Agent(You)"
   val AGENT_TEAM: String = "Agent(Team)"
   val AGENT_ENTITY: String = "Agent(Entity)"
+  val AGENT_OTHER: String = "Agent(Other)"
   val FUTURE_TENSE: String = "Tense(future)"
   val PAST_TENSE: String = "Tense(past)"
 
