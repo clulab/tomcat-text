@@ -6,20 +6,16 @@ class TestPlanning extends BaseTest {
 
   behavior of "AsistEngine"
 
- /*
-   // Target: planning
-   passingTest should "Parse planning tokens properly" in {
+  passingTest should "Capture planning events" in {
+    val text =  "I'm going to save the victim."
+    val mentions = extractor.extractFrom(text)
 
-    val doc = extractor.annotate("Before that, we should continue.")
-    val mentions = extractor.extractFrom(doc)
 
-    val planning_mention = DesiredMention("Planning", "Before")
-    val team_mention = DesiredMention("Team", "we")
-    val precedence_mention = DesiredMention("Precedence", "Before")
+    val victim_men = DesiredMention("Victim", "victim")
+    val save_men = DesiredMention("Save", "save the victim", Map("target" -> Seq(victim_men)), Set(FUTURE_TENSE,AGENT_SELF))
+    val plan_men = DesiredMention("DeliberatePlan", "going to save the victim", Map("target" -> Seq(save_men)),Set(FUTURE_TENSE,AGENT_SELF))
 
-    testMention(mentions, planning_mention)
-    testMention(mentions, team_mention)
-    testMention(mentions, precedence_mention)
+
+    testMention(mentions, plan_men)
   }
-  */
 }
