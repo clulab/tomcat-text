@@ -12,7 +12,7 @@ package org.clulab.asist.messages
 
 case class CommonHeader(
   timestamp: String = null, // "2019-12-26T12:47:23.1234Z"
-  message_type: String = null, // "event"
+  message_type: String = null, // "agent"
   version: String = null // Dialog Agent version
 )
 

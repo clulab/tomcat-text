@@ -36,7 +36,7 @@ class DialogAgent (
 
   val config: Config = ConfigFactory.load()
 
-  val dialogAgentMessageType = "event"
+  val dialogAgentMessageType = "agent"
   val dialogAgentSource = config.getString("DialogAgent.msgSource") 
   val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
   val dialogAgentVersion = BuildInfo.version
