@@ -3,6 +3,7 @@ package org.clulab.asist.agents
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.util.ByteString
+import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
@@ -60,7 +61,7 @@ class DialogAgentReprocessor (
   val tdacUrl: Option[String] = None,
 ) extends TdacAgent(tdacUrl) with LazyLogging {
 
-  logger.info(s"DialogAgentReprocessor version ${dialogAgentVersion}")
+  logger.info(s"DialogAgentReprocessor version ${BuildInfo.version}")
 
   // check the TDAC server connection
   tdacInit
@@ -199,15 +200,16 @@ class DialogAgentReprocessor (
       // output the original line and then the Version Info line
       val rs1 = RSM.setOutputLines(rs, List(rs.inputText, versionInfoJson))
       val rs2 = RSM.setOutputTopic(rs1, topicPubVersionInfo)
+      val rs3 = RSM.addInfoWrite(rs2)
  
       tdacClient match {
-        case Some(tc: TdacClient) => tc.resetServer(rs2)
-        case None => finishIteration(rs2)
+        case Some(tc: TdacClient) => tc.resetServer(rs3)
+        case None => finishIteration(rs3)
       }
     } else {
       // if not a trial start just transcribe the input line
       val rs1 = RSM.setOutputLine(rs, rs.inputText)
-      val rs2 = RSM.setOutputTopic(rs1, "")
+      val rs2 = RSM.setOutputTopic(rs1, topicSubTrial)
       finishIteration(rs2)
     }
   } catch {
@@ -224,7 +226,8 @@ class DialogAgentReprocessor (
   ): Unit = parseJValue(rs.inputText) match {
     case Some(metadataJValue: JValue) =>
       val rs1 = RSM.setOutputTopic(rs, topicPubDialogAgent)
-      reprocessDialogAgentMessage(rs, metadataJValue)
+      val rs2 = RSM.addReprocessed(rs1)
+      reprocessDialogAgentMessage(rs2, metadataJValue)
     case _ => reportProblem(rs, "Could not parse metadata")
   }
 
@@ -273,13 +276,12 @@ class DialogAgentReprocessor (
           case ("error", _) => ("data", Extraction.decompose(data))
         }
         val rs1 = RSM.addRecovered(rs)
-        val rs2 = RSM.setOutputTopic(rs1, topicPubDialogAgent)
         tdacClient match {
           case Some(tc: TdacClient) => 
-            tc.runClassification(rs2, data, newMetadata)
+            tc.runClassification(rs1, data, newMetadata)
           case None =>
-            val rs3 = RSM.setOutputLine(rs2, write(newMetadata))
-            finishIteration(rs3)
+            val rs2 = RSM.setOutputLine(rs1, write(newMetadata))
+            finishIteration(rs2)
         }
       case _ =>
         reportProblem(rs, "Expected error/data field not found in metadata")
@@ -314,16 +316,9 @@ class DialogAgentReprocessor (
         rs.outputLines match {
           case line::tail =>
             fw.write(s"${line}\n")
-            val rs1 = rs.outputTopic match {
-              case `topicPubVersionInfo` => 
-                RSM.addInfoWrite(rs)
-              case `topicPubDialogAgent` => 
-                RSM.addReprocessed(rs)
-              case _ => rs
-            }
-            val rs2 = RSM.addLineWrite(rs1)
-            val rs3 = RSM.setOutputLines(rs2, tail)
-            writeOutput(rs3)
+            val rs1 = RSM.addLineWrite(rs)
+            val rs2 = RSM.setOutputLines(rs1, tail)
+            writeOutput(rs2)
           case _ => rs
         }
       } catch {

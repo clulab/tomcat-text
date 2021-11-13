@@ -1,10 +1,11 @@
 package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
-import com.typesafe.config.Config
 import akka.actor.ActorSystem
 import akka.http.scaladsl._
 import akka.http.scaladsl.model._
+import buildinfo.BuildInfo
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
@@ -18,6 +19,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
+
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -50,7 +52,7 @@ class DialogAgentMqtt(
     text: String // may contain newlines
   )
 
-  logger.info(s"DialogAgentMqtt version ${dialogAgentVersion}")
+  logger.info(s"DialogAgentMqtt version ${BuildInfo.version}")
 
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
@@ -161,7 +163,6 @@ class DialogAgentMqtt(
 
       // trial start message, reset the TDAC and start heartbeat
       case "start" =>
-        heartbeatProducer.start(trialMessage)
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
@@ -176,6 +177,7 @@ class DialogAgentMqtt(
             publish(topicPubVersionInfo, outputJson)
             finishJob 
         }
+        heartbeatProducer.start(trialMessage)
 
       // trial stop message, stop heartbeat
       case "stop" =>

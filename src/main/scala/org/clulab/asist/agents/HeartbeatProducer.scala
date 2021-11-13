@@ -1,6 +1,7 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
+import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
@@ -76,7 +77,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   private def publishHeartbeatMessage(hm: HeartbeatMessage): Unit = 
     agent.publish(topicHeartbeat, agent.writeJson(copyHeartbeatMessage(hm, now)))
 
-  /** return a copy of the heartbeat message with replaced timestamps
+  /** return a copy of the working copy with replaced timestamps
    *  @param hm The HeartbeatMessage to copy
    *  @param timestamp the new timestamp to use
    */
@@ -89,23 +90,22 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
       hm.data
     )
 
-  /** Create a HeartbeatMessage with Testbed parameters
+  /** TrialMessage based working copy
    *  @param tm Trial start message from the Testbed
    */
   private def createHeartbeatMessage(
     tm: TrialMessage
-  ): HeartbeatMessage = HeartbeatMessage(
-    CommonHeader(
-      timestamp = "",
-      message_type = "status",
-      version = agent.dialogAgentVersion
-    ),
-    HeartbeatMessageMsg(
-      timestamp = "",
-      version = tm.msg.version,
-      trial_id = tm.msg.trial_id,
-      experiment_id = tm.msg.experiment_id
-    ),
-    new HeartbeatMessageData
-  )
+  ): HeartbeatMessage = {
+    val hm = new HeartbeatMessage
+    hm.copy(
+      hm.header.copy(
+        version = tm.header.version
+      ),
+      hm.msg.copy(
+        trial_id = tm.msg.trial_id,
+        source = agent.dialogAgentSource,
+        experiment_id = tm.msg.experiment_id
+      )
+    )
+  }
 }
