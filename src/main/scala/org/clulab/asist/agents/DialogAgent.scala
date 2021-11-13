@@ -2,7 +2,6 @@ package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
 import org.clulab.processors.Document
-import buildinfo.BuildInfo
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
@@ -36,10 +35,9 @@ class DialogAgent (
 
   val config: Config = ConfigFactory.load()
 
-  val dialogAgentMessageType = "agent"
+  val dialogAgentMessageType = "event"
   val dialogAgentSource = config.getString("DialogAgent.msgSource") 
   val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
-  val dialogAgentVersion = BuildInfo.version
 
   // Message Bus topics
   val topicSubChat = "minecraft/chat"
@@ -73,22 +71,13 @@ class DialogAgent (
    */
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
 
-  /** Create a CommonHeader data structure 
-   *  @param timestamp When this data was created
-   */
-  def commonHeader(timestamp: String): CommonHeader = CommonHeader(
-    timestamp = timestamp,
-    message_type = dialogAgentMessageType
-  )
-
   /** Create a CommonMsg data structure 
    *  @param timestamp When this data was created
    */
   def commonMsg(timestamp: String): CommonMsg = CommonMsg(
     timestamp = timestamp,
     source = dialogAgentSource,
-    sub_type = dialogAgentSubType,
-    version = dialogAgentVersion,
+    sub_type = dialogAgentSubType
   )
 
   /**
@@ -211,14 +200,16 @@ class DialogAgent (
       case _ => null
     }
     DialogAgentMessage(
-      commonHeader(timestamp),
+      CommonHeader(
+        timestamp = timestamp,
+        message_type = dialogAgentMessageType
+      ),
       CommonMsg(
         experiment_id = metadata.msg.experiment_id,
         trial_id = metadata.msg.trial_id,
         timestamp = timestamp,
         source = dialogAgentSource,
         sub_type = dialogAgentSubType,
-        version = dialogAgentVersion,
         replay_root_id = metadata.msg.replay_root_id,
         replay_id = metadata.msg.replay_id
       ),
@@ -246,7 +237,10 @@ class DialogAgent (
   ): DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      commonHeader(timestamp),
+      CommonHeader(
+        timestamp = timestamp,
+        message_type = dialogAgentMessageType
+      ),  
       commonMsg(timestamp),
       dialogAgentMessageData(
         participant_id,

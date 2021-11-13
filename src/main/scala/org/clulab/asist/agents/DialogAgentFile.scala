@@ -1,5 +1,6 @@
 package org.clulab.asist.agents
 
+import buildinfo.BuildInfo
 import com.crowdscriber.caption.vttdissector.VttDissector
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
@@ -33,7 +34,7 @@ class DialogAgentFile(
   val outputFilename: String = ""
 ) extends DialogAgent with LazyLogging {
 
-  logger.info(s"DialogAgentFile version ${dialogAgentVersion}")
+  logger.info(s"DialogAgentFile version ${BuildInfo.version}")
 
   // screen input filenames for supported types
   val supported = List(".vtt", ".metadata")
