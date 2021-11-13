@@ -32,7 +32,7 @@ case class VersionInfoDataMessageChannel(
 /** Part of the Info class */
 case class VersionInfoData(
   agent_name: String = null,
-  owner: String = null,
+  owner: String = "University of Arizona",
   version: String = null,
   source: Seq[String] = List(),
   dependencies: Seq[String] = List(),
@@ -79,25 +79,27 @@ object VersionInfo
   val dataSource = 
     s"https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:${BuildInfo.version}"
 
-  // create a VersionInfo by copying some fields from the input CommonMsg
+  // create a VersionInfo by copying some fields from the input TrialMesssage
   def apply(
     agent: DialogAgent,
     trialMessage: TrialMessage,
     timestamp: String): VersionInfo = VersionInfo(
-      agent.commonHeader(timestamp),
+      new CommonHeader(
+        timestamp = timestamp,
+        message_type = "agent",
+        version = trialMessage.header.version
+      ),
       trialMessage.msg.copy(
         timestamp = timestamp,
         source = agent.dialogAgentSource,
         sub_type = "versioninfo",
-        version = agent.dialogAgentVersion,
+        version = BuildInfo.version
       ),
       data(agent)
     )
 
   def data(agent: DialogAgent): VersionInfoData = VersionInfoData(
-    agent_name = "tomcat_textAnalyzer",
-    owner = "University of Arizona",
-    version = agent.dialogAgentVersion,
+    agent_name = agent.dialogAgentSource,
     source = List(dataSource),
     dependencies = List(),
     config = List(),
@@ -109,7 +111,7 @@ object VersionInfo
       ),
       VersionInfoDataMessageChannel(
         topic = agent.topicPubVersionInfo,
-        message_type = "agent/versioninfo",
+        message_type = "agent",
         sub_type = "versioninfo"
       ),
       VersionInfoDataMessageChannel(

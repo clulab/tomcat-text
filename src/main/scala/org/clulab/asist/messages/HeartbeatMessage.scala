@@ -13,13 +13,13 @@ package org.clulab.asist.messages
  *   "header": {
  *     "timestamp": "2021-10-16T01:07:52.824Z",
  *     "message_type": "status",
- *     "version": "0.1"    // dialog agent version
+ *     "version": "0.1"    // current testbed version
  *   },
  *   "msg": {
  *     "timestamp": "2021-10-16T01:07:52.824Z",
  *     "source": "uaz_dialog_agent",
  *     "sub_type": "heartbeat",
- *     "version": "2.0.2021-10-15-spiral-1",  // testbed version
+ *     "version": 3.1.1 (or whatever the current dialog agent version is)
  *     "trial_id": "t",
  *     "experiment_id": "e"
  *   },
@@ -32,24 +32,15 @@ package org.clulab.asist.messages
  *
  */
 
-case class HeartbeatMessageMsg(
-  timestamp: String = "",
-  source: String = "uaz_dialog_agent",
-  sub_type: String = "heartbeat",
-  version: String = "", // Trial.data.testbed_version from Message bus
-  trial_id: String = "", // Trial.msg.trial_id from Message bus
-  experiment_id: String = "" // Trial.msg.experiment_id from Message bus
-)
-
 case class HeartbeatMessageData(
-  state: String = "ok",
-  active: Boolean = true,
+  state: String = "OK",
+  active: String = "true",
   status: String = "I am processing messages"
 )
 
 /** Contains the complete specification for a Heartbeat message */
 case class HeartbeatMessage (
-  header: CommonHeader = new CommonHeader("","status",""),
-  msg: HeartbeatMessageMsg = new HeartbeatMessageMsg,
+  header: CommonHeader = new CommonHeader(message_type = "status"),
+  msg: CommonMsg = new CommonMsg(sub_type = "heartbeat"),
   data: HeartbeatMessageData = new HeartbeatMessageData
 ) 

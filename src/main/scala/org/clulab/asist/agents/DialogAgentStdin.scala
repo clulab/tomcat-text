@@ -1,5 +1,6 @@
 package org.clulab.asist.agents
 
+import buildinfo.BuildInfo
 import java.util.Scanner
 
 /**
@@ -12,7 +13,7 @@ import java.util.Scanner
 
 class DialogAgentStdin extends DialogAgent { 
 
-  println(s"\nRunning Dialog Agent stdin extractor version ${dialogAgentVersion}")
+  println(s"\nRunning Dialog Agent stdin extractor version ${BuildInfo.version}")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")
 
   print("\n> ")
