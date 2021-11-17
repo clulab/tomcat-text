@@ -31,6 +31,9 @@ import scala.collection.immutable
 import scala.io.Source
 import scala.util.control.NonFatal
 
+import buildinfo.BuildInfo
+
+
 /** This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
   */
@@ -113,7 +116,7 @@ class HomeController @Inject() (cc: ControllerComponents)
         timestamp = timestamp,
         source = "tomcat_textAnalyzer",
         sub_type = "Event:dialogue_event",
-        version = agent.dialogAgentVersion,
+        version = BuildInfo.version,
         replay_root_id = "",
         replay_id = "",
       ),
