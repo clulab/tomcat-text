@@ -54,6 +54,16 @@ rules:
       topic: Concept = >nsubj
       location: Location? = >nsubj >/${positional_preps}/
 
+
+  - name: mannerquestion
+    example: "How are we going to do that?"
+    priority: ${ rulepriority }
+    label: HowQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] (?= [tag=/^V/])
+      topic: Action = <advmod
+
+
   - name: binary_question
     example: "Can you see the victim?"
     priority: ${ rulepriority }
