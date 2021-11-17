@@ -257,6 +257,7 @@ class TomcatActions() extends Actions with LazyLogging {
   }
 
   def hasSubjectVerbInversion(mention: EventMention): Boolean = {
+    // this method is used to determine whether SubjectVerbInversion is happening, useful for binary questions
     val trigger = mention.trigger
     val triggerStart = trigger.start
     val triggerIsVB = trigger.tags.exists(_.startsWith("V"))
@@ -275,10 +276,10 @@ class TomcatActions() extends Actions with LazyLogging {
     val leftMostAgentAttachment = if (actionAgents.isEmpty) 1000 else actionAgents.min
 
     val leftMostSubj = if (triggerIsVB) {
-      val outgoing = trigger.sentenceObj
+      val outgoing = trigger.sentenceObj //this is the sentence object of the trigger
         .dependencies.get
         .outgoingEdges
-        .slice(triggerStart, trigger.end)
+        .slice(triggerStart, trigger.end) //taking out the trigger itself
       outgoing.flatten
         .filter(_._2.startsWith("nsubj")) // only subjects
         .map(_._1) // get the dsts

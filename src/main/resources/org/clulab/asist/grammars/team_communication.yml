@@ -8,8 +8,10 @@ rules:
     example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$/]|to|[lemma=do]you|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
+
+#  \\todo: need to find a way to prevent cases like: "Water doesn't rise."
 
   - name: instruction_command_topic
     priority: ${ rulepriority }

@@ -84,6 +84,7 @@
             - QuestionParticle
             - LocationQuestion
             - YesNoQuestion
+            - HowQuestion
           - Plan:
               - ContingentPlan
               - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
