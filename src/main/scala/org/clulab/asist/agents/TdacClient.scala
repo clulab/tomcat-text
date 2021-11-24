@@ -163,10 +163,4 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         agent.handleError(rs)
     }
   }
-
-  /** shutdow the actor system, allowing time for actors to finish */
-  def shutdown(): Unit = {
-    logger.info("TDAC client shutting down...")
-    terminateActorSystem
-  }
 }
