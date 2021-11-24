@@ -32,6 +32,12 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   // json
   implicit val formats = org.json4s.DefaultFormats
 
+  /** Terminate the actor system */
+  def terminateActorSystem: Unit = {
+    system.terminate
+    Thread.sleep(5000) // allow actor system to gracefully shut down
+  }
+
   /** Reset the TDAC server outside of data processing
    */
   def initServer: Unit = {
@@ -59,15 +65,13 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   }
 
   def shutdown(report: String): Unit = {
-    system.terminate
-    Thread.sleep(5000) // allow actor system to gracefully shut down
     logger.error(report)
     logger.info(s"The TDAC server was not found at ${serverUrl}")
     logger.info("Please check that the server is running")
     logger.info("The Agent is shutting down")
+    terminateActorSystem
     System.exit(0)
   }
-
 
   /** Reset the TDAC server during processing
    * @param rs The current execution state of the agent
@@ -163,7 +167,6 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   /** shutdow the actor system, allowing time for actors to finish */
   def shutdown(): Unit = {
     logger.info("TDAC client shutting down...")
-    Thread.sleep(5000)
-    system.terminate()
+    terminateActorSystem
   }
 }
