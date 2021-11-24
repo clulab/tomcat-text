@@ -66,9 +66,9 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
 
   def shutdown(report: String): Unit = {
     logger.error(report)
-    logger.info(s"The TDAC server was not found at ${serverUrl}")
-    logger.info("Please check that the server is running")
-    logger.info("The Agent is shutting down")
+    logger.error(s"The TDAC server was not found at ${serverUrl}")
+    logger.error("Please check that the server is running")
+    logger.error("The Agent is shutting down")
     terminateActorSystem
     System.exit(0)
   }
@@ -96,17 +96,16 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           val rs2 = agent.writeOutput(rs1)
           agent.iteration(rs2)
         case Failure(t) =>
-          logger.info(s"TDAC server reset failed: ${response.status}")
+          logger.error(s"TDAC server reset failed: ${response.status}")
           agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
-        logger.info(s"Could not reset TDAC server at: ${serverUrl}")
+        logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
         agent.handleError(rs)
     }
   }
-
 
   /** call the TDAC Server for classification of this DialogAgentMessage
    * @param rs The current execution state of the agent
