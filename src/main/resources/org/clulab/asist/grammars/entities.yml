@@ -1,0 +1,257 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: person_detection
+    priority: ${ rulepriority }
+    label: Person
+    type: token
+    keep: false
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ person_triggers })\b/ & outgoing=compound]) |
+              [lemma=/(?i)^(${ person_triggers })\b/]+
+
+  - name: generic_person
+    priority: ${ rulepriority }
+    label: Person
+    type: token
+    keep: false
+    pattern: |
+      [word=/someone|anyone/]
+
+  - name: victim
+    priority: ${ rulepriority }
+    label: Victim
+    type: token
+    keep: true
+    pattern: |
+      (?<! [lemma=/no|critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/]
+
+  - name: critical_victim
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
+
+  - name: critical_solitary
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<=a|an|some) [word=/(?i)critical/]
+
+  - name: critical_injured_victim
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      critically injured [lemma=/(patient|victim|one)/]
+
+  - name: critical_victim_one
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical/] [lemma=/(?i)one/]
+
+  - name: regular_victim_one
+    priority: ${ rulepriority }
+    label: RegularVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/regular|normal/] [lemma=/one|victim/]
+
+  - name: no_victim_one
+    priority: ${ rulepriority }
+    label: NoVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/\bno\b/] [lemma=/\bone\b|victim/]
+
+
+
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: rubble
+      priority: ${ rulepriority }
+      label: Rubble
+      trigger: ${ rubble_triggers }
+
+  - import: org/clulab/asist/grammars/ent_template.yml
+    vars:
+      name: fire
+      priority: ${ rulepriority }
+      label: Fire
+      trigger: fire
+
+  - name: all_nps
+    priority: ${ rulepriority }
+    label: Concept
+    type: token
+    keep: false
+    pattern: |
+      [chunk=/B-NP/ & !tag=DT] [chunk=/I-NP/]*
+
+  - name: numbers
+    priority: ${ rulepriority }
+    label: Number
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD]
+
+  - name: room_tags #this is here to provide the storage rooms with their [A-Z] arguments
+    example: "storage room *Q*"
+    priority: ${ rulepriority }
+    label: RoomTag
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^\b[A-Z]\b/]
+
+  - name: deictic_detection
+    priority: ${ rulepriority }
+    label: Deictic
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^${ deixis_triggers }/] (?! [lemma=be]) # prevent "There is..."
+
+  # minecraft door switch, e.g.
+  - name: switch
+    priority: ${ rulepriority }
+    label: Switch
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
+
+  - name: self_token_capture
+    label: Self
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP/]
+
+  - name: you_token_capture
+    label: You
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^(${ you_triggers })$/ & tag=/PRP/]
+
+  - name: third_person_token_capture
+    label: Other
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^(he|him|she|her)/ & tag=/PRP/]
+
+  - name: we_token_capture
+    label: Team
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^(${ team_triggers })/ & tag=/PRP/]
+
+  - name: them_token_capture
+    label: Entity
+    examples: "it, they, them"
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^it\b|they|them/ & tag=/PRP/]
+
+  - name: green
+    label: Green
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(green)/]
+
+  - name: red
+    label: Red
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(red)/] | /RAD/
+
+  - name: blue
+    label: Blue
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(blue)/]
+
+  - name: yellow
+    label: Yellow
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^(yellow)/]
+
+  - name: question_particle
+    label: QuestionParticle
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [tag=/^W/]
+
+  - name: demonstrative_pronoun
+    priority: ${ rulepriority }
+    label: DemPron
+    type: token
+    keep: false
+    pattern: |
+      [word=/${ dem_pron_triggers }/]
+
+  - name: pro-form-etc
+    priority: ${ rulepriority }
+    label: Entity
+    type: token
+    keep: false
+    pattern: |
+      others | other (?! [tag=/^N|CD/]) | (?<= other) [tag=/CD|^N/]
+
+  - name: possesive_pronoun_my
+    priority: ${ rulepriority }
+    label: Self
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=/my/]
+
+  - name: possesive_pronoun_you
+    priority: ${ rulepriority }
+    label: You
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=/your/]
+
+  - name: possesive_pronoun_other
+    priority: ${ rulepriority }
+    label: Other
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=/his|her|their/]
+
+

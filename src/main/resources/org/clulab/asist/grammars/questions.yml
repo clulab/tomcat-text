@@ -1,0 +1,89 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  - name: location_question
+    example: "Where are they? Where is the victim?"
+    priority: ${ rulepriority }
+    label: LocationQuestion
+    pattern: |
+      trigger = [lemma=/(?i)^(${ where_triggers })/]
+      topic: Entity =
+        <advmod [lemma=be]
+        >/nsubj|dobj|nmod/ |
+        <advmod [lemma=be]
+        >/nsubj|dobj|nmod/
+        >dep |
+        <advmod [lemma=be]
+        <cop
+      location: Location? = >/${positional_preps}/
+# the second entity version is there so we can capture cases such as "where are you at green?" and extract green as the entity
+
+  - name: location_moving_question
+    example: "Where did you go?"
+    priority: ${ rulepriority }
+    label: LocationQuestion
+    pattern: |
+      trigger = [lemma=/(?i)^(${ where_triggers })/]
+      topic: Move = <advmod
+      location: Location? = >/${positional_preps}/
+
+  - name: information_gathering_question_that
+    example: "What is that? What is that in the library?"
+    priority: ${ rulepriority }
+    label: Question
+    pattern: |
+      trigger = @QuestionParticle (?= [lemma=be])
+      topic: Concept = <nsubj [lemma=/be|do/] >dep
+      location: Location? = <nsubj [lemma=/be|do/] >dep >/${positional_preps_+advmod}/
+
+  - name: information_gathering_question_that2
+    example: "What's that over there?"
+    priority: ${ rulepriority }
+    label: Question
+    pattern: |
+      trigger = @QuestionParticle (?= [lemma=be])
+      topic: Concept = >nsubj
+      location: Location? = >/${positional_preps_liberal+advmod}/
+
+  - name: information_gathering_question_clarification
+    example: "What is the plan?"
+    priority: ${ rulepriority }
+    label: Question
+    pattern: |
+      trigger = @QuestionParticle (?= [lemma=be])
+      topic: Concept = >nsubj
+      location: Location? = >nsubj >/${positional_preps}/
+
+
+  - name: mannerquestion
+    example: "How are we going to do that?"
+    priority: ${ rulepriority }
+    label: HowQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] (?= [tag=/^V|MD/])
+      topic: Action = <advmod
+
+
+  - name: binary_question
+    example: "Can you see the victim?"
+    priority: ${ rulepriority }
+    label: YesNoQuestion
+    action: requireSubjectVerbInversion
+    pattern: |
+      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^do|can|will|should|have|could|be/]
+      topic: Action = <aux
+      location: Location? = <aux >/${positional_preps_+advmod}/
+      agent: Entity? = <aux >/(${agents})/
+
+#leave this here so I can remember how to do these complex dependencies
+#      first_action: Action? =
+        # get to the second action, which is linked to the first
+#        <advmod
+        # traverse the link -- depending on the phrasing, can be any of these
+#        </ccomp|conj_and|dep/
+        #<conj_and
+        # optionally go to an embedded clause
+#        >/xcomp/?
+        # land on a verb
+#        [tag=/^V/]
+#      second_action: Action? = <advmod

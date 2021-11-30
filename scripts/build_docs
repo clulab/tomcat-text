@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Script to automatically generate extraction and rule schemas
+
+# Generate markdown documentation
+sbt "runMain org.clulab.asist.apps.RunGrammarDemo . /org/clulab/asist/grammars/master.yml"

@@ -1,0 +1,296 @@
+<View>
+  <Style>
+.dummy { display:none;}                         </Style>
+  <View className="dummy">
+    <Text name="num_utt" value="$audio_url_1"/>
+    <Text name="general_1" value="$audio_url_1"/>
+    <Text name="specific_1" value="$audio_url_1"/>
+    <Text name="general_2" value="$audio_url_1"/>
+    <Text name="specific_2" value="$audio_url_1"/>
+  </View>
+  <View className="transcription">
+    <Header name="transcription_header" value="Transcription:" size="2"/>
+    <Table name="transcription" value="$transcription_data">
+    </Table>
+  </View>
+  <View>
+    <Header name="h5" value="Number of utterances:" size="2"/>
+    <Choices name="visible1" toName="num_utt" choice="single">
+      <Choice name="c" value="1"/>
+      <Choice name="d" value="2"/>
+    </Choices>
+  </View>
+  <View className="audio_waveforms">
+    <Header name="audio_header" value="Audio:" size="2"/>
+    <Choices name="visible" toName="transcription" choice="multiple">
+      <Choice name="c1" value="1"/>
+      <Choice name="c2" value="2"/>
+      <Choice name="c3" value="3"/>
+    </Choices>
+    <View visibleWhen="choice-selected" whenTagName="visible" whenChoiceValue="1">
+      <Header name="participant_1_header" value="Participant 1:" size="3"/>
+      <AudioPlus name="audio_participant_1" value="$audio_url_1"/>
+    </View>
+    <View visibleWhen="choice-selected" whenTagName="visible" whenChoiceValue="2">
+      <Header name="participant_2_header" value="Participant 2:" size="3"/>
+      <AudioPlus name="audio_participant_2" value="$audio_url_2"/>
+    </View>
+    <View visibleWhen="choice-selected" whenTagName="visible" whenChoiceValue="3">
+      <Header name="participant_3_header" value="Participant 3:" size="3"/>
+      <AudioPlus name="audio_participant_3" value="$audio_url_3"/>
+    </View>
+  </View>
+  <Style>
+.label_group { width:100% }                                                            </Style>
+  <Style>
+.column {  float: left; width: 50%; }                                                            </Style>
+  <Style>
+.row {  }                                                            </Style>
+  <View className="first_utt" visibleWhen="choice-selected" whenTagName="visible1" whenChoiceValue="1">
+    <View className="row">
+      <View className="column">
+        <Choices name="general_labels_1" toName="general_1" choice="single">
+          <Header name="labels_header_1" value="General Labels:" size="2"/>
+          <View className="label_group">
+            <Header name="Statement_1" value="Statement" size="5"/>
+            <Choice value="s"/>
+          </View>
+          <View className="label_group">
+            <Header name="Questions_1" value="Questions" size="5"/>
+            <Choice value="qy"/>
+            <Choice value="qw"/>
+            <Choice value="qr"/>
+            <Choice value="qrr"/>
+            <Choice value="qo"/>
+            <Choice value="qh"/>
+          </View>
+          <View className="label_group">
+            <Header name="Floor Mechanisms_1" value="Floor Mechanisms" size="5"/>
+            <Choice value="fg"/>
+            <Choice value="fh"/>
+            <Choice value="h"/>
+          </View>
+          <View className="label_group">
+            <Header name="Backchannel_1" value="BackChannel" size="5"/>
+            <Choice value="b"/>
+          </View>
+        </Choices>
+      </View>
+      <View className="column">
+        <Choices name="specific_labels_1" toName="specific_1" choice="multiple">
+          <Header name="labels_header_specific_1" value="Specific Labels:" size="2"/>
+          <View classname="label_group">
+            <Header name="Responses-positive_1" value="Responses-positive" size="5"/>
+            <Choice value="aa"/>
+            <Choice value="aap"/>
+            <Choice value="na"/>
+          </View>
+          <View className="label_group">
+            <Header name="Responses-negative_1" value="Responses-negative" size="5"/>
+            <Choice value="ar"/>
+            <Choice value="arp"/>
+            <Choice value="nd"/>
+            <Choice value="ng"/>
+          </View>
+          <View className="label_group">
+            <Header name="Responses-uncertain_1" value="Responses-uncertain" size="5"/>
+            <Choice value="am"/>
+            <Choice value="no"/>
+          </View>
+          <View className="label_group">
+            <Header name="Action Motivators_1" value="Action Motivators" size="5"/>
+            <Choice value="co"/>
+            <Choice value="cs"/>
+            <Choice value="cc"/>
+          </View>
+          <View className="label_group">
+            <Header name="Acknowledgment_1" value="Acknowledgment" size="5"/>
+            <Choice value="bk"/>
+            <Choice value="ba"/>
+            <Choice value="bh"/>
+          </View>
+          <View className="label_group">
+            <Header name="Checks_1" value="Checks" size="5"/>
+            <Choice value="f"/>
+            <Choice value="br"/>
+            <Choice value="bu"/>
+          </View>
+          <View className="label_group">
+            <Header name="Repetition_1" value="Repetition" size="5"/>
+            <Choice value="r"/>
+            <Choice value="m"/>
+            <Choice value="bs"/>
+          </View>
+          <View className="label_group">
+            <Header name="Correction_1" value="Correction" size="5"/>
+            <Choice value="bc"/>
+            <Choice value="bsc"/>
+          </View>
+          <View className="label_group">
+            <Header name="Supportive Functions_1" value="Supportive Functions" size="5"/>
+            <Choice value="df"/>
+            <Choice value="e"/>
+            <Choice value="2"/>
+          </View>
+          <View className="label_group">
+            <Header name="Politeness Mechanisms_1" value="Politeness Mechanisms" size="5"/>
+            <Choice value="bd"/>
+            <Choice value="by"/>
+            <Choice value="fa"/>
+            <Choice value="ft"/>
+            <Choice value="fw"/>
+          </View>
+          <View className="label_group">
+            <Header name="Further Descriptions_1" value="Further Descriptions" size="5"/>
+            <Choice value="fe"/>
+            <Choice value="t"/>
+            <Choice value="tc"/>
+            <Choice value="j"/>
+            <Choice value="t1"/>
+            <Choice value="t3"/>
+            <Choice value="g"/>
+          </View>
+          <View className="label_group">
+            <Header name="Disruption_1" value="Disruption" size="5"/>
+            <Choice value="%"/>
+          </View>
+          <View className="label_group">
+            <Header name="Nonspeech_1" value="Nonspeech" size="5"/>
+            <Choice value="x"/>
+          </View>
+          <View className="label_group">
+            <Header name="Nonlabeled_1" value="Nonlabeled" size="5"/>
+            <Choice value="z"/>
+          </View>
+        </Choices>
+      </View>
+    </View>
+    <Header name="annotations_header_1" value="Annotations:" size="5"/>
+    <TextArea name="annotation_1" rows="2">
+    </TextArea>
+  </View>
+  <View className="second_utt" visibleWhen="choice-selected" whenTagName="visible1" whenChoiceValue="2">
+    <View className="row">
+      <View className="column">
+        <Choices name="general_labels_2" toName="general_2" choice="single">
+          <Header name="labels_header_2" value="General Labels:" size="2"/>
+          <View className="label_group">
+            <Header name="Statement_2" value="Statement" size="5"/>
+            <Choice value="s"/>
+          </View>
+          <View className="label_group">
+            <Header name="Questions_2" value="Questions" size="5"/>
+            <Choice value="qy"/>
+            <Choice value="qw"/>
+            <Choice value="qr"/>
+            <Choice value="qrr"/>
+            <Choice value="qo"/>
+            <Choice value="qh"/>
+          </View>
+          <View className="label_group">
+            <Header name="Floor Mechanisms_2" value="Floor Mechanisms" size="5"/>
+            <Choice value="fg"/>
+            <Choice value="fh"/>
+            <Choice value="h"/>
+          </View>
+          <View className="label_group">
+            <Header name="Backchannel_2" value="BackChannel" size="5"/>
+            <Choice value="b"/>
+          </View>
+        </Choices>
+      </View>
+      <View className="column">
+        <Choices name="specific_labels_2" toName="specific_2" choice="multiple">
+          <Header name="labels_header_specific_2" value="Specific Labels:" size="2"/>
+          <View className="label_group">
+            <Header name="Responses-positive_2" value="Responses-positive" size="5"/>
+            <Choice value="aa"/>
+            <Choice value="aap"/>
+            <Choice value="na"/>
+          </View>
+          <View className="label_group">
+            <Header name="Responses-negative_2" value="Responses-negative" size="5"/>
+            <Choice value="ar"/>
+            <Choice value="arp"/>
+            <Choice value="nd"/>
+            <Choice value="ng"/>
+          </View>
+          <View className="label_group">
+            <Header name="Responses-uncertain_2" value="Responses-uncertain" size="5"/>
+            <Choice value="am"/>
+            <Choice value="no"/>
+          </View>
+          <View className="label_group">
+            <Header name="Action Motivators_2" value="Action Motivators" size="5"/>
+            <Choice value="co"/>
+            <Choice value="cs"/>
+            <Choice value="cc"/>
+          </View>
+          <View className="label_group">
+            <Header name="Acknowledgment_2" value="Acknowledgment" size="5"/>
+            <Choice value="bk"/>
+            <Choice value="ba"/>
+            <Choice value="bh"/>
+          </View>
+          <View className="label_group">
+            <Header name="Checks_2" value="Checks" size="5"/>
+            <Choice value="f"/>
+            <Choice value="br"/>
+            <Choice value="bu"/>
+          </View>
+          <View className="label_group">
+            <Header name="Repetition_2" value="Repetition" size="5"/>
+            <Choice value="r"/>
+            <Choice value="m"/>
+            <Choice value="bs"/>
+          </View>
+          <View className="label_group">
+            <Header name="Correction_2" value="Correction" size="5"/>
+            <Choice value="bc"/>
+            <Choice value="bsc"/>
+          </View>
+          <View className="label_group">
+            <Header name="Supportive Functions_2" value="Supportive Functions" size="5"/>
+            <Choice value="df"/>
+            <Choice value="e"/>
+            <Choice value="2"/>
+          </View>
+          <View className="label_group">
+            <Header name="Politeness Mechanisms_2" value="Politeness Mechanisms" size="5"/>
+            <Choice value="bd"/>
+            <Choice value="by"/>
+            <Choice value="fa"/>
+            <Choice value="ft"/>
+            <Choice value="fw"/>
+          </View>
+          <View className="label_group">
+            <Header name="Further Descriptions_2" value="Further Descriptions" size="5"/>
+            <Choice value="fe"/>
+            <Choice value="t"/>
+            <Choice value="tc"/>
+            <Choice value="j"/>
+            <Choice value="t1"/>
+            <Choice value="t3"/>
+            <Choice value="g"/>
+          </View>
+          <View className="label_group">
+            <Header name="Disruption_2" value="Disruption" size="5"/>
+            <Choice value="%"/>
+          </View>
+          <View className="label_group">
+            <Header name="Nonspeech_2" value="Nonspeech" size="5"/>
+            <Choice value="x"/>
+          </View>
+          <View className="label_group">
+            <Header name="Nonlabeled_2" value="Nonlabeled" size="5"/>
+            <Choice value="z"/>
+          </View>
+        </Choices>
+      </View>
+    </View>
+    <Header name="annotations_header_2" value="Annotations:" size="5"/>
+    <TextArea name="annotation_2" rows="2">
+    </TextArea>
+  </View>
+</View>
+

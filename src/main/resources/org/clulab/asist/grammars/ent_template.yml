@@ -1,0 +1,11 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  - name: ${ name }_detection
+    priority: ${ priority }
+    label: ${ label }
+    type: token
+    keep: true
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ trigger })\b/ & outgoing=compound]) |
+      [lemma=/(?i)^(${ trigger })\b/]+

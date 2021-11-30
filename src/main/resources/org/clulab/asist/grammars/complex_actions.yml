@@ -1,0 +1,6 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+### this is where complex actions go that do not fit into the other categories
+#please not that the import to this file is currently commented out

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>extraction_schemas_compact</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+</head>
+<body>
+<h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
+<p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
+<p>Agent version: <code>3.1.4</code></p>
+<p>Document generation timestamp (UTC): <code>2021-11-30 04:50:19.681745</code></p>
+<p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
+<h2 id="format">Format</h2>
+<p>The extractions are listed below as blocks separated by blank lines.</p>
+<p>The first line of each block contains two parts, separated by a space. The first part is the full path to the leaf node in the taxonomy, with levels separated by slashes (<code>/</code>). If the extraction is only output as an argument of another extraction, rather than as a standalone extraction, the name wrapped in square brackets (<code>[]</code>).</p>
+<p>Each of the lines that follow the first line in the block corresponds to an argument of the extraction. Each argument line starts with a hyphen and a space, for additional indentation, in the service of readability. This is followed by the name of the argument. If the the argument is optional, the name is enclosed in square brackets, it is an optional argument. The possible labels that can be assigned to the argument come next, enclosed in parentheses and separated by the <code>|</code> character. Finally, the third component of the argument line is a list of quantifiers, separated by commas, and enclosed in parentheses.</p>
+<p><a href="https://github.com/clulab/processors">Odin</a> arguments can be quantified in several ways. First, they may be optional (<code>?</code>), meaning that if they can be added, given a particular sentence, they will be, but if not the Mention can still be found. Further, they can be allowed to match multiple arguments. For example, in the sentence Ferdinand ate ice cream and pop tarts., if you made a rule to extract eating events and used a <code>+</code> quantifier with the food argument <code>(food: Food+ = ...)</code>, then the Mention would have two separate arguments (ice cream and pop tarts). The quantifiers you may see are:</p>
+<ul>
+<li><code>?</code> (arg is optional)</li>
+<li><code>+</code> (you need at least one, can have as many as are there)</li>
+<li><code>(_min_, _max_)</code> (you need at least min and can have up to max, where min can be 0).</li>
+</ul>
+<p>Take for example the following block:</p>
+<pre><code>Concept/LeafNode
+- arg1 (LeafNode1|LeafNode2) ()
+- [arg2] (LeafNode3) (?)</code></pre>
+<p>The full path to the leaf node in the taxonomy is <code>Concept/LeafNode</code>. The extraction has two arguments, <code>arg1</code> and <code>arg2</code>, with <code>arg2</code> being optional. The ‘arg1’ argument can be labeled as either <code>LeafNode1</code> or <code>LeafNode2</code> (we elide the full taxonomy paths here for clarity). Additionally, <code>arg2</code> has an optional quantifier.</p>
+<p>The extractions are documented in the following section.</p>
+<h2 id="extractions">Extractions</h2>
+<pre><code>
+[Concept]
+
+Concept/Direction/Cardinal/East
+
+Concept/Direction/Cardinal/North
+
+Concept/Direction/Cardinal/NorthEast
+
+Concept/Direction/Cardinal/NorthWest
+
+Concept/Direction/Cardinal/South
+
+Concept/Direction/Cardinal/SouthEast
+
+Concept/Direction/Cardinal/SouthWest
+
+Concept/Direction/Cardinal/West
+
+[Concept/Direction/Relative/Down]
+
+Concept/Direction/Relative/Left
+
+Concept/Direction/Relative/Right
+
+[Concept/Direction/Relative/Up]
+
+[Concept/Entity]
+
+[Concept/Entity/DemPron]
+
+[Concept/Entity/Other]
+
+[Concept/Entity/Person]
+
+Concept/Entity/Player/Blue
+
+Concept/Entity/Player/Green
+
+Concept/Entity/Player/Red
+
+Concept/Entity/Role/Engineer
+
+Concept/Entity/Role/Medic
+
+Concept/Entity/Role/Searcher
+
+[Concept/Entity/Self]
+
+[Concept/Entity/Team]
+
+Concept/Entity/Victim
+
+Concept/Entity/Victim/CriticalVictim
+
+Concept/Entity/Victim/NoVictim
+
+Concept/Entity/Victim/RegularVictim
+
+[Concept/Entity/Victim/Yellow]
+
+[Concept/Entity/You]
+
+Concept/EventLike/Action/ComplexAction/ChangePriority
+- target (Person|Victim) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/ComplexAction/Continue
+- agent (Entity) ()
+
+Concept/EventLike/Action/ComplexAction/MoveVictim
+- victim (Victim) ()
+- [target] (Location) (?)
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/ComplexAction/Precedence
+- [second] (EventLike) (?)
+- [first] (EventLike) (?)
+
+Concept/EventLike/Action/ComplexAction/Search
+- [agent] (Entity) (?)
+- target (Location) ()
+- [location] (Location) (?)
+- area (Location) ()
+- [target] (Concept) (?)
+- agent (Entity) ()
+
+[Concept/EventLike/Action/GenericAction]
+- [target] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Block
+- [source] (Obstacle|Concept) (?)
+- [target] (Concept) (?)
+
+Concept/EventLike/Action/SimpleAction/Clear
+- [agent] (Entity) (?)
+- target (Rubble|Location) ()
+
+Concept/EventLike/Action/SimpleAction/Close
+- [target] (DemPron|Infrastructure) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/Agreement
+
+Concept/EventLike/Action/SimpleAction/Communicate/Disagreement
+
+Concept/EventLike/Action/SimpleAction/Communicate/Instruction
+- [agent] (Entity) (?)
+- topic (Action) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
+- exists (Person|EventLike|Victim|Item) ()
+- [location] (Location) (?)
+- [obstacle] (Obstacle) (?)
+- [map] (Map) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/Need/HelpRequest
+- [agent] (Entity) (?)
+- [location] (Location) (?)
+- [helper] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/Need/NeedAction
+- [agent] (Entity) (?)
+- action (SimpleActions) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/Need/NeedItem
+- [agent] (Entity) (?)
+- item (Item) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/Need/NeedRole
+- [agent] (Entity) (?)
+- role (Role) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/Plan/Commitment/DeliberatePlan
+- agent (Entity) ()
+- target (Action) ()
+- topic (Action) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/Plan/Commitment/MakeCommitment
+- topic (Action) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/Plan/ContingentPlan
+- condition (Action) ()
+- solution (Action) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/Plan/PlanLanguage
+
+Concept/EventLike/Action/SimpleAction/Communicate/Question
+- topic (Concept) ()
+- [location] (Location) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/Question/HowQuestion
+- topic (Action) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/Question/LocationQuestion
+- topic (Move|Entity) ()
+- [location] (Location) (?)
+
+[Concept/EventLike/Action/SimpleAction/Communicate/Question/QuestionParticle]
+
+Concept/EventLike/Action/SimpleAction/Communicate/Question/YesNoQuestion
+- topic (Action) ()
+- [location] (Location) (?)
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/ReportItemStatus/DoorClosed
+- status (Concept) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/ReportItemStatus/DoorOpen
+- status (Concept) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/ReportItemStatus/ToolBroken
+- tool (Tool) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/ReportLocation
+- location (Location) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoleDeclare
+- target (Role) ()
+- agent (Entity) ()
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoomStatus/RoomClear
+
+Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/Stuck
+- [agent] (Entity) (?)
+- [location] (Location) (?)
+
+Concept/EventLike/Action/SimpleAction/Move
+- direction (Direction) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Move/Enter
+- [target] (Location) (?)
+- [agent] (Entity) (?)
+- target (Location|Deictic) ()
+
+Concept/EventLike/Action/SimpleAction/Move/MoveFrom
+- target (Location|Deictic) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Move/MoveTo
+- target (Location|Deictic) ()
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Open
+- [agent] (Entity) (?)
+- target (Infrastructure) ()
+- [location] (Location) (?)
+
+Concept/EventLike/Action/SimpleAction/RoleSwitch
+- [agent] (Entity) (?)
+- target (Role) ()
+
+Concept/EventLike/Action/SimpleAction/Save
+- target (Person|Victim|Entity) ()
+- [location] (Location) (?)
+- [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Sight
+- [agent] (Entity) (?)
+- target (EventLike|Entity|Item) ()
+- [location] (Location) (?)
+
+Concept/EventLike/Action/SimpleAction/Toggle
+- [agent] (Entity) (?)
+- target (Switch) ()
+- [location] (Location) (?)
+
+Concept/EventLike/Location
+- target (Concept) ()
+
+[Concept/EventLike/Location/Inferred/Deictic]
+
+Concept/EventLike/Location/Infrastructure
+
+Concept/EventLike/Location/Infrastructure/Room
+
+Concept/EventLike/Location/Infrastructure/Room/AmwayRoom
+
+Concept/EventLike/Location/Infrastructure/Room/BreakArea
+
+Concept/EventLike/Location/Infrastructure/Room/Buffet
+
+Concept/EventLike/Location/Infrastructure/Room/ComputerFarm
+
+Concept/EventLike/Location/Infrastructure/Room/DataStorage
+
+Concept/EventLike/Location/Infrastructure/Room/HerbalifeRoom
+
+Concept/EventLike/Location/Infrastructure/Room/JanitorCloset
+
+Concept/EventLike/Location/Infrastructure/Room/KingChrisOffice
+
+Concept/EventLike/Location/Infrastructure/Room/KingTerrace
+
+Concept/EventLike/Location/Infrastructure/Room/Kitchen
+
+Concept/EventLike/Location/Infrastructure/Room/Library
+
+Concept/EventLike/Location/Infrastructure/Room/LimpingLambChophouse
+
+Concept/EventLike/Location/Infrastructure/Room/Lobby
+
+Concept/EventLike/Location/Infrastructure/Room/MaryKayRoom
+
+Concept/EventLike/Location/Infrastructure/Room/MensRoom
+
+Concept/EventLike/Location/Infrastructure/Room/NumberedRoom
+- number (Number) ()
+
+Concept/EventLike/Location/Infrastructure/Room/Office
+- [number] (Number) (?)
+
+Concept/EventLike/Location/Infrastructure/Room/SecurityOffice
+
+Concept/EventLike/Location/Infrastructure/Room/StorageRoom
+- number (RoomTag) ()
+
+Concept/EventLike/Location/Infrastructure/Room/SundollarCoffee
+
+Concept/EventLike/Location/Infrastructure/Room/WomensRoom
+
+Concept/EventLike/Location/Infrastructure/Zone
+- num (Number) ()
+
+Concept/EventLike/Obstacle/Fire
+
+Concept/EventLike/Obstacle/Rubble
+
+[Concept/EventLike/Time]
+
+Concept/EventLike/Time/TimeUnit
+
+Concept/Item/MarkerBlock
+
+Concept/Item/MarkerBlock/CriticalMarkerBlock
+
+Concept/Item/MarkerBlock/NoVictimMarkerBlock
+
+Concept/Item/MarkerBlock/RegularMarkerBlock
+
+Concept/Item/Tool
+- [owner] (Entity) (?)
+
+Concept/Item/Tool/Hammer
+- [owner] (Entity) (?)
+
+Concept/Item/Tool/Map
+- [owner] (Entity) (?)
+
+Concept/Item/Tool/MedKit
+- [owner] (Entity) (?)
+
+Concept/Item/Tool/Stretcher
+- [owner] (Entity) (?)
+
+Concept/MarkerMeaning
+- meaning (Victim) ()
+
+[Concept/Number]
+
+[Concept/RoomTag]
+
+Concept/Sentiment/Positive/Encouragement
+
+Concept/Sentiment/Positive/Gratitude
+
+Concept/Switch
+
+[Concept/Tense/FutureTense]
+- tense (Concept) ()
+
+[Concept/Tense/PastTense]
+- tense (Concept) ()
+</code></pre>
+</body>
+</html>

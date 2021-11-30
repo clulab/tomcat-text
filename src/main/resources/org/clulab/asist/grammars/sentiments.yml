@@ -1,0 +1,52 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: encouragement1
+    label: Encouragement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ encouragement_triggers1 })/] [word=/(?i)(${ encouragement_triggers2 })/]
+
+  - name: agreement2
+    label: Agreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^sound/] [word=/(?i)good/]
+
+  - name: agreement3
+    label: Agreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^all$/] [word=/(?i)^right$/]
+
+  - name: agree_token_match
+    label: Agreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ agree_triggers })$/] (?!no)
+
+  - name: disagree_token_match
+    label: Disagreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO] (?! [lemma=victim])
+
+
+  - name: thank_you
+    label: Gratitude
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ thanking_triggers })$/ & !tag=TO]

@@ -1,0 +1,118 @@
+after_precedence_triggers: "after"
+
+agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree|sure|alright|good|excellent|great|terrific|copy"
+
+attack_triggers: "kill|fight|beat|defeat|hit|attack"
+
+before_precedence_triggers: "before"
+
+block_triggers: "block|obstruct"
+
+change_priority_triggers: "target|prioritize|focus"
+
+charlie_triggers: "charlie"
+
+clear_triggers: "clear|remove|clear|break|excavate"
+
+close_triggers: "close|shut"
+
+continue_triggers: "going"
+
+craft_triggers: "craft|make|produce|brew|create"
+
+#deixis_triggers: "here|there|back|in|through"
+deixis_triggers: "here|there"
+
+dem_pron_triggers: "this|that|those|these"
+
+disagree_triggers: "no|nah|nope|negative"
+
+east_triggers: "east"
+
+encouragement_triggers1: "good|well|perfect|amazing|excellent|great|awesome"
+
+encouragement_triggers2: "job|done|work"
+
+engineer_triggers: "hazmat|engineer|heavy" # "heavy equipment specialist|equipment specialist|heavy specialist" <- these need separate rules
+
+evacuator_triggers: "evacuator|evac|rescuer|savior"
+
+exist_triggers: "be"
+
+extinguish_triggers: "extinguish|put|stop"
+
+fire_triggers: "fire|blaze|flame"
+
+foe_triggers: "zombie|mob|enemy|skeleton"
+
+hammer_triggers: "hammer|hummer|mallet|sledgehammer|sledge hammer|sledge-hammer|shovel"
+
+infrastructure_triggers: "door|building|stairs|window|floor|ceiling|house|roof|bathroom|hall|entrance|library|balcony|hallway"
+
+medic_triggers: "paramedic|nurse|doctor"
+
+medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
+
+movefrom_triggers: "depart|exit|leave"
+
+moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
+
+move_victim_triggers: "move|transfer|transport"
+
+north_triggers: "north"
+
+open_triggers: "open"
+
+person_triggers: "person|guy|villager|dude"
+
+plan_switch_triggers: "start|begin|switch"
+
+role_switch_triggers: "switch|become"
+
+room_singleword_surface_regex: "(cafe|buffet|chophouse|armory|attic|ballroom|basement|bathroom|bedroom|boardroom|cabin|cellar|classroom|courtroom|cubby|den|entry|garage|gym|hall|hallway|kitchen|kitchenette|library|lobby|loft|lounge|lunchroom|mailroom|office|restroom|schoolroom|stockroom|storeroom|studio|study|suite|washroom|workroom)"
+
+room_twoword_first_word_regex: "(cubicle|sundollar|Herbalife|limping lamb|lamb|storage|King Chris|king|Chris|back|boiler|conference|control|dining|engine|front|ladies|laundry|living|locker|men|utility|waiting|weight|women|break)"
+
+room_twoword_second_word_regex: "(room|cafe|office|terrace|area|storage|coffee|chophouse)"
+
+rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel|gravel|pile"
+
+search_spec_triggers: "search|service|searcher|scout"
+
+search_triggers: "hunt|look|search|check"
+
+self_triggers: "i|me|my"
+
+sight_triggers: "see|observe|glimpse"
+
+south_triggers: "south"
+
+specialist_triggers: "specialist"
+
+stretcher_triggers: "stretcher|carrying bed"
+
+switch_triggers: "switch|toggle|lever"
+
+team_triggers: "we|us"
+
+thanking_triggers: "thank|thanks"
+
+then_precedence_triggers: "then"
+
+toggle_triggers: "flip|toggle|turn|switch|pull|open"
+
+transpose_triggers: "move|shift"
+
+triage_triggers: "save|triage|heal|help|get|rescue"
+
+triage_triggers_strict: "save|triage|heal|rescue"
+
+victim_triggers: "victim|patient|person"
+
+west_triggers: "west"
+
+where_triggers: "where"
+
+you_triggers: "you"
+
+zone_triggers: "zone|area|side|section"

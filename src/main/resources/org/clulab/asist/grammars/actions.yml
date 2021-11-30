@@ -1,0 +1,293 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+  - name: close
+    priority: ${ rulepriority }
+    label: Close
+    pattern: |
+      trigger = [lemma=/(?i)^(${ close_triggers })/ & tag=/^V/]
+      target: Infrastructure? = >dobj | >/nmod/
+
+  - name: close_dem_pronoun
+    priority: ${ rulepriority }
+    label: Close
+    pattern: |
+      trigger = [lemma=/(?i)^(${ close_triggers })/ & tag=/^V/]
+      target: DemPron? = >dobj
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: toggle
+      template_priority: ${ rulepriority }
+      label: Toggle
+      trigger: ${ toggle_triggers }
+      object_type: Switch
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: open
+      template_priority: ${ rulepriority }
+      label: Open
+      trigger: ${ open_triggers }
+      object_type: Infrastructure
+
+  - name: triage
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save the victim"
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers })/]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+  - name: triage2
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save this guy"
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
+      target: Person = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+###need this because we split "person" from "victim"
+
+  - name: triage3
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save him"
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
+      target: Entity = >dobj [tag=/PRP/]
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+## This one is not working right now, working on it -Remo
+
+  - import: org/clulab/asist/grammars/lvo_template_no_passive.yml
+    vars:
+      name: search
+      template_priority: ${ rulepriority }
+      label: Search
+      trigger: ${ search_triggers }
+      object_type: Location
+
+
+
+  - name: search_infra_action
+    priority: ${ rulepriority }
+    label: Search
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/${ search_triggers }/]
+      area: Location = ${ search_relations }
+      target: Concept? = >nmod_for
+      agent: Entity? = >/${agents}/
+
+  - name: i_am_searching
+    priority: ${ rulepriority }
+    label: Search
+    action: mkVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
+      agent: Entity = >/${agents}/
+      target: Concept? = >nmod_for
+
+  # ------------------------------------------------------------------- move
+  - name: move_nmod_action
+    priority: ${ rulepriority }
+    label: MoveTo
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+
+  - name: move_nmod_direction
+    priority: ${ rulepriority }
+    label: Move
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      direction: Direction = >/advmod/
+      agent: Entity? = >/${agents}/
+
+  - name: move_keep_false
+    priority: ${ rulepriority }
+    label: Move
+    keep: false
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim
+    priority: ${ rulepriority }
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ move_victim_triggers })$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+  - name: move_deixis_action
+    priority: ${ rulepriority }
+    label: MoveTo
+    pattern: |
+      trigger = [lemma=/(?i)${ moveto_triggers }/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Deictic = >/nmod_(through|to|towards)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: move_explicit_1
+    example: "I'll be right there.  I will be there in a minute."
+    priority: ${ rulepriority }
+    label: MoveTo
+    type: token
+    pattern: |
+      @agent:Entity (?<trigger> will be) right? (@target:Deictic | (?<target> over))
+
+  - name: leave_deixis_action
+    priority: ${ rulepriority }
+    label: MoveFrom
+    pattern: |
+      trigger = [lemma=/(?i)${ movefrom_triggers }/ & !outgoing=/xcomp|dobj|ccomp/] | [lemma=go] /(away|from)/
+      target: Deictic = >/nmod_(away|from)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: leave_nmod_action
+    priority: ${ rulepriority }
+    label: MoveFrom
+    pattern: |
+      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|nmod|ccomp)/] | [lemma=go] /(away|from)/
+      target: Location =  (>/nmod_(away|from)/ | >/${objects}/) [!lemma=door]
+      agent: Entity? = >/${agents}/
+
+  - name: leave_no_location
+    priority: ${ rulepriority }
+    label: MoveFrom
+    pattern: |
+      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|dobj|nmod|ccomp)/] | [lemma=go] away
+      agent: Entity? = >/${agents}/
+
+  - name: enter_action
+    priority: ${ rulepriority }
+    label: Enter
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: Location? = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: enter_into_action
+    priority: ${ rulepriority }
+    label: Enter
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers }|enter)$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Location =  >/nmod_(inside|into)/
+      agent: Entity? = >/${agents}/
+
+  - name: enter_into_deixis_action
+    priority: ${ rulepriority }
+    label: Enter
+    pattern: |
+      trigger = [lemma=/(?i)${ moveto_triggers }|enter/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Deictic = >/nmod_(inside|into)/
+      agent: Entity? = >/${agents}/
+
+  # ------------------------------------------------------------------- sight
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_entity
+      example: "I see the victim"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Entity
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_item
+      example: "I see the medkit"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: Item
+
+  - import: org/clulab/asist/grammars/lvo_template.yml
+    vars:
+      name: sight_event_like
+      example: "I see the rubble"
+      template_priority: ${ rulepriority }
+      label: Sight
+      trigger: ${ sight_triggers }
+      object_type: EventLike
+
+
+##----------------------------------------------------------------------------------------- clear
+
+  - name: clear_rubble
+    priority: ${ rulepriority }
+    label: Clear
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      agent: Entity? = >/${agents}/
+      target: Rubble = >dobj
+
+  - name: clear_rubble_token
+    priority: ${ rulepriority }
+    label: Clear
+    type: token
+    pattern: |
+      @agent:Entity? [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
+
+  - name: clear_location
+    priority: ${ rulepriority }
+    label: Clear
+    pattern: |
+      trigger = [lemma=/(?i)^(${ clear_triggers })/]
+      agent: Entity? = >/${agents}/
+      target: Location = >dobj
+
+  - name: obstructing
+    priority: ${ rulepriority }
+    label: Block
+    example: "Some rubble is blocking this door"
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Concept? = >/${agents}/
+      target: Concept? = >/dobj|acl/
+
+  - name: obstructing2
+    priority: ${ rulepriority }
+    label: Block
+    pattern: |
+      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      source: Obstacle? =  <acl
+      target: Concept? = >/dobj|acl/
+
+  - name: obstructing_in_the_way
+    priority: ${ rulepriority }
+    label: Block
+    pattern: |
+      trigger = [lemma=in] [tag=/DT|PRP/] [lemma=/(?i)^way\b/]
+      source: Obstacle? = </nmod/ >/${agents}/
+      target: Concept? = >nmod_of
+
+  - name: obstructing_in_the_way2
+    priority: ${ rulepriority }
+    example: "There is a fire in the way of this door"
+    label: Block
+    pattern: |
+      trigger = [lemma=in] [tag=/DT|PRP/] [lemma=/(?i)^way\b/]
+      source: Concept? = >/${agents}/
+      target: Concept? = >nmod_of
+
+  - name: genericAction
+    label: GenericAction
+    priority: ${ genericpriority }
+    keep: false
+    pattern: |
+      trigger = [tag=/^V/]
+      target: Entity? = <dobj
+
+#\\ todo: #"put down marker block"
+#\\ todo: #review the instruction rule... "And going to go renew my hammer and then come back."
+#\\ todo: #mark rooms: "Oh, I should mark the rooms i'll mark them with a one if I get everything from." "All right, this is green, I will be putting a three if there's nobody in the room, so nobody accidentally goes in there."

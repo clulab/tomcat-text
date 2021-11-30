@@ -1,0 +1,76 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  # ------------- TOOLS --------------------------
+  - name: hammer
+    priority: ${ rulepriority }
+    label: Hammer
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ hammer_triggers }/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: medkit
+    priority: ${ rulepriority }
+    label: MedKit
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ medkit_triggers }/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: stretcher
+    priority: ${ rulepriority }
+    label: Stretcher
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ stretcher_triggers }/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: tool_generic
+    priority: ${ rulepriority }
+    label: Tool
+    keep: true
+    pattern: |
+      trigger = [lemma=/tool/]
+      owner: Entity? = >"nmod:poss"
+
+  - name: map_item
+    priority: ${ rulepriority }
+    label: Map
+    pattern: |
+      trigger = [lemma=/map/]
+      owner: Entity? = >"nmod:poss"
+
+# -------- marker blocks ----------
+  - name: marker_block
+    priority: ${ rulepriority }
+    label: MarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)marker/] [lemma=block]?
+
+  - name: critical_marker_token
+    priority: ${ rulepriority }
+    label: CriticalMarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical/] [lemma=victim]? [lemma=marker] [lemma=block]?
+
+  - name: regular_marker_token
+    priority: ${ rulepriority }
+    label: RegularMarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)regular/] [lemma=victim]? [lemma=marker] [lemma=block]?
+
+  - name: no_victim_marker_token
+    priority: ${ rulepriority }
+    label: NoVictimMarkerBlock
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)empty/] [lemma=marker] [lemma=block]?
