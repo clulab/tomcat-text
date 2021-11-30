@@ -32,6 +32,12 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   // json
   implicit val formats = org.json4s.DefaultFormats
 
+  /** Terminate the actor system */
+  def terminateActorSystem: Unit = {
+    system.terminate
+    Thread.sleep(5000) // allow actor system to gracefully shut down
+  }
+
   /** Reset the TDAC server outside of data processing
    */
   def initServer: Unit = {
@@ -59,15 +65,13 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   }
 
   def shutdown(report: String): Unit = {
-    system.terminate
-    Thread.sleep(5000) // allow actor system to gracefully shut down
     logger.error(report)
-    logger.info(s"The TDAC server was not found at ${serverUrl}")
-    logger.info("Please check that the server is running")
-    logger.info("The Agent is shutting down")
+    logger.error(s"The TDAC server was not found at ${serverUrl}")
+    logger.error("Please check that the server is running")
+    logger.error("The Agent is shutting down")
+    terminateActorSystem
     System.exit(0)
   }
-
 
   /** Reset the TDAC server during processing
    * @param rs The current execution state of the agent
@@ -88,21 +92,20 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
-          val rs1 = RSM.addDacReset(rs)
+          val rs1 = RSM.addTdacReset(rs)
           val rs2 = agent.writeOutput(rs1)
           agent.iteration(rs2)
         case Failure(t) =>
-          logger.info(s"TDAC server reset failed: ${response.status}")
+          logger.error(s"TDAC server reset failed: ${response.status}")
           agent.handleError(rs)
       }
     } catch {
       case NonFatal(t) => 
-        logger.info(s"Could not reset TDAC server at: ${serverUrl}")
+        logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
         agent.handleError(rs)
     }
   }
-
 
   /** call the TDAC Server for classification of this DialogAgentMessage
    * @param rs The current execution state of the agent
@@ -142,7 +145,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val rs1 = RSM.addDacQuery(rs)
+          val rs1 = RSM.addTdacQuery(rs)
           val rs2 = RSM.setOutputLine(rs1, write(newMetadata))
           val rs3 = agent.writeOutput(rs2)
           agent.iteration(rs3)
@@ -158,12 +161,5 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         logger.error(t.toString)
         agent.handleError(rs)
     }
-  }
-
-  /** shutdow the actor system, allowing time for actors to finish */
-  def shutdown(): Unit = {
-    logger.info("TDAC client shutting down...")
-    Thread.sleep(5)
-    system.terminate()
   }
 }

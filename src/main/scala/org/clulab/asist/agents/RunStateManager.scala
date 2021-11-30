@@ -82,8 +82,8 @@ trait RunStateManager extends LazyLogging {
   ): RunState = s.copy(outputLines = lines)
 
   // state incrementers
-  def addDacReset(s: RunState): RunState = s.copy(tdacResets = s.tdacResets + 1)
-  def addDacQuery(s: RunState): RunState = s.copy(tdacQueries = s.tdacQueries + 1)
+  def addTdacReset(s: RunState): RunState = s.copy(tdacResets = s.tdacResets + 1)
+  def addTdacQuery(s: RunState): RunState = s.copy(tdacQueries = s.tdacQueries + 1)
   def addReprocessed(s: RunState): RunState = s.copy(reprocessed = s.reprocessed+1)
   def addRecovered(s: RunState): RunState = s.copy(recovered = s.recovered+1)
   def addInfoWrite(s: RunState): RunState = s.copy(infoWrites = s.infoWrites + 1)
