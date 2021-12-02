@@ -46,6 +46,9 @@ class DialogAgentMqtt(
     with LazyLogging
     with MessageBusClientListener { 
 
+  // EXPERIMENTAL USE ONLY
+  val coordinator = new DialogAgentMqttCoordinator(host, port, tdacUrlOpt)
+
   // A single Message Bus message
   case class BusMessage (
     topic: String,
