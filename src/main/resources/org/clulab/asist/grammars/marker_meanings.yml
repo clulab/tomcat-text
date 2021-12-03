@@ -1,9 +1,10 @@
 vars: org/clulab/asist/grammars/vars.yml
-
+# please also refer to the relevant actions in TomcatActions (findMarkerId)
 rules:
   - name: marker_meaning
     priority: ${ rulepriority }
     label: MarkerMeaning
+    example: "One is for regular victim."
     keep: true
     pattern: |
       trigger = [lemma=/\b(one|two|three|1|2|3)\b/]
