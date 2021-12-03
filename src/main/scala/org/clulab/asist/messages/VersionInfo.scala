@@ -132,12 +132,7 @@ object VersionInfo
         sub_type = "Event:Chat"
       ),
       VersionInfoDataMessageChannel(
-        topic = agent.topicSubUazAsr,
-        message_type = "observation",
-        sub_type = "asr"
-      ),
-      VersionInfoDataMessageChannel(
-        topic = agent.topicSubAptimaAsr,
+        topic = agent.topicSubAsr,
         message_type = "observation",
         sub_type = "asr"
       )

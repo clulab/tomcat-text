@@ -30,7 +30,7 @@ class DialogAgentMqttCoordinator(
   val agents: List[MqttAgentBase] = List(
     new MqttAgentTrial(host, port),
     new MqttAgentChat(host, port),
-    new MqttAgentSpeech(host, port),
+    new MqttAgentAsr(host, port),
     new MqttAgentIdc(host, port)
   )
 }
@@ -61,8 +61,8 @@ class MqttAgentHeartbeat(
   override val mqttPort: String = ""
 ) extends MqttAgentBase {
 
-  override def subTopic = "TrialSubTopic"
-  override def pubTopic = config.getString("DialogAgent.heartbeatTopic")
+  override def subTopic = config.getString("MqttAgent.topicSubTrial")
+  override def pubTopic = config.getString("MqttAgent.topicPubHeartbeat")
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -82,8 +82,8 @@ class MqttAgentTrial(
   override val mqttPort: String = ""
 ) extends MqttAgentBase {
 
-  override def subTopic = "TrialSubTopic"
-  override def pubTopic = config.getString("DialogAgent.versionInfoTopic")
+  override def subTopic = config.getString("MqttAgent.topicSubTrial")
+  override def pubTopic = config.getString("MqttAgent.topicPubVersionInfo")
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -102,8 +102,8 @@ class MqttAgentChat(
   override val mqttPort: String = ""
 ) extends MqttAgentBase {
 
-  override def subTopic = "ChatSubTopic"
-  override def pubTopic = config.getString("DialogAgent.outputTopic")
+  override def subTopic = config.getString("MqttAgent.topicSubChat")
+  override def pubTopic = config.getString("MqttAgent.topicPubDialogAgent")
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -117,13 +117,13 @@ class MqttAgentChat(
   }
 }
 
-class MqttAgentSpeech(
+class MqttAgentAsr(
   override val mqttHost: String = "",
   override val mqttPort: String = ""
 ) extends MqttAgentBase {
 
-  override def subTopic = "SpeechSubTopic"
-  override def pubTopic = config.getString("DialogAgent.outputTopic")
+  override def subTopic = config.getString("MqttAgent.topicSubAsr")
+  override def pubTopic = config.getString("MqttAgent.topicPubDialogAgent")
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -138,13 +138,14 @@ class MqttAgentSpeech(
 }
 
 
+// this is set to the chat topic as a placeholder.
 class MqttAgentIdc(
   override val mqttHost: String = "",
   override val mqttPort: String = ""
 ) extends MqttAgentBase {
 
-  override def subTopic = "IdcSubTopic"
-  override def pubTopic = config.getString("DialogAgent.outputTopic")
+  override def subTopic = config.getString("MqttAgent.topicSubChat")
+  override def pubTopic = config.getString("MqttAgent.topicPubDialogAgent")
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
