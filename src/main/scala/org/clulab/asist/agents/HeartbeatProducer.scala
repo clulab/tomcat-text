@@ -38,7 +38,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   // published only if defined.
   private val topicHeartbeat: String = agent.topicPubHeartbeat
   private val startSeconds: Long = 0
-  private val beatSeconds: Long = agent.config.getInt("DialogAgent.heartbeatSeconds")
+  private val beatSeconds: Long = agent.config.getInt("MqttAgent.heartbeatSeconds")
   system.scheduler.scheduleWithFixedDelay(
     startSeconds seconds, 
     beatSeconds seconds
