@@ -44,11 +44,12 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(convertAgent)
-  }//converting all agents into attachments
+  }//converting multiple agents into attachments
 
-  //converting Agent arg into an attachment
+  //converting Agent arg into an attachment, we need this because the argument of an extraction cannot be equal in span to the extraction
+  //agents (subjects) blow up the span size of our extractions, which is why we need this. attachments do not figure into the span size
   def convertAgent(mention: Mention): Mention = {
-    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG) //we defined what agents are, here we make sure we take out non-agents
+    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG) //we defined what agents are, here we make sure we take out non-agents, the definition is in TomcatRuleEngine.scala
     val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty) //find arguments that are marked as agents
     val agents = agentMentions.map(mkAgent).toSet //turn the agent mentions into a set
 
