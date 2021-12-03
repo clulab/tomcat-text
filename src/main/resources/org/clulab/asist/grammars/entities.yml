@@ -57,7 +57,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)critical/] [lemma=/(?i)one/]
+      [lemma=/(?i)critical/] [lemma=/(?i)^one$|^dude|^guy$/]
 
   - name: regular_victim_one
     priority: ${ rulepriority }
@@ -65,7 +65,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/regular|normal/] [lemma=/one|victim/]
+      [lemma=/regular|normal/] [lemma=/^one$|^dude|^guy$|victim/]
 
   - name: no_victim_one
     priority: ${ rulepriority }
