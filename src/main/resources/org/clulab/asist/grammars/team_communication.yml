@@ -11,7 +11,7 @@ rules:
       trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
-#  \\todo: need to find a way to prevent cases like: "Water doesn't rise."
+
 
   - name: instruction_command_topic
     priority: ${ rulepriority }
@@ -25,6 +25,7 @@ rules:
   - name: prep_need_role
     priority: ${ rulepriority }
     label: NeedRole
+    example: "We need a searcher"
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -33,6 +34,7 @@ rules:
   - name: prep_need_item
     priority: ${ rulepriority }
     label: NeedItem
+    example: "I need a medkit"
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -41,10 +43,11 @@ rules:
   - name: prep_need_action
     priority: ${ rulepriority }
     label: NeedAction
+    example: "I need you to save this guy."
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
-      action: SimpleActions = >xcomp
+      action: Action = >xcomp
 
 
   - name: continue_action
@@ -57,6 +60,7 @@ rules:
   - name: change_priority
     priority: ${ rulepriority }
     label: ChangePriority
+    example: "We should prioritize critical victims"
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
@@ -65,6 +69,7 @@ rules:
   - name: change_priority2
     priority: ${ rulepriority }
     label: ChangePriority
+    example: "We should prioritize this guy"
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Person = >dobj
@@ -75,6 +80,7 @@ rules:
   - name: role_switch
     priority: ${ rulepriority }
     label: RoleSwitch
+    example: "I'm gonna switch to engineer"
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
       agent: Entity? = >/(${agents})/
@@ -92,6 +98,7 @@ rules:
   - name: role_switch_change_to
     priority: ${ rulepriority }
     label: RoleSwitch
+    example: "I'm gonna change to engineer"
     pattern: |
       trigger = [lemma=/change/ | word=/searching/]
       agent: Entity? = >/(${agents})/
@@ -99,6 +106,7 @@ rules:
 
   - name: location_report
     priority: ${ rulepriority }
+    example: "I'm in the library"
     label: ReportLocation
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
