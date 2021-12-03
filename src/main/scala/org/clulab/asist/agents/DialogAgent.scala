@@ -40,13 +40,13 @@ class DialogAgent (
   val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
 
   // Message Bus topics
-  val topicSubChat = "minecraft/chat"
-  val topicSubUazAsr = "agent/asr/final"
-  val topicSubAptimaAsr = "status/asistdataingester/userspeech"
-  val topicSubTrial = "trial"
-  val topicPubDialogAgent = config.getString("DialogAgent.outputTopic")
-  val topicPubVersionInfo = config.getString("DialogAgent.versionInfoTopic")
-  val topicPubHeartbeat = config.getString("DialogAgent.heartbeatTopic")
+  val topicSubChat = config.getString("MqttAgent.topicSubChat")
+  val topicSubUazAsr = config.getString("MqttAgent.topicSubUazAsr")
+  val topicSubAptimaAsr = config.getString("MqttAgent.topicSubAptimaAsr")
+  val topicSubTrial = config.getString("MqttAgent.topicSubTrial")
+  val topicPubDialogAgent = config.getString("MqttAgent.topicPubDialogAgent")
+  val topicPubVersionInfo = config.getString("MqttAgent.topicPubVersionInfo")
+  val topicPubHeartbeat = config.getString("MqttAgent.topicPubHeartbeat")
 
   val subscriptions = List(
     topicSubChat,
