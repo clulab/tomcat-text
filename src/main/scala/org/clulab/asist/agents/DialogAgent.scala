@@ -41,8 +41,7 @@ class DialogAgent (
 
   // Message Bus topics
   val topicSubChat = config.getString("MqttAgent.topicSubChat")
-  val topicSubUazAsr = config.getString("MqttAgent.topicSubUazAsr")
-  val topicSubAptimaAsr = config.getString("MqttAgent.topicSubAptimaAsr")
+  val topicSubAsr = config.getString("MqttAgent.topicSubAsr")
   val topicSubTrial = config.getString("MqttAgent.topicSubTrial")
   val topicPubDialogAgent = config.getString("MqttAgent.topicPubDialogAgent")
   val topicPubVersionInfo = config.getString("MqttAgent.topicPubVersionInfo")
@@ -50,8 +49,7 @@ class DialogAgent (
 
   val subscriptions = List(
     topicSubChat,
-    topicSubUazAsr,
-    topicSubAptimaAsr,
+    topicSubAsr,
     topicSubTrial
   )
 
@@ -195,8 +193,7 @@ class DialogAgent (
     val timestamp = Clock.systemUTC.instant.toString
     val participant_id = topic match {
       case `topicSubChat` => (metadata.data.sender)
-      case `topicSubUazAsr` => (metadata.data.participant_id)
-      case `topicSubAptimaAsr` => (metadata.data.playername)
+      case `topicSubAsr` => (metadata.data.participant_id)
       case _ => null
     }
     DialogAgentMessage(
