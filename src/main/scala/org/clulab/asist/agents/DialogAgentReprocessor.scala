@@ -393,7 +393,7 @@ class DialogAgentReprocessor (
    */
   def finish(rs: RunState) {
     system.terminate()
-    tdacClient.foreach(_.shutdown)
+    tdacClient.foreach(_.terminateActorSystem)
     finalReport(rs)
   }
 
