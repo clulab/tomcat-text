@@ -28,6 +28,7 @@ object RunDialogAgent extends App {
     "",
     "usage:",
     "",
+    "  idc <host> <port> [--tdac <host> <port>]",
     "  mqtt <host> <port> [--tdac <host> <port>]",
     "  stdin",
     "  file <inputfile> <outputfile>",
@@ -83,6 +84,9 @@ object RunDialogAgent extends App {
    * @return A DialogAgent running in the mode with the args
    */
   def run(argList: List[String]): Option[DialogAgent] = argList match {
+//    case ("idc"::host::port::l) => 
+//      val tdac = tdacUrl(l)
+//      Some(new DialogAgentIdc(host, port, tdac))
     case ("mqtt"::host::port::l) => 
       val tdac = tdacUrl(l)
       Some(new DialogAgentMqtt(host, port, tdac))

@@ -39,115 +39,24 @@ import scala.util.{Failure, Success}
  */
 
 class DialogAgentMqtt(
-  val host: String = "",
-  val port: String = "",
-  val tdacUrlOpt: Option[String] = None
-) extends TdacAgent(tdacUrlOpt)
-    with LazyLogging
-    with MessageBusClientListener { 
+  override val host: String = "",
+  override val port: String = "",
+  override val tdacUrlOpt: Option[String] = None
+) extends MessageBusAgent(host, port, tdacUrlOpt)
+    with LazyLogging {
 
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version}")
-
-  // Actor concurrency system
-  implicit val ec:ExecutionContext = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("DialogAgentMqtt")
 
   // Testbed heartbeat
   val heartbeatProducer = new HeartbeatProducer(this)
 
   val source_type = "message_bus"
 
-  // enqueue messages from the bus if they're coming in too fast.
-  val queue: Queue[BusMessage] = new Queue 
-
-  logger.info("Initializing Message Bus connection...")
-
-  // communication with Message Bus
-  val bus = new MessageBusClient(
-    host,
-    port,
-    subscriptions,
-    publications,
-    this
-  )
-
-  tdacInit
-
-  /** Lines to be written to the MessageBus
-   * @param rs The runState sent with the orignal message to the TDAC client
-   * @return The run state with the lineWrites var incremented by 1
-   */
-  override def writeOutput(
-    output: List[BusMessage]
-  ): Unit = output match {
-    case head::tail =>
-      publish(head.topic, head.text)
-      writeOutput(tail)
-    case _ => 
-      dequeue 
-  }
-
-  /** Add a Message Bus job to the queue 
-   *  @param job Job to add
-   */
-  def enqueue(job: BusMessage): Unit = queue.enqueue(job)
-
-  /** Take the next job off the queue.  Do this after processing the job */
-  def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
-
-  /** Do the next thing in the processing queue */
-  override def iteration(): Unit = startJob
-
-  /** Manage a processing failure */
-  override def handleError(): Unit = finishJob
-
-  /** Write to the Message Bus
-   * @param topic:  The message bus topic on which to publish the message
-   * @param text:  A JSON message structure
-   */
-  def publish(
-    topic: String,
-    text: String
-  ): Unit = {
-    bus.publish(topic, text)
-  }
-
-  /** Receive a message from the message bus
-   * @param topic:  The message bus topic where the message was published
-   * @param text:  A metadata text string, possibly multi-line
-   */
-  def messageArrived(
-    topic: String,
-    text: String 
-  ): Unit = {
-
-    // if the queue is empty, there is no aynchronous job in
-    // progress and it is safe to start a new one.
-    val noJobRunning = queue.isEmpty
-
-    // Place the new messsage behind any others in the processing queue
-    enqueue(BusMessage(topic, text))
-
-    // start new async job if none are running
-    if(noJobRunning) startJob
-  }
-
-  /* Use the head of the queue as the next job. */
-  def startJob: Unit = if(!queue.isEmpty) queue.head.topic match {
-    case `topicSubTrial` => processTrialMessage(queue.head)
-    case _ => processDialogAgentMessage (queue.head)
-  }  // else all jobs are done.
-
-  /** When finished, remove the queue head and start the next job.  */
-  def finishJob: Unit = if(!queue.isEmpty) {
-    dequeue
-    startJob
-  }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
    */
-  def processTrialMessage(input: BusMessage): Unit = try {
+  override def processTrialMessage(input: BusMessage): Unit = try {
     val trialMessage = read[TrialMessage](input.text)
     trialMessage.msg.sub_type match {
 
@@ -180,6 +89,12 @@ class DialogAgentMqtt(
       finishJob
   } 
 
+  override def processChatMessage(input: BusMessage): Unit = 
+    processDialogAgentMessage(input)
+
+  override def processAsrMessage(input: BusMessage): Unit = 
+    processDialogAgentMessage(input)
+
   /** Send DialogAgentMessage for any subscribed topic except "trial" 
    * @param input: Incoming traffic on Message Bus
    */
@@ -209,14 +124,4 @@ class DialogAgentMqtt(
       reportError(input, t.toString)
       finishJob
   } 
-
-  /** Report an error in parsing a message
-   *  @param input The message that led to the problem
-   *  @param t The problem
-   */
-  def reportError(input: BusMessage, report: String): Unit = {
-    val preamble = "Could not parse input text"
-    logger.error(s"${preamble} from topic ${input.topic}: ${input.text}")
-    logger.error(report)
-  }
 }
