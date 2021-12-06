@@ -11,6 +11,12 @@ import buildinfo.BuildInfo
  *  Components used by more than one message class.
  */
 
+// a single Message Bus message
+case class BusMessage(
+  topic: String,
+  text: String // may contain newlines
+)
+
 case class CommonHeader(
   timestamp: String = null, // "2019-12-26T12:47:23.1234Z"
   message_type: String = null, // "agent"
