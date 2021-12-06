@@ -63,7 +63,7 @@ class DialogAgentReprocessor (
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version}")
 
-  // check the TDAC server connection
+  // init the TDAC server connection
   tdacInit
 
   // actors
@@ -352,10 +352,8 @@ class DialogAgentReprocessor (
 
         iteration()
       }
-      // otherwise done
-      else {
-        logger.info("All file processing has finished.")
-      }
+      // if no more files, we are done
+      else finish
     }
   }
 
@@ -370,6 +368,7 @@ class DialogAgentReprocessor (
    * @param rs: State of execution at current iteration
    */
   def finish() {
+    logger.info("All file processing has finished.")
     system.terminate
     tdacClient.foreach(_.terminateActorSystem)
     finalReport
