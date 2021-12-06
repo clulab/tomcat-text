@@ -4,11 +4,10 @@ import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages.BusMessage
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
+ * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Extenders of this class can use the TAMU Dialog Act Classifier (TDAC)
- * client variable state (Some, or None) to know if the TDAC is in use.  
  *
+ * @param urlMaybe TDAC server network location if set.
  */
 
 abstract class TdacAgent (
