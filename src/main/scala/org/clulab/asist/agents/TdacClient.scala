@@ -41,7 +41,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   /** Reset the TDAC server outside of data processing
    */
   def initServer: Unit = {
-    logger.info("Initializing TDAC server...")
+    logger.info(s"Initializing TDAC serverat ${serverUrl}")
     try {
       val request = HttpRequest(
         uri = Uri(s"${serverUrl}/reset-model"),
@@ -65,9 +65,8 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   }
 
   def shutdown(report: String): Unit = {
+    logger.error("Problem encountered during initialization of TDAC server:")
     logger.error(report)
-    logger.error(s"The TDAC server was not found at ${serverUrl}")
-    logger.error("Please check that the server is running")
     logger.error("The Agent is shutting down")
     terminateActorSystem
     System.exit(0)
