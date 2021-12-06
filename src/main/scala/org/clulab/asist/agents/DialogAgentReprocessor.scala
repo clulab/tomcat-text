@@ -384,11 +384,11 @@ class DialogAgentReprocessor (
     val compSecs = runSecs - prepSecs
     logger.info("")
     logger.info("METADATA REPROCESSING SUMMARY:")
-    logger.info("Output directory:              %s".format(outputDirName))
-    logger.info("Input directory:               %s".format(inputDirName))
-    logger.info("Input files present            %d".format(allFiles.length))
-    logger.info("DialogAgent file scan:         %.1f minutes".format(prepSecs/60.0))
-    logger.info("Time to reprocess:             %.1f minutes".format(compSecs/60.0))
+    logger.info("Output directory:               %s".format(outputDirName))
+    logger.info("Input directory:                %s".format(inputDirName))
+    logger.info("Input files present             %d".format(allFiles.length))
+    logger.info("Time to find DialogAgent files: %.1f minutes".format(prepSecs/60.0))
+    logger.info("Time to reprocess:              %.1f minutes".format(compSecs/60.0))
   }
 
   /** log the problem and write the input line to the output file
