@@ -46,9 +46,6 @@ class DialogAgentMqtt(
     with LazyLogging
     with MessageBusClientListener { 
 
-  // EXPERIMENTAL USE ONLY
-  val coordinator = new DialogAgentMqttCoordinator(host, port, tdacUrlOpt)
-
   // A single Message Bus message
   case class BusMessage (
     topic: String,
@@ -87,16 +84,13 @@ class DialogAgentMqtt(
    * @return The run state with the lineWrites var incremented by 1
    */
   override def writeOutput(
-    rs: RunState
-  ): RunState = rs.outputLines match {
-    case line::tail =>
-      publish(rs.outputTopic, line)
-      val rs1 = RSM.addLineWrite(rs)
-      val rs2 = RSM.setOutputLines(rs1, tail)
-      writeOutput(rs2)
+    output: List[BusMessage]
+  ): Unit = output match {
+    case head::tail =>
+      publish(head.topic, head.text)
+      writeOutput(tail)
     case _ => 
       dequeue 
-      rs
   }
 
   /** Add a Message Bus job to the queue 
