@@ -74,9 +74,11 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   }
 
   /** Reset the TDAC server during processing
-   * @param rs The current execution state of the agent
+   *  @param busMessages publish if server reset succeeds
    */
-  def resetServer(rs: RunState): Unit = {
+  def resetServer(
+    busMessages: List[BusMessage]
+  ): Unit = {
     logger.info(s"Resetting TDAC server at: ${serverUrl}")
 
     try {
@@ -92,28 +94,29 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
-          val rs1 = RSM.addTdacReset(rs)
-          val rs2 = agent.writeOutput(rs1)
-          agent.iteration(rs2)
+          agent.writeOutput(busMessages)
+          agent.iteration
         case Failure(t) =>
           logger.error(s"TDAC server reset failed: ${response.status}")
-          agent.handleError(rs)
+          agent.handleError
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
-        agent.handleError(rs)
+        agent.handleError
     }
   }
 
   /** call the TDAC Server for classification of this DialogAgentMessage
-   * @param rs The current execution state of the agent
+   * @param outputTopic destination topic for the classification results
+   * @param inputText as read from the message bus
    * @param data Part of the input line, includes text to be classified
    * @param metadata Entire input line being processed by the agent
    */
   def runClassification(
-    rs: RunState, 
+    outputTopic: String,
+    inputText: String,
     data: DialogAgentMessageData,
     metadata: JValue
   ): Unit = {
@@ -145,21 +148,20 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val rs1 = RSM.addTdacQuery(rs)
-          val rs2 = RSM.setOutputLine(rs1, write(newMetadata))
-          val rs3 = agent.writeOutput(rs2)
-          agent.iteration(rs3)
+          val output = BusMessage(outputTopic, write(newMetadata))
+          agent.writeOutput(List(output))
+          agent.iteration
         case Failure(t) =>
           logger.error(s"TDAC Server classification failed: ${response.status}")
-          logger.error(s"Input Text: ${rs.inputText}")
+          logger.error(s"Input Text: ${inputText}")
           logger.error(s"Error: ${t.toString}")
-          agent.handleError(rs)
+          agent.handleError
       }
     } catch {
       case NonFatal(t) => 
-        logger.error(s"Error processing: ${rs.inputText}")
+        logger.error(s"Error processing: ${inputText}")
         logger.error(t.toString)
-        agent.handleError(rs)
+        agent.handleError
     }
   }
 }

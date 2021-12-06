@@ -46,12 +46,6 @@ class DialogAgentMqtt(
     with LazyLogging
     with MessageBusClientListener { 
 
-  // A single Message Bus message
-  case class BusMessage (
-    topic: String,
-    text: String // may contain newlines
-  )
-
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version}")
 
   // Actor concurrency system
@@ -101,12 +95,11 @@ class DialogAgentMqtt(
   /** Take the next job off the queue.  Do this after processing the job */
   def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
 
-  /** States sent by the TDAC server, if in use.
-   * @param message A DialogAgentMessage with the dialog_act_label value set
-   */
-  override def iteration(rs: RunState): Unit = startJob
+  /** Do the next thing in the processing queue */
+  override def iteration(): Unit = startJob
 
-  override def handleError(rs: RunState): Unit = finishJob
+  /** Manage a processing failure */
+  override def handleError(): Unit = finishJob
 
   /** Write to the Message Bus
    * @param topic:  The message bus topic on which to publish the message
@@ -163,15 +156,12 @@ class DialogAgentMqtt(
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
+        val output: BusMessage = BusMessage(topicPubVersionInfo,outputJson)
         tdacClient match {
           case Some(tc: TdacClient) =>
-            val rs1 = RSM.setInputTopic(new RunState, input.topic)
-            val rs2 = RSM.setInputText(rs1, input.text)
-            val rs3 = RSM.setOutputTopic(rs2, topicPubVersionInfo)
-            val rs4 = RSM.setOutputLine(rs3, outputJson)
-            tc.resetServer(rs4)
+            tc.resetServer(List(output))
           case None =>  // no TDAC
-            publish(topicPubVersionInfo, outputJson)
+            writeOutput(List(output))
             finishJob 
         }
         heartbeatProducer.start(trialMessage)
@@ -203,10 +193,12 @@ class DialogAgentMqtt(
     tdacClient match {
       case Some(tc: TdacClient) =>
         val metadataJValue = parse(input.text)
-        val rs1 = RSM.setInputTopic(new RunState, input.topic)
-        val rs2 = RSM.setInputText(rs1, input.text)
-        val rs3 = RSM.setOutputTopic(rs2, topicPubDialogAgent)
-        tc.runClassification(rs3, message.data, metadataJValue)
+        tc.runClassification(
+          topicPubDialogAgent,
+          input.text,
+          message.data,
+          metadataJValue
+        )
       case None =>  // no TDAC
         val outputJson = write(message)
         publish(topicPubDialogAgent, outputJson)
