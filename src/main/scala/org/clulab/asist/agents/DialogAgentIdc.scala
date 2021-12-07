@@ -49,15 +49,21 @@ class DialogAgentIdc(
   // specific to IDC processing
   override def processTrialMessage(input: BusMessage): Unit = {
     logger.info("Processing trial message")
+    logger.info(input.text)
+    finishJob
   }
 
   // specific to IDC processing
   override def processChatMessage(input: BusMessage): Unit = {
     logger.info("Processing chat message")
+    logger.info(input.text)
+    finishJob
   }
 
   // specific to IDC processing
   override def processAsrMessage(input: BusMessage): Unit = {
     logger.info("Processing ASR message")
+    logger.info(input.text)
+    finishJob
   }
 }
