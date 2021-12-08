@@ -14,6 +14,6 @@ package org.clulab.asist.messages
 
 /** Contains only the needed fields of the Trial Message metadata format */
 case class TrialMessage (
-  header: CommonHeader,
-  msg: CommonMsg
+  header: CommonHeader = new CommonHeader(),
+  msg: CommonMsg = new CommonMsg()
 ) 
