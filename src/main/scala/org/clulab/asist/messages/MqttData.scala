@@ -2,9 +2,12 @@ package org.clulab.asist.messages
 import buildinfo.BuildInfo
 
 /**
- *  A data structure to hold one message bus 
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Components used by more than one message class.
+ *  Case classes used only within Dialog agents.  Not for publication on
+ *  the Message Bus.
+ *
+ *  For internal use only.
  */
 
 // a single Message Bus message
@@ -15,9 +18,18 @@ case class BusMessage(
 
 // IDC processing data for one message
 case class IdcData(
-  extractions: Seq[DialogAgentMessageUtteranceExtraction] = Seq()
-  topic: String = null, // "agent"
+  extractions: Seq[DialogAgentMessageUtteranceExtraction] = Seq(),
+  topic: String = "",
+  idx: Int = 0
   
   // put anything at all here
 )
 
+// All the variables used by a IdcWorker
+case class IdcWorkerState(
+  val queue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue,
+
+  // this is included just to demonstrate that the IDQ worker can keep
+  // a persistent state, and that this state can be reset.
+  val commandCount = 0
+}
