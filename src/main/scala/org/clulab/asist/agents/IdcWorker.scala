@@ -34,7 +34,7 @@ class IdcWorker(val agent: MessageBusAgent)
 
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("MessageBusAgent")
+  implicit val system: ActorSystem = ActorSystem("IdcWorker")
 
   // enqueue extractions produced by the DialogAgent
   val queue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue 
@@ -43,6 +43,7 @@ class IdcWorker(val agent: MessageBusAgent)
   override def run()
   {
     logger.info("IDC worker thread is running")
+    queueStatus
   }
 
   /** Add an extraction sequence to the back of the queue
@@ -51,23 +52,13 @@ class IdcWorker(val agent: MessageBusAgent)
   def enqueue(
     extractions: Seq[DialogAgentMessageUtteranceExtraction]
   ): Unit = {
+    logger.info("Enqueueing an extraction sequence")
     queue.enqueue(extractions)
     processQueue
   }
 
-  /** Remove the next sequence in the queue if the queue is not empty */
-  def dequeue: Unit = {
-    if(!queue.isEmpty)queue.dequeue 
-
-  /** Return the next sequence in the queue, or None if queue is empty */
-  def nextInQueue: Option[Seq[DialogAgentMessageUtteranceExtraction]] = 
-    if(queue.isEmpty) None
-    else Some(queue.head)
-  }
-
-  /** Entry point for queue processing */
-  def processQueue(): Unit = {
-    logger.info("Processing extraction queue")
+  /** show the state of the queue */
+  def queueStatus(): Unit = {
     val len = queue.length
     len match {
       case 0 => logger.info("The queue is empty")
@@ -76,4 +67,35 @@ class IdcWorker(val agent: MessageBusAgent)
     }
   }
 
+  /** Remove the next sequence in the queue if the queue is not empty */
+  def dequeue: Unit = {
+    logger.info("Dequeueing an extraction sequence")
+    if(!queue.isEmpty)queue.dequeue 
+    queueStatus
+  }
+
+  /** Return the next sequence in the queue, or None if queue is empty */
+  def nextInQueue: Option[Seq[DialogAgentMessageUtteranceExtraction]] = {
+    if(queue.isEmpty) None
+    else Some(queue.head) // note that this does not dequeue the sequence
+  }
+
+  /** Entry point for non-blocking processing */
+  def processQueue(): Unit = {
+    val future: Future[Unit] = Future(doSomeProcessing)
+    future onComplete {
+      case Success(a) =>
+        logger.info("Processing complete!")
+      case Failure(t) =>
+        logger.error("Processing error:")
+        logger.error(t.toString)
+    }
+  }
+
+  def doSomeProcessing(): Unit = {
+    val seconds = 10
+    logger.info(s"Processing for $seconds seconds ...")
+    queueStatus
+    Thread.sleep(seconds*1000)
+  }
 }

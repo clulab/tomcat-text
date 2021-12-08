@@ -52,6 +52,7 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
+  // start the IDC processor
   val idcWorker = new IdcWorker(this)
   idcWorker.start
 
@@ -108,6 +109,9 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.text)
     )
+
+    idcWorker.enqueue(message.data.extractions)
+
     tdacClient match {
       case Some(tc: TdacClient) =>
         val metadataJValue = parse(input.text)
