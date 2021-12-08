@@ -35,7 +35,7 @@ libraryDependencies ++= {
     "com.crowdscriber.captions" %% "caption-parser" % "0.1.5",
     "com.google.code.gson" % "gson" % "2.8.5",
     "io.spray" %%  "spray-json" % "1.3.5",
-    "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5"
+    "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5",
   )
 }
 
