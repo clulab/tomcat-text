@@ -110,7 +110,7 @@ class DialogAgentMqtt(
       read[Metadata](input.text)
     )
 
-    idcWorker.enqueue(message.data.extractions)
+    idcWorker.enqueue(input.topic, message.data.extractions)
 
     tdacClient match {
       case Some(tc: TdacClient) =>

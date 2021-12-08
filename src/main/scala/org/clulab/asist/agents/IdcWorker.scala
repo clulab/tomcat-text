@@ -28,29 +28,42 @@ import scala.util.{Failure, Success}
  * @param agent Owning class
  */
 
-class IdcWorker(val agent: MessageBusAgent) extends LazyLogging {
+class IdcWorker(
+  val owner: MessageBusAgent
+) extends LazyLogging {
 
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("IdcWorker")
 
-  // enqueue extractions produced by the DialogAgent
-  val queue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue 
+  // persistent state
+  var state: IdcWorkerState = new IdcWorkerState()
+
+  // reset the state to the start state
+  def reset(): Unit = {
+    logger.info("State of the IdcWorker:")
+    showState
+    logger.info("Resetting the IdcWorker:")
+    // empty the queue
+    state.queue.dequeueAll(_)
+    state = new IdcWorkerState()
+    showState
+  }
 
   /** Add an extraction sequence to the back of the queue
-   *  @param job Job to add
+   *  @param topic - the Message Bus where the data was read
+   *  @param extractions - derived from the data read on the topic
    */
   def enqueue(
+    topic: String,
     extractions: Seq[DialogAgentMessageUtteranceExtraction]
   ): Unit = {
-    logger.info("Enqueueing an extraction sequence")
-    queue.enqueue(extractions)
+    state.queue.enqueue(IdcData(topic, extractions))
     processQueue
   }
 
-  /** show the state of the queue */
-  def queueStatus(): Unit = {
-    val len = queue.length
+  /** show the state of this class instance */
+  def showState(): Unit = {
+    val len = state.queue.length
     len match {
       case 0 => logger.info("The queue is empty")
       case 1 => logger.info("There is one sequence in the queue")
@@ -58,24 +71,17 @@ class IdcWorker(val agent: MessageBusAgent) extends LazyLogging {
     }
   }
 
-  /** Remove the next sequence in the queue if the queue is not empty */
-  def dequeue: Unit = {
-    logger.info("Dequeueing an extraction sequence")
-    if(!queue.isEmpty)queue.dequeue 
-    queueStatus
-  }
-
   /** Return the next sequence in the queue, or None if queue is empty */
-  def nextInQueue: Option[Seq[DialogAgentMessageUtteranceExtraction]] = {
-    if(queue.isEmpty) None
-    else Some(queue.head) // note that this does not dequeue the sequence
+  def nextInQueue(): Option[IdcData] = {
+    if(state.queue.isEmpty) None
+    else Some(state.queue.head) // note that this does not dequeue the sequence
   }
 
   /** Entry point for non-blocking processing */
   def processQueue(): Unit = {
-    val future: Future[Int] = Future(doSomeProcessing(queue.length))
+    val future: Future[Unit] = Future(doSomeProcessing)
     future onComplete {
-      case Success(a: Int) =>
+      case Success(a: Unit) =>
         logger.info(s"Done processing job $a")
       case Failure(t) =>
         logger.error("Processing error:")
@@ -83,16 +89,10 @@ class IdcWorker(val agent: MessageBusAgent) extends LazyLogging {
     }
   }
 
-  def reset(): Unit = {
-    // clear the queue now
-    logger.info("IDC has been reset!")
-  }
-
-  def doSomeProcessing(a: Int): Int = {
+  /** This method runs as a detached process */
+  def doSomeProcessing(): Unit = {
     val seconds = 10
-    logger.info(s"Starting processing of job $a for $seconds seconds ...")
-    queueStatus
+    logger.info(s"Starting processing of job for $seconds seconds ...")
     Thread.sleep(seconds*1000)
-    a+1
   }
 }

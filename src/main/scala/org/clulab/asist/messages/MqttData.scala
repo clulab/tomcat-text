@@ -1,5 +1,5 @@
 package org.clulab.asist.messages
-import buildinfo.BuildInfo
+import scala.collection.mutable.Queue
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
@@ -18,18 +18,18 @@ case class BusMessage(
 
 // IDC processing data for one message
 case class IdcData(
-  extractions: Seq[DialogAgentMessageUtteranceExtraction] = Seq(),
   topic: String = "",
-  idx: Int = 0
-  
+  extractions: Seq[DialogAgentMessageUtteranceExtraction] = Seq()
+
   // put anything at all here
 )
 
 // All the variables used by a IdcWorker
 case class IdcWorkerState(
-  val queue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue,
+  val queue: Queue[IdcData] = new Queue,
 
   // this is included just to demonstrate that the IDQ worker can keep
   // a persistent state, and that this state can be reset.
-  val commandCount = 0
-}
+  var commandCount: Int = 0
+)
+
