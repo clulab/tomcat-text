@@ -28,9 +28,7 @@ import scala.util.{Failure, Success}
  * @param agent Owning class
  */
 
-class IdcWorker(val agent: MessageBusAgent) 
-    extends Thread 
-    with LazyLogging {
+class IdcWorker(val agent: MessageBusAgent) extends LazyLogging {
 
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
@@ -38,13 +36,6 @@ class IdcWorker(val agent: MessageBusAgent)
 
   // enqueue extractions produced by the DialogAgent
   val queue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue 
-
-  /* detach the thread */
-  override def run()
-  {
-    logger.info("IDC worker thread is running")
-    queueStatus
-  }
 
   /** Add an extraction sequence to the back of the queue
    *  @param job Job to add
@@ -82,20 +73,26 @@ class IdcWorker(val agent: MessageBusAgent)
 
   /** Entry point for non-blocking processing */
   def processQueue(): Unit = {
-    val future: Future[Unit] = Future(doSomeProcessing)
+    val future: Future[Int] = Future(doSomeProcessing(queue.length))
     future onComplete {
-      case Success(a) =>
-        logger.info("Processing complete!")
+      case Success(a: Int) =>
+        logger.info(s"Done processing job $a")
       case Failure(t) =>
         logger.error("Processing error:")
         logger.error(t.toString)
     }
   }
 
-  def doSomeProcessing(): Unit = {
+  def reset(): Unit = {
+    // clear the queue now
+    logger.info("IDC has been reset!")
+  }
+
+  def doSomeProcessing(a: Int): Int = {
     val seconds = 10
-    logger.info(s"Processing for $seconds seconds ...")
+    logger.info(s"Starting processing of job $a for $seconds seconds ...")
     queueStatus
     Thread.sleep(seconds*1000)
+    a+1
   }
 }

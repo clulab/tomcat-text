@@ -54,7 +54,6 @@ class DialogAgentMqtt(
 
   // start the IDC processor
   val idcWorker = new IdcWorker(this)
-  idcWorker.start
 
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
@@ -66,6 +65,7 @@ class DialogAgentMqtt(
 
       // trial start message, reset the TDAC and start heartbeat
       case "start" =>
+        idcWorker.reset
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
