@@ -52,6 +52,9 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
+  val idcWorker = new IdcWorker(this)
+  idcWorker.start
+
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
