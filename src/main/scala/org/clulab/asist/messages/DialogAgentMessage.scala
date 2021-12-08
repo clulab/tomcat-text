@@ -1,6 +1,9 @@
 package org.clulab.asist.messages
 
 import org.clulab.odin.Attachment
+import com.typesafe.config.Config
+import buildinfo.BuildInfo
+
 
 import org.json4s.jackson.Serialization.read
 
@@ -25,7 +28,8 @@ case class DialogAgentMessageUtteranceSource(
 case class DialogAgentMessageUtteranceExtraction(
   labels: Seq[String] = Seq.empty,
   span: String = null,
-  arguments: Map[String, Seq[DialogAgentMessageUtteranceExtraction]] = Map.empty,
+  arguments: Map[String, Seq[DialogAgentMessageUtteranceExtraction]] =
+    Map.empty,
   attachments: Set[Attachment] = Set.empty, // Json strings
   start_offset: Int = 0,
   end_offset: Int = 0,
@@ -38,7 +42,8 @@ case class DialogAgentMessageData(
   asr_msg_id: String = null,
   text: String = null,
   dialog_act_label: String  = null,  // Dialog Act Classifier query result.
-  utterance_source: DialogAgentMessageUtteranceSource,
+  utterance_source: DialogAgentMessageUtteranceSource =
+    DialogAgentMessageUtteranceSource(),
   extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )
 
@@ -49,6 +54,24 @@ case class DialogAgentMessage (
   data: DialogAgentMessageData
 )
 
+
 object DialogAgentMessage {
-  def readDialogAgentMessage(s: String): DialogAgentMessage = read[DialogAgentMessage](s)
+  def readDialogAgentMessage(s: String): DialogAgentMessage = 
+    read[DialogAgentMessage](s)
+
+  // as many fields as we can get from the config
+  def apply(
+    config: Config
+  ): DialogAgentMessage =  DialogAgentMessage(
+    CommonHeader(
+      message_type = config.getString("DialogAgent.header.message_type"),
+      version = config.getString("CommonHeader.version")
+    ),
+    CommonMsg(
+      source = config.getString("DialogAgent.msg.source"),
+      sub_type = config.getString("DialogAgent.msg.sub_type"),
+      version = BuildInfo.version
+    ),
+    DialogAgentMessageData()
+  )
 }
