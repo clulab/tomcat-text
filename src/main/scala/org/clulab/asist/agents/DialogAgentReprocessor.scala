@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.util.ByteString
 import buildinfo.BuildInfo
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
@@ -192,7 +193,7 @@ class DialogAgentReprocessor (
 
       // VersionInfoMetadata struct
       val versionInfoMetadata = 
-        VersionInfoMetadata(this, trialMessage, currentTimestamp)
+        VersionInfoMetadata(config, trialMessage, currentTimestamp)
 
       // JValue representation of struct
       val versionInfoJValue = Extraction.decompose(versionInfoMetadata)

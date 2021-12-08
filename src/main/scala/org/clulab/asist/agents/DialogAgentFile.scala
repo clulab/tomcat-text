@@ -2,6 +2,7 @@ package org.clulab.asist.agents
 
 import buildinfo.BuildInfo
 import com.crowdscriber.caption.vttdissector.VttDissector
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
@@ -118,7 +119,7 @@ class DialogAgentFile(
         allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
           if(trialMessage.msg.sub_type == "start") {
             val timestamp = Clock.systemUTC.instant.toString
-            val versionInfo = VersionInfo(this, trialMessage, timestamp)
+            val versionInfo = VersionInfo(config, trialMessage, timestamp)
             val json = write(versionInfo)
             output.write(s"${json}\n")
           }

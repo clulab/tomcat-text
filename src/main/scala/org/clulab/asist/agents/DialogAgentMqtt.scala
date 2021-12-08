@@ -52,7 +52,6 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
-
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
    */
@@ -63,7 +62,7 @@ class DialogAgentMqtt(
       // trial start message, reset the TDAC and start heartbeat
       case "start" =>
         val currentTimestamp = Clock.systemUTC.instant.toString
-        val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
+        val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
         val output: BusMessage = BusMessage(topicPubVersionInfo,outputJson)
         tdacClient match {
