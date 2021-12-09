@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>3.1.4</code></p>
-<p>Document generation timestamp (UTC): <code>2021-12-06 23:15:03.515979</code></p>
+<p>Document generation timestamp (UTC): <code>2021-12-09 00:01:25.292553</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -131,10 +131,10 @@ Concept/EventLike/Action/SimpleAction/Block
 
 Concept/EventLike/Action/SimpleAction/Clear
 - [agent] (Entity) (?)
-- target (Rubble|Location) ()
+- target (Location|Rubble) ()
 
 Concept/EventLike/Action/SimpleAction/Close
-- [target] (DemPron|Infrastructure) (?)
+- [target] (Infrastructure|DemPron) (?)
 
 Concept/EventLike/Action/SimpleAction/Communicate/Agreement
 
@@ -145,7 +145,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (Victim|Person|Item|EventLike) ()
+- exists (EventLike|Victim|Person|Item) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
@@ -191,7 +191,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Question/HowQuestion
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/Question/LocationQuestion
-- topic (Entity|Move) ()
+- topic (Move|Entity) ()
 - [location] (Location) (?)
 
 [Concept/EventLike/Action/SimpleAction/Communicate/Question/QuestionParticle]
@@ -257,7 +257,7 @@ Concept/EventLike/Action/SimpleAction/Save
 
 Concept/EventLike/Action/SimpleAction/Sight
 - [agent] (Entity) (?)
-- target (EventLike|Item|Entity) ()
+- target (EventLike|Entity|Item) ()
 - [location] (Location) (?)
 
 Concept/EventLike/Action/SimpleAction/Toggle
