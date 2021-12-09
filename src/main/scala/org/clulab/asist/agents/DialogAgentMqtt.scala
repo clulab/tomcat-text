@@ -52,6 +52,9 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
+  // start the IDC processor
+  val idcWorker = new IdcWorker(this)
+
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
    */
@@ -61,6 +64,7 @@ class DialogAgentMqtt(
 
       // trial start message, reset the TDAC and start heartbeat
       case "start" =>
+        idcWorker.reset
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
@@ -104,6 +108,9 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.text)
     )
+
+    idcWorker.enqueue(input.topic, message.data.extractions)
+
     tdacClient match {
       case Some(tc: TdacClient) =>
         val metadataJValue = parse(input.text)

@@ -3,18 +3,8 @@ package org.clulab.asist.messages
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
- *
- *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/hackathon2021/MessageSpecs/Common_Message/common_message.md
- *
  *  Components used by more than one message class.
  */
-
-// a single Message Bus message
-case class BusMessage(
-  topic: String,
-  text: String // may contain newlines
-)
 
 case class CommonHeader(
   timestamp: String = null, // "2019-12-26T12:47:23.1234Z"
