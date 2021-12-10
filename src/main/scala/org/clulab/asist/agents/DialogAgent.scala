@@ -189,7 +189,8 @@ class DialogAgent (
     }
     DialogAgentMessage(
       workingCopy.header.copy(
-        timestamp = timestamp
+        timestamp = timestamp,
+        version = metadata.header.version
       ),
       workingCopy.msg.copy(
         experiment_id = metadata.msg.experiment_id,
