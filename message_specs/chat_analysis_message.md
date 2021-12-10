@@ -14,7 +14,7 @@ Field Name              | Type   | Description
 ---                     | ---    | ---
 header.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
 header.message_type | string | Message type.  Hardcoded to "**event**"
-header.version | string | Dialog Agent software version.  Follows trial version, or "**1.0**" if trial version not available 
+header.version | string | Dialog Agent software version.  Follows trial.header.version, or "**1.0**" if no trial. 
 msg.experiment_id | string | The experiment id this message is associated with
 msg.trial_id | string | The trial id this message is associated with
 msg.timestamp | string | same as header.timestamp
