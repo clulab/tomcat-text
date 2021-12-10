@@ -18,11 +18,8 @@ case class MetadataData(
   sender: String = null, // "player_1"
 
   // From University of Arizona ASR metadata
-  participant_id: String = null, // "player_1"
+  participant_id: String = null, 
   id: String = null,
-
-  // From Aptima ASR metadata
-  playername: String = null, // "player_1"
 
   // From all metadata
   text: String = null // "You want me to share my screen?"
@@ -37,10 +34,15 @@ case class MetadataMsg (
   replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
 )
 
+case class MetadataHeader (
+  version: String = null
+)
+
 
 case class Metadata(
-  data: MetadataData,
-  msg: MetadataMsg
+  header: MetadataHeader,
+  msg: MetadataMsg,
+  data: MetadataData
 )
 
 // If we recognize the topic we will process the message.
