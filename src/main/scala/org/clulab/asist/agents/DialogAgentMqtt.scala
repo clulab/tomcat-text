@@ -36,12 +36,14 @@ import scala.util.{Failure, Success}
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
  * @param tdacUrlOpt TDAC server URL and port, optional
+ * @param idc Run the IdcWorker class if true
  */
 
 class DialogAgentMqtt(
   override val host: String = "",
   override val port: String = "",
-  override val tdacUrlOpt: Option[String] = None
+  override val tdacUrlOpt: Option[String] = None,
+  val idc: Boolean = false
 ) extends MessageBusAgent(host, port, tdacUrlOpt)
     with LazyLogging {
 
@@ -52,6 +54,10 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
+  // create the IDC worker if required
+  val idcWorker: Option[IdcWorker] = 
+    if(idc) Some(new IdcWorker(this)) else None
+
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
    */
@@ -61,6 +67,7 @@ class DialogAgentMqtt(
 
       // trial start message, reset the TDAC and start heartbeat
       case "start" =>
+        idcWorker.foreach(_.reset)
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
@@ -104,6 +111,7 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.text)
     )
+    idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
     tdacClient match {
       case Some(tc: TdacClient) =>
         val metadataJValue = parse(input.text)
