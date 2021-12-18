@@ -31,13 +31,14 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   private implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
   import system.dispatcher  // from var now in scope
 
-  // An optional instance of a HeartbeatMessage that when defined will 
-  // be published with current timestamps. Setting this to None will stop
+  // An optional instance of a HeartbeatMessage with all fields initialized 
+  // except the timestamps.  If defined, this gets used as a template for
+  // the creation of heartbeat messages.  Setting it to None will stop
   // the publication of heartbeat messages
-  private var workingCopy: Option[HeartbeatMessage] = None
+  private var templateMessage: Option[HeartbeatMessage] = None
 
   // Start the beat on a fixed interval. The beat is always running,
-  // but the heartbeat message is published only if defined.
+  // but the heartbeat message is published only if the template is defined.
   system.scheduler.scheduleWithFixedDelay(
     startSeconds seconds, 
     beatSeconds seconds
@@ -47,20 +48,20 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
     }
   }
 
-  /** Defines the working copy to start publishing heartbeats
+  /** Define the template to start publishing heartbeats
    *@param tm The current Testbed trial
    */
   def start(trialMessage: TrialMessage): Unit = {
-    workingCopy = Some(HeartbeatMessage(config, trialMessage))
+    templateMessage = Some(HeartbeatMessage(config, trialMessage))
   }
 
-  /** Undefines the working copy to stop publishing heartbeats */
+  /** Undefine the template to stop publishing heartbeats */
   def stop: Unit = {
-    workingCopy = None
+    templateMessage = None
   }
 
-  /** If the working copy is defined, set timestamps and publish.*/
-  private def publishHeartbeat: Unit = workingCopy.foreach {
+  /** If the template is defined, pulish a copy with correct timestamps */
+  private def publishHeartbeat: Unit = templateMessage.foreach {
     hm: HeartbeatMessage =>
       val timestamp = Clock.systemUTC.instant.toString
       val currentHeartbeat = HeartbeatMessage(
