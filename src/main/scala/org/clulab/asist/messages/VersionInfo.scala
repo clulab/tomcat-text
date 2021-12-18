@@ -2,6 +2,7 @@ package org.clulab.asist.messages
 
 import org.clulab.asist.agents.DialogAgent
 import buildinfo.BuildInfo
+import com.typesafe.config.Config
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -32,7 +33,7 @@ case class VersionInfoDataMessageChannel(
 /** Part of the Info class */
 case class VersionInfoData(
   agent_name: String = null,
-  owner: String = "University of Arizona",
+  owner: String = null,
   version: String = null,
   source: Seq[String] = List(),
   dependencies: Seq[String] = List(),
@@ -58,16 +59,16 @@ case class VersionInfoMetadata(
 
 object VersionInfoMetadata {
   def apply(
-    agent: DialogAgent, 
+    config: Config, 
     trialMessage: TrialMessage,
     timestamp: String
   ): VersionInfoMetadata = {
-    val versionInfo = VersionInfo(agent, trialMessage, timestamp)
+    val versionInfo = VersionInfo(config, trialMessage, timestamp)
     VersionInfoMetadata(
-      topic = agent.topicPubVersionInfo,
-      header = versionInfo.header,
-      msg = versionInfo.msg,
-      data = versionInfo.data
+      config.getString("VersionInfo.topic"),
+      versionInfo.header,
+      versionInfo.msg,
+      versionInfo.data
     )
   }
 }
@@ -76,66 +77,70 @@ object VersionInfoMetadata {
 // testbed configuration
 object VersionInfo 
 {
-  val dataSource = 
-    s"https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:${BuildInfo.version}"
 
-  // create a VersionInfo by copying some fields from the input TrialMesssage
   def apply(
-    agent: DialogAgent,
+    config: Config,
     trialMessage: TrialMessage,
-    timestamp: String): VersionInfo = VersionInfo(
-      new CommonHeader(
+    timestamp: String
+  ): VersionInfo = {
+    val testbed = config.getString("VersionInfo.testbed")
+    val dataSource = s"${testbed}:${BuildInfo.version}"
+    VersionInfo(
+      CommonHeader(
         timestamp = timestamp,
-        message_type = "agent",
+        message_type = config.getString("VersionInfo.header.message_type"),
         version = trialMessage.header.version
       ),
-      trialMessage.msg.copy(
+      CommonMsg(
         timestamp = timestamp,
-        source = agent.dialogAgentSource,
-        sub_type = "versioninfo",
-        version = BuildInfo.version
+        source = config.getString("VersionInfo.msg.source"),
+        sub_type = config.getString("VersionInfo.msg.sub_type"),
+        version = BuildInfo.version,
+        trial_id = trialMessage.msg.trial_id,
+        experiment_id = trialMessage.msg.experiment_id
       ),
-      data(agent)
-    )
-
-  def data(agent: DialogAgent): VersionInfoData = VersionInfoData(
-    agent_name = agent.dialogAgentSource,
-    source = List(dataSource),
-    dependencies = List(),
-    config = List(),
-    publishes = List(
-      VersionInfoDataMessageChannel(
-        topic = agent.topicPubDialogAgent,
-        message_type = agent.dialogAgentMessageType,
-        sub_type = agent.dialogAgentSubType
-      ),
-      VersionInfoDataMessageChannel(
-        topic = agent.topicPubVersionInfo,
-        message_type = "agent",
-        sub_type = "versioninfo"
-      ),
-      VersionInfoDataMessageChannel(
-        topic = agent.topicPubHeartbeat,
-        message_type = "status",
-        sub_type = "heartbeat"
+      VersionInfoData(
+        agent_name = config.getString("VersionInfo.data.agent_name"),
+        owner = config.getString("VersionInfo.data.owner"),
+        version = BuildInfo.version,
+        source = List(dataSource),
+        dependencies = List(),
+        config = List(),
+        publishes = List(
+          VersionInfoDataMessageChannel(
+            config.getString("DialogAgent.topic"),
+            config.getString("DialogAgent.header.message_type"),
+            config.getString("DialogAgent.msg.sub_type")
+          ),
+          VersionInfoDataMessageChannel(
+            config.getString("VersionInfo.topic"),
+            config.getString("VersionInfo.header.message_type"),
+            config.getString("VersionInfo.msg.sub_type")
+          ),
+          VersionInfoDataMessageChannel(
+            config.getString("Heartbeat.topic"),
+            config.getString("Heartbeat.header.message_type"),
+            config.getString("Heartbeat.msg.sub_type")
+          )
+        ),
+        subscribes = List(
+          VersionInfoDataMessageChannel(
+            config.getString("Trial.topic"),
+            config.getString("Trial.header.message_type"),
+            config.getString("Trial.msg.sub_type")
+          ),
+          VersionInfoDataMessageChannel(
+            config.getString("Asr.topic"),
+            config.getString("Asr.header.message_type"),
+            config.getString("Asr.msg.sub_type")
+          ),
+          VersionInfoDataMessageChannel(
+            config.getString("Chat.topic"),
+            config.getString("Chat.header.message_type"),
+            config.getString("Chat.msg.sub_type")
+          )
+        )
       )
-    ),
-    subscribes = List(
-      VersionInfoDataMessageChannel(
-        topic = agent.topicSubTrial,
-        message_type = "trial",
-        sub_type = "versioninfo"
-      ),
-      VersionInfoDataMessageChannel(
-        topic = agent.topicSubChat,
-        message_type = "chat",
-        sub_type = "Event:Chat"
-      ),
-      VersionInfoDataMessageChannel(
-        topic = agent.topicSubAsr,
-        message_type = "observation",
-        sub_type = "asr"
-      )
     )
-  )
+  }
 }

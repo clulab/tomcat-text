@@ -18,5 +18,6 @@ case class DialogActClassifierMessage(
 )
 
 // returned from DAC server
-case class Classification(name: String)
-
+case class Classification(
+  name: String = ""
+)

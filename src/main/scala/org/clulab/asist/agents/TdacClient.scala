@@ -22,9 +22,6 @@ import scala.util.{Failure, Success}
 
 class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
 
-  // sent back by the TDAC server
-  case class Classification(name: String)
-
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("TdacClient")
