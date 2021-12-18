@@ -1,25 +1,12 @@
 package org.clulab.asist.agents
 
-import ai.lum.common.ConfigFactory
-import akka.actor.ActorSystem
-import akka.http.scaladsl._
-import akka.http.scaladsl.model._
 import buildinfo.BuildInfo
-import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
-import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
-import org.json4s.{Extraction,_}
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.{read, write}
-import scala.collection.mutable.Queue
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.util.control.NonFatal
-import scala.util.{Failure, Success}
-
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -36,12 +23,14 @@ import scala.util.{Failure, Success}
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
  * @param tdacUrlOpt TDAC server URL and port, optional
+ * @param idc Run the IdcWorker class if true
  */
 
 class DialogAgentMqtt(
   override val host: String = "",
   override val port: String = "",
-  override val tdacUrlOpt: Option[String] = None
+  override val tdacUrlOpt: Option[String] = None,
+  val idc: Boolean = false
 ) extends MessageBusAgent(host, port, tdacUrlOpt)
     with LazyLogging {
 
@@ -52,9 +41,9 @@ class DialogAgentMqtt(
 
   val source_type = "message_bus"
 
-  // start the IDC processor
-  val idcWorker = new IdcWorker(this)
-
+  // create the IDC worker if required
+  val idcWorker: Option[IdcWorker] = 
+    if(idc) Some(new IdcWorker(this)) else None
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Message bus traffic with topic and text
@@ -65,7 +54,7 @@ class DialogAgentMqtt(
 
       // trial start message, reset the TDAC and start heartbeat
       case "start" =>
-        idcWorker.reset
+        idcWorker.foreach(_.reset)
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
@@ -109,9 +98,7 @@ class DialogAgentMqtt(
       input.topic,
       read[Metadata](input.text)
     )
-
-    idcWorker.enqueue(input.topic, message.data.extractions)
-
+    idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
     tdacClient match {
       case Some(tc: TdacClient) =>
         val metadataJValue = parse(input.text)
