@@ -56,7 +56,7 @@ class DialogAgentMqtt(
       case "start" =>
         idcWorker.foreach(_.reset)
         val currentTimestamp = Clock.systemUTC.instant.toString
-        val versionInfo = VersionInfo(this, trialMessage, currentTimestamp)
+        val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
         val outputJson = write(versionInfo)
         val output: BusMessage = BusMessage(topicPubVersionInfo,outputJson)
         tdacClient match {

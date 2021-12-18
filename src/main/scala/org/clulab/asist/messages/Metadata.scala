@@ -1,28 +1,21 @@
 package org.clulab.asist.messages
-
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  *  Updated:  2021 June
  *
  *  This metadata structure will overlay the discrete structures produced by 
- *  Chat, University of Arizona ASR, and Aptima ASR sources, eliminating the
- *  need for discrete message types.
- *
+ *  Chat and University of Arizona ASR eliminating the need for discrete
+ *  message types.
  */
-
-// only what we need
 case class MetadataData(
 
   // From Chat metadata
   sender: String = null, // "player_1"
 
   // From University of Arizona ASR metadata
-  participant_id: String = null, // "player_1"
+  participant_id: String = null, 
   id: String = null,
-
-  // From Aptima ASR metadata
-  playername: String = null, // "player_1"
 
   // From all metadata
   text: String = null // "You want me to share my screen?"
@@ -37,10 +30,15 @@ case class MetadataMsg (
   replay_id: String = null // "876e4567-ab65-cfe7-b208-426305dc1234"
 )
 
+case class MetadataHeader (
+  version: String = null
+)
+
 
 case class Metadata(
-  data: MetadataData,
-  msg: MetadataMsg
+  header: MetadataHeader,
+  msg: MetadataMsg,
+  data: MetadataData
 )
 
 // If we recognize the topic we will process the message.

@@ -35,17 +35,17 @@ class DialogAgent (
 
   val config: Config = ConfigFactory.load()
 
-  val dialogAgentMessageType = "event"
-  val dialogAgentSource = config.getString("DialogAgent.msgSource") 
-  val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
+  // a reference with the config fields populated
+  val workingCopy: DialogAgentMessage = DialogAgentMessage(config)
 
   // Message Bus topics
-  val topicSubChat = config.getString("MqttAgent.topicSubChat")
-  val topicSubAsr = config.getString("MqttAgent.topicSubAsr")
-  val topicSubTrial = config.getString("MqttAgent.topicSubTrial")
-  val topicPubDialogAgent = config.getString("MqttAgent.topicPubDialogAgent")
-  val topicPubVersionInfo = config.getString("MqttAgent.topicPubVersionInfo")
-  val topicPubHeartbeat = config.getString("MqttAgent.topicPubHeartbeat")
+  val topicSubChat = config.getString("Chat.topic")
+  val topicSubAsr = config.getString("Asr.topic")
+  val topicSubTrial = config.getString("Trial.topic")
+
+  val topicPubDialogAgent = config.getString("DialogAgent.topic")
+  val topicPubVersionInfo = config.getString("VersionInfo.topic")
+  val topicPubHeartbeat = config.getString("Heartbeat.topic")
 
   val subscriptions = List(
     topicSubChat,
@@ -68,15 +68,6 @@ class DialogAgent (
    *  @param a The structure to be translated
    */
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
-
-  /** Create a CommonMsg data structure 
-   *  @param timestamp When this data was created
-   */
-  def commonMsg(timestamp: String): CommonMsg = CommonMsg(
-    timestamp = timestamp,
-    source = dialogAgentSource,
-    sub_type = dialogAgentSubType
-  )
 
   /**
    * Extract Odin mentions from text.
@@ -197,16 +188,14 @@ class DialogAgent (
       case _ => null
     }
     DialogAgentMessage(
-      CommonHeader(
+      workingCopy.header.copy(
         timestamp = timestamp,
-        message_type = dialogAgentMessageType
+        version = metadata.header.version
       ),
-      CommonMsg(
+      workingCopy.msg.copy(
         experiment_id = metadata.msg.experiment_id,
         trial_id = metadata.msg.trial_id,
         timestamp = timestamp,
-        source = dialogAgentSource,
-        sub_type = dialogAgentSubType,
         replay_root_id = metadata.msg.replay_root_id,
         replay_id = metadata.msg.replay_id
       ),
@@ -234,11 +223,12 @@ class DialogAgent (
   ): DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      CommonHeader(
+      workingCopy.header.copy(
         timestamp = timestamp,
-        message_type = dialogAgentMessageType
       ),  
-      commonMsg(timestamp),
+      workingCopy.msg.copy(
+        timestamp = timestamp,
+      ),
       dialogAgentMessageData(
         participant_id,
         null,  // ...
