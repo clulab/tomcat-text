@@ -4,7 +4,6 @@ import org.clulab.odin.Attachment
 import com.typesafe.config.Config
 import buildinfo.BuildInfo
 
-
 import org.json4s.jackson.Serialization.read
 
 /**
@@ -54,11 +53,9 @@ case class DialogAgentMessage (
   data: DialogAgentMessageData
 )
 
-
 object DialogAgentMessage {
   def readDialogAgentMessage(s: String): DialogAgentMessage = 
     read[DialogAgentMessage](s)
-
   // as many fields as we can get from the config
   def apply(
     config: Config

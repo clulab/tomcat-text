@@ -21,4 +21,3 @@ case class DialogActClassifierMessage(
 case class Classification(
   name: String = ""
 )
-
