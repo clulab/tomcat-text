@@ -35,8 +35,8 @@ class DialogAgent (
 
   val config: Config = ConfigFactory.load()
 
-  // a reference with the config fields populated
-  val workingCopy: DialogAgentMessage = DialogAgentMessage(config)
+  // A reference with the unchanging config fields populated
+  val templateMessage: DialogAgentMessage = DialogAgentMessage(config)
 
   // Message Bus topics
   val topicSubChat = config.getString("Chat.topic")
@@ -188,11 +188,11 @@ class DialogAgent (
       case _ => null
     }
     DialogAgentMessage(
-      workingCopy.header.copy(
+      templateMessage.header.copy(
         timestamp = timestamp,
         version = metadata.header.version
       ),
-      workingCopy.msg.copy(
+      templateMessage.msg.copy(
         experiment_id = metadata.msg.experiment_id,
         trial_id = metadata.msg.trial_id,
         timestamp = timestamp,
@@ -223,10 +223,10 @@ class DialogAgent (
   ): DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      workingCopy.header.copy(
+      templateMessage.header.copy(
         timestamp = timestamp,
       ),  
-      workingCopy.msg.copy(
+      templateMessage.msg.copy(
         timestamp = timestamp,
       ),
       dialogAgentMessageData(
