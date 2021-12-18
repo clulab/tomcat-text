@@ -28,7 +28,7 @@ object RunDialogAgent extends App {
     "",
     "usage:",
     "",
-    "  mqtt <host> <port> [--tdac <host> <port>]",
+    "  mqtt <host> <port> [--tdac <host> <port>] [--idc]",
     "  stdin",
     "  file <inputfile> <outputfile>",
     "  reprocess <inputdir> <outputdir> [-v ta3_version_number] [--tdac <host> <port>]}",
@@ -41,6 +41,7 @@ object RunDialogAgent extends App {
     "inputdir   : A directory of .metadata files to be reprocessed by the DialogAgent",
     "outputdir  : A directory where reprocessed .metadata files will be saved.",
     "--tdac     : Internet address of the TAMU dialogue act classifier.",
+    "--idc      : Enable parallel processing of message interdependcies",
     ""
   )
 
@@ -78,6 +79,13 @@ object RunDialogAgent extends App {
       None
   }
 
+  /** Find the IDC flag in the arg list
+   * @param argList A flat list of keys and values
+   * @return true if the list contains the string "--idc"
+   */
+  def idcActive(arglist: List[String]): Boolean = arglist.contains("--idc")
+
+
   /** Run the Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
    * @return A DialogAgent running in the mode with the args
@@ -85,7 +93,8 @@ object RunDialogAgent extends App {
   def run(argList: List[String]): Option[DialogAgent] = argList match {
     case ("mqtt"::host::port::l) => 
       val tdac = tdacUrl(l)
-      Some(new DialogAgentMqtt(host, port, tdac))
+      val idc = idcActive(l)
+      Some(new DialogAgentMqtt(host, port, tdac, idc))
     case ("file"::infile::outfile::l) =>
       Some(new DialogAgentFile(infile, outfile))
     case ("stdin"::l) =>
