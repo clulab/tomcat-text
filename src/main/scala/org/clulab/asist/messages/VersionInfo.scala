@@ -127,7 +127,12 @@ object VersionInfo
           VersionInfoDataMessageChannel(
             config.getString("Trial.topic"),
             config.getString("Trial.header.message_type"),
-            config.getString("Trial.msg.sub_type")
+            config.getString("Trial.msg.sub_type.trial_start")
+          ),
+          VersionInfoDataMessageChannel(
+            config.getString("Trial.topic"),
+            config.getString("Trial.header.message_type"),
+            config.getString("Trial.msg.sub_type.trial_stop")
           ),
           VersionInfoDataMessageChannel(
             config.getString("Asr.topic"),
