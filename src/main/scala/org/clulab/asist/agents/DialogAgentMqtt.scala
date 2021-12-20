@@ -40,6 +40,8 @@ class DialogAgentMqtt(
   val heartbeatProducer = new HeartbeatProducer(this)
 
   val source_type = "message_bus"
+  val trial_start = config.getString("Trial.msg.sub_type.trial_start")
+  val trial_stop = config.getString("Trial.msg.sub_type.trial_stop")
 
   // create the IDC worker if required
   val idcWorker: Option[IdcWorker] = 
@@ -53,7 +55,7 @@ class DialogAgentMqtt(
     trialMessage.msg.sub_type match {
 
       // trial start message, reset the TDAC and start heartbeat
-      case "start" =>
+      case `trial_start` =>
         idcWorker.foreach(_.reset)
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
@@ -69,7 +71,7 @@ class DialogAgentMqtt(
         heartbeatProducer.start(trialMessage)
 
       // trial stop message, stop heartbeat
-      case "stop" =>
+      case `trial_stop` =>
         heartbeatProducer.stop 
         finishJob
 
