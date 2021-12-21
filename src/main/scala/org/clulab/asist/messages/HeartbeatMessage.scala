@@ -11,34 +11,11 @@ import com.typesafe.config.Config
  *
  *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/AsistDataIngesterContainer/src/AsistDataIngester/Models/HeartbeatMessage.cs
  *
- * EXAMPLE:
- *
- * {
- *   "header": {
- *     "timestamp": "2021-10-16T01:07:52.824Z",
- *     "message_type": "status",
- *     "version": "0.1" // use testbed trial version if available
- *   },
- *   "msg": {
- *     "timestamp": "2021-10-16T01:07:52.824Z",
- *     "source": "uaz_dialog_agent",
- *     "sub_type": "heartbeat",
- *     "version": 3.1.1 (or whatever the current dialog agent version is)
- *     "trial_id": "t",
- *     "experiment_id": "e"
- *   },
- *   "data": {
- *     "state": "ok",
- *     "active": true,
- *     "status": "I am processing messages"
- *   }
- * }
- *
  */
 
 case class HeartbeatMessageData(
   state: String = null,
-  active: String = null,
+  active: Boolean = false,
   status: String = null
 )
 
@@ -70,7 +47,7 @@ object HeartbeatMessage {
     ),
     HeartbeatMessageData(
       state = config.getString("Heartbeat.data.state"),
-      active = config.getString("Heartbeat.data.active"),
+      active = config.getBoolean("Heartbeat.data.active"),
       status = config.getString("Heartbeat.data.status")
     )
   )
