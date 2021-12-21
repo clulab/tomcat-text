@@ -15,7 +15,7 @@ import com.typesafe.config.Config
 
 case class HeartbeatMessageData(
   state: String = null,
-  active: String = null,
+  active: Boolean = false,
   status: String = null
 )
 
@@ -47,7 +47,7 @@ object HeartbeatMessage {
     ),
     HeartbeatMessageData(
       state = config.getString("Heartbeat.data.state"),
-      active = config.getString("Heartbeat.data.active"),
+      active = config.getBoolean("Heartbeat.data.active"),
       status = config.getString("Heartbeat.data.status")
     )
   )
