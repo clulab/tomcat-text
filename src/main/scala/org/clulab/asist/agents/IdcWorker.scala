@@ -17,6 +17,8 @@ class IdcWorker(
   val owner: MessageBusAgent
 ) extends LazyLogging {
 
+  logger.info("IDC Worker running")
+
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
 
