@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>3.1.6</code></p>
-<p>Document generation timestamp (UTC): <code>2021-12-21 21:29:48.837282</code></p>
+<p>Document generation timestamp (UTC): <code>2021-12-22 17:42:32.022517</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -99,7 +99,7 @@ Concept/Entity/Victim/RegularVictim
 [Concept/Entity/You]
 
 Concept/EventLike/Action/ComplexAction/ChangePriority
-- target (Victim|Person) ()
+- target (Person|Victim) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/ComplexAction/Continue
@@ -131,10 +131,10 @@ Concept/EventLike/Action/SimpleAction/Block
 
 Concept/EventLike/Action/SimpleAction/Clear
 - [agent] (Entity) (?)
-- target (Location|Rubble) ()
+- target (Rubble|Location) ()
 
 Concept/EventLike/Action/SimpleAction/Close
-- [target] (DemPron|Infrastructure) (?)
+- [target] (Infrastructure|DemPron) (?)
 
 Concept/EventLike/Action/SimpleAction/Communicate/Agreement
 
@@ -145,7 +145,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (EventLike|Victim|Person|Item) ()
+- exists (Item|Person|EventLike|Victim) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
@@ -251,13 +251,13 @@ Concept/EventLike/Action/SimpleAction/RoleSwitch
 - target (Role) ()
 
 Concept/EventLike/Action/SimpleAction/Save
-- target (Victim|Person|Entity) ()
+- target (Person|Entity|Victim) ()
 - [location] (Location) (?)
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Sight
 - [agent] (Entity) (?)
-- target (EventLike|Item|Entity) ()
+- target (Item|EventLike|Entity) ()
 - [location] (Location) (?)
 
 Concept/EventLike/Action/SimpleAction/Toggle
