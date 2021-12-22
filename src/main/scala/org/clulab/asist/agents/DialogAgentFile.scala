@@ -6,10 +6,9 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
-import org.clulab.asist.messages._
 import org.clulab.asist.apps.RunDialogAgent
+import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
-//import org.json4s.jackson.Serialization.{read, write}
 
 import scala.io.Source
 import scala.util.control.Exception._

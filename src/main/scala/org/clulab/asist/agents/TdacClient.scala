@@ -7,10 +7,9 @@ import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 import org.json4s.{Extraction, JValue}
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-//import scala.language.postfixOps
+import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 

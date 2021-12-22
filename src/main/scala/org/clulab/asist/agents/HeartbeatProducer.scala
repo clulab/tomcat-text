@@ -1,7 +1,6 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import buildinfo.BuildInfo
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
@@ -9,7 +8,6 @@ import org.clulab.asist.messages._
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
-import scala.language.postfixOps
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal

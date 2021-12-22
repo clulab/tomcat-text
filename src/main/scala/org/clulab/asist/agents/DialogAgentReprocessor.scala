@@ -1,10 +1,6 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.util.ByteString
-import buildinfo.BuildInfo
-import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
@@ -12,15 +8,10 @@ import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.json4s.{Extraction,_}
-//import org.json4s.jackson.JsonMethods._
-//import org.json4s.jackson.Serialization
-//import org.json4s.jackson.Serialization.{read,write}
 
 import scala.annotation.tailrec
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.postfixOps
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 

@@ -4,8 +4,7 @@ import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
-//import org.json4s.jackson.JsonMethods._
-//import org.json4s.jackson.Serialization.{read, write}
+
 import scala.util.control.NonFatal
 
 /**

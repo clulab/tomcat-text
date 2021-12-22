@@ -1,25 +1,12 @@
 package org.clulab.asist.agents
 
-import ai.lum.common.ConfigFactory
 import akka.actor.ActorSystem
-import akka.http.scaladsl._
-import akka.http.scaladsl.model._
-import buildinfo.BuildInfo
-import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
-//import org.json4s.{Extraction,_}
-//import org.json4s.jackson.JsonMethods._
-//import org.json4s.jackson.Serialization.{read, write}
-import scala.collection.mutable.Queue
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.concurrent.duration._
-import scala.language.postfixOps
-import scala.util.control.NonFatal
-import scala.util.{Failure, Success}
 
+import scala.collection.mutable.Queue
+import scala.concurrent.ExecutionContext
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal

@@ -1,23 +1,14 @@
 package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
-import org.clulab.processors.Document
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
-//import org.json4s._
-//import org.json4s.jackson.JsonMethods._
-//import org.json4s.jackson.Serialization
-//import org.json4s.jackson.Serialization.{read, write}
-//import org.json4s.JField
-//import spray.json.DefaultJsonProtocol._
-//import spray.json.JsonParser
+import org.clulab.processors.Document
 
-import scala.collection.immutable
-import scala.io.Source
 import scala.util.control.NonFatal
 
 /**
