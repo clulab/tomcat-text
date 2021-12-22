@@ -4,8 +4,8 @@ import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization.{read, write}
+//import org.json4s.jackson.JsonMethods._
+//import org.json4s.jackson.Serialization.{read, write}
 import scala.util.control.NonFatal
 
 /**
@@ -51,7 +51,7 @@ class DialogAgentMqtt(
    * @param input: Message bus traffic with topic and text
    */
   override def processTrialMessage(input: BusMessage): Unit = try {
-    val trialMessage = read[TrialMessage](input.text)
+    val trialMessage = JsonUtils.readJson[TrialMessage](input.text)
     trialMessage.msg.sub_type match {
 
       // trial start message, reset the TDAC and start heartbeat
@@ -59,7 +59,7 @@ class DialogAgentMqtt(
         idcWorker.foreach(_.reset)
         val currentTimestamp = Clock.systemUTC.instant.toString
         val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
-        val outputJson = write(versionInfo)
+        val outputJson = JsonUtils.writeJson(versionInfo)
         val output: BusMessage = BusMessage(topicPubVersionInfo,outputJson)
         tdacClient match {
           case Some(tc: TdacClient) =>
@@ -98,20 +98,25 @@ class DialogAgentMqtt(
       source_type,
       input.topic,
       input.topic,
-      read[Metadata](input.text)
+      JsonUtils.readJson[Metadata](input.text)
     )
     idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
     tdacClient match {
       case Some(tc: TdacClient) =>
-        val metadataJValue = parse(input.text)
-        tc.runClassification(
-          topicPubDialogAgent,
-          input.text,
-          message.data,
-          metadataJValue
-        )
+        val metadataJValue = JsonUtils.parseJValue(input.text)
+        metadataJValue match {
+          case Some(jvalue) =>
+            tc.runClassification(
+              topicPubDialogAgent,
+              input.text,
+              message.data,
+              jvalue
+            )
+          case None => // unable to parse JSON, move on
+            finishJob
+        }
       case None =>  // no TDAC
-        val outputJson = write(message)
+        val outputJson = JsonUtils.writeJson(message)
         publish(topicPubDialogAgent, outputJson)
         finishJob
     }

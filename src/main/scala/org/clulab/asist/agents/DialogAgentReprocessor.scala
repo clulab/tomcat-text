@@ -12,9 +12,9 @@ import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.json4s.{Extraction,_}
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read,write}
+//import org.json4s.jackson.JsonMethods._
+//import org.json4s.jackson.Serialization
+//import org.json4s.jackson.Serialization.{read,write}
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -149,7 +149,7 @@ class DialogAgentReprocessor (
    *  @return A MetadataLookahead struct
    */
   def readMetadataLookahead(line: String): MetadataLookahead = try {
-    read[MetadataLookahead](line)
+    JsonUtils.readJson[MetadataLookahead](line)
   } catch {
     case NonFatal(t) => new MetadataLookahead
   }
@@ -175,7 +175,7 @@ class DialogAgentReprocessor (
    * @return The original line always, with VersionInfo if trial start
    */
   def processTrialMetadata(inputText: String): Unit = try {
-    val trialMessage = read[TrialMessage](inputText)
+    val trialMessage = JsonUtils.readJson[TrialMessage](inputText)
 
     // transcribe the trial start message 
     val trialOutput = BusMessage(topicSubTrial, inputText)
@@ -202,7 +202,7 @@ class DialogAgentReprocessor (
       val outputJValue = versionInfoJValue.merge(metadataTimestamp)
 
       // Write JValue to JSON
-      val versionInfoJson = write(outputJValue)
+      val versionInfoJson = JsonUtils.writeJson(outputJValue)
 
       // write the version info message
       val versionInfoOutput = BusMessage(topicPubVersionInfo, versionInfoJson)
@@ -228,7 +228,7 @@ class DialogAgentReprocessor (
    */
   def reprocessDialogAgentMetadata(
     inputText: String
-  ): Unit = parseJValue(inputText) match {
+  ): Unit = JsonUtils.parseJValue(inputText) match {
     case Some(metadataJValue: JValue) =>
       metadataJValue \ "data" match { 
         case dataJObject: JObject => 
@@ -242,7 +242,7 @@ class DialogAgentReprocessor (
                 "data"::Nil,
                 Extraction.decompose(newData)
               )
-              finishIteration(BusMessage("", write(newMetadata)))
+              finishIteration(BusMessage("", JsonUtils.writeJson(newMetadata)))
           }
         case JNothing =>
           reprocessDialogAgentError(inputText, metadataJValue)

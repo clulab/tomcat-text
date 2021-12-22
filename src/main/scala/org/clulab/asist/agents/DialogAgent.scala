@@ -8,13 +8,13 @@ import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
-import org.json4s.JField
-import spray.json.DefaultJsonProtocol._
-import spray.json.JsonParser
+//import org.json4s._
+//import org.json4s.jackson.JsonMethods._
+//import org.json4s.jackson.Serialization
+//import org.json4s.jackson.Serialization.{read, write}
+//import org.json4s.JField
+//import spray.json.DefaultJsonProtocol._
+//import spray.json.JsonParser
 
 import scala.collection.immutable
 import scala.io.Source
@@ -67,7 +67,7 @@ class DialogAgent (
   /** Translate a structure to single-line JSON text
    *  @param a The structure to be translated
    */
-  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
+//  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
 
   /**
    * Extract Odin mentions from text.
@@ -244,7 +244,7 @@ class DialogAgent (
    * @return The JSON-defined struct or a defaut if the parsing fails.
    */
   def readDialogAgentMessageData(json: String): DialogAgentMessageData = try {
-    val data = read[DialogAgentMessageData](json)
+    val data = JsonUtils.readJson[DialogAgentMessageData](json)
     data.copy(extractions = getExtractions(data.text))
   } catch {
     case NonFatal(t) => {
@@ -260,6 +260,7 @@ class DialogAgent (
    * @param line Hopefully JSON but could be anything the user tries to run
    * @return A JSON value parsed from the line or None
    */
+  /*
   def parseJValue(line: String): Option[JValue] = try {
     Some(parse(s""" ${line} """))
   } catch {
@@ -268,4 +269,5 @@ class DialogAgent (
       logger.error(t.toString)
       None
   }
+  */
 }

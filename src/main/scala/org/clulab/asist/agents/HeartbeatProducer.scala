@@ -69,7 +69,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
         hm.msg.copy(timestamp = timestamp),
         hm.data
       )
-      val json = agent.writeJson(currentHeartbeat)
+      val json = JsonUtils.writeJson(currentHeartbeat)
       agent.publish(topic, json)
   }
 }
