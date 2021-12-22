@@ -53,10 +53,10 @@
       "version": "0.1",
       "required": [
         "experiment_id",
-         "timestamp",
-         "source",
-         "sub_type",
-         "version"
+        "timestamp",
+        "source",
+        "sub_type",
+        "version"
       ],
       "properties": {
         "experiment_id": {
@@ -132,9 +132,8 @@
       "version": "0.1",
       "required": [
         "participant_id",
-        "asr_msg_id",
         "text",
-        "source",
+        "utterance_source",
         "extractions"
       ],
       "properties": {
@@ -156,7 +155,7 @@
           "examples": [
             "59678a5f-9c5b-451f-8506-04bc020f2cf3"
           ],
-          "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+          "pattern": "^(.*)$"
         },
         "text": {
           "$id": "#/properties/data/properties/text",
@@ -168,8 +167,8 @@
           ],
           "pattern": "^(.*)$"
         },
-        "source": {
-          "$id": "#/properties/data/properties/source",
+        "utterance_source": {
+          "$id": "#/properties/data/properties/utterance_source",
           "type": "object",
           "title": "The Data Source Schema",
           "version": "0.5",
@@ -179,7 +178,7 @@
           ],
           "properties": {
             "source_type": {
-              "$id": "#/properties/data/properties/source/properties/source_type",
+              "$id": "#/properties/data/properties/utterance_source/properties/source_type",
               "type": "string",
               "title": "The Data Source Type Schema",
               "default": "",
@@ -189,7 +188,7 @@
               "pattern": "^([a-z_]*?)$"
             },
             "source_name": {
-              "$id": "#/properties/data/properties/source/properties/source_name",
+              "$id": "#/properties/data/properties/utterance_source/properties/source_name",
               "type": "string",
               "title": "The Data Source Name Schema",
               "default": "",
