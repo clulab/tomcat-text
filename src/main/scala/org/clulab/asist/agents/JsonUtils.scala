@@ -19,6 +19,48 @@ object JsonUtils extends LazyLogging{
    */
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
 
+  /** Remove fields with null values from JSON string 
+   * @param input A JSON string that might have null values
+   * @return The same JSON string with all null-value fields removed
+   */
+  def denullify (input: String): Unit = {
+    val foo: Option[JValue] = parseJValue(input)
+    foo.foreach(f => removeNulls(f))
+  }
+
+  def removeNulls(input: JValue): Unit = {
+    val fields: Map[String, String] = Extraction.flatten(input)
+    val foo: scala.collection.mutable.Map[String, String] = fields.filter(
+      (k: String, v: String) => v !="N/A"
+    )
+
+    logger.info("Fields:")
+    fields.keys.foreach{ key => 
+      val value: String = fields(key)
+        logger.info(s"Key = ${key}, value = ${value}")
+    }
+    logger.info("Filtered Fields:")
+    foo.keys.foreach{ key => 
+      val value:String = foo(key).toString
+      if (value == "N/A") 
+        logger.info(s"Key = ${key}, value = ${value} <<< FOUND")
+      else
+        logger.info(s"Key = ${key}, value = ${value}")
+    }
+  }
+
+/*
+def removeNulls(jsObject: JsObject): JsValue = {
+  JsObject(jsObject.fields.collect {
+    case (s, j: JsObject) =>
+      (s, removeNulls(j))
+    case other if (other._2 != JsNull) =>
+      other
+  })
+}
+*/
+
+
   /** Parse a string into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run
    * @return A JSON value parsed from the line or None
