@@ -10,14 +10,13 @@ import spray.json.JsonParser
 import scala.util.control.NonFatal
 import com.typesafe.scalalogging.LazyLogging
 
-
-
 object JsonUtils extends LazyLogging{
 
   /** Translate a structure to single-line JSON text
    *  @param a The structure to be translated
    */
-  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
+  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String 
+    = write(a)
 
   /** Remove fields with null values from JSON string 
    * @param input A JSON string that might have null values
@@ -30,21 +29,10 @@ object JsonUtils extends LazyLogging{
 
   def removeNulls(input: JValue): Unit = {
     val fields: Map[String, String] = Extraction.flatten(input)
-    val foo: scala.collection.mutable.Map[String, String] = fields.filter(
-      (k: String, v: String) => v !="N/A"
-    )
 
     logger.info("Fields:")
     fields.keys.foreach{ key => 
       val value: String = fields(key)
-        logger.info(s"Key = ${key}, value = ${value}")
-    }
-    logger.info("Filtered Fields:")
-    foo.keys.foreach{ key => 
-      val value:String = foo(key).toString
-      if (value == "N/A") 
-        logger.info(s"Key = ${key}, value = ${value} <<< FOUND")
-      else
         logger.info(s"Key = ${key}, value = ${value}")
     }
   }
