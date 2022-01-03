@@ -1,27 +1,18 @@
 package org.clulab.asist.agents
 
-import ai.lum.common.ConfigFactory
 import akka.actor.ActorSystem
-import akka.http.scaladsl._
-import akka.http.scaladsl.model._
 import buildinfo.BuildInfo
-import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
-import org.json4s.{Extraction,_}
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization.{read, write}
+
 import scala.collection.mutable.Queue
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.concurrent.duration._
-import scala.language.postfixOps
+import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
-import scala.util.{Failure, Success}
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  * This class reads interacts with the Message Bus
  *
@@ -153,7 +144,7 @@ class DialogAgentMqtt(
    * @param input: Message bus traffic with topic and text
    */
   def processTrialMessage(input: BusMessage): Unit = try {
-    val trialMessage = read[TrialMessage](input.text)
+    val trialMessage = JsonUtils.readJson[TrialMessage](input.text)
     trialMessage.msg.sub_type match {
 
       // trial start message, reset the TDAC and start heartbeat
