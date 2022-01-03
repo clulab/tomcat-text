@@ -15,7 +15,7 @@ import scala.util.{Failure, Success}
  */
 
 class IdcWorker(
-  val owner: MessageBusAgent
+  val owner: DialogAgentMqtt
 ) extends LazyLogging {
 
   logger.info("IDC Worker ready.")
