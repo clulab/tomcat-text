@@ -8,6 +8,8 @@ import org.clulab.asist.messages._
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
+import scala.language.postfixOps
+
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
