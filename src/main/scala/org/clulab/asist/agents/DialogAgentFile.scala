@@ -6,10 +6,9 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
-import org.clulab.asist.messages._
 import org.clulab.asist.apps.RunDialogAgent
+import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
-import org.json4s.jackson.Serialization.{read, write}
 
 import scala.io.Source
 import scala.util.control.Exception._
@@ -114,26 +113,26 @@ class DialogAgentFile(
   ): Unit = {
     val source_type = "message_bus" // file metadata originates there
 
-    allCatch.opt(read[MetadataLookahead](line)).map{lookahead =>
+    allCatch.opt(JsonUtils.readJson[MetadataLookahead](line)).map{lookahead =>
       if(topicSubTrial == lookahead.topic) {
-        allCatch.opt(read[TrialMessage](line)).map{trialMessage => 
+        allCatch.opt(JsonUtils.readJson[TrialMessage](line)).map{trialMessage => 
           if(trialMessage.msg.sub_type == "start") {
             val timestamp = Clock.systemUTC.instant.toString
             val versionInfo = VersionInfo(config, trialMessage, timestamp)
-            val json = write(versionInfo)
+            val json = JsonUtils.writeJson(versionInfo)
             output.write(s"${json}\n")
           }
         }
       }
       else if(subscriptions.contains(lookahead.topic)) {
-        allCatch.opt(read[Metadata](line)).map{metadata =>
+        allCatch.opt(JsonUtils.readJson[Metadata](line)).map{metadata =>
           val message = getDialogAgentMessage(
             source_type,
             filename,
             lookahead.topic,
             metadata
           )
-          val json = write(message)
+          val json = JsonUtils.writeJson(message)
           output.write(s"${json}\n")
         }
       }
@@ -154,7 +153,7 @@ class DialogAgentFile(
           block.lines.toList,
           filename
         ).map{message => // struct
-            val json = writeJson(message) 
+            val json = JsonUtils.writeJson(message) 
             output.write(s"${json}\n") // to file
         }
       )
