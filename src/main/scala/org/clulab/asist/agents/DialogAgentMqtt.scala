@@ -48,12 +48,6 @@ class DialogAgentMqtt(
   val trial_start = config.getString("Trial.msg.sub_type.trial_start")
   val trial_stop = config.getString("Trial.msg.sub_type.trial_stop")
 
-  // create the IDC worker if required
-  val idcWorker: Option[IdcWorker] =
-    if(idc) Some(new IdcWorker(this)) else None
-
-  logger.info("Initializing Message Bus connection...")
-
   // communication with Message Bus
   val bus = new MessageBusClient(
     host,
@@ -62,6 +56,10 @@ class DialogAgentMqtt(
     publications,
     this
   )
+
+  // create the IDC worker if required
+  val idcWorker: Option[IdcWorker] =
+    if(idc) Some(new IdcWorker(this)) else None
 
   tdacInit
 
@@ -96,14 +94,15 @@ class DialogAgentMqtt(
 
   /** Write to the Message Bus
    * @param topic:  The message bus topic on which to publish the message
-   * @param text:  A JSON message structure
+   * @param json:  A JSON message structure
    */
   def publish(
     topic: String,
-    text: String
-  ): Unit = {
-    bus.publish(topic, text)
-  }
+    json: String
+  ): Unit = bus.publish(
+    topic,
+    JsonUtils.removeNullFields(json) // do not publish nulls
+  )
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -150,14 +149,17 @@ class DialogAgentMqtt(
       // trial start message, reset the TDAC and start heartbeat
       case `trial_start` =>
         idcWorker.foreach(_.reset)
-        val currentTimestamp = Clock.systemUTC.instant.toString
-        val versionInfo = VersionInfo(config, trialMessage, currentTimestamp)
-        val outputJson = JsonUtils.writeJson(versionInfo)
-
-        // experimental
-        JsonUtils.denullify(outputJson)
-
-        val output: BusMessage = BusMessage(topicPubVersionInfo,outputJson)
+        val currentTimestamp: String = Clock.systemUTC.instant.toString
+        val versionInfo: VersionInfo = VersionInfo(
+          config,
+          trialMessage,
+          currentTimestamp
+        )
+        val outputJson: String = JsonUtils.writeJson(versionInfo)
+        val output: BusMessage = BusMessage(
+          topicPubVersionInfo,
+          outputJson
+        )
         tdacClient match {
           case Some(tc: TdacClient) =>
             tc.resetServer(List(output))
@@ -186,7 +188,7 @@ class DialogAgentMqtt(
    * @param input: Incoming traffic on Message Bus
    */
   def processDialogAgentMessage(input: BusMessage): Unit = try {
-    val message = getDialogAgentMessage(
+    val message: DialogAgentMessage = getDialogAgentMessage(
       source_type,
       input.topic,
       input.topic,
