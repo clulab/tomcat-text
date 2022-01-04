@@ -55,15 +55,15 @@ class DialogAgentReprocessor (
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version}")
 
+  // for the JSON extractor
+  implicit val formats = org.json4s.DefaultFormats
+
   // init the TDAC server connection
   tdacInit
 
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DialogAgentReprocessor")
-
-  // json
-  implicit val formats = org.json4s.DefaultFormats
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
@@ -198,6 +198,7 @@ class DialogAgentReprocessor (
       // write the version info message
       val versionInfoOutput = BusMessage(topicPubVersionInfo, versionInfoJson)
 
+      // we send out the original trial message and the version info
       val outputMessages = List(trialOutput, versionInfoOutput)
 
       tdacClient match {
@@ -215,7 +216,7 @@ class DialogAgentReprocessor (
   }
 
   /** Reprocess a metadata line that has the Dialog Agent topic
-   * @param rs: State of execution at current iteration
+   * @param inputText: Metadata line to reprocess
    */
   def reprocessDialogAgentMetadata(
     inputText: String
@@ -241,7 +242,7 @@ class DialogAgentReprocessor (
           reportProblem(inputText, "Unexpected non-JObject data in top level metadata")
       }
     case _ => 
-      reportProblem(inputText, "Unexpected non-JObject data in top level metadata")
+      reportProblem(inputText, "Unexpected non-JValue data in top level metadata")
   }
 
   /** Recover a Dialog Agent Error report as a Dialog Agent Message
@@ -271,7 +272,7 @@ class DialogAgentReprocessor (
     
 
   /** Write the output of the current iteration and start the next
-   * @param rs: State of execution at current iteration
+   * @param messages: List of messages to be written to the Message Bus
    */
   private def finishIteration(messages: List[BusMessage]): Unit = {
 
@@ -307,15 +308,13 @@ class DialogAgentReprocessor (
 
 
   /** Write the iteration results to the output file.
-   * @param rs: State of execution at current iteration
+   * @param messages a list of message to write to the bus
    * @return The run state updated with the results of the write
    */
   override def writeOutput(messages: List[BusMessage]): Unit = 
     messages.foreach(m => writeOutput(m.text))
 
-  /** Nested iteration through files and their lines of metadata
-   * @param rs: State of execution at current iteration
-   */
+  /** Nested iteration through files and their lines of metadata */
   override def iteration(): Unit = {
    
     // if we have another metadata line, run it.
@@ -349,16 +348,12 @@ class DialogAgentReprocessor (
     }
   }
 
-  /** Handle an error in processing
-   * @param rs: State of execution at current iteration
-   */
+  /** Handle an error in processing */
   override def handleError() {
     iteration
   }
 
-  /** Graceful agent shutdown
-   * @param rs: State of execution at current iteration
-   */
+  /** Graceful agent shutdown */
   def finish() {
     logger.info("All file processing has finished.")
     system.terminate
@@ -366,9 +361,7 @@ class DialogAgentReprocessor (
     finalReport
   }
 
-  /** show statistics at current iteration
-   * @param rs: State of execution at current iteration
-   */
+  /** show statistics at current iteration */
   def finalReport(): Unit = {
     val stopTime = Clock.systemUTC.millis
     val runSecs = (stopTime-startTime)/1000.0
@@ -385,6 +378,7 @@ class DialogAgentReprocessor (
 
   /** log the problem and write the input line to the output file
    * @param report: A description of what happened
+   * @param inputText: The input that caused it to happen
    */
   def reportProblem (
     report: String,
