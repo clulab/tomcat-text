@@ -10,7 +10,6 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 
-
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
@@ -72,4 +71,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
       val json = JsonUtils.writeJson(currentHeartbeat)
       agent.publish(topic, json)
   }
+
+  logger.info(s"Heartbeat publication topic: ${topic}")
+  logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
 }
