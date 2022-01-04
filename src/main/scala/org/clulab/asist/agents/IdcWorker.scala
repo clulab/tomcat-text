@@ -2,6 +2,7 @@ package org.clulab.asist.agents
 
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 

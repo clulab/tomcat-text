@@ -6,13 +6,13 @@ import akka.http.scaladsl.model._
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 import org.json4s.{Extraction, JValue}
-import org.json4s.jackson.Serialization.write
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-import scala.language.postfixOps
+import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
+import scala.language.postfixOps
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -116,7 +116,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
     data: DialogAgentMessageData,
     metadata: JValue
   ): Unit = {
-    val requestJson = write(
+    val requestJson = JsonUtils.writeJson(
       new DialogActClassifierMessage(
         Option(data.participant_id).getOrElse(""),
         Option(data.text).getOrElse(""),
@@ -144,7 +144,10 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
             "data"::Nil,
             Extraction.decompose(newData)
           )
-          val output = BusMessage(outputTopic, write(newMetadata))
+          val output = BusMessage(
+            outputTopic, 
+            JsonUtils.writeJson(newMetadata)
+          )
           agent.writeOutput(List(output))
           agent.iteration
         case Failure(t) =>

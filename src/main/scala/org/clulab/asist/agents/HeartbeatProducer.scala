@@ -1,7 +1,6 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import buildinfo.BuildInfo
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
@@ -69,7 +68,10 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
         hm.msg.copy(timestamp = timestamp),
         hm.data
       )
-      val json = agent.writeJson(currentHeartbeat)
+      val json = JsonUtils.writeJson(currentHeartbeat)
       agent.publish(topic, json)
   }
+
+  logger.info(s"Heartbeat publication topic: ${topic}")
+  logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
 }
