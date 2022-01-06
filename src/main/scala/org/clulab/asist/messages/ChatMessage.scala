@@ -1,18 +1,15 @@
 package org.clulab.asist.messages
 
+import ai.lum.common.ConfigFactory
+import com.typesafe.config.Config
+import org.clulab.asist.agents.JsonUtils
+
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  JSON objects receved on the Message Bus
+ *  Minecraft Chat messages receved on the Message Bus
  */
 
-// Trial start and stop messages
-case class TrialMessage (
-  header: CommonHeader,
-  msg: CommonMsg
-) 
-
-// Minecraft chat
 case class ChatMessageData(
   sender: String = "N/A", 
   text: String = "N/A"
@@ -23,15 +20,18 @@ case class ChatMessage(
   data: ChatMessageData
 )
 
-// UAZ ASR messages
-case class AsrMessageData(
-  participant_id: String = "N/A", 
-  id: String = "N/A", 
-  text: String = "N/A"
-)
-case class AsrMessage(
-  header: CommonHeader,
-  msg: CommonMsg,
-  data: AsrMessageData
-)
+object ChatMessage{
+  val config: Config = ConfigFactory.load()
 
+  // subscribed if these conditions are met
+  val chat_message_type = config.getString("Chat.header.message_type")
+  val chat_sub_type = config.getString("Chat.msg.sub_type")
+
+  def apply(text: String): Option[ChatMessage] =
+    JsonUtils.readJson[ChatMessage](text).filter(isSubscribed)
+
+  def isSubscribed(chat: ChatMessage): Boolean = (
+    (chat.header.message_type == chat_message_type) &&
+    (chat.msg.sub_type == chat_sub_type)
+  )
+}
