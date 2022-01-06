@@ -6,7 +6,6 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import java.time.Clock
-import org.clulab.asist.apps.RunDialogAgent
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 
@@ -34,11 +33,8 @@ class DialogAgentFile(
   val outputFilename: String = ""
 ) extends DialogAgent with LazyLogging {
 
-  logger.info(s"DialogAgentFile version ${BuildInfo.version}")
-
-  // screen input filenames for supported types
-  val supported = List(".vtt", ".metadata")
-  val filenames = LocalFileUtils
+  val supported: List[String] = List(".vtt", ".metadata")
+  val filenames: List[String] = LocalFileUtils
     .getFileNames(inputFilename)
     .filter(f => f.contains("."))
     .filter(f => supported.contains(f.substring(f.lastIndexOf("."))))
@@ -111,31 +107,22 @@ class DialogAgentFile(
     line: String, 
     output: PrintWriter
   ): Unit = {
-    val source_type = "message_bus" // file metadata originates there
-
-    allCatch.opt(JsonUtils.readJson[MetadataLookahead](line)).map{lookahead =>
-      if(topicSubTrial == lookahead.topic) {
-        allCatch.opt(JsonUtils.readJson[TrialMessage](line)).map{trialMessage => 
-          if(trialMessage.msg.sub_type == "start") {
-            val timestamp = Clock.systemUTC.instant.toString
-            val versionInfo = VersionInfo(config, trialMessage, timestamp)
-            val json = JsonUtils.writeJson(versionInfo)
-            output.write(s"${json}\n")
-          }
-        }
-      }
-      else if(subscriptions.contains(lookahead.topic)) {
-        allCatch.opt(JsonUtils.readJson[Metadata](line)).map{metadata =>
-          val message = getDialogAgentMessage(
-            source_type,
-            filename,
-            lookahead.topic,
-            metadata
-          )
-          val json = JsonUtils.writeJson(message)
-          output.write(s"${json}\n")
-        }
-      }
+    val source_type: String = "message_bus" // file metadata originates here
+    val t: Topic = JsonUtils.readJson[Topic](line).getOrElse(Topic())
+    t.topic match {
+      case `topicSubTrial` => 
+        TrialMessage(line)
+          .filter(TrialMessage.isStart)
+          .map(tm => writeOutput(filename, VersionInfo(tm),line, output))
+      case `topicSubChat` => 
+        ChatMessage(line)
+          .map(DialogAgentMessage(source_type, filename, _, this))
+          .map(writeOutput(filename, _, line, output))
+      case `topicSubAsr` => 
+        AsrMessage(line)
+          .map(DialogAgentMessage(source_type, filename, _, this))
+          .map(writeOutput(filename, _, line, output))
+      case _ =>
     }
   }
 
@@ -175,20 +162,44 @@ class DialogAgentFile(
     val source_type = "web_vtt_file"
     lines match {
       case head::tail => {
-        // if a colon exists in the first line, text to left is participant id
+        // if a colon is in the first line, text to left is participant id
         val foo = head.split(':')
         if(foo.length == 1) {
           val text = lines.mkString(" ")
-          Some(getDialogAgentMessage(source_type, filename, null, text))
+          val message = DialogAgentMessage(
+            source_type, 
+            filename,
+            None,
+            text,
+            this
+          )
+          Some(message)
         } else {
           val text = (foo(1)::tail).mkString(" ")
-          Some(getDialogAgentMessage(source_type, filename, foo(0), text))
+          val message = DialogAgentMessage(
+            source_type, 
+            filename,
+            Some(foo(0)),
+            text,
+            this
+          )
+          Some(message)
         }
       }
       case _ => None  // FIXME: Is the multiple-line case really a showstopper?
     }
   }
 
+  def writeOutput(
+    filename: String, 
+    ref: AnyRef, 
+    line: String,
+    output: PrintWriter
+  ): Unit = {
+    val json = JsonUtils.writeJson(ref)
+    val jsonNoNulls = JsonUtils.noNulls(json) // do not publish nulls
+    output.write(s"${jsonNoNulls}\n")
+  }
 
   /** Give the user a hint
    * @param filename a single input file
@@ -197,4 +208,6 @@ class DialogAgentFile(
     logger.error(s"Can't process file '${filename}'")
     logger.error("Extension must be .vtt or .metadata")
   }
+
+  logger.info(s"DialogAgentFile version ${BuildInfo.version}")
 }
