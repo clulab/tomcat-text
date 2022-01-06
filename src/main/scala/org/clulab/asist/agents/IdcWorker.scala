@@ -72,6 +72,7 @@ class IdcWorker(
     future onComplete {
       case Success(a: Unit) =>
         logger.info(s"Done processing job $a")
+        showState
       case Failure(t) =>
         logger.error("Processing error:")
         logger.error(t.toString)
