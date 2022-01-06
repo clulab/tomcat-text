@@ -46,6 +46,7 @@ class IdcWorker(
     extractions: Seq[DialogAgentMessageUtteranceExtraction]
   ): Unit = {
     state.queue.enqueue(IdcData(topic, extractions))
+    showState
     processQueue
   }
 
