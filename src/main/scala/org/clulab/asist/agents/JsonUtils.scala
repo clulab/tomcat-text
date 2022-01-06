@@ -24,16 +24,23 @@ object JsonUtils extends LazyLogging{
 
   /** Deserialize a string into a case class 
    *  @param s JSON string to deserialize
-   *  @return A case class defined by the JSON string 
+   *  @return The defined class or None if parsing fails
    */
-  def readJson[A <: Any](s: String)(implicit m: Manifest[A]): A 
-    = read[A](s)
+  def readJson[A <: Any](s: String)(implicit m: Manifest[A]): Option[A] =
+    try {
+      Some(read[A](s))
+    } catch {
+      case NonFatal(t) => 
+        logger.error("Could not parse JSON:")
+        logger.error(t.toString)
+        None
+    }
 
   /** Remove fields with null values from JSON string 
    * @param input A JSON string that might have null values
    * @return The input string with all null-value fields removed
    */
-  def removeNullFields (input: String): String = {
+  def noNulls (input: String): String = {
     val jvalue:JValue = parseJValue(input).getOrElse(JNothing)
     val map = Extraction.flatten(jvalue).filter{
       case (k: String, v: String) => (v != notSet)
