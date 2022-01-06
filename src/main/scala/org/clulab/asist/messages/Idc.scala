@@ -4,21 +4,12 @@ import scala.collection.mutable.Queue
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Case classes used only within Dialog agents.  Not for publication on
- *  the Message Bus.
- *
- *  For internal use only.
+ *  Case classes used by the IdcWorker class
  */
-
-// a single Message Bus message
-case class BusMessage(
-  topic: String,
-  text: String // may contain newlines
-)
 
 // IDC processing data for one message
 case class IdcData(
-  topic: String = "",
+  topic: String = "N/A",
   extractions: Seq[DialogAgentMessageUtteranceExtraction] = Seq()
 
   // put anything at all here
@@ -32,4 +23,3 @@ case class IdcWorkerState(
   // a persistent state, and that this state can be reset.
   var commandCount: Int = 0
 )
-
