@@ -1,13 +1,11 @@
 package org.clulab.asist.messages
 
 /**
- *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
+ *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Updated:  2021 August
+ *  Texas A&M Dialog Act Classifier (TDAC) messages
  *
- *  Classifier messages
- *
- *  Messages for communication with the Dialog Act Classifier (DAC)
+ *  Messages for communication with the TDAC server
  */
 
 // outbound comms from DialogAgent client to DAC server
