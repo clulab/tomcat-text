@@ -9,7 +9,6 @@ import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 
 import scala.collection.mutable.Queue
 import scala.concurrent.ExecutionContext
-import scala.util.control.NonFatal
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -45,15 +44,21 @@ class DialogAgentMqtt(
   val heartbeatProducer = new HeartbeatProducer(this)
 
   val source_type = "message_bus"
-  val trial_start = config.getString("Trial.msg.sub_type.trial_start")
-  val trial_stop = config.getString("Trial.msg.sub_type.trial_stop")
 
   // communication with Message Bus
   val bus = new MessageBusClient(
     host,
     port,
-    subscriptions,
-    publications,
+    subscriptions = List(
+      topicSubChat,
+      topicSubAsr,
+      topicSubTrial
+    ),
+    publications = List(
+      topicPubDialogAgent,
+      topicPubVersionInfo,
+      topicPubHeartbeat
+    ),
     this
   )
 
@@ -101,7 +106,7 @@ class DialogAgentMqtt(
     json: String
   ): Unit = bus.publish(
     topic,
-    JsonUtils.removeNullFields(json) // do not publish nulls
+    JsonUtils.noNulls(json) // do not publish nulls
   )
 
   /** Receive a message from the message bus
@@ -126,85 +131,98 @@ class DialogAgentMqtt(
 
   // Begin the next job in the queue or do nothing if queue is empty
   def startJob: Unit = if(!queue.isEmpty) {
-    processInput(queue.head)
+    doJob(queue.head)
   }  // else all jobs are done.
 
-  /* Direct bus messages to their handlers by topic */
-  def processInput(
+  /* Direct bus messages to their handlers by topic
+   * @param input: Message bus traffic with topic and text
+   */
+  def doJob(
     input: BusMessage
   ): Unit = input.topic match {
     case `topicSubTrial` => processTrialMessage(input)
-    case `topicSubChat` => processDialogAgentMessage(input)
-    case `topicSubAsr` => processDialogAgentMessage(input)
+    case `topicSubChat` => processChatMessage(input)
+    case `topicSubAsr` => processAsrMessage(input)
     case _ =>
   }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
-   * @param input: Message bus traffic with topic and text
+   * @param input: Incoming traffic from Message Bus
    */
-  def processTrialMessage(input: BusMessage): Unit = try {
-    val trialMessage = JsonUtils.readJson[TrialMessage](input.text)
-    trialMessage.msg.sub_type match {
-
-      // trial start message, reset the TDAC and start heartbeat
-      case `trial_start` =>
-        idcWorker.foreach(_.reset)
-        val currentTimestamp: String = Clock.systemUTC.instant.toString
-        val versionInfo: VersionInfo = VersionInfo(
-          config,
-          trialMessage,
-          currentTimestamp
-        )
+  def processTrialMessage(
+    input: BusMessage
+  ): Unit = TrialMessage(input.text) match {
+    case Some(trialMessage) =>
+      if(TrialMessage.isStart(trialMessage)) { // Trial Start
+        val versionInfo: VersionInfo = VersionInfo(trialMessage)
         val outputJson: String = JsonUtils.writeJson(versionInfo)
         val output: BusMessage = BusMessage(
           topicPubVersionInfo,
           outputJson
         )
         tdacClient match {
-          case Some(tc: TdacClient) =>
+          case Some(tc: TdacClient) => 
             tc.resetServer(List(output))
-          case None =>  // no TDAC
+          case None => 
             writeOutput(List(output))
             finishJob
         }
         heartbeatProducer.start(trialMessage)
-
-      // trial stop message, stop heartbeat
-      case `trial_stop` =>
+        idcWorker.foreach(_.reset)
+      }
+      else if(TrialMessage.isStop(trialMessage)) { // Trial Stop
         heartbeatProducer.stop
         finishJob
-
-      // other trial messages 
-      case _ => finishJob
-    }
-  } catch {
-    case NonFatal(t) =>
-      reportError(input, t.toString)
+      }
+      else finishJob // continue
+    case _ =>
       finishJob
   }
 
-
-  /** Send DialogAgentMessage for any subscribed topic except "trial" 
-   * @param input: Incoming traffic on Message Bus
+  /** process a UAZ ASR message
+   * @param input: Incoming traffic from Message Bus
    */
-  def processDialogAgentMessage(input: BusMessage): Unit = try {
-    val message: DialogAgentMessage = getDialogAgentMessage(
-      source_type,
-      input.topic,
-      input.topic,
-      JsonUtils.readJson[Metadata](input.text)
-    )
+  def processAsrMessage(input: BusMessage): Unit = AsrMessage(input.text)
+    .map(DialogAgentMessage(source_type, input.topic, _, this)) match {
+      case Some(message) =>
+        processDialogAgentMessage(input, message)
+      case None =>
+        finishJob
+    }
+
+  /** process a Minecraft Chat message
+   * @param input: Incoming traffic from Message Bus
+   */
+  def processChatMessage(input: BusMessage): Unit = ChatMessage(input.text)
+    .map(DialogAgentMessage(source_type, input.topic, _, this)) match {
+      case Some(message) =>
+        processDialogAgentMessage(input, message)
+      case None =>
+        finishJob
+    }
+
+  /** Finishing steps for publishing a DialogAgentMessage
+   * @param input: Incoming traffic on Message Bus
+   * @param message: A completed Dialog Agent Message
+   */
+  def processDialogAgentMessage(
+    input: BusMessage,
+    message: DialogAgentMessage
+  ): Unit = {
+    // get the IDC worker going if we have one
     idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
+    // send job to TDAC if we use it
     tdacClient match {
       case Some(tc: TdacClient) =>
-        val metadataJValue = JsonUtils.parseJValue(input.text)
+        val metadataJValue = JsonUtils.parseJValue(input.text) // TODO really?
         metadataJValue match {
           case Some(jvalue) =>
             tc.runClassification(
               topicPubDialogAgent,
               input.text,
               message.data,
-              jvalue
+              jvalue // TODO can't we use the message text?
+
             )
           case None => // unable to parse JSON, move on
             finishJob
@@ -214,10 +232,6 @@ class DialogAgentMqtt(
         publish(topicPubDialogAgent, outputJson)
         finishJob
     }
-  } catch {
-    case NonFatal(t) =>
-      reportError(input, t.toString)
-      finishJob
   }
 
   /** When finished, remove the queue head and start the next job.  */
