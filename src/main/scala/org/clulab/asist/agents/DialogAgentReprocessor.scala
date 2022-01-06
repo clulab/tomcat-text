@@ -127,92 +127,81 @@ class DialogAgentReprocessor (
   @tailrec
   private def fileHasDialogAgentMetadata(
     iter: Iterator[String]
-  ): Boolean = if(!iter.hasNext) false
-  else {
-    val string = iter.next
-    val lookAhead = readMetadataLookahead(string)
-    if(lookAhead.topic == topicPubDialogAgent) true
+  ): Boolean = 
+    if(!iter.hasNext) false
+    else if(readTopic(iter.next) == topicPubDialogAgent) true
     else fileHasDialogAgentMetadata(iter)
-  }
 
-  /** Scan the line as a MetadataLookahead, return default if not readable
+  /** Scan the line for just the topic so we can branch on it
    *  @param line:  A single JSON line
-   *  @return A MetadataLookahead struct
+   *  @return the topic if found, or the Topic.topic default value
    */
-  def readMetadataLookahead(line: String): MetadataLookahead = try {
-    JsonUtils.readJson[MetadataLookahead](line)
-  } catch {
-    case NonFatal(t) => new MetadataLookahead
-  }
+  def readTopic(line: String): String =
+    JsonUtils.readJson[Topic](line).getOrElse(new Topic).topic
 
   /** Reprocess line if DialogAgent-related metadata, otherwise copy
    * @param rs State with input line loaded
    */
-  def processLine(inputText: String): Unit = {
-    readMetadataLookahead(inputText).topic match {
-      case `topicSubTrial` => processTrialMetadata(inputText)
-      case `topicPubDialogAgent` => reprocessDialogAgentMetadata(inputText)
-      case `topicPubVersionInfo` => 
-        // Delete existing DialogAgent-generated VersionInfo
-        iteration
-      case _ => 
-        // Transcribe Unhandled cases
-        finishIteration(BusMessage("",inputText)) 
-    }
+  def processLine(inputText: String): Unit = readTopic(inputText) match {
+    case `topicSubTrial` => processTrialMetadata(inputText)
+    case `topicPubDialogAgent` => reprocessDialogAgentMetadata(inputText)
+    case `topicPubVersionInfo` => 
+      // Delete existing DialogAgent-generated VersionInfo
+      iteration
+    case _ => 
+      // Transcribe Unhandled cases
+      finishIteration(BusMessage("",inputText)) 
   }
 
-  /** Parse a TrialMessage and report Testbed config if trial start.
-   * @param line JSON representation of one DialogAgentMessage struct
-   * @return The original line always, with VersionInfo if trial start
+  /** Parse a TrialMessage and report our configuration if trial start.
+   * @param inputText JSON representation of one Trial message
    */
-  def processTrialMetadata(inputText: String): Unit = try {
-    val trialMessage = JsonUtils.readJson[TrialMessage](inputText)
+  def processTrialMetadata(
+    inputText: String
+  ): Unit = JsonUtils.readJson[TrialMessage](inputText) match {
+    case Some(trialMessage) =>
 
-    // transcribe the trial start message 
-    val trialOutput = BusMessage(topicSubTrial, inputText)
+      // transcribe the trial start message 
+      val trialOutput = BusMessage(topicSubTrial, inputText)
 
-    // If this is the start of a trial, write the input line and 
-    // then follow with a VersionInfo message 
-    if(trialMessage.msg.sub_type == "start") {
+      // If this is the start of a trial, write the input line and 
+      // then follow with a VersionInfo message 
+      if(trialMessage.msg.sub_type == "start") {  // TODO use TrialMessage filter
 
-      // current timestamp string
-      val currentTimestamp = Clock.systemUTC.instant.toString
+        // metadata timestamp JValue
+        val metadataTimestamp:JValue = 
+          Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
 
-      // metadata timestamp JValue
-      val metadataTimestamp = 
-        Extraction.decompose(("@timestamp",trialMessage.msg.timestamp))
+        // VersionInfo struct
+        val versionInfo:VersionInfo = VersionInfo(trialMessage)
 
-      // VersionInfoMetadata struct
-      val versionInfoMetadata = 
-        VersionInfoMetadata(config, trialMessage, currentTimestamp)
+        // JValue representation of struct
+        val versionInfoJValue:JValue = Extraction.decompose(versionInfo)
 
-      // JValue representation of struct
-      val versionInfoJValue = Extraction.decompose(versionInfoMetadata)
+        // Merge of @timestamp into JValue 
+        val outputJValue:JValue = 
+          versionInfoJValue.merge(metadataTimestamp)
 
-      // Merge of @timestamp into JValue 
-      val outputJValue = versionInfoJValue.merge(metadataTimestamp)
+        // Write JValue to JSON
+        val versionInfoJson:String = JsonUtils.writeJson(outputJValue)
 
-      // Write JValue to JSON
-      val versionInfoJson = JsonUtils.writeJson(outputJValue)
+        // write the version info message
+        val versionInfoOutput:BusMessage = 
+          BusMessage(topicPubVersionInfo, versionInfoJson)
 
-      // write the version info message
-      val versionInfoOutput = BusMessage(topicPubVersionInfo, versionInfoJson)
+        // we send out the original trial message and the version info
+        val outputMessages:List[BusMessage] = 
+          List(trialOutput, versionInfoOutput)
 
-      // we send out the original trial message and the version info
-      val outputMessages = List(trialOutput, versionInfoOutput)
-
-      tdacClient match {
-        case Some(tc: TdacClient) => tc.resetServer(outputMessages)
-        case None => finishIteration(outputMessages)
+        tdacClient match {
+          case Some(tc: TdacClient) => tc.resetServer(outputMessages)
+          case None => finishIteration(outputMessages)
+        }
+      } else {
+        // if not a trial start just transcribe the trial message
+        finishIteration(trialOutput)
       }
-    } else {
-      // if not a trial start just transcribe the input line
-      finishIteration(trialOutput)
-    }
-  } catch {
-    case NonFatal(t) =>
-      logger.error("Could not parse Trial metadata")
-      logger.error(t.toString)
+    case _ =>
   }
 
   /** Reprocess a metadata line that has the Dialog Agent topic
@@ -234,18 +223,30 @@ class DialogAgentReprocessor (
                 "data"::Nil,
                 Extraction.decompose(newData)
               )
-              finishIteration(BusMessage("", JsonUtils.writeJson(newMetadata)))
+              finishIteration(
+                BusMessage(
+                  "", 
+                  JsonUtils.writeJson(newMetadata)
+                )
+              )
           }
         case JNothing =>
           reprocessDialogAgentError(inputText, metadataJValue)
         case _ => 
-          reportProblem(inputText, "Unexpected non-JObject data in top level metadata")
+          reportProblem(
+            inputText, 
+            "Unexpected non-JObject data in top level metadata"
+          )
       }
     case _ => 
-      reportProblem(inputText, "Unexpected non-JValue data in top level metadata")
+      reportProblem(
+        inputText,
+        "Unexpected non-JValue data in top level metadata"
+      )
   }
 
   /** Recover a Dialog Agent Error report as a Dialog Agent Message
+   * @param inputText: JSON text for error reporting
    * @param metadataJValue: JSON representation of input line
    */
   def reprocessDialogAgentError(
@@ -254,22 +255,32 @@ class DialogAgentReprocessor (
   ): Unit = {
     metadataJValue \ "error" \ "data" match {
       case dataJString: JString => 
-        val data = readDialogAgentMessageData(dataJString.extract[String])
-        val newMetadata = metadataJValue.transformField {
-          case ("error", _) => ("data", Extraction.decompose(data))
-        }
-        tdacClient match {
-          case Some(tc: TdacClient) => 
-            tc.runClassification("","", data, newMetadata)
+        val text: String = dataJString.extract[String]
+        JsonUtils.readJson[DialogAgentMessageData](text) match {
+          case Some(data) =>
+            val newData:DialogAgentMessageData = data.copy(
+              extractions = getExtractions(data.text)
+            )
+            val newJson = Extraction.decompose(newData)
+            val newMetadata = metadataJValue.transformField {
+              case ("error", _) => ("data", newJson)
+            }
+            tdacClient match {
+              case Some(tc: TdacClient) => 
+                tc.runClassification("","", data, newMetadata)
+              case None =>
+                finishIteration
+            }
           case None =>
             finishIteration
         }
       case _ =>
-        reportProblem(inputText, "Expected error/data field not found in metadata")
+        reportProblem(
+          inputText,
+          "Expected error/data field not found in metadata"
+        )
     }
   }
-
-    
 
   /** Write the output of the current iteration and start the next
    * @param messages: List of messages to be written to the Message Bus
@@ -277,10 +288,8 @@ class DialogAgentReprocessor (
   private def finishIteration(messages: List[BusMessage]): Unit = {
 
     // we need a new thread or will overflow the stack
-    val f: Future[Unit] = 
-      Future {writeOutput(messages)}
-
-    f onComplete {
+    val future: Future[Unit] = Future {writeOutput(messages)}
+    future onComplete {
       case Success(value:Unit) => 
         iteration
       case Failure(t) => 
@@ -305,7 +314,6 @@ class DialogAgentReprocessor (
     case _ =>  
       logger.error("write called without a PrintWriter")
   }
-
 
   /** Write the iteration results to the output file.
    * @param messages a list of message to write to the bus
@@ -369,11 +377,11 @@ class DialogAgentReprocessor (
     val compSecs = runSecs - prepSecs
     logger.info("")
     logger.info("METADATA REPROCESSING SUMMARY:")
-    logger.info("Output directory:               %s".format(outputDirName))
-    logger.info("Input directory:                %s".format(inputDirName))
-    logger.info("Input files present             %d".format(allFiles.length))
-    logger.info("Time to find DialogAgent files: %.1f minutes".format(prepSecs/60.0))
-    logger.info("Time to reprocess:              %.1f minutes".format(compSecs/60.0))
+    logger.info("Output directory:     %s".format(outputDirName))
+    logger.info("Input directory:      %s".format(inputDirName))
+    logger.info("Input files present   %d".format(allFiles.length))
+    logger.info("Time to filter files: %.1f minutes".format(prepSecs/60.0))
+    logger.info("Time to reprocess:    %.1f minutes".format(compSecs/60.0))
   }
 
   /** log the problem and write the input line to the output file
@@ -388,7 +396,7 @@ class DialogAgentReprocessor (
     finishIteration(BusMessage("", inputText))
   }
 
-  /** If the fileName has a TA3 version number, either set it or increment it.
+  /** Change filename if it has a TA3 version number
    * @param inputFileName fileName that may have a TA3 version number
    * @return the inputFileName, with any TA3 version number incremented
    */
@@ -401,13 +409,13 @@ class DialogAgentReprocessor (
     val outputPath = Paths.get(outputDirName,localFileName)
     val outputFileName = outputPath.toFile.getAbsolutePath
 
-    // if the output fileName contains a TA3 version number, increment it by 1
+    // if the output fileName has a TA3 version number, increment it by 1
     val regex = """Vers-(\d+).metadata""".r
     regex.replaceAllIn(outputFileName, _ match {
       case regex(version) => 
         val newVersion: Int = ta3Version.getOrElse(version.toInt +1)
         s"Vers-${newVersion}.metadata"
-      case _ => outputFileName  // otherwise do not change the inputFileName
+      case _ => outputFileName  // otherwise do not change the fileame
     })
   }
 }
