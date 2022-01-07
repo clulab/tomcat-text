@@ -33,8 +33,5 @@ abstract class TdacAgent (
   def writeOutput(messages: List[BusMessage]): Unit
 
   /** Do the next thing in the processing queue. */
-  def iteration(): Unit
-
-  /** Take appropriate action if the tdacClient reports an exception. */
-  def handleError(): Unit
+  def doNextJob(): Unit
 }

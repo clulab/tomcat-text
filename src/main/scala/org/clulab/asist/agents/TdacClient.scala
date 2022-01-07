@@ -90,16 +90,16 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
-          agent.iteration
+          agent.doNextJob
         case Failure(t) =>
           logger.error(s"TDAC server reset failed: ${response.status}")
-          agent.handleError
+          agent.doNextJob
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
-        agent.handleError
+        agent.doNextJob
     }
   }
 
@@ -150,19 +150,19 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
             JsonUtils.writeJson(newMetadata)
           )
           agent.writeOutput(List(output))
-          agent.iteration
+          agent.doNextJob
         case Failure(t) =>
           logger.error(s"TDAC Server classification failed:")
           logger.error(s"HTTP Response status: ${response.status}")
           logger.error(s"Input Text: ${inputText}")
           logger.error(s"Error: ${t.toString}")
-          agent.handleError
+          agent.doNextJob
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Error processing: ${inputText}")
         logger.error(t.toString)
-        agent.handleError
+        agent.doNextJob
     }
   }
 }

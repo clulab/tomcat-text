@@ -113,7 +113,7 @@ class DialogAgentReprocessor (
       logger.info(s"Files to be processed: ${nFiles}")
       logger.info(s"Total lines to be processed: ${fileLineCounts.sum}")
       logger.info("Reprocessing files...")
-      iteration
+      doNextJob
     } 
   }  else {
     logger.error("No files with DialogAgent metadata were found")
@@ -147,7 +147,7 @@ class DialogAgentReprocessor (
     case `topicPubDialogAgent` => reprocessDialogAgentMetadata(inputText)
     case `topicPubVersionInfo` => 
       // Delete existing DialogAgent-generated VersionInfo
-      iteration
+      doNextJob
     case _ => 
       // Transcribe Unhandled cases
       finishIteration(BusMessage("",inputText)) 
@@ -289,10 +289,10 @@ class DialogAgentReprocessor (
     val future: Future[Unit] = Future {writeOutput(messages)}
     future onComplete {
       case Success(value:Unit) => 
-        iteration
+        doNextJob
       case Failure(t) => 
         logger.error(s"An error occured: ${t}")
-        iteration
+        doNextJob
     }
   }
 
@@ -321,7 +321,7 @@ class DialogAgentReprocessor (
     messages.foreach(m => writeOutput(m.text))
 
   /** Nested iteration through files and their lines of metadata */
-  override def iteration(): Unit = {
+  def doNextJob(): Unit = {
    
     // if we have another metadata line, run it.
     if(lineIterator.hasNext) {
@@ -347,16 +347,11 @@ class DialogAgentReprocessor (
 
         logger.info(advisory)
 
-        iteration()
+        doNextJob()
       }
       // if no more files, we are done
       else finish
     }
-  }
-
-  /** Handle an error in processing */
-  override def handleError() {
-    iteration
   }
 
   /** Graceful agent shutdown */

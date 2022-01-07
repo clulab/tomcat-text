@@ -91,12 +91,6 @@ class DialogAgentMqtt(
   /** Take the next job off the queue.  Do this after processing the job */
   private def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
 
-  /** Do the next thing in the processing queue */
-  override def iteration(): Unit = startJob
-
-  /** Manage a processing failure */
-  override def handleError(): Unit = finishJob
-
   /** Write to the Message Bus
    * @param topic:  The message bus topic on which to publish the message
    * @param json:  A JSON message structure
@@ -120,30 +114,25 @@ class DialogAgentMqtt(
 
     // if the queue is empty, there is no aynchronous job in
     // progress and it is safe to start a new one.
-    val noJobRunning = queue.isEmpty
+    val busy = !queue.isEmpty
 
-    // Place the new messsage behind any others in the processing queue
+    // Add message to the processing queue
     enqueue(BusMessage(topic, text))
 
-    // start new async job if none are running
-    if(noJobRunning) startJob
+    // process the message if no other job is running
+    if(!busy) doNextJob
   }
 
-  // Begin the next job in the queue or do nothing if queue is empty
-  private def startJob: Unit = if(!queue.isEmpty) {
-    doJob(queue.head)
-  }  // else all jobs are done.
-
-  /* Direct bus messages to their handlers by topic
-   * @param input: Message bus traffic with topic and text
-   */
-  private def doJob(
-    input: BusMessage
-  ): Unit = input.topic match {
-    case `topicSubTrial` => processTrialMessage(input)
-    case `topicSubChat` => processChatMessage(input)
-    case `topicSubAsr` => processAsrMessage(input)
-    case _ =>
+  /** process the next message in the queu e*/
+  override def doNextJob(): Unit = if(!queue.isEmpty) {
+    dequeue
+    val message: BusMessage = queue.head
+    message.topic match {
+      case `topicSubTrial` => processTrialMessage(message)
+      case `topicSubChat` => processChatMessage(message)
+      case `topicSubAsr` => processAsrMessage(message)
+      case _ => doNextJob
+    }
   }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
@@ -152,25 +141,28 @@ class DialogAgentMqtt(
   private def processTrialMessage(
     input: BusMessage
   ): Unit = TrialMessage(input.text) match {
-    case Some(trialMessage) =>
-      if(TrialMessage.isStart(trialMessage)) { // Trial Start
-        val versionInfo: VersionInfo = VersionInfo(trialMessage)
+    case Some(trial) => 
+      if(TrialMessage.isStart(trial)) { // Trial Start
+        val versionInfo: VersionInfo = VersionInfo(trial)
         val outputJson: String = JsonUtils.writeJson(versionInfo)
         val output: BusMessage = BusMessage(
           topicPubVersionInfo,
           outputJson
         )
-        tdacClient.foreach(_.resetServer)
         idcWorker.foreach(_.reset)
-        heartbeatProducer.start(trialMessage)
+        heartbeatProducer.start(trial)
         writeOutput(List(output))
+        tdacClient match {
+          case Some(tdac) =>tdac.resetServer
+          case _ => doNextJob
+        }
       }
-      else if(TrialMessage.isStop(trialMessage)) { // Trial Stop
+      else if(TrialMessage.isStop(trial)) { // Trial Stop
         heartbeatProducer.stop
+        doNextJob
       }
-      finishJob // continue
-    case _ =>
-      finishJob
+      else doNextJob
+    case _ => doNextJob
   }
 
   /** process a UAZ ASR message
@@ -218,30 +210,14 @@ class DialogAgentMqtt(
   
               )
             case None => // unable to parse JSON, move on
-              finishJob
+              doNextJob
           }
         case None =>  // no TDAC
           val outputJson = JsonUtils.writeJson(message)
           publish(topicPubDialogAgent, outputJson)
-          finishJob
+          doNextJob
       }
     case None => // no message
-      finishJob
-  }
-
-  /** When finished, remove the queue head and start the next job.  */
-  private def finishJob: Unit = if(!queue.isEmpty) {
-    dequeue
-    startJob
-  }
-
-  /** Report an error in parsing a message
-   *  @param input The message that led to the problem
-   *  @param t The problem
-   */
-  private def reportError(input: BusMessage, report: String): Unit = {
-    val preamble = "Could not parse input text"
-    logger.error(s"${preamble} from topic ${input.topic}: ${input.text}")
-    logger.error(report)
+      doNextJob
   }
 }
