@@ -3,7 +3,7 @@ package org.clulab.asist.messages
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Components used by more than one message class.
+ *  Components used by multiple classes
  */
 
 case class Topic(
