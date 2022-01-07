@@ -32,6 +32,6 @@ abstract class TdacAgent (
    */
   def writeOutput(messages: List[BusMessage]): Unit
 
-  /** Do the next thing in the processing queue. */
+  /** process the next message in the job queue. */
   def doNextJob(): Unit
 }
