@@ -31,42 +31,40 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   import system.dispatcher  // from var now in scope
 
   // An optional instance of a HeartbeatMessage with all fields initialized 
-  // except the timestamps.  If defined, this gets used as a template for
+  // except the timestamps.  If defined, this gets used as a base for
   // the creation of heartbeat messages.  Setting it to None will stop
   // the publication of heartbeat messages
-  private var templateMessage: Option[HeartbeatMessage] = None
+  private var base: Option[HeartbeatMessage] = None
 
   // Start the beat on a fixed interval. The beat is always running,
-  // but the heartbeat message is published only if the template is defined.
+  // but the heartbeat message is only published if the base is defined.
   system.scheduler.scheduleWithFixedDelay(
     startSeconds seconds, 
     beatSeconds seconds
   ) {
     new Runnable {
-      def run() = publishHeartbeat
+      def run() = beat
     }
   }
 
-  /** Define the template to start publishing heartbeats
-   *@param tm The current Testbed trial
+  /** Define the base to start publishing heartbeats
+   *@param trial The current Testbed trial
    */
-  def start(trialMessage: TrialMessage): Unit = {
-    templateMessage = Some(HeartbeatMessage(config, trialMessage))
+  def start(trial: TrialMessage): Unit = {
+    base = Some(HeartbeatMessage(trial))
   }
 
-  /** Undefine the template to stop publishing heartbeats */
+  /** Undefine the base to stop publishing heartbeats */
   def stop: Unit = {
-    templateMessage = None
+    base = None
   }
 
-  /** If the template is defined, pulish a copy with correct timestamps */
-  private def publishHeartbeat: Unit = templateMessage.foreach {
+  // publish the heartbeat message if defined
+  private def beat: Unit = base.foreach {
     hm: HeartbeatMessage =>
-      val timestamp = Clock.systemUTC.instant.toString
       val currentHeartbeat = HeartbeatMessage(
-        hm.header.copy(timestamp = timestamp),
-        hm.msg.copy(timestamp = timestamp),
-        hm.data
+        hm,
+        Clock.systemUTC.instant.toString
       )
       val json = JsonUtils.writeJson(currentHeartbeat)
       agent.publish(topic, json)
