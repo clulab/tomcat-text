@@ -38,15 +38,15 @@ class DialogAgentMqtt(
   implicit val system: ActorSystem = ActorSystem("MessageBusAgent")
 
   // enqueue messages from the bus if they're coming in too fast.
-  val queue: Queue[BusMessage] = new Queue 
+  private val queue: Queue[BusMessage] = new Queue 
 
   // Testbed heartbeat
-  val heartbeatProducer = new HeartbeatProducer(this)
+  private val heartbeatProducer = new HeartbeatProducer(this)
 
-  val source_type = "message_bus"
+  private val source_type = "message_bus"
 
   // communication with Message Bus
-  val bus = new MessageBusClient(
+  private val bus = new MessageBusClient(
     host,
     port,
     subscriptions = List(
@@ -63,7 +63,7 @@ class DialogAgentMqtt(
   )
 
   // create the IDC worker if required
-  val idcWorker: Option[IdcWorker] =
+  private val idcWorker: Option[IdcWorker] =
     if(idc) Some(new IdcWorker(this)) else None
 
   tdacInit
@@ -86,10 +86,10 @@ class DialogAgentMqtt(
   /** Add a Message Bus job to the queue 
    *  @param job Job to add
    */
-  def enqueue(job: BusMessage): Unit = queue.enqueue(job)
+  private def enqueue(job: BusMessage): Unit = queue.enqueue(job)
 
   /** Take the next job off the queue.  Do this after processing the job */
-  def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
+  private def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
 
   /** Do the next thing in the processing queue */
   override def iteration(): Unit = startJob
@@ -130,14 +130,14 @@ class DialogAgentMqtt(
   }
 
   // Begin the next job in the queue or do nothing if queue is empty
-  def startJob: Unit = if(!queue.isEmpty) {
+  private def startJob: Unit = if(!queue.isEmpty) {
     doJob(queue.head)
   }  // else all jobs are done.
 
   /* Direct bus messages to their handlers by topic
    * @param input: Message bus traffic with topic and text
    */
-  def doJob(
+  private def doJob(
     input: BusMessage
   ): Unit = input.topic match {
     case `topicSubTrial` => processTrialMessage(input)
@@ -149,7 +149,7 @@ class DialogAgentMqtt(
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Incoming traffic from Message Bus
    */
-  def processTrialMessage(
+  private def processTrialMessage(
     input: BusMessage
   ): Unit = TrialMessage(input.text) match {
     case Some(trialMessage) =>
@@ -160,21 +160,15 @@ class DialogAgentMqtt(
           topicPubVersionInfo,
           outputJson
         )
-        tdacClient match {
-          case Some(tc: TdacClient) => 
-            tc.resetServer(List(output))
-          case None => 
-            writeOutput(List(output))
-            finishJob
-        }
-        heartbeatProducer.start(trialMessage)
+        tdacClient.foreach(_.resetServer)
         idcWorker.foreach(_.reset)
+        heartbeatProducer.start(trialMessage)
+        writeOutput(List(output))
       }
       else if(TrialMessage.isStop(trialMessage)) { // Trial Stop
         heartbeatProducer.stop
-        finishJob
       }
-      else finishJob // continue
+      finishJob // continue
     case _ =>
       finishJob
   }
@@ -182,60 +176,61 @@ class DialogAgentMqtt(
   /** process a UAZ ASR message
    * @param input: Incoming traffic from Message Bus
    */
-  def processAsrMessage(input: BusMessage): Unit = AsrMessage(input.text)
-    .map(DialogAgentMessage(source_type, input.topic, _, this)) match {
-      case Some(message) =>
-        processDialogAgentMessage(input, message)
-      case None =>
-        finishJob
-    }
+  private def processAsrMessage(input: BusMessage): Unit = 
+    processDialogAgentMessage(
+      input,
+      AsrMessage(input.text)
+        .map(DialogAgentMessage(source_type, input.topic, _, this))
+    )
 
   /** process a Minecraft Chat message
    * @param input: Incoming traffic from Message Bus
    */
-  def processChatMessage(input: BusMessage): Unit = ChatMessage(input.text)
-    .map(DialogAgentMessage(source_type, input.topic, _, this)) match {
-      case Some(message) =>
-        processDialogAgentMessage(input, message)
-      case None =>
-        finishJob
-    }
+  private def processChatMessage(input: BusMessage): Unit = 
+    processDialogAgentMessage(
+      input,
+      ChatMessage(input.text)
+        .map(DialogAgentMessage(source_type, input.topic, _, this))
+    )
 
   /** Finishing steps for publishing a DialogAgentMessage
    * @param input: Incoming traffic on Message Bus
    * @param message: A completed Dialog Agent Message
    */
-  def processDialogAgentMessage(
+  private def processDialogAgentMessage(
     input: BusMessage,
-    message: DialogAgentMessage
-  ): Unit = {
-    // get the IDC worker going if we have one
-    idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
-    // send job to TDAC if we use it
-    tdacClient match {
-      case Some(tc: TdacClient) =>
-        val metadataJValue = JsonUtils.parseJValue(input.text) // TODO really?
-        metadataJValue match {
-          case Some(jvalue) =>
-            tc.runClassification(
-              topicPubDialogAgent,
-              input.text,
-              message.data,
-              jvalue // TODO can't we use the message text?
-
-            )
-          case None => // unable to parse JSON, move on
-            finishJob
-        }
-      case None =>  // no TDAC
-        val outputJson = JsonUtils.writeJson(message)
-        publish(topicPubDialogAgent, outputJson)
-        finishJob
-    }
+    messageMaybe: Option[DialogAgentMessage]
+  ): Unit = messageMaybe match {
+    case Some(message) =>
+      // get the IDC worker going if we have one
+      idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
+      // send job to TDAC if we use it
+      tdacClient match {
+        case Some(tc: TdacClient) =>
+          val metadataJValue = JsonUtils.parseJValue(input.text) // TODO really?
+          metadataJValue match {
+            case Some(jvalue) =>
+              tc.runClassification(
+                topicPubDialogAgent,
+                input.text,
+                message.data,
+                jvalue // TODO can't we use the message text?
+  
+              )
+            case None => // unable to parse JSON, move on
+              finishJob
+          }
+        case None =>  // no TDAC
+          val outputJson = JsonUtils.writeJson(message)
+          publish(topicPubDialogAgent, outputJson)
+          finishJob
+      }
+    case None => // no message
+      finishJob
   }
 
   /** When finished, remove the queue head and start the next job.  */
-  def finishJob: Unit = if(!queue.isEmpty) {
+  private def finishJob: Unit = if(!queue.isEmpty) {
     dequeue
     startJob
   }
@@ -244,7 +239,7 @@ class DialogAgentMqtt(
    *  @param input The message that led to the problem
    *  @param t The problem
    */
-  def reportError(input: BusMessage, report: String): Unit = {
+  private def reportError(input: BusMessage, report: String): Unit = {
     val preamble = "Could not parse input text"
     logger.error(s"${preamble} from topic ${input.topic}: ${input.text}")
     logger.error(report)

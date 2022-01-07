@@ -193,10 +193,8 @@ class DialogAgentReprocessor (
         val outputMessages:List[BusMessage] = 
           List(trialOutput, versionInfoOutput)
 
-        tdacClient match {
-          case Some(tc: TdacClient) => tc.resetServer(outputMessages)
-          case None => finishIteration(outputMessages)
-        }
+        tdacClient.foreach(_.resetServer)
+        finishIteration(outputMessages)
       } else {
         // if not a trial start just transcribe the trial message
         finishIteration(trialOutput)

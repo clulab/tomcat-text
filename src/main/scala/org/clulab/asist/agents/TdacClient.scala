@@ -23,11 +23,11 @@ import scala.language.postfixOps
 class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
 
   // actors
-  implicit val ec = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("TdacClient")
+  private implicit val ec = ExecutionContext.global
+  private implicit val system: ActorSystem = ActorSystem("TdacClient")
 
   // json
-  implicit val formats = org.json4s.DefaultFormats
+  private implicit val formats = org.json4s.DefaultFormats
 
   /** Terminate the actor system */
   def terminateActorSystem: Unit = {
@@ -45,7 +45,8 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+      val response: HttpResponse = 
+        Await.ready(future, 10 seconds).value.get.get
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
@@ -61,7 +62,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
     }
   }
 
-  def shutdown(report: String): Unit = {
+  private def shutdown(report: String): Unit = {
     logger.error("Problem encountered during initialization of TDAC server:")
     logger.error(report)
     logger.error("The Agent is shutting down")
@@ -72,9 +73,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   /** Reset the TDAC server during processing
    *  @param busMessages publish if server reset succeeds
    */
-  def resetServer(
-    busMessages: List[BusMessage]
-  ): Unit = {
+  def resetServer(): Unit = {
     logger.info(s"Resetting TDAC server at: ${serverUrl}")
 
     try {
@@ -83,14 +82,14 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+      val response: HttpResponse = 
+        Await.ready(future, 10 seconds).value.get.get
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
       futureReply onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
-          agent.writeOutput(busMessages)
           agent.iteration
         case Failure(t) =>
           logger.error(s"TDAC server reset failed: ${response.status}")
@@ -118,8 +117,8 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   ): Unit = {
     val requestJson = JsonUtils.writeJson(
       new DialogActClassifierMessage(
-        Option(data.participant_id).getOrElse(""),
-        Option(data.text).getOrElse(""),
+        Option(data.participant_id).getOrElse("N/A"),
+        Option(data.text).getOrElse("N/A"),
         Option(data.extractions).getOrElse(Seq())
       )
     )
@@ -129,13 +128,15 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         entity = HttpEntity(ContentTypes.`application/json`,requestJson)
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-      val futureClassification: Future[Classification] = response.entity.dataBytes
-        .runReduce(_ ++ _)
-        .map{ line =>
-          val ret = line.utf8String.split(" ").headOption.map(Classification)
-          ret.getOrElse(new Classification(""))
-        }
+      val response: HttpResponse =
+        Await.ready(future, 10 seconds).value.get.get
+      val futureClassification: Future[Classification] = 
+        response.entity.dataBytes
+          .runReduce(_ ++ _)
+          .map{ line =>
+            line.utf8String.split(" ").headOption.map(Classification)
+              .getOrElse(new Classification(""))
+          }
       futureClassification onComplete {
         case Success(c: Classification) =>  
           val label = c.name.replace("\"","")
@@ -151,7 +152,8 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           agent.writeOutput(List(output))
           agent.iteration
         case Failure(t) =>
-          logger.error(s"TDAC Server classification failed: ${response.status}")
+          logger.error(s"TDAC Server classification failed:")
+          logger.error(s"HTTP Response status: ${response.status}")
           logger.error(s"Input Text: ${inputText}")
           logger.error(s"Error: ${t.toString}")
           agent.handleError
