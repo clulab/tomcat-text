@@ -2,7 +2,7 @@ package org.clulab.asist.messages
 
 import buildinfo.BuildInfo
 import com.typesafe.config.Config
-
+import ai.lum.common.ConfigFactory
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
@@ -13,42 +13,68 @@ import com.typesafe.config.Config
  *
  */
 
+// part of the HeartbeatMessage class
 case class HeartbeatMessageData(
   state: String = "N/A",
   active: Boolean = false,
   status: String = "N/A"
 )
 
-/** Contains the complete specification for a Heartbeat message */
+// published on the Message Bus
 case class HeartbeatMessage (
   header: CommonHeader,
   msg: CommonMsg,
   data: HeartbeatMessageData
 ) 
 
+// member functions
 object HeartbeatMessage {
-
-  def apply(
-    config: Config, 
-    trialMessage: TrialMessage
-  ): HeartbeatMessage = HeartbeatMessage(
+  // remember config settings
+  private val config: Config = ConfigFactory.load()
+  private val base: HeartbeatMessage = HeartbeatMessage(
     CommonHeader(
-      // timestamp set when published
       message_type = config.getString("Heartbeat.header.message_type"),
-      version = trialMessage.header.version
     ),
     CommonMsg(
-      // timestamp set when published
       source = config.getString("Heartbeat.msg.source"),
       sub_type = config.getString("Heartbeat.msg.sub_type"),
       version = BuildInfo.version,
-      trial_id = trialMessage.msg.trial_id,
-      experiment_id = trialMessage.msg.experiment_id
     ),
     HeartbeatMessageData(
       state = config.getString("Heartbeat.data.state"),
       active = config.getBoolean("Heartbeat.data.active"),
       status = config.getString("Heartbeat.data.status")
     )
+  )
+
+  /** Build from a trial message
+   *  @param trial A trial message
+   *  @return A new HeartbeatMessage based on the trial message
+   */
+  def apply(
+    trial: TrialMessage
+  ): HeartbeatMessage = HeartbeatMessage(
+    base.header.copy(
+      version = trial.header.version
+    ),
+    base.msg.copy(
+      trial_id = trial.msg.trial_id,
+      experiment_id = trial.msg.experiment_id
+    ),
+    base.data.copy()
+  )
+
+  /** Set the timing on an existing HeartbeatMessage
+   *  @param hm an existing HeartbeatMessage
+   *  @param timestamp to be set on the copy
+   *  @return the existing message with timestamps set
+   */
+  def apply(
+      hm: HeartbeatMessage,
+      timestamp: String
+  ): HeartbeatMessage = HeartbeatMessage (
+    hm.header.copy(timestamp = timestamp),
+    hm.msg.copy(timestamp = timestamp),
+    hm.data.copy()
   )
 }

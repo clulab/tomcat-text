@@ -10,16 +10,20 @@ import org.clulab.asist.agents.JsonUtils
  *  Minecraft Chat messages subscribed on the Message Bus
  */
 
+// part of the ChatMessage class
 case class ChatMessageData(
   sender: String = "N/A", 
   text: String = "N/A"
 )
+
+// subscribed on the Messge Bus
 case class ChatMessage(
   header: CommonHeader,
   msg: CommonMsg,
   data: ChatMessageData
 )
 
+// member functions
 object ChatMessage{
   private val config: Config = ConfigFactory.load()
 

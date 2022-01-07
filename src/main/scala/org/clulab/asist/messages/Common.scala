@@ -3,7 +3,7 @@ package org.clulab.asist.messages
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Components used by multiple classes
+ *  Components used for subscription and publication on the Message Bus
  */
 
 case class Topic(
@@ -26,10 +26,4 @@ case class CommonMsg (
   version: String = "N/A", // "4.0.0"
   replay_root_id: String = "N/A", // "123e4567-e89b-12d3-a456-426655440000"
   replay_id: String = "N/A" // "876e4567-ab65-cfe7-b208-426305dc1234"
-)
-
-// A single Message Bus message
-case class BusMessage(
-  topic: String = "N/A",
-  text: String = "N/A" // may contain newlines
 )

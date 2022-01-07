@@ -10,17 +10,21 @@ import org.clulab.asist.agents.JsonUtils
  *  UAZ ASR messages subscribed on the Message Bus
  */
 
+//  part of the AsrMessage class
 case class AsrMessageData(
   participant_id: String = "N/A", 
   id: String = "N/A", 
   text: String = "N/A"
 )
+
+// subscribed on the Message Bus
 case class AsrMessage(
   header: CommonHeader,
   msg: CommonMsg,
   data: AsrMessageData
 )
 
+// member functions
 object AsrMessage{
   private val config: Config = ConfigFactory.load()
 

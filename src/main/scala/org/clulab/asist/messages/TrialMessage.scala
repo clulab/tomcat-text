@@ -7,15 +7,16 @@ import org.clulab.asist.agents.JsonUtils
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  JSON objects received on the Message Bus
+ *  Testbed trial messages subscribed on the Message Bus
  */
 
-// Trial start and stop messages
+// subscribed on the Message Bus
 case class TrialMessage (
   header: CommonHeader,
   msg: CommonMsg
 ) 
 
+// member functions
 object TrialMessage {
   private val config: Config = ConfigFactory.load()
 
