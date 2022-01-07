@@ -14,17 +14,16 @@ import org.json4s.jackson.Serialization.read
  *
  *  Dialog Agent Message
  *
- *  DialogAgentMessages are produced by the Dialog Agent, either
- *  as files or on the message bus
+ *  DialogAgentMessages published on the Message Bus
  */
 
-/** Part of the DialogAgentMessageData class */
+// Part of the DialogAgentMessageData class 
 case class DialogAgentMessageUtteranceSource(
   source_type: String = "N/A",
   source_name: String = "N/A"
 )
 
-/** Part of the DialogAgentMessageData class */
+// Part of the DialogAgentMessageData class
 case class DialogAgentMessageUtteranceExtraction(
   labels: Seq[String] = Seq.empty,
   span: String = "N/A",
@@ -36,7 +35,7 @@ case class DialogAgentMessageUtteranceExtraction(
   rule: String = "N/A", // The rule used to produce the extraction.
 )
 
-/** Part of the DialogAgentMessage class */
+// Part of the DialogAgentMessage class
 case class DialogAgentMessageData(
   participant_id: String = "N/A",
   asr_msg_id: String = "N/A",
@@ -46,23 +45,18 @@ case class DialogAgentMessageData(
   extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )
 
-/** Contains the full analysis data of one chat message */
+// published on the Message Bus
 case class DialogAgentMessage (
   header: CommonHeader,
   msg: CommonMsg,
   data: DialogAgentMessageData
 )
 
-
-/** DialogAgentMessage member functions */
+// member functions
 object DialogAgentMessage {
-  val config: Config = ConfigFactory.load()
-
-  def readDialogAgentMessage(s: String): DialogAgentMessage = 
-    read[DialogAgentMessage](s)
-
   // remember config settings
-  val template:DialogAgentMessage = DialogAgentMessage(
+  private val config: Config = ConfigFactory.load()
+  private val base:DialogAgentMessage = DialogAgentMessage(
     CommonHeader(
       message_type = config.getString("DialogAgent.header.message_type"),
       version = config.getString("CommonHeader.version")
@@ -91,18 +85,14 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      CommonHeader(
+      base.header.copy(
         timestamp = timestamp,
-        message_type = template.header.message_type,
         version = chat.header.version
       ),
-      CommonMsg(
+      base.msg.copy(
         experiment_id = chat.msg.experiment_id,
         trial_id = chat.msg.trial_id,
         timestamp = timestamp,
-        source = template.msg.source,
-        sub_type = template.msg.sub_type,
-        version = BuildInfo.version,
         replay_root_id = chat.msg.replay_root_id,
         replay_id = chat.msg.replay_id
       ),
@@ -132,18 +122,14 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      CommonHeader(
+      base.header.copy(
         timestamp = timestamp,
-        message_type = template.header.message_type,
         version = asr.header.version
       ),
-      CommonMsg(
+      base.msg.copy(
         experiment_id = asr.msg.experiment_id,
         trial_id = asr.msg.trial_id,
         timestamp = timestamp,
-        source = template.msg.source,
-        sub_type = template.msg.sub_type,
-        version = BuildInfo.version,
         replay_root_id = asr.msg.replay_root_id,
         replay_id = asr.msg.replay_id
       ),
@@ -176,16 +162,11 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      CommonHeader(
+      base.header.copy(
         timestamp = timestamp,
-        message_type = template.header.message_type,
-        version = template.header.version
       ),
-      CommonMsg(
+      base.msg.copy(
         timestamp = timestamp,
-        source = template.msg.source,
-        sub_type = template.msg.sub_type,
-        version = BuildInfo.version,
       ),
       DialogAgentMessageData(
         participant_id = participant_id.getOrElse("N/A"),
@@ -198,4 +179,11 @@ object DialogAgentMessage {
       )
     )
   }
+
+  /** read from text 
+   * @param s JSON representation of DialogAgentMessage
+   * @return The result of parsing the JSON input string
+   */
+  def readDialogAgentMessage(s: String): DialogAgentMessage = 
+    read[DialogAgentMessage](s)
 }
