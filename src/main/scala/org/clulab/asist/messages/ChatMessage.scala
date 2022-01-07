@@ -7,7 +7,7 @@ import org.clulab.asist.agents.JsonUtils
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Minecraft Chat messages receved on the Message Bus
+ *  Minecraft Chat messages subscribed on the Message Bus
  */
 
 case class ChatMessageData(
@@ -21,17 +21,27 @@ case class ChatMessage(
 )
 
 object ChatMessage{
-  val config: Config = ConfigFactory.load()
+  private val config: Config = ConfigFactory.load()
 
-  // subscribed if these conditions are met
-  val chat_message_type = config.getString("Chat.header.message_type")
-  val chat_sub_type = config.getString("Chat.msg.sub_type")
+  // subscription filter
+  private val header_message_type: String =
+    config.getString("Chat.header.message_type")
+  private val msg_sub_type: String =
+    config.getString("Chat.msg.sub_type")
 
+  /* Build from text
+   * @param text a JSON string to be converted to a Chat message
+   * @return a Chat message meeting the subscrption criteria or None
+   */
   def apply(text: String): Option[ChatMessage] =
     JsonUtils.readJson[ChatMessage](text).filter(isSubscribed)
 
+  /* only messages meeting these criteria are processed
+   * @param chat A Chat message that may or may not meet the criteria
+   * @return true if the message meets the criteria
+   */
   def isSubscribed(chat: ChatMessage): Boolean = (
-    (chat.header.message_type == chat_message_type) &&
-    (chat.msg.sub_type == chat_sub_type)
+    (chat.header.message_type == header_message_type) &&
+    (chat.msg.sub_type == msg_sub_type)
   )
 }
