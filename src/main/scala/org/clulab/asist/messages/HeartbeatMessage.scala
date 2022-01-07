@@ -14,9 +14,9 @@ import com.typesafe.config.Config
  */
 
 case class HeartbeatMessageData(
-  state: String = null,
+  state: String = "N/A",
   active: Boolean = false,
-  status: String = null
+  status: String = "N/A"
 )
 
 /** Contains the complete specification for a Heartbeat message */
