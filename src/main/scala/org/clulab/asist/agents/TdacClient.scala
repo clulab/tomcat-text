@@ -93,13 +93,14 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           agent.doNextJob
         case Failure(t) =>
           logger.error(s"TDAC server reset failed: ${response.status}")
-          agent.doNextJob
+          // do not proceed to next job
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
-        agent.doNextJob
+        // do not proceed to next job
+
     }
   }
 
@@ -130,7 +131,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
       val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse =
         Await.ready(future, 10 seconds).value.get.get
-      val futureClassification: Future[Classification] = 
+      val futureClassification: Future[Classification] =
         response.entity.dataBytes
           .runReduce(_ ++ _)
           .map{ line =>
@@ -138,7 +139,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
               .getOrElse(new Classification(""))
           }
       futureClassification onComplete {
-        case Success(c: Classification) =>  
+        case Success(c: Classification) =>
           val label = c.name.replace("\"","")
           val newData = data.copy(dialog_act_label = label)
           val newMetadata = metadata.replace(
@@ -146,7 +147,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
             Extraction.decompose(newData)
           )
           val output = BusMessage(
-            outputTopic, 
+            outputTopic,
             JsonUtils.writeJson(newMetadata)
           )
           agent.writeOutput(List(output))
@@ -159,7 +160,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           agent.doNextJob
       }
     } catch {
-      case NonFatal(t) => 
+      case NonFatal(t) =>
         logger.error(s"Error processing: ${inputText}")
         logger.error(t.toString)
         agent.doNextJob

@@ -110,14 +110,15 @@ class DialogAgentMqtt(
     // Add message to the processing queue
     queue.enqueue(job)
 
-    // process the message if no other job is running
+    // If the queue was not busy, we must start the job directly
+    // because it will be deleted when it finishes
     if(!busy) doJob(job)
   }
 
   /** process the next message in the queue*/
   override def doNextJob(): Unit = {
-    queue.dequeue
-    if(!queue.isEmpty) doJob(queue.head)
+    queue.dequeue  // delete the queue head, we just finished it
+    if(!queue.isEmpty) doJob(queue.head)  
   }
 
   private def doJob(message: BusMessage): Unit = message.topic match {
@@ -177,7 +178,7 @@ class DialogAgentMqtt(
     )
 
   /** Finishing steps for publishing a DialogAgentMessage
-   * @param input: Incoming traffic on Message Bus
+   * @param topic: where the originating message was subscribed
    * @param message: A completed Dialog Agent Message
    */
   private def processDialogAgentMessage(
@@ -189,23 +190,20 @@ class DialogAgentMqtt(
       idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
       // send job to TDAC if we use it
       tdacClient match {
-        case Some(tc: TdacClient) =>
-          val metadataJValue = JsonUtils.parseJValue(input.text) // TODO really?
-          metadataJValue match {
-            case Some(jvalue) =>
-              tc.runClassification(
-                topicPubDialogAgent,
-                input.text,
+        case Some(tdac) =>
+          JsonUtils.parseJValue(JsonUtils.writeJson(message)) match {
+            case Some(json) =>
+              tdac.runClassification(
+                topicPubDialogAgent, 
+                input.text, 
                 message.data,
-                jvalue // TODO can't we use the message text?
-  
+                json
               )
-            case None => // unable to parse JSON, move on
+            case _ => // JsonUtils will report error, keep going
               doNextJob
           }
         case None =>  // no TDAC
-          val outputJson = JsonUtils.writeJson(message)
-          writeOutput(topicPubDialogAgent, outputJson)
+          writeOutput(topicPubDialogAgent, JsonUtils.writeJson(message))
           doNextJob
       }
     case None => // no message
