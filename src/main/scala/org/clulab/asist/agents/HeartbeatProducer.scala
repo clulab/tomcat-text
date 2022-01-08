@@ -67,7 +67,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
         Clock.systemUTC.instant.toString
       )
       val json = JsonUtils.writeJson(currentHeartbeat)
-      agent.publish(topic, json)
+      agent.writeOutput(topic, json)
   }
 
   logger.info(s"Heartbeat publication topic: ${topic}")

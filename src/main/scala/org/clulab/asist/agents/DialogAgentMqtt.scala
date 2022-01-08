@@ -77,31 +77,20 @@ class DialogAgentMqtt(
     output: List[BusMessage]
   ): Unit = output match {
     case head::tail =>
-      publish(head.topic, head.text)
+      bus.publish(
+        head.topic, 
+        JsonUtils.noNulls(head.text) // do not publish nulls
+      )
       writeOutput(tail)
     case _ => 
-      dequeue 
   }
-
-  /** Add a Message Bus job to the queue 
-   *  @param job Job to add
-   */
-  private def enqueue(job: BusMessage): Unit = queue.enqueue(job)
-
-  /** Take the next job off the queue.  Do this after processing the job */
-  private def dequeue: Unit = if(!queue.isEmpty)queue.dequeue 
 
   /** Write to the Message Bus
    * @param topic:  The message bus topic on which to publish the message
    * @param json:  A JSON message structure
    */
-  def publish(
-    topic: String,
-    json: String
-  ): Unit = bus.publish(
-    topic,
-    JsonUtils.noNulls(json) // do not publish nulls
-  )
+  def writeOutput (topic: String, json: String): Unit = 
+    writeOutput(List(BusMessage(topic, json)))
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -114,25 +103,27 @@ class DialogAgentMqtt(
 
     // if the queue is empty, there is no aynchronous job in
     // progress and it is safe to start a new one.
-    val busy = !queue.isEmpty
+    val busy: Boolean = !queue.isEmpty
+    
+    val job: BusMessage = BusMessage(topic, text)
 
     // Add message to the processing queue
-    enqueue(BusMessage(topic, text))
+    queue.enqueue(job)
 
     // process the message if no other job is running
-    if(!busy) doNextJob
+    if(!busy) doJob(job)
   }
 
-  /** process the next message in the queu e*/
-  override def doNextJob(): Unit = if(!queue.isEmpty) {
-    dequeue
-    val message: BusMessage = queue.head
-    message.topic match {
-      case `topicSubTrial` => processTrialMessage(message)
-      case `topicSubChat` => processChatMessage(message)
-      case `topicSubAsr` => processAsrMessage(message)
-      case _ => doNextJob
-    }
+  /** process the next message in the queue*/
+  override def doNextJob(): Unit = {
+    queue.dequeue
+    if(!queue.isEmpty) doJob(queue.head)
+  }
+
+  private def doJob(message: BusMessage): Unit = message.topic match {
+    case `topicSubTrial` => processTrialMessage(message)
+    case `topicSubChat` => processChatMessage(message)
+    case `topicSubAsr` => processAsrMessage(message)
   }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
@@ -214,7 +205,7 @@ class DialogAgentMqtt(
           }
         case None =>  // no TDAC
           val outputJson = JsonUtils.writeJson(message)
-          publish(topicPubDialogAgent, outputJson)
+          writeOutput(topicPubDialogAgent, outputJson)
           doNextJob
       }
     case None => // no message

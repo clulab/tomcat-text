@@ -146,18 +146,18 @@ object DialogAgentMessage {
     )
   }
 
-  /** build from text
+  /** build from utterance text
   *  @param source_type Source of message data
   *  @param source_name topic or filename
   *  @param participant_id The individual who has spoken
-  *  @param text Spoken text to be analyzed
+  *  @param utterance_text Spoken text to be analyzed
   *  @param agent text processor
   */
   def apply(
     source_type: String,
     source_name: String,
     participant_id: Option[String],
-    text: String,
+    utterance_text: String,
     agent: DialogAgent
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
@@ -170,17 +170,24 @@ object DialogAgentMessage {
       ),
       DialogAgentMessageData(
         participant_id = participant_id.getOrElse("N/A"),
-        text = text,
+        text = utterance_text,
         utterance_source = DialogAgentMessageUtteranceSource(
           source_type,
           source_name
         ),
-        extractions = agent.getExtractions(text)
+        extractions = agent.getExtractions(utterance_text)
       )
     )
   }
 
-  /** read from text 
+  /** build from JSON serializatin
+  *  @param json text serializatin of DialogAgentMessage object
+  *  @return A DialogAgentMessage or None
+  */
+  def apply(json: String): Option[DialogAgentMessage] =
+    JsonUtils.readJson[DialogAgentMessage](json)
+
+  /** read from text
    * @param s JSON representation of DialogAgentMessage
    * @return The result of parsing the JSON input string
    */
