@@ -17,7 +17,7 @@ import scala.language.postfixOps
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Communications with the TAMU Dialog Act Classification (TDAC) server
+ * Communications with the Texas A&M Dialog Act Classification (TDAC) server
  */
 
 class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
@@ -84,10 +84,10 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
       val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse = 
         Await.ready(future, 10 seconds).value.get.get
-      val futureReply: Future[String] = response.entity.dataBytes
+      val futureData: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
-      futureReply onComplete {
+      futureData onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
           agent.doNextJob
@@ -116,31 +116,33 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
     data: DialogAgentMessageData,
     metadata: JValue
   ): Unit = {
-    val requestJson = JsonUtils.writeJson(
-      new DialogActClassifierMessage(
-        Option(data.participant_id).getOrElse("N/A"),
-        Option(data.text).getOrElse("N/A"),
-        Option(data.extractions).getOrElse(Seq())
-      )
-    )
     try {
       val request = HttpRequest(
         uri = Uri(s"${serverUrl}/classify"),
-        entity = HttpEntity(ContentTypes.`application/json`,requestJson)
+        entity = HttpEntity(
+          ContentTypes.`application/json`,
+          JsonUtils.writeJson(
+            DacData(
+              data.participant_id,
+              data.text,
+              data.extractions
+            )
+          )
+        )
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
       val response: HttpResponse =
         Await.ready(future, 10 seconds).value.get.get
-      val futureClassification: Future[Classification] =
+      val futureData: Future[DacLabel] =
         response.entity.dataBytes
           .runReduce(_ ++ _)
           .map{ line =>
-            line.utf8String.split(" ").headOption.map(Classification)
-              .getOrElse(new Classification(""))
+            line.utf8String.split(" ").headOption.map(DacLabel)
+              .getOrElse(new DacLabel(""))
           }
-      futureClassification onComplete {
-        case Success(c: Classification) =>
-          val label = c.name.replace("\"","")
+      futureData onComplete {
+        case Success(dacLabel: DacLabel) =>
+          val label = dacLabel.name.replace("\"","")
           val newData = data.copy(dialog_act_label = label)
           val newMetadata = metadata.replace(
             "data"::Nil,

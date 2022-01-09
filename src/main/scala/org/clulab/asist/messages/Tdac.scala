@@ -8,14 +8,14 @@ package org.clulab.asist.messages
  *  Messages for communication with the TDAC server
  */
 
-// sent from TdacAgent for classification
-case class DialogActClassifierMessage(
+// sent from TdacAgent to TDAC server for classification
+case class DacData(
   participant_id: String = "",
   text: String = "",
   extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )
 
-// returned from DAC server
-case class Classification(
+// returned from TDAC server
+case class DacLabel(
   name: String = ""
 )
