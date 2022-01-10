@@ -56,19 +56,15 @@ case class DialogAgentMessage (
 object DialogAgentMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
-  private val base:DialogAgentMessage = DialogAgentMessage(
-    CommonHeader(
-      message_type = config.getString("DialogAgent.header.message_type"),
-      version = config.getString("CommonHeader.version")
-    ),
-    CommonMsg(
-      source = config.getString("DialogAgent.msg.source"),
-      sub_type = config.getString("DialogAgent.msg.sub_type"),
-      version = BuildInfo.version
-    ),
-    DialogAgentMessageData(
-      utterance_source = DialogAgentMessageUtteranceSource()
-    )
+
+  val header: CommonHeader = CommonHeader(
+    message_type = config.getString("DialogAgent.header.message_type"),
+    version = config.getString("CommonHeader.version")
+  )
+  val msg: CommonMsg = CommonMsg(
+    source = config.getString("DialogAgent.msg.source"),
+    sub_type = config.getString("DialogAgent.msg.sub_type"),
+    version = BuildInfo.version
   )
 
   /** build from Minecraft chat object
@@ -85,11 +81,11 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      base.header.copy(
+      header.copy(
         timestamp = timestamp,
         version = chat.header.version
       ),
-      base.msg.copy(
+      msg.copy(
         experiment_id = chat.msg.experiment_id,
         trial_id = chat.msg.trial_id,
         timestamp = timestamp,
@@ -122,11 +118,11 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      base.header.copy(
+      header.copy(
         timestamp = timestamp,
         version = asr.header.version
       ),
-      base.msg.copy(
+      msg.copy(
         experiment_id = asr.msg.experiment_id,
         trial_id = asr.msg.trial_id,
         timestamp = timestamp,
@@ -162,10 +158,10 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
-      base.header.copy(
+      header.copy(
         timestamp = timestamp,
       ),
-      base.msg.copy(
+      msg.copy(
         timestamp = timestamp,
       ),
       DialogAgentMessageData(
