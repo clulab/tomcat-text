@@ -19,57 +19,32 @@ import scala.util.{Failure, Success}
  * Process a file or the first level of a directory of files
  */
 class DialogAgentFileMetadata(
-  val inputFilename: String = "",
-  val outputFilename: String = "",
+  val metadataFilenames: List[String],
+  val printWriter: PrintWriter,
   tdacUrl: Option[String] = None,
   val idc: Boolean = false
 ) extends TdacAgent with LazyLogging {
 
   logger.info(s"DialogAgentFileMetadata version ${BuildInfo.version}")
 
-  // return a list of tuples with first element filename
-  def fileJobs(filename: String): List[BusMessage] = Source
-    .fromFile(new File(filename))
+  // create the IDC worker if required
+  private val idcWorker: Option[IdcWorker] =
+    if(idc) Some(new IdcWorker(this)) else None
+
+  val allJobs: List[BusMessage] = metadataFilenames.map (filename =>
+    Source.fromFile(new File(filename))
     .getLines
     .toList
     .map(BusMessage(filename, _))
-
-  val allJobs: List[BusMessage] = LocalFileUtils
-    .getFileNames(inputFilename)
-    .filter(_.endsWith(".metadata"))
-    .filter(new File(_).exists)
-    .map(fileJobs)
-    .flatten
+  ).flatten
 
   val jobsIter: Iterator[BusMessage] = allJobs.iterator
-
-  val printWriter: Option[PrintWriter] = try {
-    val ret = Some(new PrintWriter(new File(outputFilename)))
-    logger.info(s"Output will be written to: ${outputFilename}")
-    ret
-  } catch {
-    case NonFatal(t)  =>
-      logger.error(s"Problem opening ${outputFilename} for writing.")
-      logger.error(t.toString)
-      None
-  }
 
   // file metadata originates here
   val source_type: String = "message_bus" 
 
-  // start processing if the output is OK
-  if(printWriter.isDefined)
-    doNextJob
-
-  def doNextJob(): Unit =
-    if(jobsIter.hasNext) {
-      logger.info("Doing next job.")
-      process(jobsIter.next)
-    }
-    else {
-      logger.info("All operations completed successfully.")
-      printWriter.foreach(_.close)
-    }
+  // start processing
+  doNextJob
 
   def process(job: BusMessage): Unit = {
     val filename = job.topic
@@ -112,8 +87,9 @@ class DialogAgentFileMetadata(
     topic: String,
     text: String
   ): Unit = processDialogAgentMessage(
-    AsrMessage(text).map(DialogAgentMessage(source_type, filename, _, this)),
-    text
+    topic,
+    text,
+    AsrMessage(text).map(DialogAgentMessage(source_type, filename, _, this))
   )
 
   def processChat(
@@ -121,24 +97,31 @@ class DialogAgentFileMetadata(
     topic: String,
     text: String
   ): Unit = processDialogAgentMessage(
-    ChatMessage(text).map(DialogAgentMessage(source_type, filename, _, this)),
-    text
+    topic,
+    text,
+    ChatMessage(text).map(DialogAgentMessage(source_type, filename, _, this))
   )
 
   def processDialogAgentMessage(
-    opt: Option[DialogAgentMessage],
-    text: String
+    topic: String,
+    text: String,
+    opt: Option[DialogAgentMessage]
   ): Unit = opt match {
     case Some(dialogAgentMessage) =>
-      processDialogAgentMessage(dialogAgentMessage, text)
+      processDialogAgentMessage(topic, text, dialogAgentMessage)
     case None =>
       doNextJob
   }
 
   def processDialogAgentMessage(
-    m: DialogAgentMessage,
-    text: String
+    topic: String,
+    text: String,
+    m: DialogAgentMessage
   ): Unit = {
+
+    // get the IDC worker going if we have one
+    idcWorker.foreach(_.enqueue(topic, m.data.extractions))
+
     val json = JsonUtils.writeJson(m)
     tdacClient match {
       case Some(tdac) =>
@@ -151,16 +134,25 @@ class DialogAgentFileMetadata(
           )
         }
       case None => // no TDAC
-        writeOutput(topicPubDialogAgent,json)
+        writeOutput(List(BusMessage(topicPubDialogAgent,json)))
     }
   }
+
+  override def doNextJob(): Unit =
+    if(jobsIter.hasNext) {
+      logger.info("Doing next job.")
+      process(jobsIter.next)
+    }
+    else {
+      logger.info("All operations completed successfully.")
+      printWriter.close
+    }
 
   override def writeOutput(messages: List[BusMessage]): Unit = {
     messages.foreach {message =>
       val jsonNoNulls = JsonUtils.noNulls(message.text) // do not publish nulls
-      printWriter.foreach(_.write(s"${jsonNoNulls}\n"))
+      printWriter.write(s"${jsonNoNulls}\n")
     }
-
     doNextJob
   }
 }
