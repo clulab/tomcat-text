@@ -31,20 +31,19 @@ case class HeartbeatMessage (
 object HeartbeatMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
-  private val base: HeartbeatMessage = HeartbeatMessage(
-    CommonHeader(
-      message_type = config.getString("Heartbeat.header.message_type"),
-    ),
-    CommonMsg(
-      source = config.getString("Heartbeat.msg.source"),
-      sub_type = config.getString("Heartbeat.msg.sub_type"),
-      version = BuildInfo.version,
-    ),
-    HeartbeatMessageData(
-      state = config.getString("Heartbeat.data.state"),
-      active = config.getBoolean("Heartbeat.data.active"),
-      status = config.getString("Heartbeat.data.status")
-    )
+
+  val header: CommonHeader = CommonHeader(
+    message_type = config.getString("Heartbeat.header.message_type"),
+  )
+  val msg: CommonMsg =  CommonMsg(
+    source = config.getString("Heartbeat.msg.source"),
+    sub_type = config.getString("Heartbeat.msg.sub_type"),
+    version = BuildInfo.version,
+  )
+  val data: HeartbeatMessageData = HeartbeatMessageData(
+    state = config.getString("Heartbeat.data.state"),
+    active = config.getBoolean("Heartbeat.data.active"),
+    status = config.getString("Heartbeat.data.status")
   )
 
   /** Build from a trial message
@@ -54,14 +53,14 @@ object HeartbeatMessage {
   def apply(
     trial: TrialMessage
   ): HeartbeatMessage = HeartbeatMessage(
-    base.header.copy(
+    header.copy(
       version = trial.header.version
     ),
-    base.msg.copy(
+    msg.copy(
       trial_id = trial.msg.trial_id,
       experiment_id = trial.msg.experiment_id
     ),
-    base.data.copy()
+    data.copy()
   )
 
   /** Set the timing on an existing HeartbeatMessage
