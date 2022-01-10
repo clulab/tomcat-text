@@ -98,18 +98,20 @@ class HomeController @Inject() (cc: ControllerComponents)
     println(s"DOC : ${doc}")
     // Extract mentions from annotated document
     val mentions = agent.extractMentions(doc) 
-    val extractions = agent.getExtractions(mentions)
-    val messageData = agent.dialogAgentMessageData(
-      "P00012",
-      "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
-      "message_bus",
-      "agent/asr/final",
-      text,
-      extractions
+    val messageData = DialogAgentMessageData(
+      participant_id = "P00012",
+      asr_msg_id = "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
+      text = text,
+      dialog_act_label = "N/A",
+      utterance_source = DialogAgentMessageUtteranceSource(
+        source_type = "message_bus",
+        source_name = "agent/asr/final"
+      ),
+      extractions = agent.getExtractions(mentions)
     )
     val timestamp = Clock.systemUTC.instant.toString
     val message = DialogAgentMessage(
-      CommonHeader(timestamp, agent.templateMessage.header.message_type),
+      CommonHeader(timestamp, DialogAgentMessage.header.message_type),
       CommonMsg(
         experiment_id = "367624f8-81cd-4661-a03f-b61908c39581",
         trial_id = "78822ceb-448a-436e-a1f1-f154f2066261",

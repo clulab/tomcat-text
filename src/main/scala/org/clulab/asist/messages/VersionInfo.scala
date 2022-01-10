@@ -56,81 +56,79 @@ object VersionInfo
   private val config: Config = ConfigFactory.load()
   private val testbed = config.getString("VersionInfo.testbed")
   private val dataSource = s"${testbed}:${BuildInfo.version}"
-  private val base: VersionInfo = 
-    VersionInfo(
-      CommonHeader(
-        message_type = config.getString("VersionInfo.header.message_type"),
+
+  val header: CommonHeader = CommonHeader(
+    message_type = config.getString("VersionInfo.header.message_type"),
+  )
+  val msg: CommonMsg = CommonMsg(
+    source = config.getString("VersionInfo.msg.source"),
+    sub_type = config.getString("VersionInfo.msg.sub_type"),
+    version = BuildInfo.version,
+  )
+  val data: VersionInfoData = VersionInfoData(
+    agent_name = config.getString("VersionInfo.data.agent_name"),
+    owner = config.getString("VersionInfo.data.owner"),
+    version = BuildInfo.version,
+    source = List(dataSource),
+    dependencies = List(),
+    config = List(),
+    publishes = List(
+      VersionInfoDataMessageChannel(
+        config.getString("DialogAgent.topic"),
+        config.getString("DialogAgent.header.message_type"),
+        config.getString("DialogAgent.msg.sub_type")
       ),
-      CommonMsg(
-        source = config.getString("VersionInfo.msg.source"),
-        sub_type = config.getString("VersionInfo.msg.sub_type"),
-        version = BuildInfo.version,
+      VersionInfoDataMessageChannel(
+        config.getString("VersionInfo.topic"),
+        config.getString("VersionInfo.header.message_type"),
+        config.getString("VersionInfo.msg.sub_type")
       ),
-      VersionInfoData(
-        agent_name = config.getString("VersionInfo.data.agent_name"),
-        owner = config.getString("VersionInfo.data.owner"),
-        version = BuildInfo.version,
-        source = List(dataSource),
-        dependencies = List(),
-        config = List(),
-        publishes = List(
-          VersionInfoDataMessageChannel(
-            config.getString("DialogAgent.topic"),
-            config.getString("DialogAgent.header.message_type"),
-            config.getString("DialogAgent.msg.sub_type")
-          ),
-          VersionInfoDataMessageChannel(
-            config.getString("VersionInfo.topic"),
-            config.getString("VersionInfo.header.message_type"),
-            config.getString("VersionInfo.msg.sub_type")
-          ),
-          VersionInfoDataMessageChannel(
-            config.getString("Heartbeat.topic"),
-            config.getString("Heartbeat.header.message_type"),
-            config.getString("Heartbeat.msg.sub_type")
-          )
-        ),
-        subscribes = List(
-          VersionInfoDataMessageChannel(
-            config.getString("Trial.topic"),
-            config.getString("Trial.header.message_type"),
-            config.getString("Trial.msg.sub_type.trial_start")
-          ),
-          VersionInfoDataMessageChannel(
-            config.getString("Trial.topic"),
-            config.getString("Trial.header.message_type"),
-            config.getString("Trial.msg.sub_type.trial_stop")
-          ),
-          VersionInfoDataMessageChannel(
-            config.getString("Asr.topic"),
-            config.getString("Asr.header.message_type"),
-            config.getString("Asr.msg.sub_type")
-          ),
-          VersionInfoDataMessageChannel(
-            config.getString("Chat.topic"),
-            config.getString("Chat.header.message_type"),
-            config.getString("Chat.msg.sub_type")
-          )
-        )
+      VersionInfoDataMessageChannel(
+        config.getString("Heartbeat.topic"),
+        config.getString("Heartbeat.header.message_type"),
+        config.getString("Heartbeat.msg.sub_type")
+      )
+    ),
+    subscribes = List(
+      VersionInfoDataMessageChannel(
+        config.getString("Trial.topic"),
+        config.getString("Trial.header.message_type"),
+        config.getString("Trial.msg.sub_type.trial_start")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("Trial.topic"),
+        config.getString("Trial.header.message_type"),
+        config.getString("Trial.msg.sub_type.trial_stop")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("Asr.topic"),
+        config.getString("Asr.header.message_type"),
+        config.getString("Asr.msg.sub_type")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("Chat.topic"),
+        config.getString("Chat.header.message_type"),
+        config.getString("Chat.msg.sub_type")
       )
     )
-
+  )
+  
   /** Build from Trial Message
    *  @param trial A testbed Trial object
    */
   def apply(trialMessage: TrialMessage): VersionInfo = {
     val timestamp = Clock.systemUTC.instant.toString
     VersionInfo(
-      base.header.copy(
+      header.copy(
         timestamp = timestamp,
         version = trialMessage.header.version
       ),
-      base.msg.copy(
+      msg.copy(
         timestamp = timestamp,
         trial_id = trialMessage.msg.trial_id,
         experiment_id = trialMessage.msg.experiment_id
       ),
-      base.data.copy()
+      data.copy()
     )
   }
 }
