@@ -23,7 +23,7 @@ class DialogAgentFileMetadata(
   val outputFilename: String = "",
   tdacUrl: Option[String] = None,
   val idc: Boolean = false
-) extends DialogAgent with LazyLogging {
+) extends TdacAgent with LazyLogging {
 
   logger.info(s"DialogAgentFileMetadata version ${BuildInfo.version}")
 
@@ -78,23 +78,17 @@ class DialogAgentFileMetadata(
     logger.info(s"processing '${topic}")
     topic match {      
       case `topicSubTrial` =>
-        processTrialMessage(filename, topic, text)
-        /*
+        processTrial(filename, topic, text)
       case `topicSubChat` =>
-        ChatMessage(text)
-          .map(DialogAgentMessage(source_type, filename, _, this))
-          .map(writeOutput(_, line))
+        processChat(filename, topic, text)
       case `topicSubAsr` =>
-        AsrMessage(text)
-          .map(DialogAgentMessage(source_type, filename, _, this))
-          .map(writeOutput(_, line))
-          */
+        processAsr(filename, topic, text)
       case _ => doNextJob
     }
   }
 
   // we have to somehow get the topic into the output
-  def processTrialMessage(
+  def processTrial(
     filename: String,
     topic: String,
     text: String
@@ -103,7 +97,7 @@ class DialogAgentFileMetadata(
       if(TrialMessage.isStart(trial)) {
         val versionInfo = VersionInfo(trial)
         val json = JsonUtils.writeJson(versionInfo)
-        val jsonNoNulls:String = JsonUtils.noNulls(json) // do not publish nulls
+        val jsonNoNulls:String = JsonUtils.noNulls(json) 
         // we have to somehow get the topic into the output
         val output = BusMessage(topic, jsonNoNulls)
         writeOutput(List(output))
@@ -113,21 +107,60 @@ class DialogAgentFileMetadata(
       doNextJob
   }
 
+  def processAsr(
+    filename: String,
+    topic: String,
+    text: String
+  ): Unit = processDialogAgentMessage(
+    AsrMessage(text).map(DialogAgentMessage(source_type, filename, _, this)),
+    text
+  )
 
-  def writeOutput(messages: List[BusMessage]): Unit = {
-    messages.foreach(writeOutput)
-    doNextJob
+  def processChat(
+    filename: String,
+    topic: String,
+    text: String
+  ): Unit = processDialogAgentMessage(
+    ChatMessage(text).map(DialogAgentMessage(source_type, filename, _, this)),
+    text
+  )
+
+  def processDialogAgentMessage(
+    opt: Option[DialogAgentMessage],
+    text: String
+  ): Unit = opt match {
+    case Some(dialogAgentMessage) =>
+      processDialogAgentMessage(dialogAgentMessage, text)
+    case None =>
+      doNextJob
   }
 
+  def processDialogAgentMessage(
+    m: DialogAgentMessage,
+    text: String
+  ): Unit = {
+    val json = JsonUtils.writeJson(m)
+    tdacClient match {
+      case Some(tdac) =>
+        JsonUtils.parseJValue(json).map{ jvalue =>
+          tdac.runClassification(
+            topicPubDialogAgent,
+            text,
+            m.data,
+            jvalue
+          )
+        }
+      case None => // no TDAC
+        writeOutput(topicPubDialogAgent,json)
+    }
+  }
 
-  def writeOutput(message: BusMessage): Unit = 
-    printWriter.foreach(_.write(s"${message.text}\n"))
+  override def writeOutput(messages: List[BusMessage]): Unit = {
+    messages.foreach {message =>
+      val jsonNoNulls = JsonUtils.noNulls(message.text) // do not publish nulls
+      printWriter.foreach(_.write(s"${jsonNoNulls}\n"))
+    }
 
-
-
-
-
-
-
-
+    doNextJob
+  }
 }
