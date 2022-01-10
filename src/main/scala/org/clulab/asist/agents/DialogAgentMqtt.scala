@@ -21,15 +21,15 @@ import scala.concurrent.ExecutionContext
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
- * @param tdacUrlOpt TDAC server URL and port, optional
+ * @param tdacUrl TDAC server URL and port, optional
  */
 
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
-  val tdacUrlOpt: Option[String] = None,
+  tdacUrl: Option[String] = None,
   val idc: Boolean = false
-) extends TdacAgent(tdacUrlOpt)
+) extends TdacAgent(tdacUrl)
     with LazyLogging
     with MessageBusClientListener { 
 
@@ -66,11 +66,10 @@ class DialogAgentMqtt(
   private val idcWorker: Option[IdcWorker] =
     if(idc) Some(new IdcWorker(this)) else None
 
+  // Make contact with the TDAC server if it is specified
   tdacInit
 
-  logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
-
-  /** Lines to be written to the MessageBus
+  /** Publish a list of bus messages
    * @param output A list of objects to be published to the Message Bus
    */
   override def writeOutput(
@@ -85,7 +84,7 @@ class DialogAgentMqtt(
     case _ => 
   }
 
-  /** Write to the Message Bus
+  /** Convenience method to write topic and text to the Message Bus
    * @param topic:  The message bus topic on which to publish the message
    * @param json:  A JSON message structure
    */
@@ -161,7 +160,7 @@ class DialogAgentMqtt(
    * @param input: Incoming traffic from Message Bus
    */
   private def processAsrMessage(input: BusMessage): Unit = 
-    processDialogAgentMessage(
+    publishDialogAgentMessage(
       input,
       AsrMessage(input.text)
         .map(DialogAgentMessage(source_type, input.topic, _, this))
@@ -171,17 +170,17 @@ class DialogAgentMqtt(
    * @param input: Incoming traffic from Message Bus
    */
   private def processChatMessage(input: BusMessage): Unit = 
-    processDialogAgentMessage(
+    publishDialogAgentMessage(
       input,
       ChatMessage(input.text)
         .map(DialogAgentMessage(source_type, input.topic, _, this))
     )
 
-  /** Finishing steps for publishing a DialogAgentMessage
+  /** post-processing steps 
    * @param topic: where the originating message was subscribed
    * @param message: A completed Dialog Agent Message
    */
-  private def processDialogAgentMessage(
+  private def publishDialogAgentMessage(
     input: BusMessage,
     messageMaybe: Option[DialogAgentMessage]
   ): Unit = messageMaybe match {
@@ -189,18 +188,16 @@ class DialogAgentMqtt(
       // get the IDC worker going if we have one
       idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
       // send job to TDAC if we use it
+
       tdacClient match {
         case Some(tdac) =>
-          JsonUtils.parseJValue(JsonUtils.writeJson(message)) match {
-            case Some(json) =>
-              tdac.runClassification(
-                topicPubDialogAgent, 
-                input.text, 
-                message.data,
-                json
-              )
-            case _ => // JsonUtils will report error, keep going
-              doNextJob
+          JsonUtils.parseJValue(JsonUtils.writeJson(message)).foreach{jvalue =>
+            tdac.runClassification(
+              topicPubDialogAgent, 
+              input.text, 
+              message.data,
+              jvalue  
+            )
           }
         case None =>  // no TDAC
           writeOutput(topicPubDialogAgent, JsonUtils.writeJson(message))
@@ -209,4 +206,6 @@ class DialogAgentMqtt(
     case None => // no message
       doNextJob
   }
+
+  logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
 }

@@ -7,15 +7,15 @@ import org.clulab.asist.messages.BusMessage
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
  *
- * @param urlMaybe TDAC server network location if set.
+ * @param tdacUrl TDAC server network location if set.
  */
 
 abstract class TdacAgent (
-  val urlMaybe: Option[String] = None
+  val tdacUrl: Option[String] = None
 ) extends DialogAgent with LazyLogging {
   
   // Dialog Act Classification.  No instantiation if not used.
-  val tdacClient: Option[TdacClient] = urlMaybe match {
+  val tdacClient: Option[TdacClient] = tdacUrl match {
     case Some(url) =>
       logger.info(s"TDAC server URL: ${url}")
       Some (new TdacClient(this, url))

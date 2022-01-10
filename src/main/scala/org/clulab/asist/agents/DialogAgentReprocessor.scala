@@ -50,7 +50,7 @@ class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   val ta3Version: Option[Int] = None,
-  val tdacUrl: Option[String] = None,
+  tdacUrl: Option[String] = None,
 ) extends TdacAgent(tdacUrl) with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version}")
