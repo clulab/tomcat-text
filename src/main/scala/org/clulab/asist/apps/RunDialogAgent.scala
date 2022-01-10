@@ -91,11 +91,9 @@ object RunDialogAgent extends App {
       val idc = idcActive(l)
       new DialogAgentMqtt(host, port, tdac, idc)
     case ("file"::infile::outfile::l) =>
-      new DialogAgentFile(infile, outfile)
-    case ("file_metadata"::infile::outfile::l) =>
       val tdac = tdacUrl(l)
       val idc = idcActive(l)
-      new DialogAgentFileMetadata(infile, outfile, tdac, idc)
+      new DialogAgentFile(infile, outfile, tdac, idc)
     case ("stdin"::l) =>
       new DialogAgentStdin
     case ("reprocess"::indir::outdir::l) =>
