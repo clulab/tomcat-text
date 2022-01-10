@@ -17,17 +17,19 @@ import scala.language.postfixOps
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * Communications with the TAMU Dialog Act Classification (TDAC) server
+ * Communications with the Texas A&M Dialog Act Classification (TDAC) server
  */
 
 class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
 
   // actors
-  implicit val ec = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("TdacClient")
+  private implicit val ec = ExecutionContext.global
+  private implicit val system: ActorSystem = ActorSystem("TdacClient")
 
   // json
-  implicit val formats = org.json4s.DefaultFormats
+  private implicit val formats = org.json4s.DefaultFormats
+
+  def close: Unit = terminateActorSystem
 
   /** Terminate the actor system */
   def terminateActorSystem: Unit = {
@@ -45,7 +47,8 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
+      val response: HttpResponse = 
+        Await.ready(future, 10 seconds).value.get.get
       val futureReply: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
@@ -61,7 +64,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
     }
   }
 
-  def shutdown(report: String): Unit = {
+  private def shutdown(report: String): Unit = {
     logger.error("Problem encountered during initialization of TDAC server:")
     logger.error(report)
     logger.error("The Agent is shutting down")
@@ -72,9 +75,7 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   /** Reset the TDAC server during processing
    *  @param busMessages publish if server reset succeeds
    */
-  def resetServer(
-    busMessages: List[BusMessage]
-  ): Unit = {
+  def resetServer(): Unit = {
     logger.info(s"Resetting TDAC server at: ${serverUrl}")
 
     try {
@@ -83,24 +84,23 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         entity = HttpEntity(ContentTypes.`application/json`,"reset-model")
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-      val futureReply: Future[String] = response.entity.dataBytes
+      val response: HttpResponse = 
+        Await.ready(future, 10 seconds).value.get.get
+      val futureData: Future[String] = response.entity.dataBytes
         .runReduce(_ ++ _)
         .map(line => line.utf8String.split(" ").headOption.getOrElse(" "))
-      futureReply onComplete {
+      futureData onComplete {
         case Success(a) =>
           logger.info(s"TDAC server reset succeeded: ${response.status}")
-          agent.writeOutput(busMessages)
-          agent.iteration
+          agent.doNextJob
         case Failure(t) =>
-          logger.error(s"TDAC server reset failed: ${response.status}")
-          agent.handleError
+          shutdown(t.toString)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
-        agent.handleError
+        shutdown(t.toString)
     }
   }
 
@@ -112,55 +112,58 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
    */
   def runClassification(
     outputTopic: String,
-    inputText: String,
     data: DialogAgentMessageData,
     metadata: JValue
   ): Unit = {
-    val requestJson = JsonUtils.writeJson(
-      new DialogActClassifierMessage(
-        Option(data.participant_id).getOrElse(""),
-        Option(data.text).getOrElse(""),
-        Option(data.extractions).getOrElse(Seq())
-      )
-    )
     try {
       val request = HttpRequest(
         uri = Uri(s"${serverUrl}/classify"),
-        entity = HttpEntity(ContentTypes.`application/json`,requestJson)
+        entity = HttpEntity(
+          ContentTypes.`application/json`,
+          JsonUtils.writeJson(
+            DacData(
+              data.participant_id,
+              data.text,
+              data.extractions
+            )
+          )
+        )
       )
       val future: Future[HttpResponse] = Http().singleRequest(request)
-      val response: HttpResponse = Await.ready(future, 10 seconds).value.get.get
-      val futureClassification: Future[Classification] = response.entity.dataBytes
-        .runReduce(_ ++ _)
-        .map{ line =>
-          val ret = line.utf8String.split(" ").headOption.map(Classification)
-          ret.getOrElse(new Classification(""))
-        }
-      futureClassification onComplete {
-        case Success(c: Classification) =>  
-          val label = c.name.replace("\"","")
+      val response: HttpResponse =
+        Await.ready(future, 10 seconds).value.get.get
+      val futureData: Future[DacLabel] =
+        response.entity.dataBytes
+          .runReduce(_ ++ _)
+          .map{ line =>
+            line.utf8String.split(" ").headOption.map(DacLabel)
+              .getOrElse(new DacLabel(""))
+          }
+      futureData onComplete {
+        case Success(dacLabel: DacLabel) =>
+          val label = dacLabel.name.replace("\"","")
           val newData = data.copy(dialog_act_label = label)
           val newMetadata = metadata.replace(
             "data"::Nil,
             Extraction.decompose(newData)
           )
           val output = BusMessage(
-            outputTopic, 
+            outputTopic,
             JsonUtils.writeJson(newMetadata)
           )
           agent.writeOutput(List(output))
-          agent.iteration
+          agent.doNextJob
         case Failure(t) =>
-          logger.error(s"TDAC Server classification failed: ${response.status}")
-          logger.error(s"Input Text: ${inputText}")
+          logger.error(s"TDAC Server HttpResponse failed:")
+          logger.error(s"HTTP Response status: ${response.status}")
           logger.error(s"Error: ${t.toString}")
-          agent.handleError
+          agent.doNextJob
       }
     } catch {
-      case NonFatal(t) => 
-        logger.error(s"Error processing: ${inputText}")
+      case NonFatal(t) =>
+        logger.error(s"TDAC Server classification failed:")
         logger.error(t.toString)
-        agent.handleError
+        agent.doNextJob
     }
   }
 }

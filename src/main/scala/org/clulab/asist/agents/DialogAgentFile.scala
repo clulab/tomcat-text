@@ -5,8 +5,6 @@ import com.crowdscriber.caption.vttdissector.VttDissector
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
-import java.time.Clock
-import org.clulab.asist.apps.RunDialogAgent
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 
@@ -24,143 +22,148 @@ import scala.util.{Failure, Success}
  * DialogAgent subscribed topics and creating new DialogAgentMessages with 
  * that data.
  *
+ * This class does some preliminary checking of input parameters and
+ * then creates a DialogAgentFileSafe instance.
+ *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
- * @param nMatches  maximum number of taxonomy_matches to return (up to 5)
+ * @param tdacUrl Network host and port of the TDAC server
+ * @param idc the IDC Worker will be run if true
  */
-
 class DialogAgentFile(
   val inputFilename: String = "",
-  val outputFilename: String = ""
-) extends DialogAgent with LazyLogging {
+  val outputFilename: String = "",
+  tdacUrl: Option[String] = None,
+  val idc: Boolean = false
+) extends TdacAgent(tdacUrl) with LazyLogging {
 
-  logger.info(s"DialogAgentFile version ${BuildInfo.version}")
+  private val filenames: List[String] = 
+    LocalFileUtils.getFileNames(inputFilename)
 
-  // screen input filenames for supported types
-  val supported = List(".vtt", ".metadata")
-  val filenames = LocalFileUtils
-    .getFileNames(inputFilename)
-    .filter(f => f.contains("."))
-    .filter(f => supported.contains(f.substring(f.lastIndexOf("."))))
-  if(filenames.isEmpty) 
-    logger.error("No valid input files found")
-  else openFileWriter(outputFilename).foreach{fileWriter =>
-    logger.info(s"Using input files: ${filenames.mkString(", ")}")
-    filenames.foreach(file => processFile(file, fileWriter))
-    logger.info("All operations completed successfully.")
-    fileWriter.close 
-  }
+  // create the IDC worker if required
+  private val idcWorker: Option[IdcWorker] =
+    if(idc) Some(new IdcWorker(this)) else None
 
-  /** Create a file writer for a given filename
-   *  @param filename a single input file
-   *  @return A file writer for the filename, or None if an error occurs.
-   */
-  def openFileWriter(
-    filename: String
-  ): Option[PrintWriter] = try {
-    val output = new PrintWriter(new File(filename))
-    logger.info(s"Using output file ${filename}")
-    Some(output)
+  // see if we can open the output file
+  private val printWriter: Option[PrintWriter] = try {
+    val ret = new PrintWriter(new File(outputFilename))
+    logger.info(s"Writing output to ${outputFilename}")
+    Some(ret)
   } catch {
-    case NonFatal(t)  =>
-      logger.error(s"Problem opening ${filename} for writing.")
-      logger.error(t.toString)
-      None
-  } 
-
-  /** process one input file
-   * @param filename a single input file
-   * @param output Printwriter to the output file
-   */
-  def processFile(
-    filename: String, 
-    output: PrintWriter
-  ): Unit = if(filename.contains(".")) {
-    filename.substring(filename.lastIndexOf(".")) match {
-      case ".vtt" =>
-        processWebVttFile(filename, output)
-        logger.info(s"finished processing ${filename}")
-      case ".metadata" =>
-        logger.info(s"processing Metadata file: '${filename}' ...")
-        processMetadataFile(filename, output)
-        logger.info(s"finished processing '${filename}'")
-      case _ => usage(filename)
-    }
-  } else usage(filename)
-
-
-  /** Manage one metadata file
-   * @param filename a single input file
-   * @param output Printwriter to the output file
-   * @return true if the operation succeeded
-   */
-  def processMetadataFile(
-    filename: String,
-    output: PrintWriter
-  ): Unit = {
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines
-    while(lines.hasNext) {
-      processMetadataLine(filename, lines.next, output)
-    }
-    bufferedSource.close
+      case NonFatal(t)  =>
+        logger.error(s"Problem opening ${outputFilename} for writing.")
+        logger.error(t.toString)
+        None
   }
 
-  def processMetadataLine(
-    filename: String, 
-    line: String, 
-    output: PrintWriter
-  ): Unit = {
-    val source_type = "message_bus" // file metadata originates there
+  // jobs can be DialogAgentMessage or VersionInfo
+  private val metadataJobs: List[Any] = filenames
+    .filter(_.endsWith(".metadata"))
+    .map(MetadataFileProcessor(_, this))
+    .flatten
+  private val webVttJobs: List[DialogAgentMessage] = filenames
+    .filter(_.endsWith(".vtt"))
+    .map(WebVttFileProcessor(_, this))
+    .flatten
+  private val jobs: List[Any] = List(metadataJobs, webVttJobs).flatten
+  private val jobsIter: Iterator[Any] = jobs.iterator
 
-    allCatch.opt(JsonUtils.readJson[MetadataLookahead](line)).map{lookahead =>
-      if(topicSubTrial == lookahead.topic) {
-        allCatch.opt(JsonUtils.readJson[TrialMessage](line)).map{trialMessage => 
-          if(trialMessage.msg.sub_type == "start") {
-            val timestamp = Clock.systemUTC.instant.toString
-            val versionInfo = VersionInfo(config, trialMessage, timestamp)
-            val json = JsonUtils.writeJson(versionInfo)
-            output.write(s"${json}\n")
-          }
-        }
-      }
-      else if(subscriptions.contains(lookahead.topic)) {
-        allCatch.opt(JsonUtils.readJson[Metadata](line)).map{metadata =>
-          val message = getDialogAgentMessage(
-            source_type,
-            filename,
-            lookahead.topic,
-            metadata
+  jobs.length match {
+    case 0 => 
+      logger.error("No input was found")
+      printWriter.foreach(_.close)
+    case n: Int =>
+      logger.info(s"Processing ${n} messages...")
+      doNextJob
+  }
+
+  private def process(a: Any): Unit = a match {
+    case Some(v: VersionInfo) => processVersionInfo(v)
+    case Some(m: DialogAgentMessage) => processDialogAgentMessage(m)
+    case None => doNextJob
+  }
+
+  private def processVersionInfo(v: VersionInfo): Unit = {
+    logger.info(s"Processing VersionInfo, timestamp = ${v.header.timestamp}")
+    val json = JsonUtils.writeJson(v)
+    writeOutput(
+      topicPubVersionInfo,
+      json
+    )
+    tdacClient match {
+      case Some(tdac) => tdac.resetServer
+      case None => doNextJob
+    }
+  }
+
+  private def processDialogAgentMessage(m: DialogAgentMessage): Unit = {
+    logger.info(s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}")
+    idcWorker.foreach(_.enqueue(m.data.extractions))
+    val json = JsonUtils.writeJson(m)
+    tdacClient match {
+      case Some(tdac) =>
+        JsonUtils.parseJValue(json).map{ jvalue =>
+          tdac.runClassification(
+            topicPubDialogAgent,
+            m.data,
+            jvalue
           )
-          val json = JsonUtils.writeJson(message)
-          output.write(s"${json}\n")
         }
-      }
+      case None => // no TDAC
+        writeOutput(topicPubDialogAgent,json)
+        doNextJob
     }
   }
 
-  /** Manage one WebVtt file
-  *  @param filename input filename
-  *  @param output Printwriter to the output file
-  */
-  def processWebVttFile(
-    filename: String, 
-    output: PrintWriter
+  // need to get topic in output
+  private def writeOutput(
+    topic: String,
+    text: String
   ): Unit = {
+    val jsonNoNulls = JsonUtils.noNulls(text) // do not publish nulls
+    printWriter.foreach(_.write(s"${jsonNoNulls}\n"))
+  }
+
+  override def doNextJob(): Unit = 
+  if(jobsIter.hasNext) 
+    process(jobsIter.next)
+  else {
+    printWriter.foreach(_.close)
+    tdacClient.foreach(_.close)
+    idcWorker.foreach(_.close)
+    logger.info("All operations completed successfully.")
+  }
+
+  override def writeOutput(messages: List[BusMessage]): Unit =  
+    messages.foreach(m => writeOutput(m.topic, m.text))
+}
+
+object WebVttFileProcessor extends LazyLogging {
+
+  def apply(
+    filename: String,
+    agent: DialogAgent
+  ): List[DialogAgentMessage] = try {
     VttDissector(new FileInputStream(new File(filename))) match {
-      case Success(blocks) => blocks.map(block =>
-        processWebVttElement(
-          block.lines.toList,
-          filename
-        ).map{message => // struct
-            val json = JsonUtils.writeJson(message) 
-            output.write(s"${json}\n") // to file
-        }
-      )
-      case Failure(f) => 
+      case Success(blocks) =>
+        blocks.map{block =>
+          logger.info(s"processing '${filename}' ...")
+          processWebVttElement(
+            filename,
+            agent,
+            block.lines.toList
+          )
+        }.toList.flatten
+      case Failure(f) =>
         logger.error("VttDissector could not parse '%s'".format(filename))
         logger.error(f.toString)
+        List.empty
     }
+  } catch {
+    case NonFatal(t) =>
+      logger.error(s"Could not process '${filename}'")
+      logger.error(t.toString)
+      List.empty
   }
 
   /** process one web_vtt block
@@ -168,33 +171,67 @@ class DialogAgentFile(
   *  @param filename The name of the input file where the block was read
   *  @return A DialogAgentMessage based on the inputs
   */
-  def processWebVttElement(
-    lines: List[String],
-    filename: String
-  ): Option[DialogAgentMessage] = {
+  private def processWebVttElement(
+    filename: String,
+    agent: DialogAgent,
+    lines: List[String]
+  ): Option[DialogAgentMessage] = { 
     val source_type = "web_vtt_file"
     lines match {
-      case head::tail => {
-        // if a colon exists in the first line, text to left is participant id
+      case head::tail =>  
+        // if a colon is in the first line, text to left is participant id
         val foo = head.split(':')
-        if(foo.length == 1) {
-          val text = lines.mkString(" ")
-          Some(getDialogAgentMessage(source_type, filename, null, text))
-        } else {
-          val text = (foo(1)::tail).mkString(" ")
-          Some(getDialogAgentMessage(source_type, filename, foo(0), text))
-        }
-      }
-      case _ => None  // FIXME: Is the multiple-line case really a showstopper?
+        if(foo.length == 1) Some(
+          DialogAgentMessage(
+            source_type,
+            filename,
+            None,
+            lines.mkString(" "),
+            agent
+          )
+        )
+        else Some(
+          DialogAgentMessage(
+            source_type,
+            filename,
+            Some(foo(0)),
+            (foo(1)::tail).mkString(" "),
+            agent
+          )
+        )
+      case _ => None  // no lines
     }
   }
+}
 
+object MetadataFileProcessor extends LazyLogging {
 
-  /** Give the user a hint
-   * @param filename a single input file
-   */
-  def usage(filename: String): Unit = {
-    logger.error(s"Can't process file '${filename}'")
-    logger.error("Extension must be .vtt or .metadata")
+  private val source_type = "message_bus"
+
+  // one file
+  def apply(
+    filename: String,
+    agent: DialogAgent
+  ): List[Any] = Source.fromFile(new File(filename))
+    .getLines
+    .toList
+    .map(processLine(filename,agent,_))
+
+  private def processLine(
+    filename: String,
+    agent: DialogAgent,
+    text: String
+  ): Option[Any] = {
+    val topic = JsonUtils.readJson[Topic](text).getOrElse(Topic()).topic 
+    topic match {
+      case agent.topicSubTrial => TrialMessage(text)
+        .filter(TrialMessage.isStart(_))
+        .map(VersionInfo(_))
+      case agent.topicSubChat => ChatMessage(text)
+        .map(DialogAgentMessage(source_type, filename, _, agent))
+      case agent.topicSubAsr => AsrMessage(text)
+        .map(DialogAgentMessage(source_type, filename, _, agent))
+      case _ => None
+    }
   }
 }
