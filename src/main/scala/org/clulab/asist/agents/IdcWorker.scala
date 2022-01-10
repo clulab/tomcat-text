@@ -1,8 +1,10 @@
 package org.clulab.asist.agents
 
+import akka.actor.ActorSystem
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 
+import scala.collection.mutable.Queue
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -15,72 +17,68 @@ import scala.util.{Failure, Success}
  */
 
 class IdcWorker(
-  val owner: DialogAgentMqtt
+  val owner: DialogAgent
 ) extends LazyLogging {
 
   logger.info("IDC Worker ready.")
 
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
+  implicit val system: ActorSystem = ActorSystem("IdcWorker")
 
-  // persistent state
-  var state: IdcWorkerState = new IdcWorkerState()
-
-  // reset the state to the start state
-  def reset(): Unit = {
-    logger.info("State of the IdcWorker:")
-    showState
-    logger.info("Resetting the IdcWorker:")
-    // empty the queue
-    state.queue.dequeueAll(_)
-    state = new IdcWorkerState()
-    showState
-  }
+  val queue: Queue[IdcData] = new Queue
 
   /** Add an extraction sequence to the back of the queue
    *  @param topic - the Message Bus where the data was read
    *  @param extractions - derived from the data read on the topic
    */
   def enqueue(
-    topic: String,
     extractions: Seq[DialogAgentMessageUtteranceExtraction]
   ): Unit = {
-    state.queue.enqueue(IdcData(topic, extractions))
-    processQueue
+    showState
+    val busy = !queue.isEmpty
+    val data = IdcData(extractions, IdcWorkerState(0))
+    queue.enqueue(data)
+    if(!busy)doNextJob
   }
 
   /** show the state of this class instance */
-  def showState(): Unit = {
-    val len = state.queue.length
-    len match {
-      case 0 => logger.info("The queue is empty")
-      case 1 => logger.info("There is one sequence in the queue")
-      case _ => logger.info(s"There are $len sequences in the queue")
-    }
-  }
+  def showState(): Unit = logger.info(s"Size of queue is ${queue.length}")
 
   /** Return the next sequence in the queue, or None if queue is empty */
-  def nextInQueue(): Option[IdcData] = {
-    if(state.queue.isEmpty) None
-    else Some(state.queue.head) // note that this does not dequeue the sequence
-  }
-
-  /** Entry point for non-blocking processing */
-  def processQueue(): Unit = {
-    val future: Future[Unit] = Future(doSomeProcessing)
-    future onComplete {
-      case Success(a: Unit) =>
-        logger.info(s"Done processing job $a")
-      case Failure(t) =>
-        logger.error("Processing error:")
-        logger.error(t.toString)
+  def doNextJob(): Unit = {
+    showState
+    if(!queue.isEmpty) {
+      val future: Future[Unit] = Future(doSomeProcessing(queue.head))
+      future onComplete {
+        case Success(a: Unit) =>
+          logger.info(s"Done processing job")
+          queue.dequeue
+          doNextJob
+        case Failure(t) =>
+          logger.error("Processing error:")
+          logger.error(t.toString)
+      }
     }
   }
 
   /** This method runs as a detached process */
-  def doSomeProcessing(): Unit = {
-    val seconds = 10
+  def doSomeProcessing(data: IdcData): Unit = {
+    val seconds = 2
     logger.info(s"Starting processing of job for $seconds seconds ...")
     Thread.sleep(seconds*1000)
+  }
+
+  // allow actor system to gracefully shut down
+  def close: Unit = {
+    val seconds = 3
+    if(queue.isEmpty) {
+      logger.info("Shutting down the IdcWorker:")
+      system.terminate
+    }
+    else { // keep checking until the queue has finished processing
+      Thread.sleep(seconds*1000) 
+      close
+    }
   }
 }

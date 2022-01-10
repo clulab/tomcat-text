@@ -4,6 +4,9 @@ organization := "org.clulab"
 
 scalaVersion := "2.12.4"
 
+// uncomment to allow graceful keyboard interrupt
+// fork in run := true
+
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
 initialize := {
