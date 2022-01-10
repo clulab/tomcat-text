@@ -29,6 +29,8 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   // json
   private implicit val formats = org.json4s.DefaultFormats
 
+  def close: Unit = terminateActorSystem
+
   /** Terminate the actor system */
   def terminateActorSystem: Unit = {
     system.terminate
@@ -110,7 +112,6 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
    */
   def runClassification(
     outputTopic: String,
-    inputText: String,
     data: DialogAgentMessageData,
     metadata: JValue
   ): Unit = {
@@ -153,15 +154,14 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           agent.writeOutput(List(output))
           agent.doNextJob
         case Failure(t) =>
-          logger.error(s"TDAC Server classification failed:")
+          logger.error(s"TDAC Server HttpResponse failed:")
           logger.error(s"HTTP Response status: ${response.status}")
-          logger.error(s"Input Text: ${inputText}")
           logger.error(s"Error: ${t.toString}")
           agent.doNextJob
       }
     } catch {
       case NonFatal(t) =>
-        logger.error(s"Error processing: ${inputText}")
+        logger.error(s"TDAC Server classification failed:")
         logger.error(t.toString)
         agent.doNextJob
     }

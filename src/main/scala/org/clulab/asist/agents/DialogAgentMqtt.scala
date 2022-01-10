@@ -140,7 +140,6 @@ class DialogAgentMqtt(
           topicPubVersionInfo,
           outputJson
         )
-        idcWorker.foreach(_.reset)
         heartbeatProducer.start(trial)
         writeOutput(List(output))
         tdacClient match {
@@ -186,15 +185,14 @@ class DialogAgentMqtt(
   ): Unit = messageMaybe match {
     case Some(message) =>
       // get the IDC worker going if we have one
-      idcWorker.foreach(_.enqueue(input.topic, message.data.extractions))
-      // send job to TDAC if we use it
+      idcWorker.foreach(_.enqueue(message.data.extractions))
 
+      // send job to TDAC if we use it
       tdacClient match {
         case Some(tdac) =>
           JsonUtils.parseJValue(JsonUtils.writeJson(message)).foreach{jvalue =>
             tdac.runClassification(
               topicPubDialogAgent, 
-              input.text, 
               message.data,
               jvalue  
             )

@@ -215,7 +215,7 @@ class DialogAgentReprocessor (
           val newData = data.copy(extractions = getExtractions(data.text))
           tdacClient match {
             case Some(tc: TdacClient) => 
-              tc.runClassification("", inputText, newData, metadataJValue)
+              tc.runClassification("", newData, metadataJValue)
             case None => 
               val newMetadata = metadataJValue.replace(
                 "data"::Nil,
@@ -265,7 +265,7 @@ class DialogAgentReprocessor (
             }
             tdacClient match {
               case Some(tc: TdacClient) => 
-                tc.runClassification("","", data, newMetadata)
+                tc.runClassification("", data, newMetadata)
               case None =>
                 finishIteration
             }
