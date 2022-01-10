@@ -28,9 +28,8 @@ abstract class TdacAgent (
 
   /** Write the runstate output to the output for the extending class
    * @param messages output for the message bus
-   * @return The execution state of the agent after writing the output
    */
-  def writeOutput(messages: List[BusMessage]): Unit
+  def writeOutput(messages: List[BusMessage]): Unit 
 
   /** process the next message in the job queue. */
   def doNextJob(): Unit
