@@ -180,8 +180,8 @@ object DialogAgentMessage {
     )
   }
 
-  /** build from JSON serializatin
-  *  @param json text serializatin of DialogAgentMessage object
+  /** build from JSON serialization
+  *  @param json text serialization of DialogAgentMessage object
   *  @return A DialogAgentMessage or None
   */
   def apply(json: String): Option[DialogAgentMessage] =
