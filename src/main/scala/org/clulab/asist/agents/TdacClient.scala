@@ -92,15 +92,13 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
           logger.info(s"TDAC server reset succeeded: ${response.status}")
           agent.doNextJob
         case Failure(t) =>
-          logger.error(s"TDAC server reset failed: ${response.status}")
-          // do not proceed to next job
+          shutdown(t.toString)
       }
     } catch {
       case NonFatal(t) => 
         logger.error(s"Could not reset TDAC server at: ${serverUrl}")
         logger.error("Please ensure the TDAC server is running")
-        // do not proceed to next job
-
+        shutdown(t.toString)
     }
   }
 
