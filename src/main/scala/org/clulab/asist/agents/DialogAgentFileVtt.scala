@@ -30,7 +30,7 @@ import scala.util.{Failure, Success}
  * @param tdacUrl Network host and port of the TDAC server
  * @param idc the IDC Worker will be run if true
  */
-class DialogAgentFile(
+class DialogAgentFileVtt(
   val inputFilename: String = "",
   val outputFilename: String = "",
   tdacUrl: Option[String] = None,
@@ -38,9 +38,6 @@ class DialogAgentFile(
 ) extends TdacAgent(tdacUrl) with LazyLogging {
 
   val supported: List[String] = List(".vtt", ".metadata")
-
-
-  // Get all the files from the input, filtering for those we support
   val filenames: List[String] = LocalFileUtils
     .getFileNames(inputFilename)
     .filter(f => f.contains("."))
