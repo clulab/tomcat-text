@@ -29,18 +29,22 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
   // json
   private implicit val formats = org.json4s.DefaultFormats
 
+  logger.info(s"TDAC server URL: ${serverUrl}")
+  logger.info("TDAC client ready.")
+
   def close: Unit = terminateActorSystem
 
   /** Terminate the actor system */
   def terminateActorSystem: Unit = {
     system.terminate
     Thread.sleep(5000) // allow actor system to gracefully shut down
+    logger.info("TDAC client has shut down.")
   }
 
   /** Reset the TDAC server outside of data processing
    */
   def initServer: Unit = {
-    logger.info(s"Initializing TDAC serverat ${serverUrl}")
+    logger.info(s"Initializing TDAC server at ${serverUrl}")
     try {
       val request = HttpRequest(
         uri = Uri(s"${serverUrl}/reset-model"),
@@ -63,15 +67,6 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         shutdown(t.toString)
     }
   }
-
-  private def shutdown(report: String): Unit = {
-    logger.error("Problem encountered during initialization of TDAC server:")
-    logger.error(report)
-    logger.error("The Agent is shutting down")
-    terminateActorSystem
-    System.exit(0)
-  }
-
   /** Reset the TDAC server during processing
    *  @param busMessages publish if server reset succeeds
    */
@@ -165,5 +160,13 @@ class TdacClient (agent: TdacAgent, serverUrl: String) extends LazyLogging {
         logger.error(t.toString)
         agent.doNextJob
     }
+  }
+
+  private def shutdown(report: String): Unit = {
+    logger.error("Problem encountered during initialization of TDAC server:")
+    logger.error(report)
+    terminateActorSystem
+    logger.error("The Agent is shutting down")
+    System.exit(0)
   }
 }

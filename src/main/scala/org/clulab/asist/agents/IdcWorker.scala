@@ -20,13 +20,13 @@ class IdcWorker(
   val owner: DialogAgent
 ) extends LazyLogging {
 
-  logger.info("IDC Worker ready.")
-
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("IdcWorker")
 
-  val queue: Queue[IdcData] = new Queue
+  private val queue: Queue[IdcData] = new Queue
+
+  logger.info("IDC worker ready.")
 
   /** Add an extraction sequence to the back of the queue
    *  @param topic - the Message Bus where the data was read
@@ -73,8 +73,8 @@ class IdcWorker(
   def close: Unit = {
     val seconds = 3
     if(queue.isEmpty) {
-      logger.info("Shutting down the IdcWorker:")
       system.terminate
+      logger.info("IDC worker has shut down.")
     }
     else { // keep checking until the queue has finished processing
       Thread.sleep(seconds*1000) 
