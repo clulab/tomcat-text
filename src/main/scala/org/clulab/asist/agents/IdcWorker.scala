@@ -5,6 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 
 import scala.collection.mutable.Queue
+import scala.collection.mutable.Stack
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -17,8 +18,8 @@ import scala.util.{Failure, Success}
  */
 
 class IdcWorker(
-  val owner: DialogAgent
-) extends LazyLogging {
+                 val owner: DialogAgent
+               ) extends LazyLogging {
 
   logger.info("IDC Worker ready.")
 
@@ -33,8 +34,8 @@ class IdcWorker(
    *  @param extractions - derived from the data read on the topic
    */
   def enqueue(
-    extractions: Seq[DialogAgentMessageUtteranceExtraction]
-  ): Unit = {
+               extractions: Seq[DialogAgentMessageUtteranceExtraction]
+             ): Unit = {
     showState
     val busy = !queue.isEmpty
     val data = IdcData(extractions, IdcWorkerState(0))
@@ -44,6 +45,9 @@ class IdcWorker(
 
   /** show the state of this class instance */
   def showState(): Unit = logger.info(s"Size of queue is ${queue.length}")
+
+  /** constructing a stack to keep track of utterances */
+  //var Utterancestack = new scala.collection.mutable.Stack[Vector]()
 
   /** Return the next sequence in the queue, or None if queue is empty */
   def doNextJob(): Unit = {
@@ -62,11 +66,42 @@ class IdcWorker(
     }
   }
 
+  //def checkRescueDep()
+
   /** This method runs as a detached process */
   def doSomeProcessing(data: IdcData): Unit = {
     val seconds = 2
+    val extraction = data
     logger.info(s"Starting processing of job for $seconds seconds ...")
+
+    //println("data is of type:" + data.getClass)
+    //val extract = data.extractions
+    //val label = extract(0)
+    //println("extract is of type:" + extract.getClass)
+    //println(extract)
+    //println("label is of type:" + label.getClass)
+    //println(label)
+    //val labellist = label.labels
+    //println("labellist is of type:" + labellist.getClass)
+    //println(labellist)
+    lookForLabel(data.extractions,labelstring="CriticalVictim" )
+    //Utterancestack.push(data.extractions)
+    //println(s"stack is currently: $Utterancestack")
+
     Thread.sleep(seconds*1000)
+  }
+
+
+
+
+  def lookForLabel(extractions: Seq[DialogAgentMessageUtteranceExtraction], labelstring: String): Unit ={
+    for(extractionObject <- extractions){
+      if(extractionObject.labels.contains(labelstring)){
+        println(s"$labelstring detected")
+      }
+      else{
+        println(s"no $labelstring")
+      }}
   }
 
   // allow actor system to gracefully shut down
@@ -77,7 +112,7 @@ class IdcWorker(
       system.terminate
     }
     else { // keep checking until the queue has finished processing
-      Thread.sleep(seconds*1000) 
+      Thread.sleep(seconds*1000)
       close
     }
   }
