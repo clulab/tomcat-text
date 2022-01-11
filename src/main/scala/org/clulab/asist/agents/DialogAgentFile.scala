@@ -63,7 +63,9 @@ class DialogAgentFile(
   private val jobs: List[Any] = List(metadataJobs, webVttJobs).flatten
   private val jobsIter: Iterator[Any] = jobs.iterator
 
-  if(jobs.isEmpty) logger.error("No processable input was found")
+  if(jobs.isEmpty) {
+    logger.error("No processable input was found")
+  }
 
   // create the IDC worker if required
   private val idcWorker: Option[IdcWorker] =
@@ -135,6 +137,7 @@ class DialogAgentFile(
     messages.foreach(m => writeOutput(m.topic, m.text))
 
   def shutdown: Unit = {
+    logger.info("Agent is shutting down")
     printWriter.foreach(_.close)
     tdacClient.foreach(_.close)
     idcWorker.foreach(_.close)
