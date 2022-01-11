@@ -103,6 +103,13 @@ rules:
       target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
       agent: Entity? = >/${agents}/
 
+  - name: move_entity_action
+    priority: ${ rulepriority }
+    label: MoveTo
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Entity =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
 
   - name: move_nmod_direction
     priority: ${ rulepriority }
