@@ -17,7 +17,6 @@ abstract class TdacAgent (
   // Dialog Act Classification.  No instantiation if not used.
   val tdacClient: Option[TdacClient] = tdacUrl match {
     case Some(url) =>
-      logger.info(s"TDAC server URL: ${url}")
       Some (new TdacClient(this, url))
     case None =>
       logger.info("TDAC not enabled")

@@ -40,18 +40,13 @@ class DialogAgentFile(
   private val filenames: List[String] = 
     LocalFileUtils.getFileNames(inputFilename)
 
-  // create the IDC worker if required
-  private val idcWorker: Option[IdcWorker] =
-    if(idc) Some(new IdcWorker(this)) else None
-
   // see if we can open the output file
   private val printWriter: Option[PrintWriter] = try {
     val ret = new PrintWriter(new File(outputFilename))
-    logger.info(s"Writing output to ${outputFilename}")
     Some(ret)
   } catch {
       case NonFatal(t)  =>
-        logger.error(s"Problem opening ${outputFilename} for writing.")
+        logger.error(s"Problem opening ${outputFilename} for writing:")
         logger.error(t.toString)
         None
   }
@@ -68,14 +63,20 @@ class DialogAgentFile(
   private val jobs: List[Any] = List(metadataJobs, webVttJobs).flatten
   private val jobsIter: Iterator[Any] = jobs.iterator
 
-  jobs.length match {
-    case 0 => 
-      logger.error("No input was found")
-      printWriter.foreach(_.close)
-    case n: Int =>
-      logger.info(s"Processing ${n} messages...")
-      doNextJob
+  if(jobs.isEmpty) {
+    logger.error("No processable input was found")
   }
+
+  // create the IDC worker if required
+  private val idcWorker: Option[IdcWorker] =
+    if(idc & !jobs.isEmpty) Some(new IdcWorker(this)) else None
+
+  // start 
+  if((printWriter.isDefined) && (!jobs.isEmpty)) {
+    logger.info(s"Writing output to ${outputFilename}")
+    logger.info(s"Processing ${jobs.length} messages...")
+    doNextJob
+  } else shutdown
 
   private def process(a: Any): Unit = a match {
     case Some(v: VersionInfo) => processVersionInfo(v)
@@ -128,14 +129,19 @@ class DialogAgentFile(
   if(jobsIter.hasNext) 
     process(jobsIter.next)
   else {
-    printWriter.foreach(_.close)
-    tdacClient.foreach(_.close)
-    idcWorker.foreach(_.close)
     logger.info("All operations completed successfully.")
+    shutdown
   }
 
   override def writeOutput(messages: List[BusMessage]): Unit =  
     messages.foreach(m => writeOutput(m.topic, m.text))
+
+  def shutdown: Unit = {
+    logger.info("Agent is shutting down")
+    printWriter.foreach(_.close)
+    tdacClient.foreach(_.close)
+    idcWorker.foreach(_.close)
+  }
 }
 
 object WebVttFileProcessor extends LazyLogging {
