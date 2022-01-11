@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/clulab/tomcat-text/message_specs/chat_analysis_message.json",
   "type": "object",
-  "title": "The Chat Analysis Message schema",
+  "title": "The chat_analysis_message schema",
   "version": "0.1",
   "required": [
     "header",
@@ -13,7 +13,7 @@
     "header": {
       "$id": "#/properties/header",
       "type": "object",
-      "title": "The Header schema",
+      "title": "The chat_analysis_message header schema",
       "version": "0.1",
       "required": [
         "timestamp",
@@ -24,7 +24,7 @@
         "timestamp": {
           "$id": "#/properties/header/properties/timestamp",
           "type": "string",
-          "title": "The Timestamp schema",
+          "title": "The header timestamp schema",
           "default": "",
           "examples": [ "2019-12-26T14:05:02.3412Z" ],
           "pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.]?[0-9]{0,}?Z"
@@ -32,7 +32,7 @@
         "message_type": {
           "$id": "#/properties/header/properties/message_type",
           "type": "string",
-          "title": "The Message Type schema",
+          "title": "The header message_type schema",
           "default": "",
           "examples": [ "event" ],
           "pattern": "^([a-z_]*?)$"
@@ -40,7 +40,7 @@
         "version": {
           "$id": "#/properties/header/properties/version",
           "type": "string",
-          "title": "The Version schema",
+          "title": "The header version schema",
           "default": "",
           "examples": [ "1.0" ],
           "pattern": "^([0-9]*?)\\.([0-9]*?)$"
@@ -49,10 +49,11 @@
     },
     "msg": {
       "$id": "#/properties/msg",
-      "title": "The Event Message schema",
+      "title": "The chat_analysis msg schema",
       "version": "0.1",
       "required": [
         "experiment_id",
+	"trial_id",
         "timestamp",
         "source",
         "sub_type",
@@ -62,7 +63,7 @@
         "experiment_id": {
           "$id": "#/properties/msg/properties/experiment_id",
           "type": "string",
-          "title": "The Experiment Id schema",
+          "title": "The msg experiment_id schema",
           "default": "",
           "examples": [ "123e4567-e89b-12d3-a456-426655440000" ],
           "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
@@ -70,7 +71,7 @@
         "trial_id": {
           "$id": "#/properties/msg/properties/trial_id",
           "type": "string",
-          "title": "The Trial Id schema",
+          "title": "The msg trial_id schema",
           "default": "",
           "examples": [ "123e4567-e89b-12d3-a456-426655440000" ],
           "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
@@ -78,7 +79,7 @@
         "timestamp": {
           "$id": "#/properties/msg/properties/timestamp",
           "type": "string",
-          "title": "The Timestamp schema",
+          "title": "The msg timestamp schema",
           "default": "",
           "examples": [ "2019-12-26T14:05:02.3412Z" ],
           "pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.]?[0-9]{0,}?Z"
@@ -86,7 +87,7 @@
         "source": {
           "$id": "#/properties/msg/properties/source",
           "type": "string",
-          "title": "The Source schema",
+          "title": "The msg source schema",
           "default": "",
           "examples": [ "uaz_dialog_agent" ],
           "pattern": "^(.*)$"
@@ -94,7 +95,7 @@
         "sub_type": {
           "$id": "#/properties/msg/properties/sub_type",
           "type": "string",
-          "title": "The Sub Type schema",
+          "title": "The msg sub_type schema",
           "default": "",
           "examples": [ "equip", "triage" ],
           "pattern": "^([a-zA-Z0-9_:]*?)$"
@@ -102,7 +103,7 @@
         "version": {
           "$id": "#/properties/msg/properties/version",
           "type": "string",
-          "title": "The Version schema",
+          "title": "The msg version schema",
           "default": "",
           "examples": [ "0.1", "1.0" ],
           "pattern": "^([0-9]*?)\\.([0-9]*?)$"
@@ -110,7 +111,7 @@
         "replay_root_id": {
           "$id": "#/properties/msg/properties/replay_root_id",
           "type": "string",
-          "title": "The Replay Root Id schema",
+          "title": "The msg replay_root_id schema",
           "default": "",
           "examples": [ "123e4567-e89b-12d3-a456-426655440000" ],
           "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
@@ -118,7 +119,7 @@
         "replay_id": {
           "$id": "#/properties/msg/properties/replay_id",
           "type": "string",
-          "title": "The Replay ID schema",
+          "title": "The msg replay_id schema",
           "default": "",
           "examples": [ "123e4567-e89b-12d3-a456-426655440000" ],
           "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
@@ -128,10 +129,9 @@
     "data": {
       "$id": "#/properties/data",
       "type": "object",
-      "title": "data schema",
+      "title": "The chat_analysis_message data schema",
       "version": "0.1",
       "required": [
-        "participant_id",
         "text",
         "utterance_source",
         "extractions"
@@ -140,7 +140,7 @@
         "participant_id": {
           "$id": "#/properties/data/properties/participant_id",
           "type": "string",
-          "title": "The Participant Id schema",
+          "title": "The data participant_id schema",
           "default": "",
           "examples": [
             "participant 21"
@@ -148,9 +148,9 @@
           "pattern": "^(.*)$"
         },
         "asr_msg_id": {
-          "$asr_msg_id": "#/properties/data/properties/id",
+          "$asr_msg_id": "#/properties/data/properties/asr_msg_id",
           "type": "string",
-          "title": "The ASR Message ID schema",
+          "title": "The data asr_msg_id schema",
           "default": "",
           "examples": [
             "59678a5f-9c5b-451f-8506-04bc020f2cf3"
@@ -160,17 +160,27 @@
         "text": {
           "$id": "#/properties/data/properties/text",
           "type": "string",
-          "title": "text schema",
+          "title": "The data text schema",
           "default": "",
           "examples": [
             "I see a green victim"
           ],
           "pattern": "^(.*)$"
         },
+        "dialog_act_label": {
+          "$id": "#/properties/data/properties/dialog_act_label",
+          "type": "string",
+          "title": "The data dialog_act_label schema",
+          "default": "",
+          "examples": [
+            "floor"
+          ],
+          "pattern": "^(.*)$"
+        },
         "utterance_source": {
           "$id": "#/properties/data/properties/utterance_source",
           "type": "object",
-          "title": "The Data Source Schema",
+          "title": "The utterance_source schema",
           "version": "0.5",
           "required": [
             "source_type",
@@ -180,7 +190,7 @@
             "source_type": {
               "$id": "#/properties/data/properties/utterance_source/properties/source_type",
               "type": "string",
-              "title": "The Data Source Type Schema",
+              "title": "The utterance_source source_type schema",
               "default": "",
               "examples": [
                 "vtt_file" 
@@ -190,7 +200,7 @@
             "source_name": {
               "$id": "#/properties/data/properties/utterance_source/properties/source_name",
               "type": "string",
-              "title": "The Data Source Name Schema",
+              "title": "The utterance_source source_name schema",
               "default": "",
               "examples": [ 
                 "AudioTranscript_1.vtt" 
@@ -202,7 +212,7 @@
         "extractions": {
           "$id": "#/properties/data/properties/extractions",
           "type": "Seq[object]",
-          "title": "The Data Extractions Schema",
+          "title": "The extractions schema",
           "version": "0.1",
           "default": "[]",
           "required": [
@@ -217,7 +227,7 @@
             "label": {
               "$id": "#/properties/label",
               "type": "string",
-              "title": "label schema",
+              "title": "The extractions label schema",
               "default": "",
               "examples": [
                 "Sight"
@@ -227,7 +237,7 @@
             "span": {
               "$id": "#/properties/span",
               "type": "string",
-              "title": "span schema",
+              "title": "The extractions span schema",
               "default": "",
               "examples": [
                 "was one yellow victim"
@@ -237,7 +247,7 @@
             "arguments": {
               "$id": "#/properties/arguments",
               "type": "string",
-              "title": "arguments schema",
+              "title": "The extractions arguments schema",
               "default": "",
               "examples": [
                 "#/definitions/id"
@@ -247,7 +257,7 @@
             "start_offset": {
               "$id": "#/properties/start_offset",
               "type": "integer",
-              "title": "start_offset schema",
+              "title": "The extractions start_offset schema",
               "default": "",
               "examples": [
                 32
@@ -257,7 +267,7 @@
             "end_offset": {
               "$id": "#/properties/end_offset",
               "type": "integer",
-              "title": "end_offset schema",
+              "title": "The extractions end_offset schema",
               "default": "",
               "examples": [
                 50
@@ -267,7 +277,7 @@
             "taxonomy_matches": {
               "$id": "#/properties/taxonomy_matches",
               "type": "Seq",
-              "title": "taxonomy_matches schema",
+              "title": "The extractions taxonomy_matches schema",
               "items": {
                 "string": "string"
               },

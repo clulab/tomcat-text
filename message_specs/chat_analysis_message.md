@@ -26,6 +26,7 @@ msg.replay_id | string | The replay_id if being used for a replay.
 data.participant_id | string | The participant who generated the message text
 data.asr_msg_id | string | A version 4 UUID associated with this message
 data.text | string | The text to be processed by the Dialog Agent
+data.dialog_act_label | string | Output from the Texas A&M Dialog Act Classifier
 data.source.source_type | string | File or Message Bus
 data.source.source_name |string | A filename or Message Bus topic
 data.extractions | Seq[Extraction] | Analysis of message text
