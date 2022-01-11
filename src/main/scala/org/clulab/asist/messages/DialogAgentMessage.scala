@@ -29,7 +29,7 @@ case class DialogAgentMessageUtteranceExtraction(
   span: String = "N/A",
   arguments: Map[String, Seq[DialogAgentMessageUtteranceExtraction]] =
     Map.empty,
-  attachments: Set[Attachment] = Set.empty, // Json strings
+  attachments: Set[Attachment] = Set.empty, 
   start_offset: Int = 0,
   end_offset: Int = 0,
   rule: String = "N/A", // The rule used to produce the extraction.
@@ -37,10 +37,10 @@ case class DialogAgentMessageUtteranceExtraction(
 
 // Part of the DialogAgentMessage class
 case class DialogAgentMessageData(
-  participant_id: String = "N/A",
-  asr_msg_id: String = "N/A",
+  participant_id: String = "N/A", // omitted if null
+  asr_msg_id: String = "N/A", // omitted if null
   text: String = "N/A",
-  dialog_act_label: String  = "N/A",  // Dialog Act Classifier query result.
+  dialog_act_label: String  = "N/A", // omitted if null
   utterance_source: DialogAgentMessageUtteranceSource,
   extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )
