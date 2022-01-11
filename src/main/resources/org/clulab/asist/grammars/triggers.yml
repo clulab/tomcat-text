@@ -55,7 +55,7 @@ medkit_triggers: "medkit|medical kit|med kit|medicalkit|medical kid|med kid"
 
 movefrom_triggers: "depart|exit|leave"
 
-moveto_triggers: "go|move|run|walk|come|scoot|climb|jump"
+moveto_triggers: "go|move|run|walk|come|scoot|climb|jump|head"
 
 move_victim_triggers: "move|transfer|transport"
 
