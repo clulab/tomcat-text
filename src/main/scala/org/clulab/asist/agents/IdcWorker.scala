@@ -46,8 +46,6 @@ class IdcWorker(
   /** show the state of this class instance */
   def showState(): Unit = logger.info(s"Size of queue is ${queue.length}")
 
-  /** constructing a stack to keep track of utterances */
-  //var Utterancestack = new scala.collection.mutable.Stack[Vector]()
 
   /** Return the next sequence in the queue, or None if queue is empty */
   def doNextJob(): Unit = {
@@ -85,13 +83,9 @@ class IdcWorker(
     //println("labellist is of type:" + labellist.getClass)
     //println(labellist)
     lookForLabel(data.extractions,labelstring="CriticalVictim" )
-    //Utterancestack.push(data.extractions)
-    //println(s"stack is currently: $Utterancestack")
 
     Thread.sleep(seconds*1000)
   }
-
-
 
 
   def lookForLabel(extractions: Seq[DialogAgentMessageUtteranceExtraction], labelstring: String): Unit ={
@@ -102,6 +96,17 @@ class IdcWorker(
       else{
         println(s"no $labelstring")
       }}
+  }
+
+  /** constructing a stack to keep track of utterances */
+  var utteranceStack = Stack[Any]()
+  /**perhaps the next step going to be (some random pseudo code)*/
+  def processStack(data: IdcData): Unit ={
+    if (lookForLabel(data.extractions,labelstring="CriticalVictim" ) != null){
+      utteranceStack.push(data.extractions)
+    }else{
+      utteranceStack.clear()
+    }
   }
 
   // allow actor system to gracefully shut down
