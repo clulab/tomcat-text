@@ -83,6 +83,8 @@ class IdcWorker(
     //println("labellist is of type:" + labellist.getClass)
     //println(labellist)
     lookForLabel(data.extractions,labelstring="CriticalVictim" )
+    utteranceStack.push(data.extractions)
+    println(utteranceStack)
 
     Thread.sleep(seconds*1000)
   }
