@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 /**
- * Authors:  Joseph Astier, Adarsh Pyarelal
+ * Authors:  Joseph Astier, Adarsh Pyarelal, Remo Nitschke, Yuwei Wang
  *
  * Enqueue message bus extractions and process in a new thread
  *
@@ -83,31 +83,42 @@ class IdcWorker(
     //println("labellist is of type:" + labellist.getClass)
     //println(labellist)
     lookForLabel(data.extractions,labelstring="CriticalVictim" )
-    utteranceStack.push(data.extractions)
-    println(utteranceStack)
+    processUttQueue(data)
+    logger.info(s"${utteranceQueue.size} extractions are being tracked")
 
     Thread.sleep(seconds*1000)
   }
 
-
-  def lookForLabel(extractions: Seq[DialogAgentMessageUtteranceExtraction], labelstring: String): Unit ={
+  /** simple function that allows you to look for a simple label */
+  def lookForLabel(extractions: Seq[DialogAgentMessageUtteranceExtraction], labelstring: String): AnyVal = {
     for(extractionObject <- extractions){
       if(extractionObject.labels.contains(labelstring)){
-        println(s"$labelstring detected")
+        logger.info(s"$labelstring detected")
+        return true
       }
       else{
-        println(s"no $labelstring")
+        logger.info(s"label checked")
+        return false
       }}
   }
 
-  /** constructing a stack to keep track of utterances */
-  var utteranceStack = Stack[Any]()
-  /**perhaps the next step going to be (some random pseudo code)*/
-  def processStack(data: IdcData): Unit ={
-    if (lookForLabel(data.extractions,labelstring="CriticalVictim" ) != null){
-      utteranceStack.push(data.extractions)
-    }else{
-      utteranceStack.clear()
+  def checkLabelSeq(queueState: Queue[Any], firstlabel: String, secondlabel: String): Unit={
+    for(vector:Vector <- queueState){
+      for(extraction:DialogAgentMessageUtteranceExtraction <- vector){
+
+      }
+    }
+
+  }
+
+
+  /** constructing a queue to keep track of utterances */
+  var utteranceQueue: Queue[Any] = new Queue
+  /** a function to allow the queue to keep track of 5 objects */
+  def processUttQueue(data: IdcData): Unit ={
+    utteranceQueue.enqueue(data.extractions)
+    if (utteranceQueue.size > 5){
+      utteranceQueue.dequeue()
     }
   }
 
