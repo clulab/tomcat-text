@@ -111,4 +111,10 @@ class MessageBusClient(
       logger.error("Problem reading message on %s".format(topic))
       logger.error(t.toString)
   }
+
+  def disconnect(): Unit ={
+    logger.info("Disconnecting from Message Bus.")
+    subscriber.disconnectForcibly
+    publisher.disconnectForcibly
+  }
 }
