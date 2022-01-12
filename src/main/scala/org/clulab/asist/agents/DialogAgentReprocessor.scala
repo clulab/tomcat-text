@@ -58,12 +58,11 @@ class DialogAgentReprocessor (
   // for the JSON extractor
   implicit val formats = org.json4s.DefaultFormats
 
-  // init the TDAC server connection
-  tdacInit
-
   // actors
   implicit val ec = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("DialogAgentReprocessor")
+  system.registerOnTermination(onTerminate)
+
 
   /** Scan all of the input files for those containing Dialog Agent metadata
    *  @param iter:  An iterator containing json strings
@@ -113,11 +112,16 @@ class DialogAgentReprocessor (
       logger.info(s"Files to be processed: ${nFiles}")
       logger.info(s"Total lines to be processed: ${fileLineCounts.sum}")
       logger.info("Reprocessing files...")
-      doNextJob
+
+      // start
+      if(tdacActive)
+        tdacInit
+      else
+        doNextJob
     } 
   }  else {
     logger.error("No files with DialogAgent metadata were found")
-    finish
+    terminate
   }
 
   /** Scan a string iterator for valid DialogAgent JSON
@@ -350,16 +354,11 @@ class DialogAgentReprocessor (
         doNextJob()
       }
       // if no more files, we are done
-      else finish
+      else {
+        logger.info("All file processing has finished.")
+        terminate
+      }
     }
-  }
-
-  /** Graceful agent shutdown */
-  def finish() {
-    logger.info("All file processing has finished.")
-    system.terminate
-    tdacClient.foreach(_.terminateActorSystem)
-    finalReport
   }
 
   /** show statistics at current iteration */
@@ -410,5 +409,16 @@ class DialogAgentReprocessor (
         s"Vers-${newVersion}.metadata"
       case _ => outputFileName  // otherwise do not change the fileame
     })
+  }
+
+  /** Graceful agent shutdown */
+  override def terminate() {
+    tdacClient.foreach(_.terminate)
+    logger.info("Reprocessor Agent is shutting down...")
+    system.terminate
+  }
+
+  def onTerminate(): Unit =  {
+    logger.info("Reprocessor Agent has shut down.")
   }
 }

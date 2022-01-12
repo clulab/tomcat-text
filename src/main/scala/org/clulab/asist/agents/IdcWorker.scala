@@ -23,6 +23,7 @@ class IdcWorker(
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("IdcWorker")
+  system.registerOnTermination(onTerminate)
 
   private val queue: Queue[IdcData] = new Queue
 
@@ -70,15 +71,18 @@ class IdcWorker(
   }
 
   // allow actor system to gracefully shut down
-  def close: Unit = {
-    val seconds = 3
-    if(queue.isEmpty) {
+  def terminate: Unit = queue.length match {
+    case 0 => 
+      logger.info("IDC worker is shutting down ...")
       system.terminate
-      logger.info("IDC worker has shut down.")
-    }
-    else { // keep checking until the queue has finished processing
-      Thread.sleep(seconds*1000) 
-      close
-    }
+    case n: Int =>  // keep checking until the queue has finished processing
+      val seconds = 2
+      logger.info(s"IDC worker jobs remaining: ${n}")
+      Thread.sleep(seconds*1000)
+      terminate
+  }
+
+  def onTerminate(): Unit =  {
+    logger.info("IDC worker has shut down.")
   }
 }

@@ -24,10 +24,13 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   private val topic: String = config.getString("Heartbeat.topic")
   private val startSeconds: Long = 0
   private val beatSeconds: Long = config.getInt("Heartbeat.beat_seconds")
+  logger.info(s"Heartbeat publication topic: ${topic}")
+  logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
 
   // Actor concurrency system
   private implicit val ec:ExecutionContext = ExecutionContext.global
   private implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
+  system.registerOnTermination(onTerminate)
   import system.dispatcher  // from var now in scope
 
   // An optional instance of a HeartbeatMessage with all fields initialized 
@@ -70,6 +73,12 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
       agent.writeOutput(topic, json)
   }
 
-  logger.info(s"Heartbeat publication topic: ${topic}")
-  logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
+  def terminate(): Unit = {
+    logger.info("Heartbeat Producer is shutting down.")
+    system.terminate
+  }
+
+  def onTerminate(): Unit =  {
+    logger.info("Heartbeat Producer has shut down.")
+  }
 }
