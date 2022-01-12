@@ -71,52 +71,48 @@ class IdcWorker(
     val seconds = 2
     val extraction = data
     logger.info(s"Starting processing of job for $seconds seconds ...")
-
-    //println("data is of type:" + data.getClass)
-    //val extract = data.extractions
-    //val label = extract(0)
-    //println("extract is of type:" + extract.getClass)
-    //println(extract)
-    //println("label is of type:" + label.getClass)
-    //println(label)
-    //val labellist = label.labels
-    //println("labellist is of type:" + labellist.getClass)
-    //println(labellist)
-    lookForLabel(data.extractions,labelstring="CriticalVictim" )
+    whatis(data)
     processUttQueue(data)
     logger.info(s"${utteranceQueue.size} extractions are being tracked")
+    checkLabelSeq(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
 
-    Thread.sleep(seconds*1000)
+    //Thread.sleep(seconds*1000)
   }
 
-  /** simple function that allows you to look for a simple label */
-  def lookForLabel(extractions: Seq[DialogAgentMessageUtteranceExtraction], labelstring: String): AnyVal = {
-    for(extractionObject <- extractions){
-      if(extractionObject.labels.contains(labelstring)){
-        logger.info(s"$labelstring detected")
-        return true
-      }
-      else{
-        logger.info(s"label checked")
-        return false
-      }}
+  /** method to inspect the data type of your object, will print the data type to the command line */
+  def whatis(yourdata: Any): Unit={
+    println("your data is of type: " + yourdata.getClass)
   }
 
-  def checkLabelSeq(queueState: Queue[Any], firstlabel: String, secondlabel: String): Unit={
-    for(vector:Vector <- queueState){
-      for(extraction:DialogAgentMessageUtteranceExtraction <- vector){
+  /** simple function that allows you to look for a simple label, returns a Boolean value */
+  def lookForLabel(extractions: Seq[DialogAgentMessageUtteranceExtraction], labelstring: String): Boolean = {
+    for (extractionObject <- extractions
+        if extractionObject.labels.contains(labelstring))
+           return true //this return statement only goes in effect if the filtered for-loop is satisfied
+  false //we need this so the method returns a false if the above loop is not satisfied
+  }
 
+
+  /** This method takes 3 args, a Queue and 2 labels. It then searches all objects in the queue for the first label. If the first label is found, it checks for the 2nd label.  */
+    /** Currently this method is "stupid" ie it onl checks whether both labels are present in the queue, regardless of order */
+  def checkLabelSeq(queueState: Queue[Seq[DialogAgentMessageUtteranceExtraction]], firstlabel: String, secondlabel: String): Unit={
+    for(vector: Seq[DialogAgentMessageUtteranceExtraction] <- queueState){
+      if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],firstlabel)){
+          logger.info("first label detected")
+        if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],firstlabel)){
+          logger.info(s"$firstlabel and $secondlabel sequence detected")
+        }
       }
     }
-
   }
 
 
   /** constructing a queue to keep track of utterances */
-  var utteranceQueue: Queue[Any] = new Queue
+  var utteranceQueue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue
   /** a function to allow the queue to keep track of 5 objects */
   def processUttQueue(data: IdcData): Unit ={
-    utteranceQueue.enqueue(data.extractions)
+    val extract= data.extractions
+    utteranceQueue.enqueue(extract:Seq[DialogAgentMessageUtteranceExtraction])
     if (utteranceQueue.size > 5){
       utteranceQueue.dequeue()
     }
