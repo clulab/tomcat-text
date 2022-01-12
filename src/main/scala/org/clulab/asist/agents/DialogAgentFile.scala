@@ -1,5 +1,6 @@
 package org.clulab.asist.agents
 
+import akka.actor.ActorSystem
 import buildinfo.BuildInfo
 import com.crowdscriber.caption.vttdissector.VttDissector
 import com.typesafe.config.Config
@@ -8,6 +9,7 @@ import java.io.{File, FileInputStream, PrintWriter}
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 
+import scala.concurrent.ExecutionContext
 import scala.io.Source
 import scala.util.control.Exception._
 import scala.util.control.NonFatal
@@ -36,6 +38,11 @@ class DialogAgentFile(
   tdacUrl: Option[String] = None,
   val idc: Boolean = false
 ) extends TdacAgent(tdacUrl) with LazyLogging {
+
+  // actors
+  private implicit val ec = ExecutionContext.global
+  private implicit val system: ActorSystem = ActorSystem("DialogAgentFile")
+  system.registerOnTermination(onTerminate)
 
   private val filenames: List[String] = 
     LocalFileUtils.getFileNames(inputFilename)
@@ -75,8 +82,11 @@ class DialogAgentFile(
   if((printWriter.isDefined) && (!jobs.isEmpty)) {
     logger.info(s"Writing output to ${outputFilename}")
     logger.info(s"Processing ${jobs.length} messages...")
-    doNextJob
-  } else shutdown
+    if(tdacActive) 
+      tdacInit
+    else
+      doNextJob
+  } else terminate
 
   private def process(a: Any): Unit = a match {
     case Some(v: VersionInfo) => processVersionInfo(v)
@@ -130,17 +140,22 @@ class DialogAgentFile(
     process(jobsIter.next)
   else {
     logger.info("All operations completed successfully.")
-    shutdown
+    terminate
   }
 
   override def writeOutput(messages: List[BusMessage]): Unit =  
     messages.foreach(m => writeOutput(m.topic, m.text))
 
-  def shutdown: Unit = {
-    logger.info("Agent is shutting down")
+  override def terminate: Unit = {
     printWriter.foreach(_.close)
-    tdacClient.foreach(_.close)
-    idcWorker.foreach(_.close)
+    idcWorker.foreach(_.terminate)
+    tdacClient.foreach(_.terminate)
+    logger.info("File Agent is shutting down...")
+    system.terminate
+  }
+
+  def onTerminate(): Unit =  {
+    logger.info("File Agent has shut down.")
   }
 }
 

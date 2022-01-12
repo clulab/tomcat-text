@@ -9,6 +9,7 @@ import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 
 import scala.collection.mutable.Queue
 import scala.concurrent.ExecutionContext
+import scala.util.control.NonFatal
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -36,6 +37,7 @@ class DialogAgentMqtt(
   // Actor concurrency system
   implicit val ec:ExecutionContext = ExecutionContext.global
   implicit val system: ActorSystem = ActorSystem("MessageBusAgent")
+  system.registerOnTermination(onTerminate)
 
   // enqueue messages from the bus if they're coming in too fast.
   private val queue: Queue[BusMessage] = new Queue 
@@ -62,12 +64,12 @@ class DialogAgentMqtt(
     this
   )
 
-  // create the IDC worker if required
+  // create any needed helper classes
   private val idcWorker: Option[IdcWorker] =
     if(idc) Some(new IdcWorker(this)) else None
+  if(tdacActive) tdacInit
 
-  // Make contact with the TDAC server if it is specified
-  tdacInit
+  logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
 
   /** Publish a list of bus messages
    * @param output A list of objects to be published to the Message Bus
@@ -205,5 +207,16 @@ class DialogAgentMqtt(
       doNextJob
   }
 
-  logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
+  override def terminate() {
+    heartbeatProducer.terminate
+    idcWorker.foreach(_.terminate)
+    tdacClient.foreach(_.terminate)
+    bus.disconnect
+    logger.info("MQTT client is shutting down...")
+    system.terminate
+  }
+
+  def onTerminate(): Unit =  {
+    logger.info("MQTT agent has shut down")
+  }
 }

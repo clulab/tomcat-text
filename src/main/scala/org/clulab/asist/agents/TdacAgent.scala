@@ -23,7 +23,8 @@ abstract class TdacAgent (
       None
   }
 
-  def tdacInit: Unit = tdacClient.foreach(_.initServer)
+  // request to owner to exit
+  def terminate: Unit
 
   /** Write the runstate output to the output for the extending class
    * @param messages output for the message bus
@@ -32,4 +33,9 @@ abstract class TdacAgent (
 
   /** process the next message in the job queue. */
   def doNextJob(): Unit
+
+  // make contact with the server 
+  def tdacInit(): Unit = tdacClient.foreach(_.initServer)
+
+  def tdacActive(): Boolean = tdacClient.isDefined
 }
