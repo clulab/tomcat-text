@@ -56,10 +56,13 @@ class DialogAgentFile(
     .filter(_.endsWith(".metadata"))
     .map(MetadataFileProcessor(_, this))
     .flatten
+  logger.info(s"metadata messages read: ${metadataJobs.length}")
   private val webVttJobs: List[DialogAgentMessage] = filenames
     .filter(_.endsWith(".vtt"))
     .map(WebVttFileProcessor(_, this))
     .flatten
+  logger.info(s"webVtt messages read: ${webVttJobs.length}")
+
   private val jobs: List[Any] = List(metadataJobs, webVttJobs).flatten
   private val jobsIter: Iterator[Any] = jobs.iterator
 
@@ -81,7 +84,9 @@ class DialogAgentFile(
   private def process(a: Any): Unit = a match {
     case Some(v: VersionInfo) => processVersionInfo(v)
     case Some(m: DialogAgentMessage) => processDialogAgentMessage(m)
-    case None => doNextJob
+    case v: VersionInfo => processVersionInfo(v)
+    case m: DialogAgentMessage => processDialogAgentMessage(m)
+    case _ => doNextJob
   }
 
   private def processVersionInfo(v: VersionInfo): Unit = {
@@ -146,14 +151,16 @@ class DialogAgentFile(
 
 object WebVttFileProcessor extends LazyLogging {
 
+  private val source_type = "web_vtt_file"
+
   def apply(
     filename: String,
     agent: DialogAgent
   ): List[DialogAgentMessage] = try {
+    logger.info(s"processing '${filename}' ...")
     VttDissector(new FileInputStream(new File(filename))) match {
       case Success(blocks) =>
         blocks.map{block =>
-          logger.info(s"processing '${filename}' ...")
           processWebVttElement(
             filename,
             agent,
@@ -181,34 +188,32 @@ object WebVttFileProcessor extends LazyLogging {
     filename: String,
     agent: DialogAgent,
     lines: List[String]
-  ): Option[DialogAgentMessage] = { 
-    val source_type = "web_vtt_file"
-    lines match {
-      case head::tail =>  
-        // if a colon is in the first line, text to left is participant id
-        val foo = head.split(':')
-        if(foo.length == 1) Some(
-          DialogAgentMessage(
-            source_type,
-            filename,
-            None,
-            lines.mkString(" "),
-            agent
-          )
+  ): Option[DialogAgentMessage] = lines match {
+    case head::tail =>  
+      // if a colon is in the first line, text to left is participant id
+      val foo = head.split(':')
+      if(foo.length == 1) Some(
+        DialogAgentMessage(
+          source_type,
+          filename,
+          None,
+          lines.mkString(" "),
+          agent
         )
-        else Some(
-          DialogAgentMessage(
-            source_type,
-            filename,
-            Some(foo(0)),
-            (foo(1)::tail).mkString(" "),
-            agent
-          )
+      )
+      else Some(
+        DialogAgentMessage(
+          source_type,
+          filename,
+          Some(foo(0)),
+          (foo(1)::tail).mkString(" "),
+          agent
         )
-      case _ => None  // no lines
-    }
+      )
+    case _ => None  // no lines
   }
 }
+
 
 object MetadataFileProcessor extends LazyLogging {
 
@@ -218,10 +223,13 @@ object MetadataFileProcessor extends LazyLogging {
   def apply(
     filename: String,
     agent: DialogAgent
-  ): List[Any] = Source.fromFile(new File(filename))
-    .getLines
-    .toList
-    .map(processLine(filename,agent,_))
+  ): List[Any] = {
+    logger.info(s"processing '${filename}' ...")
+    Source.fromFile(new File(filename))
+      .getLines
+      .toList
+      .map(processLine(filename,agent,_))
+  }
 
   private def processLine(
     filename: String,
