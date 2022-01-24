@@ -28,7 +28,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   // Actor concurrency system
   private implicit val ec:ExecutionContext = ExecutionContext.global
   private implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
-  import system.dispatcher  // from var now in scope
+  import system.dispatcher  // from system now in scope
 
   // An optional instance of a HeartbeatMessage with all fields initialized 
   // except the timestamps.  If defined, this gets used as a base for
