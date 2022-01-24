@@ -126,7 +126,7 @@ class DialogAgentFile(
     topic: String,
     text: String
   ): Unit = {
-    val jsonNoNulls = JsonUtils.noNulls(text) // do not publish nulls
+    val jsonNoNulls = JsonUtils.noNulls(topic, text) // do not publish nulls
     printWriter.foreach(_.write(s"${jsonNoNulls}\n"))
   }
 
