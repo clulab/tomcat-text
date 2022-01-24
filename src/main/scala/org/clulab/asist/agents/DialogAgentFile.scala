@@ -40,10 +40,10 @@ class DialogAgentFile(
   private val filenames: List[String] = 
     LocalFileUtils.getFileNames(inputFilename)
 
-  // see if we can open the output file
-  private val printWriter: Option[PrintWriter] = try {
-    val ret = new PrintWriter(new File(outputFilename))
-    Some(ret)
+  private val printWriter: Option[PrintWriter] = if (outputFilename == "/dev/null")
+    None
+  else try {
+    Some(new PrintWriter(new File(outputFilename)))
   } catch {
       case NonFatal(t)  =>
         logger.error(s"Problem opening ${outputFilename} for writing:")
@@ -51,31 +51,30 @@ class DialogAgentFile(
         None
   }
 
+  val outputOK: Boolean =
+    (outputFilename == "/dev/null") || printWriter.isDefined
+
   // jobs can be DialogAgentMessage or VersionInfo
-  private val metadataJobs: List[Any] = filenames
+  private val metadataJobs: List[Any] = if(outputOK) filenames
     .filter(_.endsWith(".metadata"))
     .map(MetadataFileProcessor(_, this))
     .flatten
-  logger.info(s"metadata messages read: ${metadataJobs.length}")
-  private val webVttJobs: List[DialogAgentMessage] = filenames
+  else List.empty
+  private val webVttJobs: List[DialogAgentMessage] = if(outputOK) filenames
     .filter(_.endsWith(".vtt"))
     .map(WebVttFileProcessor(_, this))
     .flatten
-  logger.info(s"webVtt messages read: ${webVttJobs.length}")
-
+  else List.empty
   private val jobs: List[Any] = List(metadataJobs, webVttJobs).flatten
   private val jobsIter: Iterator[Any] = jobs.iterator
-
-  if(jobs.isEmpty) {
-    logger.error("No processable input was found")
-  }
-
-  // create the IDC worker if required
   private val idcWorker: Option[IdcWorker] =
-    if(idc & !jobs.isEmpty) Some(new IdcWorker(this)) else None
+    if(idc) Some(new IdcWorker(this)) else None
 
-  // start 
-  if((printWriter.isDefined) && (!jobs.isEmpty)) {
+  // only process input if the output file is OK
+  if(outputOK) {
+    // start 
+    logger.info(s"webVtt messages read: ${webVttJobs.length}")
+    logger.info(s"metadata messages read: ${metadataJobs.length}")
     logger.info(s"Writing output to ${outputFilename}")
     logger.info(s"Processing ${jobs.length} messages...")
     doNextJob
