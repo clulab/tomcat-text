@@ -36,17 +36,36 @@ object JsonUtils extends LazyLogging{
         None
     }
 
+  /** Remove fields with null values from JSON string and add the topic
+   * @param topic A json field to be added to the result
+   * @param input A JSON string that might have null values
+   * @return The input string with all null value fields removed
+   */
+  def noNulls (topic: String, input: String): String = {
+    val jvalue:JValue = parseJValue(input).getOrElse(JNothing)
+      .merge(Extraction.decompose(("topic",topic)))
+    writeJson(noNulls(jvalue))
+  } 
+
   /** Remove fields with null values from JSON string 
    * @param input A JSON string that might have null values
-   * @return The input string with all null-value fields removed
+   * @return The input string with all null value fields removed
    */
   def noNulls (input: String): String = {
     val jvalue:JValue = parseJValue(input).getOrElse(JNothing)
+    writeJson(noNulls(jvalue))
+  } 
+
+  /** Remove fields with null values from JValue object 
+   * @param jvalue A JValue object that might have fields with null values
+   * @return a new JValue with the null value fields removed
+   */
+  def noNulls(jvalue: JValue): JValue = {
     val map = Extraction.flatten(jvalue).filter{
       case (k: String, v: String) => (v != notSet)
     }
-    writeJson(Extraction.unflatten(map))
-  } 
+    Extraction.unflatten(map)
+  }
 
   /** Parse a string into a JValue
    * @param line Hopefully JSON but could be anything the user tries to run
