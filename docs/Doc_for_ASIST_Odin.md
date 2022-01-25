@@ -16,7 +16,7 @@ Contains configurations for Odin(TomcatRuleEngine) and other.
 ### Test files
 **path:** src/test/scala/org/clulab/asist/rules<br>
 **contents:**
-These are the unit tests for Odin rules. The files are sorted by rule association. You can run the tests with "sbt test". These tests are run every time to push to github.
+These are the unit tests for Odin rules. The files are sorted by rule association. You can run the tests with "sbt test". These tests are run every time we push to github.
 
 ### Attachment definitions
 **path:** src/main/scala/org/clulab/asist/attachments<br>
