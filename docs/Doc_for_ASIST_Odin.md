@@ -4,7 +4,7 @@ The ASIST TomcatRuleEngine is based on the Odin framework. For documentation of 
 This file describes the locations and contents of files necessary for the ASIST Odin. It describes the locations of relevant files and their specific contributions to the Engine.
 
 ### Rule files
-path: src/main/resources/org/clulab/asist/grammars
+path: src/main/resources/org/clulab/asist/grammars <br>
 contents:
 These files contain all ASIST Odin rules, the master.yml file and the taxonomy.yml file
 
