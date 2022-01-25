@@ -15,8 +15,8 @@
 <body>
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
-<p>Agent version: <code>4.0.0</code></p>
-<p>Document generation timestamp (UTC): <code>2022-01-23 07:55:25.966191</code></p>
+<p>Agent version: <code>4.0.1</code></p>
+<p>Document generation timestamp (UTC): <code>2022-01-25 06:44:09.299492</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -126,15 +126,15 @@ Concept/EventLike/Action/ComplexAction/Search
 - [target] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Block
-- [source] (Concept|Obstacle) (?)
+- [source] (Obstacle|Concept) (?)
 - [target] (Concept) (?)
 
 Concept/EventLike/Action/SimpleAction/Clear
 - [agent] (Entity) (?)
-- target (Location|Rubble) ()
+- target (Rubble|Location) ()
 
 Concept/EventLike/Action/SimpleAction/Close
-- [target] (DemPron|Infrastructure) (?)
+- [target] (Infrastructure|DemPron) (?)
 
 Concept/EventLike/Action/SimpleAction/Communicate/Agreement
 
@@ -145,7 +145,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (Item|EventLike|Victim|Person) ()
+- exists (Victim|Item|Person|EventLike) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
