@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.0.1</code></p>
-<p>Document generation timestamp (UTC): <code>2022-01-25 06:44:09.299492</code></p>
+<p>Document generation timestamp (UTC): <code>2022-01-28 17:23:24.331538</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -126,7 +126,7 @@ Concept/EventLike/Action/ComplexAction/Search
 - [target] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Block
-- [source] (Obstacle|Concept) (?)
+- [source] (Concept|Obstacle) (?)
 - [target] (Concept) (?)
 
 Concept/EventLike/Action/SimpleAction/Clear
@@ -134,7 +134,7 @@ Concept/EventLike/Action/SimpleAction/Clear
 - target (Rubble|Location) ()
 
 Concept/EventLike/Action/SimpleAction/Close
-- [target] (Infrastructure|DemPron) (?)
+- [target] (DemPron|Infrastructure) (?)
 
 Concept/EventLike/Action/SimpleAction/Communicate/Agreement
 
@@ -145,7 +145,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (Victim|Item|Person|EventLike) ()
+- exists (Victim|EventLike|Person|Item) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
@@ -191,7 +191,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Question/HowQuestion
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/Question/LocationQuestion
-- topic (Entity|Move) ()
+- topic (Move|Entity) ()
 - [location] (Location) (?)
 
 [Concept/EventLike/Action/SimpleAction/Communicate/Question/QuestionParticle]
@@ -238,7 +238,7 @@ Concept/EventLike/Action/SimpleAction/Move/MoveFrom
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Move/MoveTo
-- target (Entity|Deictic|Location) ()
+- target (Deictic|Entity|Location) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Open
@@ -251,13 +251,13 @@ Concept/EventLike/Action/SimpleAction/RoleSwitch
 - target (Role) ()
 
 Concept/EventLike/Action/SimpleAction/Save
-- target (Entity|Victim|Person) ()
+- target (Victim|Entity|Person) ()
 - [location] (Location) (?)
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Sight
 - [agent] (Entity) (?)
-- target (Entity|Item|EventLike) ()
+- target (EventLike|Entity|Item) ()
 - [location] (Location) (?)
 
 Concept/EventLike/Action/SimpleAction/Toggle
