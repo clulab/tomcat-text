@@ -40,16 +40,17 @@ class DialogAgentFile(
   private val filenames: List[String] = 
     LocalFileUtils.getFileNames(inputFilename)
 
-  private val printWriter: Option[PrintWriter] = if (outputFilename == "/dev/null")
-    None
-  else try {
-    Some(new PrintWriter(new File(outputFilename)))
-  } catch {
-      case NonFatal(t)  =>
-        logger.error(s"Problem opening ${outputFilename} for writing:")
-        logger.error(t.toString)
-        None
-  }
+  private val printWriter: Option[PrintWriter] = 
+    if (outputFilename == "/dev/null")
+      None
+    else try {
+      Some(new PrintWriter(new File(outputFilename)))
+    } catch {
+        case NonFatal(t)  =>
+          logger.error(s"Problem opening ${outputFilename} for writing:")
+          logger.error(t.toString)
+          None
+    }
 
   val outputOK: Boolean =
     (outputFilename == "/dev/null") || printWriter.isDefined
@@ -225,7 +226,7 @@ object WebVttFileProcessor extends LazyLogging {
   }
 }
 
-
+/* Process Message Bus metadata */
 object MetadataFileProcessor extends LazyLogging {
 
   private val source_type = "message_bus"
@@ -262,13 +263,14 @@ object MetadataFileProcessor extends LazyLogging {
   }
 }
 
-/* Create DialogAgentMessages from lines of text */
+/* Create DialogAgentMessages from a text file.  Each line of input data
+ * is processed into one DialogAgent Message */
 object TextFileProcessor extends LazyLogging {
 
-  private val source_type = "txt_file"
+  private val source_type = "text_file"
   private val participant_id: Option[String] = None
 
-  // one file
+  // one file.   Data is broken at newlines
   def apply(
     filename: String,
     agent: DialogAgent
@@ -285,6 +287,11 @@ object TextFileProcessor extends LazyLogging {
     agent: DialogAgent,
     text: String
   ): DialogAgentMessage = 
-    DialogAgentMessage(source_type, filename, participant_id, text, agent)
-  
+    DialogAgentMessage(
+      source_type, 
+      filename, 
+      participant_id,
+      text,
+      agent
+    )
 }
