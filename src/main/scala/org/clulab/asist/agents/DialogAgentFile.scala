@@ -95,18 +95,8 @@ class DialogAgentFile(
   } else shutdown
 
   private def process(a: Any): Unit = a match {
-    case Some(v: VersionInfo) => 
-      logger.info("Process Some(VersionInfo)")
-      processVersionInfo(v)
-    case Some(m: DialogAgentMessage) => 
-      logger.info("Process Some(DialogAgentMessage)")
-      processDialogAgentMessage(m)
-    case v: VersionInfo => 
-      logger.info("Process VersionInfo")
-      processVersionInfo(v)
-    case m: DialogAgentMessage => 
-      logger.info("Process DialogAgentMessage")
-      processDialogAgentMessage(m)
+    case v: VersionInfo => processVersionInfo(v)
+    case d: DialogAgentMessage => processDialogAgentMessage(d)
     case _ => doNextJob
   }
 
