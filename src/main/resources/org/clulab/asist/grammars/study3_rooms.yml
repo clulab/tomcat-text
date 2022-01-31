@@ -10,7 +10,7 @@
   example: "room a 4 A"
   keep: true
   pattern: |
-    [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] [word=/4|^four$/] [lemma=/(?i)^a.?$/]
+    [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] [word=/4|^four$/] [lemma=/(?i)^a\.?$/]
 
 - name: room_alpha
   priority: ${ second_priority }
@@ -18,7 +18,7 @@
   example: "room a 4"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] (?! [word=/4|^four$/] [lemma=/(?i)^a.?$/] )
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] (?! [word=/4|^four$/] [lemma=/(?i)^a\.?$/] )
     number: Number? = >/.*/
 
 - name: room_beta
@@ -27,7 +27,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^b.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^b\.?$/] []?
     number: Number? = >/.*/
 
 - name: room_charlie
@@ -36,7 +36,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^c.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^c\.?$/]
     number: Number? = >/.*/
 
 - name: room_delta
@@ -45,7 +45,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^d.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^d\.?$/]
     number: Number? = >/.*/
 
 - name: room_echo
@@ -54,7 +54,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^e.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^e\.?$/]
     number: Number? = >/.*/
 
 - name: room_foxtrott
@@ -63,7 +63,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^f.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^f\.?$/]
     number: Number? = >/.*/
 
 - name: room_gamma
@@ -72,7 +72,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^g.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^g\.?$/]
     number: Number? = >/.*/
 
 - name: room_h1a
@@ -82,7 +82,7 @@
   example: "room a 4 A"
   keep: true
   pattern: |
-    [lemma=/(?i)^room/] [lemma=/(?i)^h$/] [word=/1|^one$/] [lemma=/(?i)^a.?$/]
+    [lemma=/(?i)^room/] [lemma=/(?i)^h$/] [word=/1|^one$/] [lemma=/(?i)^a\.?$/]
 
 - name: room_h
   priority: ${ second_priority }
@@ -90,7 +90,7 @@
   example: "room h four"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^h.?$/] (?! [word=/1|^one$/] [lemma=/(?i)^a.?$/])
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^h.?$/] (?! [word=/1|^one$/] [lemma=/(?i)^a\.?$/])
     number: Number? = >/.*/
 
 - name: room_ida_A
@@ -99,7 +99,7 @@
   example: "room b five"
   type: token
   pattern: |
-      [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/1|^one$/] [lemma=/(?i)^a.?$/]
+      [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/1|^one$/] [lemma=/(?i)^a\.?$/]
 
 - name: room_ida_2A
   priority: ${ second_priority }
@@ -107,7 +107,7 @@
   example: "room b five"
   type: token
   pattern: |
-    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/2|^two$/] [lemma=/(?i)^a.?$/]
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/2|^two$/] [lemma=/(?i)^a\.?$/]
 
 - name: room_ida_3A
   priority: ${ second_priority }
@@ -115,7 +115,7 @@
   example: "room b five"
   type: token
   pattern: |
-    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/3|^three$/] [lemma=/(?i)^a.?$/]
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/3|^three$/] [lemma=/(?i)^a\.?$/]
 
 
 - name: room_ida_4A
@@ -124,7 +124,7 @@
   example: "room b five"
   type: token
   pattern: |
-    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/4|^four$/] [lemma=/(?i)^a.?$/]
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/4|^four$/] [lemma=/(?i)^a\.?$/]
 
 
 - name: room_ida
@@ -133,7 +133,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^i.?$/] (?! [] [lemma=/(?i)^a.?$/])
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^i.?$/] (?! [] [lemma=/(?i)^a\.?$/])
     number: Number? = >/.*/
 
 - name: room_j
@@ -142,7 +142,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^j.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^j\.?$/]
     number: Number? = >/.*/
 
 - name: room_kilo
@@ -151,7 +151,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^k.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^k\.?$/]
     number: Number? = >/.*/
 
 - name: room_lima
@@ -160,7 +160,7 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^l.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^l\.?$/]
     number: Number? = >/.*/
 
 - name: room_mango
@@ -169,5 +169,5 @@
   example: "room b five"
   keep: true
   pattern: |
-    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^m.?$/]
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^m\.?$/]
     number: Number? = >/.*/
