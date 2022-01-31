@@ -40,51 +40,72 @@ class DialogAgentFile(
   private val filenames: List[String] = 
     LocalFileUtils.getFileNames(inputFilename)
 
-  private val printWriter: Option[PrintWriter] = if (outputFilename == "/dev/null")
-    None
-  else try {
-    Some(new PrintWriter(new File(outputFilename)))
-  } catch {
-      case NonFatal(t)  =>
-        logger.error(s"Problem opening ${outputFilename} for writing:")
-        logger.error(t.toString)
-        None
-  }
+  private val printWriter: Option[PrintWriter] = 
+    if (outputFilename == "/dev/null")
+      None
+    else try {
+      Some(new PrintWriter(new File(outputFilename)))
+    } catch {
+        case NonFatal(t)  =>
+          logger.error(s"Problem opening ${outputFilename} for writing:")
+          logger.error(t.toString)
+          None
+    }
 
+  // do not process input unless there is a place to write the output
   val outputOK: Boolean =
     (outputFilename == "/dev/null") || printWriter.isDefined
 
-  // jobs can be DialogAgentMessage or VersionInfo
-  private val metadataJobs: List[Any] = if(outputOK) filenames
-    .filter(_.endsWith(".metadata"))
-    .map(MetadataFileProcessor(_, this))
-    .flatten
+  // compose a list of output messages from all of the input files
+  private val jobs: List[Any] = if(outputOK) {
+
+    // Message Bus metadata
+    val metadataJobs: List[Any] = filenames
+      .filter(_.endsWith(".metadata"))
+      .map(MetadataFileProcessor(_, this))
+      .flatten
+    if(!metadataJobs.isEmpty)
+      logger.info(s"Metadata messages read: ${metadataJobs.length}")
+
+    // web vtt input
+    val webVttJobs: List[DialogAgentMessage] = filenames
+      .filter(_.endsWith(".vtt"))
+      .map(WebVttFileProcessor(_, this))
+      .flatten
+    if(!webVttJobs.isEmpty)
+      logger.info(s"WebVtt messages read: ${webVttJobs.length}")
+
+    // plain text input
+    val textJobs: List[DialogAgentMessage] = filenames
+      .filter(_.endsWith(".txt"))
+      .map(TextFileProcessor(_, this))
+      .flatten
+    if(!textJobs.isEmpty)
+      logger.info(s"Text messages read: ${textJobs.length}")
+
+    List(metadataJobs, webVttJobs, textJobs).flatten
+  }
   else List.empty
-  private val webVttJobs: List[DialogAgentMessage] = if(outputOK) filenames
-    .filter(_.endsWith(".vtt"))
-    .map(WebVttFileProcessor(_, this))
-    .flatten
-  else List.empty
-  private val jobs: List[Any] = List(metadataJobs, webVttJobs).flatten
-  private val jobsIter: Iterator[Any] = jobs.iterator
+
   private val idcWorker: Option[IdcWorker] =
     if(idc) Some(new IdcWorker(this)) else None
 
-  // only process input if the output file is OK
-  if(outputOK) {
-    // start 
-    logger.info(s"webVtt messages read: ${webVttJobs.length}")
-    logger.info(s"metadata messages read: ${metadataJobs.length}")
-    logger.info(s"Writing output to ${outputFilename}")
-    logger.info(s"Processing ${jobs.length} messages...")
-    doNextJob
-  } else shutdown
+  private val jobsIter: Iterator[Any] = jobs.iterator
+
+  // startup
+  jobs.length match {
+    case 0 =>
+      logger.info("No input was found.")
+      shutdown
+    case n =>
+      logger.info(s"Processing ${n} messages...")
+      logger.info(s"Writing output to ${outputFilename}")
+      doNextJob
+  } 
 
   private def process(a: Any): Unit = a match {
-    case Some(v: VersionInfo) => processVersionInfo(v)
-    case Some(m: DialogAgentMessage) => processDialogAgentMessage(m)
     case v: VersionInfo => processVersionInfo(v)
-    case m: DialogAgentMessage => processDialogAgentMessage(m)
+    case d: DialogAgentMessage => processDialogAgentMessage(d)
     case _ => doNextJob
   }
 
@@ -102,7 +123,9 @@ class DialogAgentFile(
   }
 
   private def processDialogAgentMessage(m: DialogAgentMessage): Unit = {
-    logger.info(s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}")
+    logger.info(
+      s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}"
+    )
     idcWorker.foreach(_.enqueue(m.data.extractions))
     val json = JsonUtils.writeJson(m)
     tdacClient match {
@@ -152,6 +175,11 @@ object WebVttFileProcessor extends LazyLogging {
 
   private val source_type = "web_vtt_file"
 
+  /** Process a Message Bus metadata file
+  *  @param filename The name of the web VTT file to process
+  *  @param agent The agent calling this object
+  *  @return A list of DialogAgentMessages based on input
+  */
   def apply(
     filename: String,
     agent: DialogAgent
@@ -213,12 +241,16 @@ object WebVttFileProcessor extends LazyLogging {
   }
 }
 
-
+/* Process Message Bus metadata */
 object MetadataFileProcessor extends LazyLogging {
 
   private val source_type = "message_bus"
 
-  // one file
+  /** Process a Message Bus metadata file
+  *  @param filename The name of the metadata file to process
+  *  @param agent The agent calling this object
+  *  @return A list of DialogAgent Message Bus output messages based on input
+  */
   def apply(
     filename: String,
     agent: DialogAgent
@@ -228,6 +260,7 @@ object MetadataFileProcessor extends LazyLogging {
       .getLines
       .toList
       .map(processLine(filename,agent,_))
+      .flatten
   }
 
   private def processLine(
@@ -247,4 +280,41 @@ object MetadataFileProcessor extends LazyLogging {
       case _ => None
     }
   }
+}
+
+/* Create DialogAgentMessages from a text file.  Each line of input data
+ * is processed into one DialogAgent Message */
+object TextFileProcessor extends LazyLogging {
+
+  private val source_type = "text_file"
+  private val participant_id: Option[String] = None
+
+  /** Process a text file, creating a DialogAgentMessage from each line
+  *  @param filename The name of the text file to process
+  *  @param agent The agent calling this object
+  *  @return A list of DialogAgentMessages based on the file input
+  */
+  def apply(
+    filename: String,
+    agent: DialogAgent
+  ): List[DialogAgentMessage] = {
+    logger.info(s"processing '${filename}' ...")
+    Source.fromFile(new File(filename))
+      .getLines
+      .toList
+      .map(processLine(filename,agent,_))
+  }
+
+  private def processLine(
+    filename: String,
+    agent: DialogAgent,
+    text: String
+  ): DialogAgentMessage = 
+    DialogAgentMessage(
+      source_type, 
+      filename, 
+      participant_id,
+      text,
+      agent
+    )
 }
