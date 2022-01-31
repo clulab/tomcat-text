@@ -171,3 +171,6 @@
   pattern: |
     trigger = [lemma=/(?i)^room/] [lemma=/(?i)^m\.?$/]
     number: Number? = >/.*/
+
+
+##### here follow procedurally generated rules:

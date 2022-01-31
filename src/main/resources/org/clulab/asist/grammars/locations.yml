@@ -6,6 +6,7 @@ rules:
     #we're importing this here to keep the files clean and uncluttered
   - import: org/clulab/asist/grammars/study3_rooms.yml
     #importing study 3 room names here
+  - import: org/clulab/asist/grammars/study3roomsprocedural.yml
 
 
   - name: infrastructure_detection

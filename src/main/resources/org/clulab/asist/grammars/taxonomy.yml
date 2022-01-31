@@ -24,24 +24,82 @@
       - Infrastructure:
         - Room:
             - RoomA:
+                - RoomA1
+                - RoomA2
+                - RoomA3
+                - RoomA4
                 - RoomA4A
-            - RoomB
-            - RoomC
-            - RoomD
-            - RoomE
-            - RoomF
-            - RoomG
+            - RoomB:
+                - RoomB1
+                - RoomB2
+                - RoomB3
+                - RoomB4
+                - RoomB5
+                - RoomB6
+                - RoomB7
+                - RoomB8
+                - RoomB9
+            - RoomC:
+                - RoomC1
+                - RoomC2
+                - RoomC3
+                - RoomC4
+                - RoomC5
+                - RoomC6
+                - RoomC7
+                - RoomC8
+            - RoomD:
+                - RoomD1
+                - RoomD2
+                - RoomD3
+                - RoomD4
+            - RoomE:
+                - RoomE1
+                - RoomE2
+                - RoomE3
+                - RoomE4
+                - RoomE5
+            - RoomF:
+                - RoomF1
+                - RoomF2
+                - RoomF3
+                - RoomF4
+                - RoomF5
+            - RoomG:
+                - RoomG1
+                - RoomG2
+                - RoomG3
             - RoomH:
+                - RoomH1
+                - RoomH2
                 - RoomH1A
             - RoomI:
+                - RoomI1
+                - RoomI2
+                - RoomI3
+                - RoomI4
                 - RoomI1A
                 - RoomI2A
                 - RoomI3A
                 - RoomI4A
-            - RoomJ
-            - RoomK
-            - RoomL
-            - RoomM
+            - RoomJ:
+                - RoomJ1
+                - RoomJ2
+                - RoomJ3
+                - RoomJ4
+            - RoomK:
+                - RoomK1
+                - RoomK2
+                - RoomK3
+                - RoomK4
+            - RoomL:
+                - RoomL1
+                - RoomL2
+                - RoomL3
+            - RoomM:
+                - RoomM1
+                - RoomM2
+                - RoomM3
             - StorageRoom
             - NumberedRoom
             - KingChrisOffice
