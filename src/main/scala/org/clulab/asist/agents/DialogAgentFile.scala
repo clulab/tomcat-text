@@ -52,48 +52,56 @@ class DialogAgentFile(
           None
     }
 
+  // do not process input unless there is a place to write the output
   val outputOK: Boolean =
     (outputFilename == "/dev/null") || printWriter.isDefined
 
-  // input can be DialogAgentMessage or VersionInfo
-  private val metadataJobs: List[Any] = if(outputOK) filenames
-    .filter(_.endsWith(".metadata"))
-    .map(MetadataFileProcessor(_, this))
-    .flatten
+  // compose a list of output messages from all of the input files
+  private val jobs: List[Any] = if(outputOK) {
+
+    // Message Bus metadata
+    val metadataJobs: List[Any] = filenames
+      .filter(_.endsWith(".metadata"))
+      .map(MetadataFileProcessor(_, this))
+      .flatten
+    if(!metadataJobs.isEmpty)
+      logger.info(s"Metadata messages read: ${metadataJobs.length}")
+
+    // web vtt input
+    val webVttJobs: List[DialogAgentMessage] = filenames
+      .filter(_.endsWith(".vtt"))
+      .map(WebVttFileProcessor(_, this))
+      .flatten
+    if(!webVttJobs.isEmpty)
+      logger.info(s"WebVtt messages read: ${webVttJobs.length}")
+
+    // plain text input
+    val textJobs: List[DialogAgentMessage] = filenames
+      .filter(_.endsWith(".txt"))
+      .map(TextFileProcessor(_, this))
+      .flatten
+    if(!textJobs.isEmpty)
+      logger.info(s"Text messages read: ${textJobs.length}")
+
+    List(metadataJobs, webVttJobs, textJobs).flatten
+  }
   else List.empty
 
-  // web vtt input
-  private val webVttJobs: List[DialogAgentMessage] = if(outputOK) filenames
-    .filter(_.endsWith(".vtt"))
-    .map(WebVttFileProcessor(_, this))
-    .flatten
-  else List.empty
-
-  // plain text input
-  private val textJobs: List[DialogAgentMessage] = if(outputOK) filenames
-    .filter(_.endsWith(".txt"))
-    .map(TextFileProcessor(_, this))
-    .flatten
-  else List.empty
-
-  private val jobs: List[Any] = List(metadataJobs, webVttJobs, textJobs).flatten
-  private val jobsIter: Iterator[Any] = jobs.iterator
   private val idcWorker: Option[IdcWorker] =
     if(idc) Some(new IdcWorker(this)) else None
 
-  // start
-  if(outputOK) {
-    if(!webVttJobs.isEmpty)
-      logger.info(s"webVtt messages read: ${webVttJobs.length}")
-    if(!metadataJobs.isEmpty)
-      logger.info(s"metadata messages read: ${metadataJobs.length}")
-    if(!textJobs.isEmpty)
-      logger.info(s"text messages read: ${textJobs.length}")
+  private val jobsIter: Iterator[Any] = jobs.iterator
 
-    logger.info(s"Processing ${jobs.length} messages...")
-    logger.info(s"Writing output to ${outputFilename}")
-    doNextJob
-  } else shutdown
+  // startup
+  jobs.length match {
+    case 0 =>
+      logger.info("No input was found.")
+      shutdown
+    case n =>
+      logger.info(s"Processing ${n} messages...")
+      logger.info(s"Writing output to ${outputFilename}")
+      doNextJob
+  } 
 
   private def process(a: Any): Unit = a match {
     case v: VersionInfo => processVersionInfo(v)
@@ -115,7 +123,9 @@ class DialogAgentFile(
   }
 
   private def processDialogAgentMessage(m: DialogAgentMessage): Unit = {
-    logger.info(s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}")
+    logger.info(
+      s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}"
+    )
     idcWorker.foreach(_.enqueue(m.data.extractions))
     val json = JsonUtils.writeJson(m)
     tdacClient match {
@@ -231,7 +241,11 @@ object MetadataFileProcessor extends LazyLogging {
 
   private val source_type = "message_bus"
 
-  // one file
+  /** Process a Message Bus metadata file
+  *  @param filename The name of the metadata file to process
+  *  @param agent The agent calling this object
+  *  @return A list of DialogAgent Message Bus output messages based on input
+  */
   def apply(
     filename: String,
     agent: DialogAgent
@@ -270,7 +284,11 @@ object TextFileProcessor extends LazyLogging {
   private val source_type = "text_file"
   private val participant_id: Option[String] = None
 
-  // one file.   Data is broken at newlines
+  /** Process a text file, creating a DialogAgentMessage from each line
+  *  @param filename The name of the text file to process
+  *  @param agent The agent calling this object
+  *  @return A list of DialogAgentMessages based on the file input
+  */
   def apply(
     filename: String,
     agent: DialogAgent
