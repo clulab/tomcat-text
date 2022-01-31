@@ -1,0 +1,173 @@
+#this file is imported by locations.yml
+
+#Study 3 Rooms##########################
+
+## take care of special case first
+- name: room_4a
+  priority: ${ second_priority }
+  label: RoomA4A
+  type: token
+  example: "room a 4 A"
+  keep: true
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] [word=/4|^four$/] [lemma=/(?i)^a.?$/]
+
+- name: room_alpha
+  priority: ${ second_priority }
+  label: RoomA
+  example: "room a 4"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] (?! [word=/4|^four$/] [lemma=/(?i)^a.?$/] )
+    number: Number? = >/.*/
+
+- name: room_beta
+  priority: ${ second_priority }
+  label: RoomB
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^b.?$/]
+    number: Number? = >/.*/
+
+- name: room_charlie
+  priority: ${ second_priority }
+  label: RoomC
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^c.?$/]
+    number: Number? = >/.*/
+
+- name: room_delta
+  priority: ${ second_priority }
+  label: RoomD
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^d.?$/]
+    number: Number? = >/.*/
+
+- name: room_echo
+  priority: ${ second_priority }
+  label: RoomE
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^e.?$/]
+    number: Number? = >/.*/
+
+- name: room_foxtrott
+  priority: ${ second_priority }
+  label: RoomF
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^f.?$/]
+    number: Number? = >/.*/
+
+- name: room_gamma
+  priority: ${ second_priority }
+  label: RoomG
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^g.?$/]
+    number: Number? = >/.*/
+
+- name: room_h1a
+  priority: ${ second_priority }
+  label: RoomH1A
+  type: token
+  example: "room a 4 A"
+  keep: true
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^h$/] [word=/1|^one$/] [lemma=/(?i)^a.?$/]
+
+- name: room_h
+  priority: ${ second_priority }
+  label: RoomH
+  example: "room h four"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^h.?$/] (?! [word=/1|^one$/] [lemma=/(?i)^a.?$/])
+    number: Number? = >/.*/
+
+- name: room_ida_A
+  priority: ${ second_priority }
+  label: RoomI1A
+  example: "room b five"
+  type: token
+  pattern: |
+      [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/1|^one$/] [lemma=/(?i)^a.?$/]
+
+- name: room_ida_2A
+  priority: ${ second_priority }
+  label: RoomI2A
+  example: "room b five"
+  type: token
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/2|^two$/] [lemma=/(?i)^a.?$/]
+
+- name: room_ida_3A
+  priority: ${ second_priority }
+  label: RoomI3A
+  example: "room b five"
+  type: token
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/3|^three$/] [lemma=/(?i)^a.?$/]
+
+
+- name: room_ida_4A
+  priority: ${ second_priority }
+  label: RoomI4A
+  example: "room b five"
+  type: token
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/4|^four$/] [lemma=/(?i)^a.?$/]
+
+
+- name: room_ida
+  priority: ${ second_priority }
+  label: RoomI
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^i.?$/] (?! [] [lemma=/(?i)^a.?$/])
+    number: Number? = >/.*/
+
+- name: room_j
+  priority: ${ second_priority }
+  label: RoomJ
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^j.?$/]
+    number: Number? = >/.*/
+
+- name: room_kilo
+  priority: ${ second_priority }
+  label: RoomK
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^k.?$/]
+    number: Number? = >/.*/
+
+- name: room_lima
+  priority: ${ second_priority }
+  label: RoomL
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^l.?$/]
+    number: Number? = >/.*/
+
+- name: room_mango
+  priority: ${ second_priority }
+  label: RoomM
+  example: "room b five"
+  keep: true
+  pattern: |
+    trigger = [lemma=/(?i)^room/] [lemma=/(?i)^m.?$/]
+    number: Number? = >/.*/

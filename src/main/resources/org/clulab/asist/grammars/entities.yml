@@ -99,6 +99,79 @@ rules:
     pattern: |
       [chunk=/B-NP/ & !tag=DT] [chunk=/I-NP/]*
 
+##### here we have a colection of digits, we need these for the study 3 room names
+  - name: one
+    priority: ${ rulepriority }
+    label: "1"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=one] | (?<! other) [tag=CD & word="1"]
+
+  - name: two
+    priority: ${ rulepriority }
+    label: "2"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=two] | (?<! other) [tag=CD & word="2"]
+
+  - name: three
+    priority: ${ rulepriority }
+    label: "3"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=three] | (?<! other) [tag=CD & word="3"]
+
+  - name: four
+    priority: ${ rulepriority }
+    label: "4"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=four] | (?<! other) [tag=CD & word="4"]
+
+  - name: five
+    priority: ${ rulepriority }
+    label: "5"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=five] | (?<! other) [tag=CD & word="5"]
+
+  - name: six
+    priority: ${ rulepriority }
+    label: "6"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=six] | (?<! other) [tag=CD & word="6"]
+
+  - name: seven
+    priority: ${ rulepriority }
+    label: "7"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=seven] | (?<! other) [tag=CD & word="7"]
+
+  - name: eight
+    priority: ${ rulepriority }
+    label: "8"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=eight] | (?<! other) [tag=CD & word="8"]
+
+  - name: nine
+    priority: ${ rulepriority }
+    label: "9"
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD & word=nine] | (?<! other) [tag=CD & word="9"]
+
   - name: numbers
     priority: ${ rulepriority }
     label: Number
