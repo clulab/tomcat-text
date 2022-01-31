@@ -175,6 +175,11 @@ object WebVttFileProcessor extends LazyLogging {
 
   private val source_type = "web_vtt_file"
 
+  /** Process a Message Bus metadata file
+  *  @param filename The name of the web VTT file to process
+  *  @param agent The agent calling this object
+  *  @return A list of DialogAgentMessages based on input
+  */
   def apply(
     filename: String,
     agent: DialogAgent
