@@ -37,7 +37,7 @@ class BaseConceptTest extends BaseTest {
     val mentions = extractor.extractFrom(doc)
 
     val roomTag_mention = DesiredMention("RoomTag", "Z")
-    val number_mention = DesiredMention("2", "2")
+    val number_mention = DesiredMention("Number", "2")
     val storageRoom_mention = DesiredMention("StorageRoom", "storage room Z",
       Map("number" -> Seq(roomTag_mention)))
     val numberedRoom_mention = DesiredMention("NumberedRoom", "room 2",
