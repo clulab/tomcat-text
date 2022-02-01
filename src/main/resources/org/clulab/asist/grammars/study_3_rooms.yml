@@ -56,7 +56,7 @@
 
 
 ##### here follow procedurally generated rules:
-# These rules are generated using a Python script.
+# These rules are generated using a Python script. The script is in /scripts/quick_room_generator.py
 
 - name: room_a1
   priority: ${ second_priority }

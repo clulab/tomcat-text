@@ -20,7 +20,7 @@ rules:
     priority: ${ second_priority }
     label: Room
     type: token
-    keep: true
+    keep: false
     pattern: |
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^room/ & outgoing=compound]) |
       [lemma=/(?i)^room/]|
