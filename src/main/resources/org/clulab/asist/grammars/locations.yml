@@ -4,7 +4,7 @@ vars: org/clulab/asist/grammars/vars.yml
 rules:
   - import: org/clulab/asist/grammars/study_2_rooms.yml
     #we're importing this here to keep the files clean and uncluttered
-  - import: org/clulab/asist/grammars/study3_rooms.yml
+  - import: org/clulab/asist/grammars/study_3_rooms.yml
 
 
   - name: infrastructure_detection
