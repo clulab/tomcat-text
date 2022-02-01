@@ -177,8 +177,9 @@
     - Team
     - DemPron
     - Role:
-      - Searcher
+      - Transporter
       - Medic
+      - Searcher
       - Engineer
     - Victim:
         - Yellow
