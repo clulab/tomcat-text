@@ -20,6 +20,22 @@ rules:
     pattern: |
       [word=/(?i)(${ evacuator_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
+  - name: transporter
+    priority: ${ rulepriority }
+    label: Transporter
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)transporter|transport/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
+
+  - name: transporter_guy
+    priority: ${ rulepriority }
+    label: Transporter
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)transporter|transport/ & tag=/^NN/] [word=/(?i)guy|dude|man|person/]
+
   - name: medic
     priority: ${ rulepriority }
     label: Medic
