@@ -15,8 +15,8 @@
 <body>
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
-<p>Agent version: <code>4.0.2</code></p>
-<p>Document generation timestamp (UTC): <code>2022-01-31 15:37:31.429848</code></p>
+<p>Agent version: <code>4.0.3</code></p>
+<p>Document generation timestamp (UTC): <code>2022-02-01 06:23:26.191343</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -131,7 +131,7 @@ Concept/EventLike/Action/SimpleAction/Block
 
 Concept/EventLike/Action/SimpleAction/Clear
 - [agent] (Entity) (?)
-- target (Location|Rubble) ()
+- target (Rubble|Location) ()
 
 Concept/EventLike/Action/SimpleAction/Close
 - [target] (Infrastructure|DemPron) (?)
@@ -145,7 +145,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (Person|Victim|EventLike|Item) ()
+- exists (Person|Victim|Item|EventLike) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
@@ -251,13 +251,13 @@ Concept/EventLike/Action/SimpleAction/RoleSwitch
 - target (Role) ()
 
 Concept/EventLike/Action/SimpleAction/Save
-- target (Person|Entity|Victim) ()
+- target (Entity|Person|Victim) ()
 - [location] (Location) (?)
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Sight
 - [agent] (Entity) (?)
-- target (EventLike|Entity|Item) ()
+- target (Entity|Item|EventLike) ()
 - [location] (Location) (?)
 
 Concept/EventLike/Action/SimpleAction/Toggle
@@ -274,19 +274,135 @@ Concept/EventLike/Location/Infrastructure
 
 Concept/EventLike/Location/Infrastructure/Room
 
+Concept/EventLike/Location/Infrastructure/Room/A1
+
+Concept/EventLike/Location/Infrastructure/Room/A2
+
+Concept/EventLike/Location/Infrastructure/Room/A3
+
+Concept/EventLike/Location/Infrastructure/Room/A4
+
+Concept/EventLike/Location/Infrastructure/Room/A4A
+
 Concept/EventLike/Location/Infrastructure/Room/AmwayRoom
+
+Concept/EventLike/Location/Infrastructure/Room/B1
+
+Concept/EventLike/Location/Infrastructure/Room/B2
+
+Concept/EventLike/Location/Infrastructure/Room/B3
+
+Concept/EventLike/Location/Infrastructure/Room/B4
+
+Concept/EventLike/Location/Infrastructure/Room/B5
+
+Concept/EventLike/Location/Infrastructure/Room/B6
+
+Concept/EventLike/Location/Infrastructure/Room/B7
+
+Concept/EventLike/Location/Infrastructure/Room/B8
+
+Concept/EventLike/Location/Infrastructure/Room/B9
 
 Concept/EventLike/Location/Infrastructure/Room/BreakArea
 
 Concept/EventLike/Location/Infrastructure/Room/Buffet
 
+Concept/EventLike/Location/Infrastructure/Room/C1
+
+Concept/EventLike/Location/Infrastructure/Room/C2
+
+Concept/EventLike/Location/Infrastructure/Room/C3
+
+Concept/EventLike/Location/Infrastructure/Room/C4
+
+Concept/EventLike/Location/Infrastructure/Room/C5
+
+Concept/EventLike/Location/Infrastructure/Room/C6
+
+Concept/EventLike/Location/Infrastructure/Room/C7
+
+Concept/EventLike/Location/Infrastructure/Room/C8
+
 Concept/EventLike/Location/Infrastructure/Room/ComputerFarm
+
+Concept/EventLike/Location/Infrastructure/Room/D1
+
+Concept/EventLike/Location/Infrastructure/Room/D2
+
+Concept/EventLike/Location/Infrastructure/Room/D3
+
+Concept/EventLike/Location/Infrastructure/Room/D4
 
 Concept/EventLike/Location/Infrastructure/Room/DataStorage
 
+Concept/EventLike/Location/Infrastructure/Room/E1
+
+Concept/EventLike/Location/Infrastructure/Room/E2
+
+Concept/EventLike/Location/Infrastructure/Room/E3
+
+Concept/EventLike/Location/Infrastructure/Room/E4
+
+Concept/EventLike/Location/Infrastructure/Room/E5
+
+Concept/EventLike/Location/Infrastructure/Room/F1
+
+Concept/EventLike/Location/Infrastructure/Room/F2
+
+Concept/EventLike/Location/Infrastructure/Room/F3
+
+Concept/EventLike/Location/Infrastructure/Room/F4
+
+Concept/EventLike/Location/Infrastructure/Room/F5
+
+Concept/EventLike/Location/Infrastructure/Room/G1
+
+Concept/EventLike/Location/Infrastructure/Room/G2
+
+Concept/EventLike/Location/Infrastructure/Room/G3
+
+Concept/EventLike/Location/Infrastructure/Room/H1
+
+Concept/EventLike/Location/Infrastructure/Room/H1A
+
+Concept/EventLike/Location/Infrastructure/Room/H2
+
 Concept/EventLike/Location/Infrastructure/Room/HerbalifeRoom
 
+Concept/EventLike/Location/Infrastructure/Room/I1
+
+Concept/EventLike/Location/Infrastructure/Room/I1A
+
+Concept/EventLike/Location/Infrastructure/Room/I2
+
+Concept/EventLike/Location/Infrastructure/Room/I2A
+
+Concept/EventLike/Location/Infrastructure/Room/I3
+
+Concept/EventLike/Location/Infrastructure/Room/I3A
+
+Concept/EventLike/Location/Infrastructure/Room/I4
+
+Concept/EventLike/Location/Infrastructure/Room/I4A
+
+Concept/EventLike/Location/Infrastructure/Room/J1
+
+Concept/EventLike/Location/Infrastructure/Room/J2
+
+Concept/EventLike/Location/Infrastructure/Room/J3
+
+Concept/EventLike/Location/Infrastructure/Room/J4
+
 Concept/EventLike/Location/Infrastructure/Room/JanitorCloset
+
+Concept/EventLike/Location/Infrastructure/Room/K1
+
+Concept/EventLike/Location/Infrastructure/Room/K2
+
+Concept/EventLike/Location/Infrastructure/Room/K3
+
+Concept/EventLike/Location/Infrastructure/Room/K4
 
 Concept/EventLike/Location/Infrastructure/Room/KingChrisOffice
 
@@ -294,11 +410,23 @@ Concept/EventLike/Location/Infrastructure/Room/KingTerrace
 
 Concept/EventLike/Location/Infrastructure/Room/Kitchen
 
+Concept/EventLike/Location/Infrastructure/Room/L1
+
+Concept/EventLike/Location/Infrastructure/Room/L2
+
+Concept/EventLike/Location/Infrastructure/Room/L3
+
 Concept/EventLike/Location/Infrastructure/Room/Library
 
 Concept/EventLike/Location/Infrastructure/Room/LimpingLambChophouse
 
 Concept/EventLike/Location/Infrastructure/Room/Lobby
+
+Concept/EventLike/Location/Infrastructure/Room/M1
+
+Concept/EventLike/Location/Infrastructure/Room/M2
+
+Concept/EventLike/Location/Infrastructure/Room/M3
 
 Concept/EventLike/Location/Infrastructure/Room/MaryKayRoom
 
