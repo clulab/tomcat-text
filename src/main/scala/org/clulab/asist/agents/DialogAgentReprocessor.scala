@@ -304,7 +304,7 @@ class DialogAgentReprocessor (
   def writeOutput(text: String): Unit = fileWriter match {
     case Some(fw: PrintWriter) =>  
       try {
-        fw.write(text)
+        fw.write(text+"\n")
       } catch {
         case NonFatal(t) =>
           logger.error(s"Error writing to output file:  ${t}")

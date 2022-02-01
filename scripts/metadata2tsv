@@ -53,10 +53,10 @@ if __name__ == "__main__":
 
         # Parse the filename components
         path = Path(filepath)
-        trial=filepath.rpartition("Trial-")[2].split("_")[0]
-        team=str(int(filepath.rpartition("Team-")[2].split("_")[0][2:]))
-        condbtwn=filepath.rpartition("CondBtwn-")[2].split("_")[0]
-        condwin=filepath.rpartition("CondWin-")[2].split("_")[0]
+        trial = filepath.rpartition("Trial-")[2].split("_")[0]
+        team = str(int(filepath.rpartition("Team-")[2].split("_")[0][2:]))
+        condbtwn = filepath.rpartition("CondBtwn-")[2].split("_")[0]
+        condwin = filepath.rpartition("CondWin-")[2].split("_")[0]
 
         # Process the file
         with open(filepath) as f:
@@ -68,27 +68,34 @@ if __name__ == "__main__":
                     message = json.loads(line)
                 except json.JSONDecodeError:
                     raise RuntimeError(
-                            f"Unable to parse line {i+1} in {filepath} as JSON.\n"
-                            + line
-                            )
+                        f"Unable to parse line {i+1} in {filepath} as JSON.\n"
+                    )
 
                 if message["msg"]["sub_type"] == "start":
                     initial_timestamp = json.loads(line)["msg"]["timestamp"]
 
-                if "topic" in message and message["topic"] == "agent/asr/final":
+                if (
+                    "topic" in message
+                    and message["topic"] == "agent/asr/final"
+                ):
                     data = message["data"]
                     timestamp = message["msg"]["timestamp"]
 
                     try:
-                        timedelta = relativedelta(parse(timestamp), parse(initial_timestamp))
+                        timedelta = relativedelta(
+                            parse(timestamp), parse(initial_timestamp)
+                        )
                     except TypeError:
                         raise RuntimeError(
-                                f"Unable to parse timestamps in line {i+1} in {filepath}\n"
-                                +line+"\n"
-                                +f"Initial timestamp: {initial_timestamp}\n"
-                                +f"Timestamp: {timestamp}"
-                                )
-                    relative_timestamp = f"{timedelta.minutes}:{timedelta.seconds}"
+                            f"Unable to parse timestamps in line {i+1} in {filepath}\n"
+                            + line
+                            + "\n"
+                            + f"Initial timestamp: {initial_timestamp}\n"
+                            + f"Timestamp: {timestamp}"
+                        )
+                    relative_timestamp = (
+                        f"{timedelta.minutes}:{timedelta.seconds}"
+                    )
 
                     if "text" in data and "is_final" in data:
                         text = data["text"]
