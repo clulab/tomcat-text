@@ -117,7 +117,6 @@ class TestActions extends BaseTest {
       Set(AGENT_SELF)
     )
 
-    testMention(mentions, infra_mention)
     testMention(mentions, clear_mention)
   }
 
