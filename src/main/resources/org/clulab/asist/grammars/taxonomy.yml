@@ -211,11 +211,14 @@
         - RegularMarkerBlock
         - NoVictimMarkerBlock
         - CriticalMarkerBlock
+        - ThreatRoomMarker
+        - RubbleMarker
     - Tool:
       - Hammer
       - MedKit
       - Stretcher
-      - Map
+      - Map:
+          - ThreatSign
   - Sentiment:
     #- Uncertainty  # include the agent
     - Positive:
