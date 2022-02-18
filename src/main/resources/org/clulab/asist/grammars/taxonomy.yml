@@ -137,6 +137,7 @@
             - RoleDeclare
             - RoomStatus:
                 - RoomClear
+                - ReportThreatRoom
             - ReportItemStatus:
               - ToolBroken
               - DoorOpen
