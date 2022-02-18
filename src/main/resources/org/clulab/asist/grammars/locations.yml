@@ -159,3 +159,11 @@ rules:
     type: token
     pattern: |
       [mention=Location]{2,4}
+
+  - name: threat_room_toke
+    priority: ${ second_priority }
+    label: ThreatRoom
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^threat$/] [word=/(?i)^room/] | [word=/(?i)^threatroom/]
