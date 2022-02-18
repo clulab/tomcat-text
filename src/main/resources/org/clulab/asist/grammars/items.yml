@@ -81,7 +81,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^threat/] [lemma=room]? [lemma=marker] [lemma=block]? | [lemma=/(?i)^threat/] [lemma=room]? [lemma=markerblock]
+      [lemma=/(?i)^threat/] [lemma=room]? [lemma=marker] [lemma=block]? | [lemma=/(?i)^threat/] [lemma=room]? [lemma=markerblock] | [word=/(?i)^threatmarker/]
 
 # -------- map objects ----------
 
@@ -91,4 +91,12 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^threat/] [lemma=/^sign/] | [lemma=/(?i)threatsign/]
+      [lemma=/(?i)^threat/] [lemma=/^sign|^indicator/] | [lemma=/(?i)threatsign/]
+
+  - name: threat_sign_token_unspecified
+    priority: ${ rulepriority }
+    label: Threat
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^threat/]

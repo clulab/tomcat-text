@@ -115,6 +115,26 @@ rules:
         </cop/
         >/nsubj/
 
+  - name: threatroom_report2
+    priority: ${ rulepriority }
+    example: "B3 has a threat sign"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatSign = >/dobj/
+      room: Room =
+        >/nsubj/
+
+  - name: threatroom_report3
+    priority: ${ rulepriority }
+    example: "B3 has a threat marker"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatRoomMarker = >/dobj/
+      room: Room =
+        >/nsubj/
+
   - name: location_report
     priority: ${ rulepriority }
     example: "I'm in the library"

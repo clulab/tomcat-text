@@ -219,7 +219,8 @@
       - MedKit
       - Stretcher
       - Map:
-          - ThreatSign
+          - ThreatSign:
+              - Threat
   - Sentiment:
     #- Uncertainty  # include the agent
     - Positive:
