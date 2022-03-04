@@ -11,6 +11,7 @@ rules:
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${preps}/
+      map: Map? = >dobj >nmod_on | >nmod_on
 
   - name: passive-${name}
     priority: ${ template_priority }

@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.0.3</code></p>
-<p>Document generation timestamp (UTC): <code>2022-03-04 17:41:58.815907</code></p>
+<p>Document generation timestamp (UTC): <code>2022-03-04 20:24:39.722905</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -96,12 +96,18 @@ Concept/Entity/Victim/NoVictim
 
 Concept/Entity/Victim/RegularVictim
 
+Concept/Entity/Victim/RegularVictim/VictimTypeA
+
+Concept/Entity/Victim/RegularVictim/VictimTypeB
+
+[Concept/Entity/Victim/Type]
+
 [Concept/Entity/Victim/Yellow]
 
 [Concept/Entity/You]
 
 Concept/EventLike/Action/ComplexAction/ChangePriority
-- target (Victim|Person) ()
+- target (Person|Victim) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/ComplexAction/Continue
@@ -128,12 +134,12 @@ Concept/EventLike/Action/ComplexAction/Search
 - [target] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Block
-- [source] (Concept|Obstacle) (?)
+- [source] (Obstacle|Concept) (?)
 - [target] (Concept) (?)
 
 Concept/EventLike/Action/SimpleAction/Clear
 - [agent] (Entity) (?)
-- target (Rubble|Location) ()
+- target (Location|Rubble) ()
 
 Concept/EventLike/Action/SimpleAction/Close
 - [target] (Infrastructure|DemPron) (?)
@@ -147,7 +153,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (Victim|Person|EventLike|Item) ()
+- exists (Person|Item|EventLike|Victim) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
@@ -193,10 +199,14 @@ Concept/EventLike/Action/SimpleAction/Communicate/Question/HowQuestion
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/Question/LocationQuestion
-- topic (Entity|Move) ()
+- topic (Move|Entity) ()
 - [location] (Location) (?)
 
 [Concept/EventLike/Action/SimpleAction/Communicate/Question/QuestionParticle]
+
+Concept/EventLike/Action/SimpleAction/Communicate/Question/WhichVictimType
+- topic (Type) ()
+- [location] (Location) (?)
 
 Concept/EventLike/Action/SimpleAction/Communicate/Question/YesNoQuestion
 - topic (Action) ()
@@ -221,7 +231,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoleDeclare
 - agent (Entity) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoomStatus/ReportThreatRoom
-- threat (ThreatRoomMarker|ThreatRoom|ThreatSign) ()
+- threat (ThreatSign|ThreatRoom|ThreatRoomMarker) ()
 - room (Room) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoomStatus/RoomClear
@@ -237,39 +247,51 @@ Concept/EventLike/Action/SimpleAction/Move
 Concept/EventLike/Action/SimpleAction/Move/Enter
 - [target] (Location) (?)
 - [agent] (Entity) (?)
-- target (Deictic|Location) ()
+- target (Location|Deictic) ()
 
 Concept/EventLike/Action/SimpleAction/Move/MoveFrom
-- target (Deictic|Location) ()
+- target (Location|Deictic) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Move/MoveTo
-- target (Entity|Deictic|Location) ()
+- target (Deictic|Location|Entity) ()
 - [agent] (Entity) (?)
+
+Concept/EventLike/Action/SimpleAction/Move/OnMyWay
+- [target] (Location|Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Open
 - [agent] (Entity) (?)
 - target (Infrastructure) ()
 - [location] (Location) (?)
+- [map] (Map) (?)
+
+Concept/EventLike/Action/SimpleAction/PlaceMarker
+- target (MarkerBlock) ()
+- location (Location) ()
 
 Concept/EventLike/Action/SimpleAction/RoleSwitch
 - [agent] (Entity) (?)
 - target (Role) ()
 
 Concept/EventLike/Action/SimpleAction/Save
-- target (Victim|Person|Entity) ()
+- target (Entity|Person|Victim) ()
 - [location] (Location) (?)
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Sight
 - [agent] (Entity) (?)
-- target (EventLike|Entity|Item) ()
+- target (Entity|Item|EventLike) ()
 - [location] (Location) (?)
+- [map] (Map) (?)
+- item (Item) ()
+- map (Map) ()
 
 Concept/EventLike/Action/SimpleAction/Toggle
 - [agent] (Entity) (?)
 - target (Switch) ()
 - [location] (Location) (?)
+- [map] (Map) (?)
 
 Concept/EventLike/Location
 - target (Concept) ()
@@ -290,8 +312,6 @@ Concept/EventLike/Location/Infrastructure/Room/A4
 
 Concept/EventLike/Location/Infrastructure/Room/A4A
 
-Concept/EventLike/Location/Infrastructure/Room/AmwayRoom
-
 Concept/EventLike/Location/Infrastructure/Room/B1
 
 Concept/EventLike/Location/Infrastructure/Room/B2
@@ -310,10 +330,6 @@ Concept/EventLike/Location/Infrastructure/Room/B8
 
 Concept/EventLike/Location/Infrastructure/Room/B9
 
-Concept/EventLike/Location/Infrastructure/Room/BreakArea
-
-Concept/EventLike/Location/Infrastructure/Room/Buffet
-
 Concept/EventLike/Location/Infrastructure/Room/C1
 
 Concept/EventLike/Location/Infrastructure/Room/C2
@@ -330,8 +346,6 @@ Concept/EventLike/Location/Infrastructure/Room/C7
 
 Concept/EventLike/Location/Infrastructure/Room/C8
 
-Concept/EventLike/Location/Infrastructure/Room/ComputerFarm
-
 Concept/EventLike/Location/Infrastructure/Room/D1
 
 Concept/EventLike/Location/Infrastructure/Room/D2
@@ -339,8 +353,6 @@ Concept/EventLike/Location/Infrastructure/Room/D2
 Concept/EventLike/Location/Infrastructure/Room/D3
 
 Concept/EventLike/Location/Infrastructure/Room/D4
-
-Concept/EventLike/Location/Infrastructure/Room/DataStorage
 
 Concept/EventLike/Location/Infrastructure/Room/E1
 
@@ -374,8 +386,6 @@ Concept/EventLike/Location/Infrastructure/Room/H1A
 
 Concept/EventLike/Location/Infrastructure/Room/H2
 
-Concept/EventLike/Location/Infrastructure/Room/HerbalifeRoom
-
 Concept/EventLike/Location/Infrastructure/Room/I1
 
 Concept/EventLike/Location/Infrastructure/Room/I1A
@@ -400,8 +410,6 @@ Concept/EventLike/Location/Infrastructure/Room/J3
 
 Concept/EventLike/Location/Infrastructure/Room/J4
 
-Concept/EventLike/Location/Infrastructure/Room/JanitorCloset
-
 Concept/EventLike/Location/Infrastructure/Room/K1
 
 Concept/EventLike/Location/Infrastructure/Room/K2
@@ -410,23 +418,11 @@ Concept/EventLike/Location/Infrastructure/Room/K3
 
 Concept/EventLike/Location/Infrastructure/Room/K4
 
-Concept/EventLike/Location/Infrastructure/Room/KingChrisOffice
-
-Concept/EventLike/Location/Infrastructure/Room/KingTerrace
-
-Concept/EventLike/Location/Infrastructure/Room/Kitchen
-
 Concept/EventLike/Location/Infrastructure/Room/L1
 
 Concept/EventLike/Location/Infrastructure/Room/L2
 
 Concept/EventLike/Location/Infrastructure/Room/L3
-
-Concept/EventLike/Location/Infrastructure/Room/Library
-
-Concept/EventLike/Location/Infrastructure/Room/LimpingLambChophouse
-
-Concept/EventLike/Location/Infrastructure/Room/Lobby
 
 Concept/EventLike/Location/Infrastructure/Room/M1
 
@@ -434,26 +430,7 @@ Concept/EventLike/Location/Infrastructure/Room/M2
 
 Concept/EventLike/Location/Infrastructure/Room/M3
 
-Concept/EventLike/Location/Infrastructure/Room/MaryKayRoom
-
-Concept/EventLike/Location/Infrastructure/Room/MensRoom
-
-Concept/EventLike/Location/Infrastructure/Room/NumberedRoom
-- number (Number) ()
-
-Concept/EventLike/Location/Infrastructure/Room/Office
-- [number] (Number) (?)
-
-Concept/EventLike/Location/Infrastructure/Room/SecurityOffice
-
-Concept/EventLike/Location/Infrastructure/Room/StorageRoom
-- number (RoomTag) ()
-
-Concept/EventLike/Location/Infrastructure/Room/SundollarCoffee
-
 Concept/EventLike/Location/Infrastructure/Room/ThreatRoom
-
-Concept/EventLike/Location/Infrastructure/Room/WomensRoom
 
 Concept/EventLike/Location/Infrastructure/Zone
 - num (Number) ()
@@ -494,9 +471,6 @@ Concept/Item/Tool/MedKit
 
 Concept/Item/Tool/Stretcher
 - [owner] (Entity) (?)
-
-Concept/MarkerMeaning
-- meaning (Victim) ()
 
 [Concept/Number]
 
