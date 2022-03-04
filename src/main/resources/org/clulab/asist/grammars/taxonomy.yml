@@ -129,6 +129,7 @@
         - Toggle
         - Save
         - Sight
+        - PlaceMarker
         - Communicate:
           - Instruction
           - ReportStatus:

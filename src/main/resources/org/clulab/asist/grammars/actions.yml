@@ -193,6 +193,18 @@ rules:
       trigger = [tag=/^V/]
       target: Entity? = <dobj
 
+# ---- marker block related actions
+
+  - name: placeMarker1
+    label: PlaceMarker
+    example: "I'm placing a marker in front of D2."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/${ place_triggers }/]
+      target: MarkerBlock = >dobj
+      location: Location = >dobj >/${ positional_preps }/
+
 #\\ todo: #"put down marker block"
 #\\ todo: #review the instruction rule... "And going to go renew my hammer and then come back."
 #\\ todo: #mark rooms: "Oh, I should mark the rooms i'll mark them with a one if I get everything from." "All right, this is green, I will be putting a three if there's nobody in the room, so nobody accidentally goes in there."
