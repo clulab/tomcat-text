@@ -116,3 +116,5 @@ where_triggers: "where"
 you_triggers: "you"
 
 zone_triggers: "zone|area|side|section"
+
+place_triggers: "place|put"

@@ -9,12 +9,12 @@ class TestCommunications extends BaseTest {
 
 
   passingTest should "Parse existential constructions" in {
-    val text = "There is a medkit in the library. "
+    val text = "There is a medkit in the room. "
 
     val mentions = extractor.extractFrom(text)
     val medkit = DesiredMention("MedKit", "medkit")
-    val location = DesiredMention("Library", "library")
-    val ex1 = DesiredMention("KnowledgeSharing", "There is a medkit in the library", Map("location" -> Seq(location), "exists" -> Seq(medkit)))
+    val location = DesiredMention("Room", "room")
+    val ex1 = DesiredMention("KnowledgeSharing", "There is a medkit in the room", Map("location" -> Seq(location), "exists" -> Seq(medkit)))
 
     testMention(mentions, ex1)
 
@@ -44,12 +44,12 @@ class TestCommunications extends BaseTest {
   }
 
   passingTest should "Parse the found victim rule" in {
-    val text = "I found a victim in the library. "
+    val text = "I found a victim in the room. "
 
     val mentions = extractor.extractFrom(text)
     val victim = DesiredMention("Victim", "victim")
-    val location = DesiredMention("Library", "library")
-    val ex1 = DesiredMention("KnowledgeSharing", "found a victim in the library", Map("location" -> Seq(location), "exists" -> Seq(victim)), Set(PAST_TENSE))
+    val location = DesiredMention("Room", "room")
+    val ex1 = DesiredMention("KnowledgeSharing", "found a victim in the room", Map("location" -> Seq(location), "exists" -> Seq(victim)), Set(PAST_TENSE))
 
     testMention(mentions, ex1)
 

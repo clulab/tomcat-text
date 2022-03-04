@@ -19,63 +19,9 @@ rules:
     pattern: |
       [word=/someone|anyone/]
 
-  - name: victim
-    priority: ${ rulepriority }
-    label: Victim
-    type: token
-    keep: true
-    pattern: |
-      (?<! [lemma=/no|critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/]
+# ----- victim rules -----
 
-  - name: critical_victim
-    priority: ${ rulepriority }
-    label: CriticalVictim
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
-
-  - name: critical_solitary
-    priority: ${ rulepriority }
-    label: CriticalVictim
-    type: token
-    keep: true
-    pattern: |
-      (?<=a|an|the|some) [word=/(?i)critical/]
-
-  - name: critical_injured_victim
-    priority: ${ rulepriority }
-    label: CriticalVictim
-    type: token
-    keep: true
-    pattern: |
-      critically injured [lemma=/(patient|victim|one)/]
-
-  - name: critical_victim_one
-    priority: ${ rulepriority }
-    label: CriticalVictim
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)critical/] [lemma=/(?i)^one$|^dude|^guy$/]
-
-  - name: regular_victim_one
-    priority: ${ rulepriority }
-    label: RegularVictim
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/regular|normal/] [lemma=/^one$|^dude|^guy$|victim/]
-
-  - name: no_victim_one
-    priority: ${ rulepriority }
-    label: NoVictim
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/\bno\b/] [lemma=/\bone\b|victim/]
-
-
+  - import:  org/clulab/asist/grammars/victims.yml
 
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
