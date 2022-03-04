@@ -32,7 +32,8 @@ class BaseConceptTest extends BaseTest {
     testMention(mentions, bravo_mention)
   }
 
-  passingTest should "Recognize numbered room and storage room" in {
+  // this is a study 2 test
+  failingTest should "Recognize numbered room and storage room" in {
     val doc = extractor.annotate("Check storage room Z and room 2.")
     val mentions = extractor.extractFrom(doc)
 
