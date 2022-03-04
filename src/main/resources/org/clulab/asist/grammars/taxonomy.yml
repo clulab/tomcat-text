@@ -212,14 +212,14 @@
         - RegularMarkerBlock
         - NoVictimMarkerBlock
         - CriticalMarkerBlock
-        - ThreatRoomMarker
+        - ThreatRoomMarker #this refers to the actual marker block
         - RubbleMarker
     - Tool:
       - Hammer
       - MedKit
       - Stretcher
       - Map:
-          - ThreatSign:
+          - ThreatSign: #this refers to the sign on the map!
               - Threat
   - Sentiment:
     #- Uncertainty  # include the agent

@@ -86,6 +86,7 @@ rules:
 # -------- map objects ----------
 
   - name: threat_sign_token
+    example: "I have a threatsign on my map"
     priority: ${ rulepriority }
     label: ThreatSign
     type: token
