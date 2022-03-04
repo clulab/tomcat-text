@@ -109,7 +109,7 @@ rules:
     example: "I'm in the library"
     label: ReportLocation
     pattern: |
-      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      trigger = (?<! [mention=Question] []*) [lemma=/(?i)^(${ exist_triggers })/]
       location: Location = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
       agent: Entity? =
         </cop/

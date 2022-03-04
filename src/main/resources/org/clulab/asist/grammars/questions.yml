@@ -46,13 +46,13 @@ rules:
       location: Location? = >/${positional_preps_liberal+advmod}/
 
   - name: information_gathering_question_clarification
-    example: "What is the plan?"
+    example: "What is the plan? | What is the type of the victim in room c?"
     priority: ${ rulepriority }
     label: Question
     pattern: |
       trigger = @QuestionParticle (?= [lemma=be])
       topic: Concept = >nsubj
-      location: Location? = >nsubj >/${positional_preps}/
+      location: Location? = >nsubj >/${positional_preps}/ | >nsubj >/nmod_of/  >/${positional_preps}/
 
 
   - name: mannerquestion
@@ -74,6 +74,17 @@ rules:
       topic: Action = <aux
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
+
+  - name: type_question
+    example: "Which type of victim is it?"
+    priority: ${ rulepriority }
+    label: WhichVictimType
+    pattern: |
+      trigger = [lemma=which]
+      topic: Type = <det
+      location: Location? = <det (</nsubj/|>/nmod/)
+
+
 
 #leave this here so I can remember how to do these complex dependencies
 #      first_action: Action? =

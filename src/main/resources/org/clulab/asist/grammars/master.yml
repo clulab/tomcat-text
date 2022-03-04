@@ -47,10 +47,10 @@ rules:
     vars:
       rulepriority: "5+"
 
-  # Extract the marker meanings
-  - import: org/clulab/asist/grammars/marker_meanings.yml
-    vars:
-      rulepriority: "5+"
+  # Extract the marker meanings//// We have this disabled for study 3
+#  - import: org/clulab/asist/grammars/marker_meanings.yml
+#    vars:
+#      rulepriority: "5+"
 
   # Extract time mentions, e.g., "30 seconds"
   - import: org/clulab/asist/grammars/time.yml

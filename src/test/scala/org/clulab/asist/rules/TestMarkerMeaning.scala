@@ -2,7 +2,7 @@ package org.clulab.asist.rules
 
 import org.clulab.asist.BaseTest
 import org.clulab.asist.attachments.VictimType
-
+// all these are set to fail, since we dont use marker meanings in study 3
 class TestMarkerMeaning extends BaseTest {
 
   val MM = "MarkerMeaning"
@@ -14,7 +14,7 @@ class TestMarkerMeaning extends BaseTest {
 
   behavior of "marker_meanings.yml"
 
-  it should "find marker meanings with `marker_meaning` rule" in {
+  failingTest should "find marker meanings with `marker_meaning` rule" in {
     val text = "but let's let standardized that for the three of us and just understand that one is no victim two is regular victim and three is for critical victim"
     val mentions = extractor.extractFrom(text)
     val one = DesiredMention(
@@ -42,7 +42,7 @@ class TestMarkerMeaning extends BaseTest {
 
   }
 
-  it should "find marker meanings with `marker_meaning_token` rule" in {
+  failingTest should "find marker meanings with `marker_meaning_token` rule" in {
     val text = "I'm taking the same same tactic as last time I started with the Searchers looks like our numbers mean the same thing as well regular victim has one no victim or clear drum its 2 and I'm critical victims are three"
     val mentions = extractor.extractFrom(text)
     val one = DesiredMention(
@@ -63,7 +63,7 @@ class TestMarkerMeaning extends BaseTest {
 
   }
 
-  it should "find marker meanings with `marker_meaning_token_flipped` rule" in {
+  failingTest should "find marker meanings with `marker_meaning_token_flipped` rule" in {
     val text = "my screen shows number one says no victim here and number two is regular victim here"
     val mentions = extractor.extractFrom(text)
     val one = DesiredMention(
@@ -84,7 +84,7 @@ class TestMarkerMeaning extends BaseTest {
 
   }
 
-  it should "find marker meanings with `marker_meaning_two_misparsed` rule" in {
+  failingTest should "find marker meanings with `marker_meaning_two_misparsed` rule" in {
     val text = "one online one indicates a regular victim to indicates no victim and then three and debate indicate the critical victim"
     val mentions = extractor.extractFrom(text)
     val one = DesiredMention(

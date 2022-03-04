@@ -152,6 +152,7 @@
             - LocationQuestion
             - YesNoQuestion
             - HowQuestion
+            - WhichVictimType
           - Plan:
               - ContingentPlan
               - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
@@ -183,9 +184,12 @@
       - Searcher
       - Engineer
     - Victim:
+        - Type
         - Yellow
         - CriticalVictim
-        - RegularVictim
+        - RegularVictim:
+            - VictimTypeA
+            - VictimTypeB
         - NoVictim
     - Player:
       - Red
