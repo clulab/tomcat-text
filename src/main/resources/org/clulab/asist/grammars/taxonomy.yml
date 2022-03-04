@@ -14,6 +14,7 @@
         - Deictic
       - Infrastructure:
         - Room:
+            - ThreatRoom
           # Study 3
             - A1
             - A2
@@ -138,6 +139,7 @@
             - RoleDeclare
             - RoomStatus:
                 - RoomClear
+                - ReportThreatRoom
             - ReportItemStatus:
               - ToolBroken
               - DoorOpen
@@ -216,11 +218,15 @@
         - RegularMarkerBlock
         - NoVictimMarkerBlock
         - CriticalMarkerBlock
+        - ThreatRoomMarker #this refers to the actual marker block
+        - RubbleMarker
     - Tool:
       - Hammer
       - MedKit
       - Stretcher
-      - Map
+      - Map:
+          - ThreatSign: #this refers to the sign on the map!
+              - Threat
   - Sentiment:
     #- Uncertainty  # include the agent
     - Positive:
