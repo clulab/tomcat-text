@@ -125,6 +125,14 @@ rules:
       trigger: ${ sight_triggers }
       object_type: EventLike
 
+  - name: seeOnMap
+    priority: ${ rulepriority }
+    example: "I have a threatsign on my map"
+    label: Sight
+    pattern: |
+      trigger = [lemma=/(?i)^have/]
+      item: Item = >dobj
+      map: Map = >dobj >nmod_on
 
 ##----------------------------------------------------------------------------------------- clear
 
