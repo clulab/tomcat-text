@@ -104,6 +104,37 @@ rules:
       agent: Entity? = >/(${agents})/
       target: Role = >/nmod_to/
 
+  - name: threatroom_report1
+    priority: ${ rulepriority }
+    example: "B3 is a threat room"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      threat: ThreatRoom = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
+      room: Room =
+        </cop/
+        >/nsubj/
+
+  - name: threatroom_report2
+    priority: ${ rulepriority }
+    example: "B3 has a threat sign| C3 is marked as a threat"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatSign = >/dobj|nmod/
+      room: Room =
+        >/nsubj/
+
+  - name: threatroom_report3
+    priority: ${ rulepriority }
+    example: "B3 has a threat marker"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatRoomMarker = >/dobj/
+      room: Room =
+        >/nsubj/
+
   - name: location_report
     priority: ${ rulepriority }
     example: "I'm in the library"
@@ -111,7 +142,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
       location: Location = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
-      agent: Entity? =
+      agent: Entity =
         </cop/
         >/nsubj/
 
