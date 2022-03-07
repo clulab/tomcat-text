@@ -227,16 +227,25 @@ rules:
   - name: found_victim
     priority: ${ rulepriority }
     label: KnowledgeSharing
-    example: "I found a victim in the library"
+    example: "I found a victim in the library. I detected a victim in D2."
     pattern: |
-      trigger =[lemma=/(?i)^find|found|locate|spot/]
+      trigger =[lemma=/(?i)^find|found|locate|spot|detect/]
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${objects}/ >/${positional_preps_liberal}/|
                >/${preps}/|
-               >/advmod/
+               >/advmod/|
+               >dobj >acl >/${positional_preps_liberal}/
 
+  - name: found_victim_reverse
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "Victim detected in D2. Victim found in A1."
+    pattern: |
+      trigger =[lemma=/(?i)^find|found|locate|spot|detect/]
+      exists: Victim = <acl
+      location: Location? = >/${positional_preps_liberal}/
 
   - name: found_victim_have
     priority: ${ rulepriority }
