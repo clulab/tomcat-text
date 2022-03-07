@@ -8,7 +8,7 @@ rules:
     example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction] (?! [lemma=not][lemma=worry]|(you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
 
@@ -16,11 +16,11 @@ rules:
   - name: instruction_command_topic
     priority: ${ rulepriority }
     label: Instruction
-    example: "Help him save the victim!"
+    example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$/]|to|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
-      topic: Action = >/dobj|ccomp/
+      topic: Action = >/dobj|ccomp/ | <aux
 
   - name: prep_need_role
     priority: ${ rulepriority }

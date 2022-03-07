@@ -164,7 +164,7 @@ rules:
     label: Block
     example: "Some rubble is blocking this door"
     pattern: |
-      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      trigger = (?<! [lemma=marker] ) [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
       source: Concept? = >/${agents}/
       target: Concept? = >/dobj|acl/
 
@@ -172,7 +172,7 @@ rules:
     priority: ${ rulepriority }
     label: Block
     pattern: |
-      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      trigger = (?<! [lemma=marker] ) [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
       source: Obstacle? =  <acl
       target: Concept? = >/dobj|acl/
 
@@ -205,13 +205,36 @@ rules:
 
   - name: placeMarker1
     label: PlaceMarker
-    example: "I'm placing a marker in front of D2."
+    example: "I'm placing a marker for critical victim in front of D2."
     priority: ${ rulepriority }
     keep: true
     pattern: |
-      trigger = [lemma=/${ place_triggers }/]
+      trigger = [lemma=/^${ place_triggers }/]
       target: MarkerBlock = >dobj
-      location: Location = >dobj >/${ positional_preps }/
+      location: Location? = >dobj >/${ positional_preps }/
+      marker_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: placeMarker_leave
+    label: PlaceMarker
+    example: "I'm leaving a marker in front of D2."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/leave/]
+      target: MarkerBlock = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      marker_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: placeMarker_throw
+    label: PlaceMarker
+    example: "I can throw down a marker here."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/throw/]
+      target: MarkerBlock = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      marker_meaning: Concept? = >dobj >/nmod_for/
 
 #\\ todo: #"put down marker block"
 #\\ todo: #review the instruction rule... "And going to go renew my hammer and then come back."
