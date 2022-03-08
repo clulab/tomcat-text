@@ -47,6 +47,11 @@ rules:
     vars:
       rulepriority: "5+"
 
+  # Extract the puzzle concepts
+  - import: org/clulab/asist/grammars/puzzle_concepts.yml
+    vars:
+      rulepriority: "5+"
+
   # Extract the marker meanings//// We have this disabled for study 3master.yml
 #  - import: org/clulab/asist/grammars/marker_meanings.yml
 #    vars:

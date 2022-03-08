@@ -224,6 +224,20 @@ rules:
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/
 
+  - name: existential5
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is a meeting in this room"
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: PuzzleConcept = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/
+
   - name: found_victim
     priority: ${ rulepriority }
     label: KnowledgeSharing

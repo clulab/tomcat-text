@@ -236,3 +236,11 @@
     - Negative
       #- Anger
       #- Worry
+  - PuzzleConcept:
+      - Meeting
+      - Lunch
+      - Training
+      - Damage:
+          - MildDamage
+          - ModerateDamage
+          - SevereDamage
