@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.0.3</code></p>
-<p>Document generation timestamp (UTC): <code>2022-03-04 20:24:39.722905</code></p>
+<p>Document generation timestamp (UTC): <code>2022-03-08 19:08:00.730402</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below as blocks separated by blank lines.</p>
@@ -107,7 +107,7 @@ Concept/Entity/Victim/RegularVictim/VictimTypeB
 [Concept/Entity/You]
 
 Concept/EventLike/Action/ComplexAction/ChangePriority
-- target (Person|Victim) ()
+- target (Victim|Person) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/ComplexAction/Continue
@@ -134,12 +134,12 @@ Concept/EventLike/Action/ComplexAction/Search
 - [target] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Block
-- [source] (Obstacle|Concept) (?)
+- [source] (Concept|Obstacle) (?)
 - [target] (Concept) (?)
 
 Concept/EventLike/Action/SimpleAction/Clear
 - [agent] (Entity) (?)
-- target (Location|Rubble) ()
+- target (Rubble|Location) ()
 
 Concept/EventLike/Action/SimpleAction/Close
 - [target] (Infrastructure|DemPron) (?)
@@ -153,7 +153,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/Instruction
 - topic (Action) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/KnowledgeSharing
-- exists (Person|Item|EventLike|Victim) ()
+- exists (EventLike|PuzzleConcept|Person|Victim|Item) ()
 - [location] (Location) (?)
 - [obstacle] (Obstacle) (?)
 - [map] (Map) (?)
@@ -231,7 +231,7 @@ Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoleDeclare
 - agent (Entity) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoomStatus/ReportThreatRoom
-- threat (ThreatSign|ThreatRoom|ThreatRoomMarker) ()
+- threat (ThreatRoom|ThreatSign|ThreatRoomMarker) ()
 - room (Room) ()
 
 Concept/EventLike/Action/SimpleAction/Communicate/ReportStatus/RoomStatus/RoomClear
@@ -247,18 +247,18 @@ Concept/EventLike/Action/SimpleAction/Move
 Concept/EventLike/Action/SimpleAction/Move/Enter
 - [target] (Location) (?)
 - [agent] (Entity) (?)
-- target (Location|Deictic) ()
+- target (Deictic|Location) ()
 
 Concept/EventLike/Action/SimpleAction/Move/MoveFrom
-- target (Location|Deictic) ()
+- target (Deictic|Location) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Move/MoveTo
-- target (Deictic|Location|Entity) ()
+- target (Deictic|Entity|Location) ()
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Move/OnMyWay
-- [target] (Location|Entity) (?)
+- [target] (Entity|Location) (?)
 
 Concept/EventLike/Action/SimpleAction/Open
 - [agent] (Entity) (?)
@@ -268,20 +268,21 @@ Concept/EventLike/Action/SimpleAction/Open
 
 Concept/EventLike/Action/SimpleAction/PlaceMarker
 - target (MarkerBlock) ()
-- location (Location) ()
+- [location] (Location) (?)
+- [marker_meaning] (Concept) (?)
 
 Concept/EventLike/Action/SimpleAction/RoleSwitch
 - [agent] (Entity) (?)
 - target (Role) ()
 
 Concept/EventLike/Action/SimpleAction/Save
-- target (Entity|Person|Victim) ()
+- target (Entity|Victim|Person) ()
 - [location] (Location) (?)
 - [agent] (Entity) (?)
 
 Concept/EventLike/Action/SimpleAction/Sight
 - [agent] (Entity) (?)
-- target (Entity|Item|EventLike) ()
+- target (EventLike|Item|Entity) ()
 - [location] (Location) (?)
 - [map] (Map) (?)
 - item (Item) ()
@@ -473,6 +474,25 @@ Concept/Item/Tool/Stretcher
 - [owner] (Entity) (?)
 
 [Concept/Number]
+
+Concept/PuzzleConcept/Damage
+- [location] (Location) (?)
+- [type] (Damage) (?)
+
+[Concept/PuzzleConcept/Damage/MildDamage]
+
+[Concept/PuzzleConcept/Damage/ModerateDamage]
+
+[Concept/PuzzleConcept/Damage/SevereDamage]
+
+Concept/PuzzleConcept/Lunch
+- [location] (Location) (?)
+
+Concept/PuzzleConcept/Meeting
+- [location] (Location) (?)
+
+Concept/PuzzleConcept/Training
+- [location] (Location) (?)
 
 [Concept/RoomTag]
 
