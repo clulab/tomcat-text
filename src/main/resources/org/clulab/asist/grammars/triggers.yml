@@ -117,4 +117,4 @@ you_triggers: "you"
 
 zone_triggers: "zone|area|side|section"
 
-place_triggers: "place|put"
+place_triggers: "place|put|drop"

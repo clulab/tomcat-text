@@ -8,7 +8,7 @@ rules:
     example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction] (?! [lemma=not][lemma=worry]|(you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
 
@@ -16,11 +16,11 @@ rules:
   - name: instruction_command_topic
     priority: ${ rulepriority }
     label: Instruction
-    example: "Help him save the victim!"
+    example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$/]|to|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
-      topic: Action = >/dobj|ccomp/
+      topic: Action = >/dobj|ccomp/ | <aux
 
   - name: prep_need_role
     priority: ${ rulepriority }
@@ -224,19 +224,42 @@ rules:
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/
 
+  - name: existential5
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is a meeting in this room"
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: PuzzleConcept = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/
+
   - name: found_victim
     priority: ${ rulepriority }
     label: KnowledgeSharing
-    example: "I found a victim in the library"
+    example: "I found a victim in the library. I detected a victim in D2."
     pattern: |
-      trigger =[lemma=/(?i)^find|found|locate|spot/]
+      trigger =[lemma=/(?i)^find|found|locate|spot|detect/]
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${objects}/ >/${positional_preps_liberal}/|
                >/${preps}/|
-               >/advmod/
+               >/advmod/|
+               >dobj >acl >/${positional_preps_liberal}/
 
+  - name: found_victim_reverse
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "Victim detected in D2. Victim found in A1."
+    pattern: |
+      trigger =[lemma=/(?i)^find|found|locate|spot|detect/]
+      exists: Victim = <acl
+      location: Location? = >/${positional_preps_liberal}/
 
   - name: found_victim_have
     priority: ${ rulepriority }

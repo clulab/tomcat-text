@@ -70,7 +70,7 @@ rules:
     label: YesNoQuestion
     action: requireSubjectVerbInversion
     pattern: |
-      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^do|can|will|should|have|could|be/]
+      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^do|can|will|should|have|could|be/] (?= [mention=Entity])
       topic: Action = <aux
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
