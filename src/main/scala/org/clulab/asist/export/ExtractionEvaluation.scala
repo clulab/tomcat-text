@@ -23,6 +23,11 @@ object ExtractionEvaluation {
     val ruleCounter = new Counter[String]
     mentions.foreach(m => ruleCounter.incrementCount(m.foundBy))
 
+    // tally the labels in the found mentions
+    val labelCounter = new Counter[String]
+    mentions.foreach(m => labelCounter.incrementCount(m.label))
+
+
     // Generate the rows for the mentions
     val rows = getCSVRows(mentions)
 
@@ -34,19 +39,26 @@ object ExtractionEvaluation {
       FileUtils.printWriterFromFile(s"$outputDir/rule_summary.csv").autoClose { csvWriter2 =>
         // Strict eval summary sheet
         FileUtils.printWriterFromFile(s"$outputDir/rule_summary_strict.csv").autoClose { csvWriter3 =>
+          // label sheet
+          FileUtils.printWriterFromFile(s"$outputDir/label_summary.csv").autoClose { csvWriter4 =>
 
-          // Sheet 1 -- Extraction Data
-          csvWriter1.println(s"ToMCAT-text Rule Annotation -- generated $timestamp")
-          csvWriter1.println(header1)
-          rows.foreach(csvWriter1.println)
-          // Sheet 2 -- Summary Statistics
-          csvWriter2.println(header2)
-          val summaryRows = counterToRows(ruleCounter, correctColumn = "G", incorrectColumn = "N")
-          summaryRows.foreach(csvWriter2.println)
-          // Sheet 3 -- Strict eval summary statistics
-          csvWriter3.println(header2)
-          val summaryRowsStrict = counterToRows(ruleCounter, correctColumn = "O", incorrectColumn = "P")
-          summaryRowsStrict.foreach(csvWriter3.println)
+            // Sheet 1 -- Extraction Data
+            csvWriter1.println(s"ToMCAT-text Rule Annotation -- generated $timestamp")
+            csvWriter1.println(header1)
+            rows.foreach(csvWriter1.println)
+            // Sheet 2 -- Summary Statistics
+            csvWriter2.println(header2)
+            val summaryRows = counterToRows(ruleCounter, correctColumn = "G", incorrectColumn = "N")
+            summaryRows.foreach(csvWriter2.println)
+            // Sheet 3 -- Strict eval summary statistics
+            csvWriter3.println(header2)
+            val summaryRowsStrict = counterToRows(ruleCounter, correctColumn = "O", incorrectColumn = "P")
+            summaryRowsStrict.foreach(csvWriter3.println)
+            // Sheet 4 -- label stats
+            csvWriter4.println(header3)
+            val summaryLabels = counterToRowsLabels(labelCounter, ruleColumn="C", correctColumn = "O", incorrectColumn = "P")
+            summaryLabels.foreach(csvWriter4.println)
+          }
         }
       }
     }
@@ -122,6 +134,15 @@ object ExtractionEvaluation {
     (rows :+ Seq("Grand Total", total.toString)).map(_.mkString(","))
   }
 
+  def counterToRowsLabels(labelCounter: Counter[String], ruleColumn: String = "C", correctColumn: String = "G", incorrectColumn: String = "N"): Seq[String] = {
+    val total = labelCounter.getTotal
+    val rows = labelCounter.toSeq
+      .sortBy(- _._2)
+      .zipWithIndex
+      .map(ruleInfo => labelRow(ruleInfo._1._1, ruleInfo._1._2, total, ruleInfo._2, ruleColumn, correctColumn, incorrectColumn))
+    (rows :+ Seq("Grand Total", total.toString)).map(_.mkString(","))
+  }
+
   def ruleRow(rule: String, count: Double, total: Double, i: Int, ruleColumn: String, correctColumn: String, incorrectColumn: String): Seq[String] = {
     val j = i + 2 // account for the header and 1-indexing of google sheets
     val percAll = count / total
@@ -138,6 +159,31 @@ object ExtractionEvaluation {
 
     Seq(
       rule,
+      count.toString,
+      percAll.toString,
+      numCorrect,
+      numIncorrect,
+      percCorr,
+      percCurated
+    ).map(_.escapeCsv)
+  }
+
+  def labelRow(label: String, count: Double, total: Double, i: Int, ruleColumn: String, correctColumn: String, incorrectColumn: String): Seq[String] = {
+    val j = i + 2 // account for the header and 1-indexing of google sheets
+    val percAll = count / total
+    val numCorrect = "=SUMIF(rule_annotation!$" +
+      ruleColumn + ":$" + ruleColumn + ",A" + j +
+      ",rule_annotation!$" + correctColumn + ":$" +
+      correctColumn + ")"
+    val numIncorrect = "=SUMIF(rule_annotation!$" +
+      ruleColumn + ":$" + ruleColumn + ",A" + j +
+      ",rule_annotation!$" + incorrectColumn + ":$" +
+      incorrectColumn + ")"
+    val percCorr = s"=IF(D$j+E$j>0, D$j/(D$j+E$j), " + """"")"""
+    val percCurated = s"=(D$j+E$j)/B$j"
+
+    Seq(
+      label,
       count.toString,
       percAll.toString,
       numCorrect,
@@ -170,6 +216,16 @@ object ExtractionEvaluation {
   val header2 = List(
     "RULE",
     "COUNT of RULE",
+    "% of all",
+    "Num correct",
+    "Num incorrect",
+    "% correct",
+    "% curated"
+  ).mkString(",")
+
+  val header3 = List(
+    "LABEL",
+    "COUNT of LABEL",
     "% of all",
     "Num correct",
     "Num incorrect",
