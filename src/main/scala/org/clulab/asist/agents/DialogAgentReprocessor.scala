@@ -50,16 +50,12 @@ class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   val ta3Version: Option[Int] = None,
-  tdacUrl: Option[String] = None,
-) extends TdacAgent(tdacUrl) with LazyLogging {
+) extends DialogAgent with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version}")
 
   // for the JSON extractor
   implicit val formats = org.json4s.DefaultFormats
-
-  // init the TDAC server connection
-  tdacInit
 
   // actors
   implicit val ec = ExecutionContext.global
@@ -193,7 +189,6 @@ class DialogAgentReprocessor (
         val outputMessages:List[BusMessage] = 
           List(trialOutput, versionInfoOutput)
 
-        tdacClient.foreach(_.resetServer)
         finishIteration(outputMessages)
       } else {
         // if not a trial start just transcribe the trial message
@@ -213,21 +208,16 @@ class DialogAgentReprocessor (
         case dataJObject: JObject => 
           val data = dataJObject.extract[DialogAgentMessageData]
           val newData = data.copy(extractions = getExtractions(data.text))
-          tdacClient match {
-            case Some(tc: TdacClient) => 
-              tc.runClassification("", newData, metadataJValue)
-            case None => 
-              val newMetadata = metadataJValue.replace(
-                "data"::Nil,
-                Extraction.decompose(newData)
-              )
-              finishIteration(
-                BusMessage(
-                  "", 
-                  JsonUtils.writeJson(newMetadata)
-                )
-              )
-          }
+          val newMetadata = metadataJValue.replace(
+            "data"::Nil,
+            Extraction.decompose(newData)
+          )
+          finishIteration(
+            BusMessage(
+              "", 
+              JsonUtils.writeJson(newMetadata)
+            )
+          )
         case JNothing =>
           reprocessDialogAgentError(inputText, metadataJValue)
         case _ => 
@@ -263,15 +253,9 @@ class DialogAgentReprocessor (
             val newMetadata = metadataJValue.transformField {
               case ("error", _) => ("data", newJson)
             }
-            tdacClient match {
-              case Some(tc: TdacClient) => 
-                tc.runClassification("", data, newMetadata)
-              case None =>
-                finishIteration
-            }
           case None =>
-            finishIteration
         }
+        finishIteration
       case _ =>
         reportProblem(
           inputText,
@@ -317,7 +301,7 @@ class DialogAgentReprocessor (
    * @param messages a list of message to write to the bus
    * @return The run state updated with the results of the write
    */
-  override def writeOutput(messages: List[BusMessage]): Unit = 
+  def writeOutput(messages: List[BusMessage]): Unit = 
     messages.foreach(m => writeOutput(m.text))
 
   /** Nested iteration through files and their lines of metadata */
@@ -358,7 +342,6 @@ class DialogAgentReprocessor (
   def finish() {
     logger.info("All file processing has finished.")
     system.terminate
-    tdacClient.foreach(_.terminateActorSystem)
     finalReport
   }
 

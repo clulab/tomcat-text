@@ -27,15 +27,13 @@ import scala.util.{Failure, Success}
  *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
- * @param tdacUrl Network host and port of the TDAC server
  * @param idc the IDC Worker will be run if true
  */
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
-  tdacUrl: Option[String] = None,
   val idc: Boolean = false
-) extends TdacAgent(tdacUrl) with LazyLogging {
+) extends DialogAgent with LazyLogging {
 
   private val filenames: List[String] = 
     LocalFileUtils.getFileNames(inputFilename)
@@ -116,10 +114,7 @@ class DialogAgentFile(
       topicPubVersionInfo,
       json
     )
-    tdacClient match {
-      case Some(tdac) => tdac.resetServer
-      case None => doNextJob
-    }
+    doNextJob
   }
 
   private def processDialogAgentMessage(m: DialogAgentMessage): Unit = {
@@ -128,19 +123,8 @@ class DialogAgentFile(
     )
     idcWorker.foreach(_.enqueue(m.data.extractions))
     val json = JsonUtils.writeJson(m)
-    tdacClient match {
-      case Some(tdac) =>
-        JsonUtils.parseJValue(json).map{ jvalue =>
-          tdac.runClassification(
-            topicPubDialogAgent,
-            m.data,
-            jvalue
-          )
-        }
-      case None => // no TDAC
-        writeOutput(topicPubDialogAgent,json)
-        doNextJob
-    }
+    writeOutput(topicPubDialogAgent,json)
+    doNextJob
   }
 
   // need to get topic in output
@@ -152,7 +136,7 @@ class DialogAgentFile(
     printWriter.foreach(_.write(s"${jsonNoNulls}\n"))
   }
 
-  override def doNextJob(): Unit = 
+  def doNextJob(): Unit = 
   if(jobsIter.hasNext) 
     process(jobsIter.next)
   else {
@@ -160,13 +144,12 @@ class DialogAgentFile(
     shutdown
   }
 
-  override def writeOutput(messages: List[BusMessage]): Unit =  
+  def writeOutput(messages: List[BusMessage]): Unit =  
     messages.foreach(m => writeOutput(m.topic, m.text))
 
   def shutdown: Unit = {
     logger.info("Agent is shutting down")
     printWriter.foreach(_.close)
-    tdacClient.foreach(_.close)
     idcWorker.foreach(_.close)
   }
 }
