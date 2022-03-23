@@ -36,7 +36,7 @@ class IdcWorker(
   def enqueue(
                extractions: Seq[DialogAgentMessageUtteranceExtraction]
              ): Unit = {
-    showState
+    //showState
     val busy = !queue.isEmpty
     val data = IdcData(extractions, IdcWorkerState(0))
     queue.enqueue(data)
@@ -70,11 +70,11 @@ class IdcWorker(
   def doSomeProcessing(data: IdcData): Unit = {
     val seconds = 2
     val extraction = data
-    logger.info(s"Starting processing of job for $seconds seconds ...")
-    whatis(data)
+    //logger.info(s"Starting processing of job for $seconds seconds ...")
+    //whatis(data)
     processUttQueue(data)
     logger.info(s"${utteranceQueue.size} extractions are being tracked")
-    checkLabelSeq(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
+    //checkLabelSeq2(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
 
     //Thread.sleep(seconds*1000)
   }
@@ -94,18 +94,29 @@ class IdcWorker(
 
 
   /** This method takes 3 args, a Queue and 2 labels. It then searches all objects in the queue for the first label. If the first label is found, it checks for the 2nd label.  */
-    /** Currently this method is "stupid" ie it onl checks whether both labels are present in the queue, regardless of order */
+    /** Currently this method is "stupid" ie it only checks whether both labels are present in the queue, regardless of order */
   def checkLabelSeq(queueState: Queue[Seq[DialogAgentMessageUtteranceExtraction]], firstlabel: String, secondlabel: String): Unit={
     for(vector: Seq[DialogAgentMessageUtteranceExtraction] <- queueState){
       if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],firstlabel)){
           logger.info("first label detected")
-        if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],firstlabel)){
+        if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],secondlabel)){
           logger.info(s"$firstlabel and $secondlabel sequence detected")
         }
       }
     }
   }
 
+  def checkLabelSeq2(queueState: Queue[Seq[DialogAgentMessageUtteranceExtraction]], firstlabel: String, secondlabel: String): Unit={
+    val vector: Seq[DialogAgentMessageUtteranceExtraction] = queueState.front // we define this value as the first position in the queue, which means the this is the oldest utterance in the queue
+    if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],firstlabel)) {
+      logger.info("first label detected")
+      for(extract: Seq[DialogAgentMessageUtteranceExtraction] <- queueState){
+        if(lookForLabel(extract: Seq[DialogAgentMessageUtteranceExtraction],secondlabel)) {
+          logger.info(s"$firstlabel and $secondlabel sequence detected")
+        }
+      }
+    }
+  }
 
   /** constructing a queue to keep track of utterances */
   var utteranceQueue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue
