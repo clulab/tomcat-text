@@ -34,11 +34,12 @@ class IdcWorker(
    *  @param extractions - derived from the data read on the topic
    */
   def enqueue(
-               extractions: Seq[DialogAgentMessageUtteranceExtraction]
+               extractions: Seq[DialogAgentMessageUtteranceExtraction],
+               messageData: Seq[DialogAgentMessageData]
              ): Unit = {
     //showState
     val busy = !queue.isEmpty
-    val data = IdcData(extractions, IdcWorkerState(0))
+    val data = IdcData(extractions, messageData, IdcWorkerState(0))
     queue.enqueue(data)
     if(!busy)doNextJob
   }
@@ -74,7 +75,7 @@ class IdcWorker(
     //whatis(data)
     processUttQueue(data)
     logger.info(s"${utteranceQueue.size} extractions are being tracked")
-    //checkLabelSeq2(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
+    checkLabelSeq2(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
 
     //Thread.sleep(seconds*1000)
   }
@@ -94,24 +95,28 @@ class IdcWorker(
 
 
   /** This method takes 3 args, a Queue and 2 labels. It checks if the first item in the queue is the label. If it is, it also checks if any of the other items in the queue have this label  */
-  def checkLabelSeq2(queueState: Queue[Seq[DialogAgentMessageUtteranceExtraction]], firstlabel: String, secondlabel: String): Unit={
-    val vector: Seq[DialogAgentMessageUtteranceExtraction] = queueState.front // we define this value as the first position in the queue, which means the this is the oldest utterance in the queue
+  def checkLabelSeq2(queueState: Queue[(Seq[DialogAgentMessageUtteranceExtraction],Seq[DialogAgentMessageData])], firstlabel: String, secondlabel: String): Unit={
+    val vector: Seq[DialogAgentMessageUtteranceExtraction] = queueState.front._1// we define this value as the first position in the queue, which means the this is the oldest utterance in the queue
+    val message: DialogAgentMessageData  = queueState.front._2(0)
     if(lookForLabel(vector: Seq[DialogAgentMessageUtteranceExtraction],firstlabel)) {
       logger.info("first label detected")
-      for(extract: Seq[DialogAgentMessageUtteranceExtraction] <- queueState){
-        if(lookForLabel(extract: Seq[DialogAgentMessageUtteranceExtraction],secondlabel)) {
+      for(extract: (Seq[DialogAgentMessageUtteranceExtraction],Seq[DialogAgentMessageData]) <- queueState){
+        if(lookForLabel(extract._1: Seq[DialogAgentMessageUtteranceExtraction],secondlabel)) {
           logger.info(s"$firstlabel and $secondlabel sequence detected")
+          val id_2 = extract._2
+          logger.info(s"$id_2")
         }
       }
     }
   }
 
   /** constructing a queue to keep track of utterances */
-  var utteranceQueue: Queue[Seq[DialogAgentMessageUtteranceExtraction]] = new Queue
+  var utteranceQueue: Queue[(Seq[DialogAgentMessageUtteranceExtraction],Seq[DialogAgentMessageData])] = new Queue
   /** a function to allow the queue to keep track of 5 objects */
   def processUttQueue(data: IdcData): Unit ={
     val extract= data.extractions
-    utteranceQueue.enqueue(extract:Seq[DialogAgentMessageUtteranceExtraction])
+    val message = data.messageData
+    utteranceQueue.enqueue((extract:Seq[DialogAgentMessageUtteranceExtraction],message:Seq[DialogAgentMessageData]))
     if (utteranceQueue.size > 5){
       utteranceQueue.dequeue()
     }

@@ -9,6 +9,7 @@ package org.clulab.asist.messages
 // IDC processing data for one message
 case class IdcData(
   extractions: Seq[DialogAgentMessageUtteranceExtraction] = Seq(),
+  messageData: Seq[DialogAgentMessageData] = Seq(),
   state: IdcWorkerState // put anything at all here
 )
 
