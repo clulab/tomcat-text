@@ -167,16 +167,6 @@
           ],
           "pattern": "^(.*)$"
         },
-        "dialog_act_label": {
-          "$id": "#/properties/data/properties/dialog_act_label",
-          "type": "string",
-          "title": "The data dialog_act_label schema",
-          "default": "",
-          "examples": [
-            "floor"
-          ],
-          "pattern": "^(.*)$"
-        },
         "utterance_source": {
           "$id": "#/properties/data/properties/utterance_source",
           "type": "object",
