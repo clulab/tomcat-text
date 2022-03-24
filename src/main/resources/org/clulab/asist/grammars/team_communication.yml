@@ -8,17 +8,33 @@ rules:
     example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction] (?! [lemma=not][lemma=worry]|(you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction & !lemma=let & !lemma=be] (?! [][][]|[tag=/\./]|[lemma=not][lemma=worry]|(you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
+  - name: instruction_let
+    priority: ${ rulepriority }
+    label: Instruction
+    example: "Let's go"
+    keep: true
+    pattern: |
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction & lemma=let & !lemma=be] (?! me|[lemma=not][lemma=worry]|(you)|([]* I))
+      agent: Entity? = >/^nsubj/ [!mention=Self]
 
+  - name: instruction_command_topic_let
+    priority: ${ rulepriority }
+    label: Instruction
+    example: "Help him save the victim! Don't enter D2."
+    pattern: |
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & lemma=let] (?! me|(you)|([]* I))
+      agent: Entity? = >/^nsubj/ [!mention=Self]
+      topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction]
 
   - name: instruction_command_topic
     priority: ${ rulepriority }
     label: Instruction
     example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !lemma=let & !lemma=be] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ | <aux
 

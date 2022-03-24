@@ -67,8 +67,8 @@ rules:
     type: token
     keep: true
     pattern: |
-     [word=/(?i)\b(b.?)|P\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]? | [lemma=type] [word=/(?i)\b(b.?)|P\b/] [lemma=/(?i)(${ victim_triggers })/]? |
-      [lemma=/(?i)(${ victim_triggers })/]? [word=/(?i)\b(b.?)|P\b/] [word=type] |  [lemma=/(?i)(${ victim_triggers })/]? [lemma=type] [word=/(?i)\b(b.?)|P\b/]
+     [word=/(?i)\b(b.?)|P\b/] [word=of]? [word=type] [lemma=/(?i)(${ victim_triggers })/]? | [lemma=type] [word=/(?i)\b(b.?)|P\b/] [lemma=/(?i)(${ victim_triggers })/]? |
+      [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [word=/(?i)\b(b.?)|P\b/] [word=type] |  [lemma=/(?i)(${ victim_triggers })/]? [lemma=type] [word=/(?i)\b(b.?)|P\b/]
 
   - name: victimA
     priority: ${ rulepriority }
@@ -76,8 +76,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ victim_triggers })/]? [lemma=type] [lemma=/(?i)\ba\b/] | [lemma=type] [lemma=/(?i)\ba\b/] [lemma=/(?i)(${ victim_triggers })/]? |
-       [lemma=/(?i)(${ victim_triggers })/] [lemma=/(?i)\ba\b/] [word=type] |  [lemma=/(?i)\ba\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]
+      [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\ba\b/] | [lemma=type] [lemma=/(?i)\ba\b/] [lemma=/(?i)(${ victim_triggers })/]? |
+       [lemma=/(?i)(${ victim_triggers })/] [word=of]? [lemma=/(?i)\ba\b/] [word=type] |  [lemma=/(?i)\ba\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]
 
   - name: victimA_a_type
     priority: ${ rulepriority }
@@ -93,8 +93,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)(${ victim_triggers })/]? [lemma=type] [lemma=/(?i)\b(c|see)\b/] | [lemma=type] [lemma=/(?i)\b(c|see)\b/] [lemma=/(?i)(${ victim_triggers })/]? |
-       [lemma=/(?i)(${ victim_triggers })/]? [lemma=/(?i)\b(c|see)\b/] [word=type] |  [lemma=/(?i)\b(c|see)\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]?
+      [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\b(c|see)\b/] | [lemma=type] [lemma=/(?i)\b(c|see)\b/] [lemma=/(?i)(${ victim_triggers })/]? |
+       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=/(?i)\b(c|see)\b/] [word=type] |  [lemma=/(?i)\b(c|see)\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]?
 
   - name: victim_type_extraction
     priority: ${ rulepriority }

@@ -30,6 +30,14 @@ rules:
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: rubble_stuff
+    label: Rubble
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^stuff$/]
+
   - import: org/clulab/asist/grammars/ent_template.yml
     vars:
       name: fire
