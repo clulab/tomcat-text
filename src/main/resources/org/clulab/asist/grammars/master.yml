@@ -29,6 +29,7 @@ rules:
   - import: org/clulab/asist/grammars/items.yml
     vars:
       rulepriority: "3+"
+      second_priority: "5+"
 
   # Extract the sentiments
   - import: org/clulab/asist/grammars/sentiments.yml

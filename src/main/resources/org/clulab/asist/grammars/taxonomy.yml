@@ -215,7 +215,9 @@
       - West
   - Item:
     - MarkerBlock:
-        - RegularMarkerBlock
+        - RegularMarkerBlock:
+            - TypeAMarker
+            - TypeBMarker
         - NoVictimMarkerBlock
         - CriticalMarkerBlock
         - ThreatRoomMarker #this refers to the actual marker block
@@ -237,9 +239,7 @@
       #- Anger
       #- Worry
   - PuzzleConcept:
-      - Meeting
-      - Lunch
-      - Training
+      - Meeting # this is for all occurences of lunch, training, meeting
       - Damage:
           - MildDamage
           - ModerateDamage

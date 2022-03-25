@@ -289,6 +289,18 @@ rules:
                >/${preps}/|
                >/advmod/
 
+  - name: found_victim_got
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "I have a victim here"
+    pattern: |
+      trigger =[word=/(?i)got$/]
+      exists: Victim = >/${objects}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
+
 
 
   - name: room_clear

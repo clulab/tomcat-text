@@ -12,7 +12,7 @@ rules:
 
   - name: lunch_token
     priority: ${ rulepriority }
-    label: Lunch
+    label: Meeting
     pattern: |
       trigger= [lemma=/(?i)^lunch/]
       location: Location?= <nsubj >/.*/ | >nmod_in
@@ -20,7 +20,7 @@ rules:
 
   - name: training_token
     priority: ${ rulepriority }
-    label: Training
+    label: Meeting
     pattern: |
       trigger= [lemma=/(?i)^training/] | [word=/(?i)^training/]
       location: Location?= <nsubj >/.*/ | >nmod_in
