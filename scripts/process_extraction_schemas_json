@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 24 22:37:32 2022
+
+@author: CCloveHH
+"""
+
+
 #!/usr/bin/env python
 
 # Script to generate compact extraction schemas documentation
@@ -9,10 +18,68 @@ from datetime import datetime
 input_file = sys.argv[1]
 version_file = sys.argv[2]
 
+
+
+def update_tree(tree_dict, names, arguments, keep):
+    """
+    Parse the extracted labels into a tree-like structure, labels are stored as key in tree_dict
+    Parameters:
+        tree_dict: dict
+        names: list, extracted labels
+        arguments: empty list if no arguments, or dict
+        keep: True/False, whether the extraction is the only output as an argument of another extraction
+    Return:
+        None
+    """
+    if not names:
+        tree_dict['Bool_for_bracket'] = keep
+        if arguments: 
+            tree_dict["arguments"] = arguments
+        return  
+    if names[0] not in tree_dict:
+        tree_dict[names[0]] = {}
+            
+    update_tree(tree_dict[names[0]], names[1:], arguments, keep)
+        
+def print_tree_dict(tree_dict, level):
+    """
+    Print tree_dict in yml format
+    Parameters:
+        tree_dict: dict
+        level: int, depth of the tree_dict, for indent purpose
+    Return:
+        None
+    """
+    
+    for key in tree_dict:
+        if key == "Bool_for_bracket": 
+            continue
+        elif key == "arguments":
+            arguments = tree_dict['arguments']
+            for arg in arguments:
+                print(
+                    "  " * level + "- " + arg,
+                    f"({'|'.join(x for x in arguments[arg]['label(s)'])})",
+                    f"({arguments[arg]['quantifier(s)']})".replace(
+                        "`", ""
+                    ).replace("_none_", ""),
+                )
+            print("")
+        elif 'Bool_for_bracket' in tree_dict[key]:
+            if tree_dict[key]['Bool_for_bracket'] == True:
+                print('  ' * level + '- ' + key)
+            else:
+                print('  ' * level + '- ' + '[' + key + ']')
+            print_tree_dict(tree_dict[key], level+1)
+        else:
+            print('  ' * level + '- ' + key)
+            print_tree_dict(tree_dict[key], level+1)
+
+
+
 # Version of the dialog agent for which this documentation is being
 # generated.
 
-#TODO - have this be read from a text file instead of hard-coded.
 with open(version_file) as f:
     agent_version = f.read().split()[-1].replace('"', "")
 
@@ -36,22 +103,19 @@ Agent](https://github.com/clulab/tomcat-text).
 Format
 ------
 
-The extractions are listed below as blocks separated by blank lines.
+The extractions are listed below.
 
-The first line of each block contains two parts, separated by a space. The
-first part is the full path to the leaf node in the taxonomy, with levels
-separated by slashes (`/`). If the extraction is only output as an
-argument of another extraction, rather than as a standalone
-extraction, the name wrapped in square brackets (`[]`).
+The full path to the leaf node in the taxonomy is represented in a hierarchical 
+structure, with each level indented from a new line. If the extraction is only 
+output as an argument of another extraction, rather than as a standalone 
+extraction, the name of the extraction is wrapped in square brackets (`[]`).
 
-Each of the lines that follow the first line in the block corresponds to an
-argument of the extraction. Each argument line starts with a hyphen and a
-space, for additional indentation, in the service of readability. This is
-followed by the name of the argument. If the the argument is optional, the name
-is enclosed in square brackets, it is an optional argument. The possible labels
-that can be assigned to the argument come next, enclosed in parentheses and
-separated by the `|` character. Finally, the third component of the argument
-line is a list of quantifiers, separated by commas, and enclosed in
+The argument of an extraction, if any, is listed below the extraction.  If the
+the argument is optional, the name is enclosed in square brackets, it is an 
+optional argument. The possible labels that can be assigned to the argument 
+come next, enclosed in parentheses and separated by the `|` character. 
+Finally, the third component of the argument line is a list of quantifiers,
+separated by commas, and enclosed in
 parentheses.
 
 [Odin](https://github.com/clulab/processors) arguments can be quantified in
@@ -70,9 +134,10 @@ cream and pop tarts). The quantifiers you may see are:
 Take for example the following block:
 
 ```
-Concept/LeafNode
-- arg1 (LeafNode1|LeafNode2) ()
-- [arg2] (LeafNode3) (?)
+-Concept
+  -LeafNode
+    - arg1 (LeafNode1|LeafNode2) ()
+    - [arg2] (LeafNode3) (?)
 ```
 
 The full path to the leaf node in the taxonomy is `Concept/LeafNode`. The
@@ -92,13 +157,11 @@ Extractions
         )
     )
 
-    extraction_docs = []
-
+    tree_dict = {}
+    
     for extraction in data:
-        full_name = "/".join(reversed(extraction["labels"]))
+        names = extraction["labels"][::-1]
         keep = any(set(extraction["keep"]))
-        extraction_doc = {"name": full_name, "keep": keep}
-
         if extraction["argumentsPerRule"]:
             arguments = dict()
             for rule_argument in extraction["argumentsPerRule"]:
@@ -112,24 +175,11 @@ Extractions
                         }
                     else:
                         arguments[arg_str]["label(s)"].add(arg["label"])
-            extraction_doc["arguments"] = arguments
-        extraction_docs.append(extraction_doc)
-
-    for doc in extraction_docs:
-        if doc["keep"]:
-            print(doc["name"])
-        else:
-            print(f"[{doc['name']}]")
-        arguments = doc.get("arguments", [])
-        for arg in arguments:
-            print(
-                "- " + arg,
-                f"({'|'.join(x for x in arguments[arg]['label(s)'])})",
-                f"({arguments[arg]['quantifier(s)']})".replace(
-                    "`", ""
-                ).replace("_none_", ""),
-            )
-        print("")
+        else: arguments = []
+        update_tree(tree_dict, names, arguments, keep)
+        
+    print_tree_dict(tree_dict, 0)
+            
 
     # Close markdown code block
     print("```")
