@@ -105,7 +105,7 @@ toggle_triggers: "flip|toggle|turn|switch|pull|open"
 
 transpose_triggers: "move|shift"
 
-triage_triggers: "save|triage|heal|help|get|rescue"
+triage_triggers: "save|triage|heal|help|rescue"
 
 triage_triggers_strict: "save|triage|heal|rescue"
 
