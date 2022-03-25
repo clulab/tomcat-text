@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.0.3</code></p>
-<p>Document generation timestamp (UTC): <code>2022-03-25 19:21:33.591375</code></p>
+<p>Document generation timestamp (UTC): <code>2022-03-25 19:33:14.132720</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -81,7 +81,7 @@
     - Action
       - ComplexAction
         - ChangePriority
-          - target (Victim|Person) ()
+          - target (Person|Victim) ()
           - [agent] (Entity) (?)
 
         - Continue
@@ -114,7 +114,7 @@
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Rubble|Location) ()
+          - target (Location|Rubble) ()
 
         - Close
           - [target] (DemPron|Infrastructure) (?)
@@ -127,7 +127,7 @@
             - topic (Action) ()
 
           - KnowledgeSharing
-            - exists (EventLike|Item|Victim|Person|PuzzleConcept) ()
+            - exists (Person|Item|Victim|EventLike|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -175,7 +175,7 @@
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Move|Entity) ()
+              - topic (Entity|Move) ()
               - [location] (Location) (?)
 
             - [QuestionParticle]
@@ -209,7 +209,7 @@
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatSign|ThreatRoomMarker|ThreatRoom) ()
+                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -253,13 +253,13 @@
           - target (Role) ()
 
         - Save
-          - target (Victim|Person|Entity) ()
+          - target (Person|Entity|Victim) ()
           - [location] (Location) (?)
           - [agent] (Entity) (?)
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Item|Entity) ()
+          - target (EventLike|Entity|Item) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
@@ -356,6 +356,9 @@
       - CriticalMarkerBlock
       - NoVictimMarkerBlock
       - RegularMarkerBlock
+        - TypeAMarker
+        - TypeBMarker
+      - RubbleMarker
       - ThreatRoomMarker
     - Tool
       - [owner] (Entity) (?)
@@ -383,13 +386,7 @@
       - [MildDamage]
       - [ModerateDamage]
       - [SevereDamage]
-    - Lunch
-      - [location] (Location) (?)
-
     - Meeting
-      - [location] (Location) (?)
-
-    - Training
       - [location] (Location) (?)
 
   - [RoomTag]

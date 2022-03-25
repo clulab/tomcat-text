@@ -41,6 +41,16 @@ rules:
       location: Location? = >/${ positional_preps_+advmod }/
       agent: Entity? = >/${agents}/
 
+  - name: triage_get
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save the victim"
+    pattern: |
+      trigger = [word=get]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
   - name: triage2
     priority: ${ rulepriority }
     label: Save
