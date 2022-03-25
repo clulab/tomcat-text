@@ -1,12 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 24 22:37:32 2022
-
-@author: CCloveHH
-"""
-
-
 #!/usr/bin/env python
 
 # Script to generate compact extraction schemas documentation
@@ -134,8 +125,8 @@ cream and pop tarts). The quantifiers you may see are:
 Take for example the following block:
 
 ```
--Concept
-  -LeafNode
+- Concept
+  - LeafNode
     - arg1 (LeafNode1|LeafNode2) ()
     - [arg2] (LeafNode3) (?)
 ```
