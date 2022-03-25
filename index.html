@@ -15,8 +15,8 @@
 <body>
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
-<p>Agent version: <code>4.0.3</code></p>
-<p>Document generation timestamp (UTC): <code>2022-03-25 19:33:14.132720</code></p>
+<p>Agent version: <code>4.0.4</code></p>
+<p>Document generation timestamp (UTC): <code>2022-03-25 19:38:29.391659</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -81,7 +81,7 @@
     - Action
       - ComplexAction
         - ChangePriority
-          - target (Person|Victim) ()
+          - target (Victim|Person) ()
           - [agent] (Entity) (?)
 
         - Continue
@@ -117,7 +117,7 @@
           - target (Location|Rubble) ()
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - Communicate
           - Agreement
@@ -127,7 +127,7 @@
             - topic (Action) ()
 
           - KnowledgeSharing
-            - exists (Person|Item|Victim|EventLike|PuzzleConcept) ()
+            - exists (EventLike|Item|PuzzleConcept|Victim|Person) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -209,7 +209,7 @@
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
+                - threat (ThreatRoom|ThreatSign|ThreatRoomMarker) ()
                 - room (Room) ()
 
               - RoomClear
@@ -231,11 +231,11 @@
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Deictic|Location|Entity) ()
+            - target (Entity|Deictic|Location) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Location|Entity) (?)
+            - [target] (Entity|Location) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -253,13 +253,13 @@
           - target (Role) ()
 
         - Save
-          - target (Person|Entity|Victim) ()
+          - target (Entity|Victim|Person) ()
           - [location] (Location) (?)
           - [agent] (Entity) (?)
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Entity|Item) ()
+          - target (Item|Entity|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
