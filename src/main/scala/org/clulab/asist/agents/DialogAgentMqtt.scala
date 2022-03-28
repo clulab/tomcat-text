@@ -15,21 +15,17 @@ import scala.concurrent.ExecutionContext
  *
  * This class reads interacts with the Message Bus
  *
- * An optional Tdac Server connection can be used.
- *
  * Input and output are in json format.
  *
  * @param host MQTT host to connect to.
  * @param port MQTT network port to connect to.
- * @param tdacUrl TDAC server URL and port, optional
  */
 
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
-  tdacUrl: Option[String] = None,
   val idc: Boolean = false
-) extends TdacAgent(tdacUrl)
+) extends DialogAgent
     with LazyLogging
     with MessageBusClientListener { 
 
@@ -66,13 +62,10 @@ class DialogAgentMqtt(
   private val idcWorker: Option[IdcWorker] =
     if(idc) Some(new IdcWorker(this)) else None
 
-  // Make contact with the TDAC server if it is specified
-  tdacInit
-
   /** Publish a list of bus messages
    * @param output A list of objects to be published to the Message Bus
    */
-  override def writeOutput(
+  def writeOutput(
     output: List[BusMessage]
   ): Unit = output match {
     case head::tail =>
@@ -115,7 +108,7 @@ class DialogAgentMqtt(
   }
 
   /** process the next message in the queue*/
-  override def doNextJob(): Unit = {
+  def doNextJob(): Unit = {
     queue.dequeue  // delete the queue head, we just finished it
     if(!queue.isEmpty) doJob(queue.head)  
   }
@@ -142,17 +135,13 @@ class DialogAgentMqtt(
         )
         heartbeatProducer.start(trial)
         writeOutput(List(output))
-        tdacClient match {
-          case Some(tdac) =>tdac.resetServer
-          case _ => doNextJob
-        }
+        doNextJob
       }
       else if(TrialMessage.isStop(trial)) { // Trial Stop
         heartbeatProducer.stop
-        doNextJob
       }
-      else doNextJob
-    case _ => doNextJob
+    case _ => 
+    doNextJob
   }
 
   /** process a UAZ ASR message
@@ -182,27 +171,15 @@ class DialogAgentMqtt(
   private def publishDialogAgentMessage(
     input: BusMessage,
     messageMaybe: Option[DialogAgentMessage]
-  ): Unit = messageMaybe match {
-    case Some(message) =>
-      // get the IDC worker going if we have one
-      idcWorker.foreach(_.enqueue(message.data.extractions))
-
-      // send job to TDAC if we use it
-      tdacClient match {
-        case Some(tdac) =>
-          JsonUtils.parseJValue(JsonUtils.writeJson(message)).foreach{jvalue =>
-            tdac.runClassification(
-              topicPubDialogAgent, 
-              message.data,
-              jvalue  
-            )
-          }
-        case None =>  // no TDAC
-          writeOutput(topicPubDialogAgent, JsonUtils.writeJson(message))
-          doNextJob
-      }
-    case None => // no message
-      doNextJob
+  ): Unit = {
+    messageMaybe match {
+      case Some(message) =>
+        // get the IDC worker going if we have one
+        idcWorker.foreach(_.enqueue(message.data.extractions))
+        writeOutput(topicPubDialogAgent, JsonUtils.writeJson(message))
+      case None => // no message
+    }
+    doNextJob
   }
 
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
