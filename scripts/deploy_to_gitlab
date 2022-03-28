@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # This script builds the dialog agent image and deploys it to the Aptima Gitlab
 # instance.
 
