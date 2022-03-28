@@ -24,7 +24,6 @@ import scala.concurrent.ExecutionContext
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
-  val idc: Boolean = false
 ) extends DialogAgent
     with LazyLogging
     with MessageBusClientListener { 
@@ -57,10 +56,6 @@ class DialogAgentMqtt(
     ),
     this
   )
-
-  // create the IDC worker if required
-  private val idcWorker: Option[IdcWorker] =
-    if(idc) Some(new IdcWorker(this)) else None
 
   /** Publish a list of bus messages
    * @param output A list of objects to be published to the Message Bus
@@ -174,8 +169,6 @@ class DialogAgentMqtt(
   ): Unit = {
     messageMaybe match {
       case Some(message) =>
-        // get the IDC worker going if we have one
-        idcWorker.foreach(_.enqueue(message.data.extractions))
         writeOutput(topicPubDialogAgent, JsonUtils.writeJson(message))
       case None => // no message
     }
