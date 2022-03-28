@@ -40,7 +40,6 @@ case class DialogAgentMessageData(
   participant_id: String = "N/A", // omitted if null
   asr_msg_id: String = "N/A", // omitted if null
   text: String = "N/A",
-  dialog_act_label: String  = "N/A", // omitted if null
   utterance_source: DialogAgentMessageUtteranceSource,
   extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
 )

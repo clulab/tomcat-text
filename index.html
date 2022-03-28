@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.0.6</code></p>
-<p>Document generation timestamp (UTC): <code>2022-03-25 19:44:36.705241</code></p>
+<p>Document generation timestamp (UTC): <code>2022-03-28 17:53:32.448163</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -109,7 +109,7 @@
 
       - SimpleAction
         - Block
-          - [source] (Obstacle|Concept) (?)
+          - [source] (Concept|Obstacle) (?)
           - [target] (Concept) (?)
 
         - Clear
@@ -127,7 +127,7 @@
             - topic (Action) ()
 
           - KnowledgeSharing
-            - exists (Victim|PuzzleConcept|Person|EventLike|Item) ()
+            - exists (Victim|Item|EventLike|Person|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -209,7 +209,7 @@
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatSign|ThreatRoomMarker|ThreatRoom) ()
+                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -231,11 +231,11 @@
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Deictic|Location|Entity) ()
+            - target (Entity|Deictic|Location) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Location|Entity) (?)
+            - [target] (Entity|Location) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -253,13 +253,13 @@
           - target (Role) ()
 
         - Save
-          - target (Victim|Entity|Person) ()
+          - target (Victim|Person|Entity) ()
           - [location] (Location) (?)
           - [agent] (Entity) (?)
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (EventLike|Item|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
