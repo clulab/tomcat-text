@@ -27,12 +27,10 @@ import scala.util.{Failure, Success}
  *
  * @param inputFilename A file or directory of files to process.
  * @param outputFilename The results of all file processing are written here
- * @param idc the IDC Worker will be run if true
  */
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
-  val idc: Boolean = false
 ) extends DialogAgent with LazyLogging {
 
   private val filenames: List[String] = 
@@ -85,9 +83,6 @@ class DialogAgentFile(
   }
   else List.empty
 
-  private val idcWorker: Option[IdcWorker] =
-    if(idc) Some(new IdcWorker(this)) else None
-
   private val jobsIter: Iterator[Any] = jobs.iterator
 
   // startup
@@ -121,7 +116,6 @@ class DialogAgentFile(
     logger.info(
       s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}"
     )
-    idcWorker.foreach(_.enqueue(m.data.extractions))
     val json = JsonUtils.writeJson(m)
     writeOutput(topicPubDialogAgent,json)
     doNextJob
@@ -150,7 +144,6 @@ class DialogAgentFile(
   def shutdown: Unit = {
     logger.info("Agent is shutting down")
     printWriter.foreach(_.close)
-    idcWorker.foreach(_.close)
   }
 }
 
