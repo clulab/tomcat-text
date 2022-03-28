@@ -75,7 +75,7 @@ class IdcWorker(
     //whatis(data)
     processUttQueue(data)
     logger.info(s"${utteranceQueue.size} extractions are being tracked")
-    checkLabelSeq2(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
+    //checkLabelSeq2(queueState = utteranceQueue,firstlabel = "CriticalVictim",secondlabel = "MoveTo")
 
     //Thread.sleep(seconds*1000)
   }
