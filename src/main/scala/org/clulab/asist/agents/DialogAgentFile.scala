@@ -126,7 +126,7 @@ class DialogAgentFile(
     logger.info(
       s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}"
     )
-    idcWorker.foreach(_.enqueue(m.data.extractions))
+    idcWorker.foreach(_.enqueue(m.data.extractions,m.data.participant_id))
     val json = JsonUtils.writeJson(m)
     tdacClient match {
       case Some(tdac) =>

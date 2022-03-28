@@ -185,7 +185,7 @@ class DialogAgentMqtt(
   ): Unit = messageMaybe match {
     case Some(message) =>
       // get the IDC worker going if we have one
-      idcWorker.foreach(_.enqueue(message.data.extractions))
+      idcWorker.foreach(_.enqueue(message.data.extractions,message.data.participant_id))
 
       // send job to TDAC if we use it
       tdacClient match {
