@@ -102,8 +102,8 @@ class IdcWorker(
       logger.info("first label detected")
       for(extract: (Seq[DialogAgentMessageUtteranceExtraction],String) <- queueState){
         if(lookForLabel(extract._1: Seq[DialogAgentMessageUtteranceExtraction],secondlabel) && id_1 != extract._2) {
-          // we're checking the participant IDs to make sure this is not a player talking to themselves
           logger.info(s"$firstlabel and $secondlabel sequence detected")
+          // we're checking the participant IDs to make sure this is not a player talking to themselves
         }
       }
     }
