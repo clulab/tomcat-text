@@ -128,7 +128,7 @@
         - Close
         - Push
         - Toggle
-        - TriageInteractions:
+        - RescueInteractions:
           - Save
           - WakeUp
           - Stabilize
