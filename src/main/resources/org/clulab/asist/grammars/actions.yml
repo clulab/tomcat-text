@@ -75,6 +75,47 @@ rules:
       agent: Entity? = >/${agents}/
 ## This one is not working right now, working on it -Remo
 
+  - name: stabilize_victim
+    priority: ${ rulepriority }
+    label: Stabilize
+    example: "I'm stabilizing this victim"
+    pattern: |
+      trigger = [lemma=/(?i)^stabilize/]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+  - name: stabilize_person
+    priority: ${ rulepriority }
+    label: Stabilize
+    example: "I'm stabilizing this guy"
+    pattern: |
+      trigger = [lemma=/(?i)^stabilize/]
+      target: Person = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+
+  - name: wakeup
+    priority: ${ rulepriority }
+    label: WakeUp
+    example: "I'm waking this guy"
+    pattern: |
+      trigger = [lemma=/(?i)^wake/]
+      target: Person = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+  - name: wakeup_victim
+    priority: ${ rulepriority }
+    label: WakeUp
+    example: "I'm waking this victim"
+    pattern: |
+      trigger = [lemma=/(?i)^wake/]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
   - import: org/clulab/asist/grammars/lvo_template_no_passive.yml
     vars:
       name: search
