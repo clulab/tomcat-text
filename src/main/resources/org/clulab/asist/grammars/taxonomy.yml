@@ -128,7 +128,10 @@
         - Close
         - Push
         - Toggle
-        - Save
+        - RescueInteractions:
+          - Save
+          - WakeUp
+          - Stabilize
         - Sight
         - PlaceMarker
         - Communicate:
