@@ -102,7 +102,6 @@ class HomeController @Inject() (cc: ControllerComponents)
       participant_id = "P00012",
       asr_msg_id = "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
       text = text,
-      dialog_act_label = "N/A",
       utterance_source = DialogAgentMessageUtteranceSource(
         source_type = "message_bus",
         source_name = "agent/asr/final"
