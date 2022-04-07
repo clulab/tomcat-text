@@ -42,6 +42,14 @@ rules:
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)^one$|^dude|^guy$/]
 
+  - name: critical_victim_one_c
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^c$/] [lemma=/(?i)^one$|^dude|^guy$/]
+
   - name: regular_victim_one
     priority: ${ rulepriority }
     label: RegularVictim
