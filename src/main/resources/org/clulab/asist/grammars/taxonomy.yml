@@ -152,7 +152,8 @@
             - NeedRole
             - NeedItem
             - NeedAction
-            - HelpRequest
+            - HelpRequest:
+                - AmTrapped
           - Question:
             - QuestionParticle
             - LocationQuestion
@@ -225,6 +226,7 @@
         - CriticalMarkerBlock
         - ThreatRoomMarker #this refers to the actual marker block
         - RubbleMarker
+        - SOSMarker
     - Tool:
       - Hammer
       - MedKit
