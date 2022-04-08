@@ -28,7 +28,7 @@ rules:
     label: Instruction
     example: "Could you take care of the rubble, blue?"
     pattern: |
-      trigger = [word=/(?i)^(Could|Will|Can|Would)/](you)(please?)(take care of)(?=[tag=/^DT?/])([tag=/^N?/])
+      trigger = [word=/(?i)^(Could|Will|Can|Would)/](you)(please?)(take care of)(?=[tag=/^DT?/])(?=[tag=/^N?/])
       agent: Entity? = >/^nsubj/
       topic: Action = >/dobj|ccomp/
 
