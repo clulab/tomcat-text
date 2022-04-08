@@ -95,6 +95,24 @@ rules:
     pattern: |
        [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
 
+  - name: victimA_an_a_type
+    priority: ${ rulepriority }
+    example: "an a victim"
+    label: VictimTypeA
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=an])  [lemma=/(?i)\ba\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
+  - name: victimA_a_b_type
+    priority: ${ rulepriority }
+    example: "a b victim"
+    label: VictimTypeB
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=a])  [lemma=/(?i)\bb\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
   - name: victimC
     priority: ${ rulepriority }
     label: CriticalVictim
