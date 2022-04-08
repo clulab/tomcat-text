@@ -75,6 +75,17 @@ rules:
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
 
+  - name: binary_question_help
+    example: "Do you need help?"
+    priority: ${ rulepriority }
+    label: YesNoQuestion
+    action: requireSubjectVerbInversion
+    pattern: |
+      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^do|can|will|should|have|could|be/] (?= [mention=Entity])
+      topic: Need = >ccomp
+      location: Location? = <aux >/${positional_preps_+advmod}/
+      agent: Entity? = <aux >/(${agents})/
+
   - name: type_question
     example: "Which type of victim is it?"
     priority: ${ rulepriority }
