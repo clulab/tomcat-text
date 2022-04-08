@@ -338,7 +338,7 @@ rules:
     example: "I need help."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN/]
+      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
       agent: Entity? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/
@@ -354,3 +354,13 @@ rules:
       location: Location? = >/${preps}/|
                >/advmod/
 
+
+  - name: trapped_A
+    label: AmTrapped
+    example: "I'm trapped in B2"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)trapped|\bstuck\b|\bdead\b|\bhurt\b/]
+      agent: Entity? = >/nsubj/
+      location: Location? = >/${preps}/|
+               >/advmod/

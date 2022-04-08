@@ -66,3 +66,13 @@
   pattern: |
     @Rubble [word=marker] [word=block]? (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see]) |
     [word=marker] [word=block]? []? @Rubble
+
+- name: SOS_marker
+  priority: ${ rulepriority }
+  label: SOSMarker
+  type: token
+  keep: true
+  pattern: |
+    [word=/(?i)\bsos\b/] [word=marker] [word=block]? |
+        [word=marker] [word=block]? [word=for] [word=/(?i)\bsos\b/] |
+            [word=/(?i)\bhelp\b/] [word=marker] [word=block]?
