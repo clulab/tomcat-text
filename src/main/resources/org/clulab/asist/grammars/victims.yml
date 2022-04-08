@@ -129,7 +129,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<= [word=a])  [lemma=/(?i)\bc\b|\bsee\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+      (?<= [word=a])  [lemma=/(?i)\bc\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
 
   - name: victim_type_extraction
     priority: ${ rulepriority }
