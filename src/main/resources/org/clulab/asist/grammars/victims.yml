@@ -122,6 +122,15 @@ rules:
       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\b(c|see)\b/] | [lemma=type] [lemma=/(?i)\b(c|see)\b/] [lemma=/(?i)(${ victim_triggers })/]? |
        [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=/(?i)\b(c|see)\b/] [word=type] |  [lemma=/(?i)\b(c|see)\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]?
 
+  - name: victimA_a_c_type
+    priority: ${ rulepriority }
+    example: "a c victim"
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=a])  [lemma=/(?i)\bc\b|\bsee\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
   - name: victim_type_extraction
     priority: ${ rulepriority }
     label: Type
