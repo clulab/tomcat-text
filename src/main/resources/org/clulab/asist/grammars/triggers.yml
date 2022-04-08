@@ -1,6 +1,8 @@
 after_precedence_triggers: "after"
 
-agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree|sure|alright|good|excellent|great|terrific|copy"
+agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree|alright|copy"
+
+agree_adjectives: "good|excellent|great|terrific"
 
 attack_triggers: "kill|fight|beat|defeat|hit|attack"
 
@@ -25,7 +27,7 @@ deixis_triggers: "here|there"
 
 dem_pron_triggers: "this|that|those|these"
 
-disagree_triggers: "no|nah|nope|negative"
+disagree_triggers: "nah|nope|negative"
 
 east_triggers: "east"
 
@@ -75,7 +77,7 @@ room_twoword_first_word_regex: "(cubicle|sundollar|Herbalife|limping lamb|lamb|s
 
 room_twoword_second_word_regex: "(room|cafe|office|terrace|area|storage|coffee|chophouse)"
 
-rubble_triggers: "rubble|blockage|pile|stuff|obstacle|barricade|rebel|gravel|pile"
+rubble_triggers: "rubble|blockage|pile|obstacle|barricade|rebel|gravel"
 
 search_spec_triggers: "search|service|searcher|scout"
 
@@ -103,7 +105,7 @@ toggle_triggers: "flip|toggle|turn|switch|pull|open"
 
 transpose_triggers: "move|shift"
 
-triage_triggers: "save|triage|heal|help|get|rescue"
+triage_triggers: "save|triage|heal|help|rescue"
 
 triage_triggers_strict: "save|triage|heal|rescue"
 
@@ -116,3 +118,5 @@ where_triggers: "where"
 you_triggers: "you"
 
 zone_triggers: "zone|area|side|section"
+
+place_triggers: "place|put|drop"

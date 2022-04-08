@@ -24,7 +24,7 @@ class DialogAgentStdin extends DialogAgent {
   // Read keyboard input until user hits [CTRL-D]
   while (input.hasNextLine){
     val extractions = engine.extractFrom(input.nextLine, keepText = true)
-    extractions.map(getExtraction).map(f => println(writeJson(f)))
+    extractions.map(getExtraction).map(f => println(JsonUtils.writeJson(f)))
     print("\n> ")
   }
 }

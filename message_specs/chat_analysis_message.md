@@ -14,11 +14,11 @@ Field Name              | Type   | Description
 ---                     | ---    | ---
 header.timestamp | string | Time of processing by Dialog Agent, in ISO 8601 format: YYYY-MM-DDTHH:MM:SS.SSSZ
 header.message_type | string | Message type.  Hardcoded to "**event**"
-header.version | string | Dialog Agent software version.  Hardcoded to "**1.0**"
+header.version | string | Dialog Agent software version.  Follows trial.header.version, or "**1.0**" if no trial. 
 msg.experiment_id | string | The experiment id this message is associated with
 msg.trial_id | string | The trial id this message is associated with
 msg.timestamp | string | same as header.timestamp
-msg.source | string | The name of this testbed component. Hardcoded to "**tomcat_textAnalyze**r"
+msg.source | string | The name of this testbed component. Hardcoded to "**uaz_dialog_agent**"
 msg.sub_type | string | The subtype of the data.  Hardcoded to "**Event:dialogue_event**"
 msg.version | string | Same as header.version
 msg.replay_root_id | string | The replay_root_id if being used for the root of a replay.
@@ -47,15 +47,15 @@ taxonomy_matches | Seq[(string, string)] | arguments mapping to the span
   "header": {
     "timestamp": "2021-02-11T19:22:23.494Z",
     "message_type": "event",
-    "version": "0.1"
+    "version": "0.6"
   },
   "msg": {
     "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
     "trial_id": "123e4567-e89b-12d3-a456-426655440000",
     "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "tomcat_textAnalyzer",
+    "source": "uaz_dialog_agent",
     "sub_type": "Event:dialogue_event",
-    "version": "0.1",
+    "version": "3.1.5",
     "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",
     "replay_id": "876e4567-ab65-cfe7-b208-426305dc1234"
   },

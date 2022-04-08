@@ -8,19 +8,35 @@ rules:
     example: "Help him!"
     keep: true
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction & !lemma=let & !lemma=be] (?! [][][]|[tag=/\./]|[lemma=not][lemma=worry]|(you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
 
-#  \\todo: need to find a way to prevent cases like: "Water doesn't rise."
+  - name: instruction_let
+    priority: ${ rulepriority }
+    label: Instruction
+    example: "Let's go"
+    keep: true
+    pattern: |
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !mention=Instruction & lemma=let & !lemma=be] (?! me|[lemma=not][lemma=worry]|(you)|([]* I))
+      agent: Entity? = >/^nsubj/ [!mention=Self]
+
+  - name: instruction_command_topic_let
+    priority: ${ rulepriority }
+    label: Instruction
+    example: "Help him save the victim! Don't enter D2."
+    pattern: |
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & lemma=let] (?! me|(you)|([]* I))
+      agent: Entity? = >/^nsubj/ [!mention=Self]
+      topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction]
 
   - name: instruction_command_topic
     priority: ${ rulepriority }
     label: Instruction
-    example: "Help him save the victim!"
+    example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! ((I|[tag=/^MD$|^WP$|^WRB$/]|to|or|oh) []*)) [tag=VB & mention=Action] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & !lemma=let & !lemma=be] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
-      topic: Action = >/dobj|ccomp/
+      topic: Action = >/dobj|ccomp/ | <aux
 
 
   - name: instruction_take_care_of
@@ -35,6 +51,7 @@ rules:
   - name: prep_need_role
     priority: ${ rulepriority }
     label: NeedRole
+    example: "We need a searcher"
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -43,6 +60,7 @@ rules:
   - name: prep_need_item
     priority: ${ rulepriority }
     label: NeedItem
+    example: "I need a medkit"
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
@@ -51,10 +69,11 @@ rules:
   - name: prep_need_action
     priority: ${ rulepriority }
     label: NeedAction
+    example: "I need you to save this guy."
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
-      action: SimpleActions = >xcomp
+      action: Action = >xcomp
 
 
   - name: continue_action
@@ -67,6 +86,7 @@ rules:
   - name: change_priority
     priority: ${ rulepriority }
     label: ChangePriority
+    example: "We should prioritize critical victims"
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Victim = >dobj
@@ -75,6 +95,7 @@ rules:
   - name: change_priority2
     priority: ${ rulepriority }
     label: ChangePriority
+    example: "We should prioritize this guy"
     pattern: |
       trigger = [lemma=/(?i)^(${ change_priority_triggers })/]
       target: Person = >dobj
@@ -85,6 +106,7 @@ rules:
   - name: role_switch
     priority: ${ rulepriority }
     label: RoleSwitch
+    example: "I'm gonna switch to engineer"
     pattern: |
       trigger = [lemma=/(?i)^(${ role_switch_triggers })/ & tag=/^V/]
       agent: Entity? = >/(${agents})/
@@ -102,18 +124,51 @@ rules:
   - name: role_switch_change_to
     priority: ${ rulepriority }
     label: RoleSwitch
+    example: "I'm gonna change to engineer"
     pattern: |
       trigger = [lemma=/change/ | word=/searching/]
       agent: Entity? = >/(${agents})/
       target: Role = >/nmod_to/
 
-  - name: location_report
+  - name: threatroom_report1
     priority: ${ rulepriority }
-    label: ReportLocation
+    example: "B3 is a threat room"
+    label: ReportThreatRoom
     pattern: |
       trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      threat: ThreatRoom = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
+      room: Room =
+        </cop/
+        >/nsubj/
+
+  - name: threatroom_report2
+    priority: ${ rulepriority }
+    example: "B3 has a threat sign| C3 is marked as a threat"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatSign = >/dobj|nmod/
+      room: Room =
+        >/nsubj/
+
+  - name: threatroom_report3
+    priority: ${ rulepriority }
+    example: "B3 has a threat marker"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatRoomMarker = >/dobj/
+      room: Room =
+        >/nsubj/
+
+  - name: location_report
+    priority: ${ rulepriority }
+    example: "I'm in the library"
+    label: ReportLocation
+    pattern: |
+      trigger = (?<! [mention=Question] []*) [lemma=/(?i)^(${ exist_triggers })/]
       location: Location = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
-      agent: Entity? =
+      agent: Entity =
         </cop/
         >/nsubj/
 
@@ -195,19 +250,42 @@ rules:
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/
 
+  - name: existential5
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "There is a meeting in this room"
+    pattern: |
+      trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
+      exists: PuzzleConcept = >/${agents}/
+      location: Location? = >/advmod/|
+               >/${agents}/
+               >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/
+
   - name: found_victim
     priority: ${ rulepriority }
     label: KnowledgeSharing
-    example: "I found a victim in the library"
+    example: "I found a victim in the library. I detected a victim in D2."
     pattern: |
-      trigger =[lemma=/(?i)^find|found|locate|spot/]
+      trigger =[lemma=/(?i)^find|found|locate|spot|detect/]
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${objects}/ >/${positional_preps_liberal}/|
                >/${preps}/|
-               >/advmod/
+               >/advmod/|
+               >dobj >acl >/${positional_preps_liberal}/
 
+  - name: found_victim_reverse
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "Victim detected in D2. Victim found in A1."
+    pattern: |
+      trigger =[lemma=/(?i)^find|found|locate|spot|detect/]
+      exists: Victim = <acl
+      location: Location? = >/${positional_preps_liberal}/
 
   - name: found_victim_have
     priority: ${ rulepriority }
@@ -215,6 +293,18 @@ rules:
     example: "I have a victim here"
     pattern: |
       trigger =[lemma=/(?i)have/]
+      exists: Victim = >/${objects}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
+
+  - name: found_victim_got
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "I have a victim here"
+    pattern: |
+      trigger =[word=/(?i)got$/]
       exists: Victim = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
@@ -258,7 +348,7 @@ rules:
     example: "I need help."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN/]
+      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
       agent: Entity? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/
@@ -274,3 +364,13 @@ rules:
       location: Location? = >/${preps}/|
                >/advmod/
 
+
+  - name: trapped_A
+    label: AmTrapped
+    example: "I'm trapped in B2"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)trapped|\bstuck\b|\bdead\b|\bhurt\b/]
+      agent: Entity? = >/nsubj/
+      location: Location? = >/${preps}/|
+               >/advmod/

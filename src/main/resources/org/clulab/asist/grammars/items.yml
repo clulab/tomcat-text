@@ -43,34 +43,22 @@ rules:
       owner: Entity? = >"nmod:poss"
 
 # -------- marker blocks ----------
-  - name: marker_block
-    priority: ${ rulepriority }
-    label: MarkerBlock
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)marker/] [lemma=block]?
+  - import: org/clulab/asist/grammars/marker_blocks.yml
+  # -------- map objects ----------
 
-  - name: critical_marker_token
+  - name: threat_sign_token
+    example: "I have a threatsign on my map"
     priority: ${ rulepriority }
-    label: CriticalMarkerBlock
+    label: ThreatSign
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)critical/] [lemma=victim]? [lemma=marker] [lemma=block]?
+      [lemma=/(?i)^threat/] [lemma=/^sign|^indicator/] | [lemma=/(?i)threatsign/]
 
-  - name: regular_marker_token
+  - name: threat_sign_token_unspecified
     priority: ${ rulepriority }
-    label: RegularMarkerBlock
+    label: Threat
     type: token
-    keep: true
+    keep: false
     pattern: |
-      [lemma=/(?i)regular/] [lemma=victim]? [lemma=marker] [lemma=block]?
-
-  - name: no_victim_marker_token
-    priority: ${ rulepriority }
-    label: NoVictimMarkerBlock
-    type: token
-    keep: true
-    pattern: |
-      [lemma=/(?i)empty/] [lemma=marker] [lemma=block]?
+      [lemma=/(?i)^threat/]

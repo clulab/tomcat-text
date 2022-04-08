@@ -4,6 +4,9 @@ organization := "org.clulab"
 
 scalaVersion := "2.12.4"
 
+// uncomment to allow graceful keyboard interrupt
+// fork in run := true
+
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
 initialize := {
@@ -17,12 +20,10 @@ initialize := {
 
 resolvers += "Artifactory" at "http://artifactory.cs.arizona.edu:8081/artifactory/sbt-release"
 
-libraryDependencies += "io.spray" %%  "spray-json" % "1.3.5"
 libraryDependencies ++= {
   val procVer = "8.4.2"
   val akkaVersion = "2.6.8"
   val akkaHttpVersion = "10.2.4"
-
   Seq(
     "org.clulab" %% "processors-main" % procVer,
     "org.clulab" %% "processors-corenlp" % procVer,
@@ -34,21 +35,15 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-slf4j"  % akkaVersion,
     "net.sf.saxon" % "saxon-dom" % "8.7",
-    "com.crowdscriber.captions" %% "caption-parser" % "0.1.5"
+    "com.crowdscriber.captions" %% "caption-parser" % "0.1.5",
+    "com.google.code.gson" % "gson" % "2.8.5",
+    "io.spray" %%  "spray-json" % "1.3.5",
+    "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5",
   )
 }
 
-libraryDependencies ++= Seq(
-  "com.google.code.gson" % "gson" % "2.8.5"
-)
-
-
 // Allow the DialogAgent to run in interactive mode
 connectInput in run := true
-
-
-// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
-libraryDependencies += "org.eclipse.paho" % "org.eclipse.paho.client.mqttv3" % "1.2.5"
 
 lazy val core: Project = (project in file("."))
   .enablePlugins(BuildInfoPlugin)

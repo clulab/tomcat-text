@@ -4,6 +4,8 @@ This repository contains natural language text processing code for the DARPA
 Artificial Social Intelligence for Successful Teams (ASIST) program. See the
 main ToMCAT project page for more information: https://ml4ai.github.io/tomcat.
 
+For documentation on the entities and events being extracted by the master
+branch version of the code, please see https://clulab.github.io/tomcat-text.
 
 # Web App
 

@@ -44,12 +44,14 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(convertAgent)
-  }
+  }//converting multiple agents into attachments
 
+  //converting Agent arg into an attachment, we need this because the argument of an extraction cannot be equal in span to the extraction
+  //agents (subjects) blow up the span size of our extractions, which is why we need this. attachments do not figure into the span size
   def convertAgent(mention: Mention): Mention = {
-    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG)
-    val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty)
-    val agents = agentMentions.map(mkAgent).toSet
+    val nonAgentArgs = mention.arguments.filterKeys(key => key != AGENT_ARG) //we defined what agents are, here we make sure we take out non-agents, the definition is in TomcatRuleEngine.scala
+    val agentMentions = mention.arguments.getOrElse(AGENT_ARG, Seq.empty) //find arguments that are marked as agents
+    val agents = agentMentions.map(mkAgent).toSet //turn the agent mentions into a set
 
     val copy = mention match {
       case tb: TextBoundMention => mention
@@ -243,6 +245,7 @@ class TomcatActions() extends Actions with LazyLogging {
     // trigger should be before all the arguments
     // todo: revisit when the no_agent branch merged
     // FIXME!!
+    // comment by Remo: The hasSubjectVerbInversion method is broken, I cannot figure out why. However, it may be better to leave it.
     for {
       mention <- mentions
       if hasSubjectVerbInversionOrNotApplicable(mention)
@@ -258,9 +261,9 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def hasSubjectVerbInversion(mention: EventMention): Boolean = {
     // this method is used to determine whether SubjectVerbInversion is happening, useful for binary questions
-    val trigger = mention.trigger
-    val triggerStart = trigger.start
-    val triggerIsVB = trigger.tags.exists(_.startsWith("V"))
+    val trigger = mention.trigger //finding the triggers in the mention object
+    val triggerStart = trigger.start //finding the starting point of the trigger
+    val triggerIsVB = trigger.tags.exists(_.startsWith("V")) //finding whether the trigger is a verb
 
     // first token index of all the arguments
     val leftMostArg = mention.arguments
@@ -275,8 +278,8 @@ class TomcatActions() extends Actions with LazyLogging {
     val actionAgents = action.attachments.collect{ case a: Agent => a.span.start }
     val leftMostAgentAttachment = if (actionAgents.isEmpty) 1000 else actionAgents.min
 
-    val leftMostSubj = if (triggerIsVB) {
-      val outgoing = trigger.sentenceObj //this is the sentence object of the trigger
+    val leftMostSubj = if (triggerIsVB) { //this actually doesn't work right now, but it's better that way, because we want to match things like: "Dude, can you help me?"
+      val outgoing = mention.sentenceObj //this is the sentence object of the trigger
         .dependencies.get
         .outgoingEdges
         .slice(triggerStart, trigger.end) //taking out the trigger itself

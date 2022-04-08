@@ -1,23 +1,13 @@
 package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
-import org.clulab.processors.Document
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import java.time.Clock
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
 import org.clulab.odin.Mention
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization.{read, write}
-import org.json4s.JField
-import spray.json.DefaultJsonProtocol._
-import spray.json.JsonParser
+import org.clulab.processors.Document
 
-import scala.collection.immutable
-import scala.io.Source
 import scala.util.control.NonFatal
 
 /**
@@ -35,50 +25,18 @@ class DialogAgent (
 
   val config: Config = ConfigFactory.load()
 
-  val dialogAgentMessageType = "event"
-  val dialogAgentSource = config.getString("DialogAgent.msgSource") 
-  val dialogAgentSubType = config.getString("DialogAgent.msgSubType")
+  // Message Bus communication
+  val topicSubChat = config.getString("Chat.topic")
+  val topicSubAsr = config.getString("Asr.topic")
+  val topicSubTrial = config.getString("Trial.topic")
+  val topicPubDialogAgent = config.getString("DialogAgent.topic")
+  val topicPubVersionInfo = config.getString("VersionInfo.topic")
+  val topicPubHeartbeat = config.getString("Heartbeat.topic")
 
-  // Message Bus topics
-  val topicSubChat = "minecraft/chat"
-  val topicSubUazAsr = "agent/asr/final"
-  val topicSubAptimaAsr = "status/asistdataingester/userspeech"
-  val topicSubTrial = "trial"
-  val topicPubDialogAgent = config.getString("DialogAgent.outputTopic")
-  val topicPubVersionInfo = config.getString("DialogAgent.versionInfoTopic")
-  val topicPubHeartbeat = config.getString("DialogAgent.heartbeatTopic")
-
-  val subscriptions = List(
-    topicSubChat,
-    topicSubUazAsr,
-    topicSubAptimaAsr,
-    topicSubTrial
-  )
-
-  val publications = List(
-    topicPubDialogAgent,
-    topicPubVersionInfo,
-    topicPubHeartbeat
-  )
-
-  // Create the engine and run it to get lazy init out of the way 
+  // Run the rule engine to get its lazy init out of the way
   logger.info("Initializing Extractor (this may take a few seconds) ...")
   engine.extractFrom("green victim")
   logger.info("Extractor initialized.")
-
-  /** Translate a structure to single-line JSON text
-   *  @param a The structure to be translated
-   */
-  def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String = write(a)
-
-  /** Create a CommonMsg data structure 
-   *  @param timestamp When this data was created
-   */
-  def commonMsg(timestamp: String): CommonMsg = CommonMsg(
-    timestamp = timestamp,
-    source = dialogAgentSource,
-    sub_type = dialogAgentSubType
-  )
 
   /**
    * Extract Odin mentions from text.
@@ -91,79 +49,39 @@ class DialogAgent (
       .sortBy(m => (m.sentence, m.label))
   }
 
+  /**
+   * Extract Odin mentions from text.
+   * @param doc Document to extract from, can be multiple sentences.
+   * @return sequence of Odin Mentions
+   */
   def extractMentions(doc: Document): Seq[Mention] = {
     engine
       .extractFrom(doc)
       .sortBy(m => (m.sentence, m.label))
   }
 
-  /** Create the data component of the DialogAgentMessage structure
-   *  @param participant_id human subject who created the text
-   *  @param asr_msg_id from the Automated Speech Recognition system
-   *  @param source_type Source of message data, either message_bus or a file
-   *  @param source_name topic or filename
-   *  @param text The text to be analyzed by the pipeline 
-   */
-  def dialogAgentMessageData(
-    participant_id: String,
-    asr_msg_id: String, 
-    source_type: String,
-    source_name: String,
-    text: String
-  ): DialogAgentMessageData = 
-    DialogAgentMessageData(
-      participant_id,
-      asr_msg_id,
-      text,
-      dialog_act_label = null, // ...
-      DialogAgentMessageUtteranceSource(
-        source_type,
-        source_name
-      ),
-      getExtractions(text)
-    )
-
-   /** Create the data component of the DialogAgentMessage structure
-   *  @param participant_id human subject who created the text
-   *  @param asr_msg_id from the Automated Speech Recognition system
-   *  @param source_type Source of message data, either message_bus or a file
-   *  @param source_name topic or filename
-   *  @param text The text to be analyzed by the pipeline 
-   *  @param extractions extractions obtained from the text
-   */
-  def dialogAgentMessageData(
-    participant_id: String,
-    asr_msg_id: String, 
-    source_type: String,
-    source_name: String,
-    text: String,
-    extractions: Seq[DialogAgentMessageUtteranceExtraction]
-  ): DialogAgentMessageData = 
-    DialogAgentMessageData(
-      participant_id,
-      asr_msg_id,
-      text,
-      dialog_act_label = null, // ...
-      DialogAgentMessageUtteranceSource(
-        source_type,
-        source_name
-      ),
-      extractions
-    )
- 
   /** Return an array of all extractions found in the input text
    *  @param text Text to analyze
    */
-  def getExtractions(text: String): Seq[DialogAgentMessageUtteranceExtraction] = 
+  def getExtractions(
+    text: String
+  ): Seq[DialogAgentMessageUtteranceExtraction] = 
     extractMentions(text).map(getExtraction)
 
-  def getExtractions(mentions: Seq[Mention]): Seq[DialogAgentMessageUtteranceExtraction] = 
+  /** Map all of the mentions into extractions
+   *  @param mentions To be mapped into extractions
+   */
+  def getExtractions(
+    mentions: Seq[Mention]
+  ): Seq[DialogAgentMessageUtteranceExtraction] = 
     mentions.map(getExtraction)
 
   /** Create a DialogAgent extraction from Extractor data 
    *  @param mention Contains text to analyze
    */
-  def getExtraction(mention: Mention): DialogAgentMessageUtteranceExtraction = {
+  def getExtraction(
+    mention: Mention
+  ): DialogAgentMessageUtteranceExtraction = {
     val originalArgs = mention.arguments.toArray
     val extractionArguments = for {
       (role, ms) <- originalArgs
@@ -178,107 +96,5 @@ class DialogAgent (
       mention.endOffset,
       mention.foundBy,
     )
-  }
-
-  /** create a DialogAgentMessage with metadata
-   *  @param source_type Source of message data, either message_bus or a file
-   *  @param source_name topic or filename
-   *  @param topic Originating process for message
-   *  @param metadata Experiment data 
-   */
-  def getDialogAgentMessage(
-    source_type: String,
-    source_name: String,
-    topic: String,
-    metadata: Metadata
-  ): DialogAgentMessage = {
-    val timestamp = Clock.systemUTC.instant.toString
-    val participant_id = topic match {
-      case `topicSubChat` => (metadata.data.sender)
-      case `topicSubUazAsr` => (metadata.data.participant_id)
-      case `topicSubAptimaAsr` => (metadata.data.playername)
-      case _ => null
-    }
-    DialogAgentMessage(
-      CommonHeader(
-        timestamp = timestamp,
-        message_type = dialogAgentMessageType
-      ),
-      CommonMsg(
-        experiment_id = metadata.msg.experiment_id,
-        trial_id = metadata.msg.trial_id,
-        timestamp = timestamp,
-        source = dialogAgentSource,
-        sub_type = dialogAgentSubType,
-        replay_root_id = metadata.msg.replay_root_id,
-        replay_id = metadata.msg.replay_id
-      ),
-      dialogAgentMessageData(
-        participant_id,
-        metadata.data.id,
-        source_type,
-        source_name,
-        metadata.data.text
-      )
-    )
-  }
-
-  /** create a DialogAgentMessage without metadata
-   *  @param source_type Source of message data, either keyboard or a file
-   *  @param source_name topic or filename
-   *  @param participant_id The individual who has spoken
-   *  @param text Spoken text to be analyzed
-   */
-  def getDialogAgentMessage(
-    source_type: String,
-    source_name: String,
-    participant_id: String,
-    text: String
-  ): DialogAgentMessage = {
-    val timestamp = Clock.systemUTC.instant.toString
-    DialogAgentMessage(
-      CommonHeader(
-        timestamp = timestamp,
-        message_type = dialogAgentMessageType
-      ),  
-      commonMsg(timestamp),
-      dialogAgentMessageData(
-        participant_id,
-        null,  // ...
-        source_type,
-        source_name,
-        text
-      )
-    )
-  }
-
-  /* Read a DialogAgentMessageData struct from JSON and replace the extractions
-   * @param json A JSON representation of a DialogAgentMessageData struct
-   * @return The JSON-defined struct or a defaut if the parsing fails.
-   */
-  def readDialogAgentMessageData(json: String): DialogAgentMessageData = try {
-    val data = read[DialogAgentMessageData](json)
-    data.copy(extractions = getExtractions(data.text))
-  } catch {
-    case NonFatal(t) => {
-      logger.error(s"readDialogAgentMessageData could not parse ${json}")
-      logger.error(t.toString)
-      new DialogAgentMessageData(
-        utterance_source = new DialogAgentMessageUtteranceSource
-      )
-    }
-  }
-
-  /** Parse a string into a JValue
-   * @param line Hopefully JSON but could be anything the user tries to run
-   * @return A JSON value parsed from the line or None
-   */
-  def parseJValue(line: String): Option[JValue] = try {
-    Some(parse(s""" ${line} """))
-  } catch {
-    case NonFatal(t) =>
-      logger.error(s"parseJValue: Could not parse: ${line}\n")
-      logger.error(t.toString)
-      None
   }
 }

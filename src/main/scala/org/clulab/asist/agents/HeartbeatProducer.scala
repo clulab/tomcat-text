@@ -1,111 +1,75 @@
 package org.clulab.asist.agents
 
 import akka.actor.ActorSystem
-import buildinfo.BuildInfo
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * This class maintains will produce a HeartbeatMessage on a fixed delay,
- * that can be sent to the Message Bus through the owning agent.
- *
- * The heartbeat method is called on a fixed delay, always.  It will only 
- * produce a message if 'heartbeatMessageMaybe' contains a value.
+ * Publishes a Heartbeat to the message bus on a regular interval. 
  *
  * @param agent A DialogAgentMqtt connected to the Message Bus 
  */
 
 class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
 
+  private val config: Config = agent.config
+  private val topic: String = config.getString("Heartbeat.topic")
+  private val startSeconds: Long = 0
+  private val beatSeconds: Long = config.getInt("Heartbeat.beat_seconds")
+
   // Actor concurrency system
   private implicit val ec:ExecutionContext = ExecutionContext.global
   private implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
-  import system.dispatcher  // from var now in scope
+  import system.dispatcher  // from system now in scope
 
-  // An optional instance of a HeartbeatMessage that when defined will 
-  // be published with current timestamps. Setting this to None will stop
+  // An optional instance of a HeartbeatMessage with all fields initialized 
+  // except the timestamps.  If defined, this gets used as a base for
+  // the creation of heartbeat messages.  Setting it to None will stop
   // the publication of heartbeat messages
-  private var heartbeatMessageMaybe: Option[HeartbeatMessage] = None
+  private var base: Option[HeartbeatMessage] = None
 
-  // Start the beat on a fixed delay interval. The heartbeat message is 
-  // published only if defined.
-  private val topicHeartbeat: String = agent.topicPubHeartbeat
-  private val startSeconds: Long = 0
-  private val beatSeconds: Long = agent.config.getInt("DialogAgent.heartbeatSeconds")
+  // Start the beat on a fixed interval. The beat is always running,
+  // but the heartbeat message is only published if the base is defined.
   system.scheduler.scheduleWithFixedDelay(
     startSeconds seconds, 
     beatSeconds seconds
   ) {
     new Runnable {
-      def run() = heartbeat
+      def run() = beat
     }
   }
 
-  /** Start producing heartbeat messages
-   *@param trialMessage Base the HeartbeatMessages on this data
+  /** Define the base to start publishing heartbeats
+   *@param trial The current Testbed trial
    */
-  def start(trialMessage: TrialMessage): Unit = {
-    // setting this to a value starts the publication of HeartbeatMessages
-    heartbeatMessageMaybe = Some(createHeartbeatMessage(trialMessage))
-    // send a HeartbeatMessage immediately 
-    heartbeat
+  def start(trial: TrialMessage): Unit = {
+    base = Some(HeartbeatMessage(trial))
   }
 
-  /** Stop producing heartbeat messages */
+  /** Undefine the base to stop publishing heartbeats */
   def stop: Unit = {
-    // setting this to None stops the publication of HeartbeatMessages
-    heartbeatMessageMaybe = None
+    base = None
   }
 
-  /** Will send a HeartbeatMessage if one is defined */
-  private def heartbeat: Unit = 
-    heartbeatMessageMaybe.foreach(publishHeartbeatMessage(_))
-
-  /** Return a string representing the current time */
-  private def now: String = Clock.systemUTC.instant.toString
-
-  /** publish the HeartbeatMessage with current time to the Message Bus
-   *  @param hm A heartbeat message with Testbed Parameters
-   */
-  private def publishHeartbeatMessage(hm: HeartbeatMessage): Unit = 
-    agent.publish(topicHeartbeat, agent.writeJson(copyHeartbeatMessage(hm, now)))
-
-  /** return a copy of the working copy with replaced timestamps
-   *  @param hm The HeartbeatMessage to copy
-   *  @param timestamp the new timestamp to use
-   */
-  private def copyHeartbeatMessage(
-    hm: HeartbeatMessage, 
-    timestamp: String
-  ): HeartbeatMessage = HeartbeatMessage(
-      hm.header.copy(timestamp = timestamp),
-      hm.msg.copy(timestamp = timestamp),
-      hm.data
-    )
-
-  /** TrialMessage based working copy
-   *  @param tm Trial start message from the Testbed
-   */
-  private def createHeartbeatMessage(
-    tm: TrialMessage
-  ): HeartbeatMessage = {
-    val hm = new HeartbeatMessage
-    hm.copy(
-      hm.header.copy(
-        version = tm.header.version
-      ),
-      hm.msg.copy(
-        trial_id = tm.msg.trial_id,
-        source = agent.dialogAgentSource,
-        experiment_id = tm.msg.experiment_id
+  // publish the heartbeat message if defined
+  private def beat: Unit = base.foreach {
+    hm: HeartbeatMessage =>
+      val currentHeartbeat = HeartbeatMessage(
+        hm,
+        Clock.systemUTC.instant.toString
       )
-    )
+      val json = JsonUtils.writeJson(currentHeartbeat)
+      agent.writeOutput(topic, json)
   }
+
+  logger.info(s"Heartbeat publication topic: ${topic}")
+  logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
 }

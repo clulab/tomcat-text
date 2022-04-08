@@ -1,0 +1,558 @@
+#this file is imported by locations.yml
+
+#Study 3 Rooms##########################
+
+## Taking care of special cases first
+- name: room_a4a
+  priority: ${ second_priority }
+  label: A4A
+  type: token
+  example: "room a 4 A"
+  keep: true
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^a.?$/] [word=/4|^four$/] [lemma=/(?i)^a\.?$/]
+
+- name: room_h1a
+  priority: ${ second_priority }
+  label: H1A
+  type: token
+  example: "room a 4 A"
+  keep: true
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^h$/] [word=/1|^one$/] [lemma=/(?i)^a\.?$/]
+
+- name: room_ida_A
+  priority: ${ second_priority }
+  label: I1A
+  example: "room b five"
+  type: token
+  pattern: |
+      [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/1|^one$/] [lemma=/(?i)^a\.?$/]
+
+- name: room_ida_2A
+  priority: ${ second_priority }
+  label: I2A
+  example: "room b five"
+  type: token
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/2|^two$/] [lemma=/(?i)^a\.?$/]
+
+- name: room_ida_3A
+  priority: ${ second_priority }
+  label: I3A
+  example: "room b five"
+  type: token
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/3|^three$/] [lemma=/(?i)^a\.?$/]
+
+
+- name: room_ida_4A
+  priority: ${ second_priority }
+  label: I4A
+  example: "room b five"
+  type: token
+  pattern: |
+    [lemma=/(?i)^room/] [lemma=/(?i)^i$/] [word=/4|^four$/] [lemma=/(?i)^a\.?$/]
+
+
+##### here follow procedurally generated rules:
+# These rules are generated using a Python script. The script is in /scripts/quick_room_generator.py
+
+- name: room_a1
+  priority: ${ second_priority }
+  label: A1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^a-?1$/]
+
+- name: room_a2
+  priority: ${ second_priority }
+  label: A2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^a-?2$/]
+
+- name: room_a3
+  priority: ${ second_priority }
+  label: A3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^a-?3$/]
+
+- name: room_a4
+  priority: ${ second_priority }
+  label: A4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^a-?4$/]
+
+- name: room_b1
+  priority: ${ second_priority }
+  label: B1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?1$/]
+
+- name: room_b2
+  priority: ${ second_priority }
+  label: B2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?2$/]
+
+- name: room_b3
+  priority: ${ second_priority }
+  label: B3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?3$/]
+
+- name: room_b4
+  priority: ${ second_priority }
+  label: B4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?4$/]
+
+- name: room_b5
+  priority: ${ second_priority }
+  label: B5
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?5$/]
+
+- name: room_b6
+  priority: ${ second_priority }
+  label: B6
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?6$/]
+
+- name: room_b7
+  priority: ${ second_priority }
+  label: B7
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?7$/]
+
+- name: room_b8
+  priority: ${ second_priority }
+  label: B8
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?8$/]
+
+- name: room_b9
+  priority: ${ second_priority }
+  label: B9
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^b-?9$/]
+
+- name: room_c1
+  priority: ${ second_priority }
+  label: C1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?1$/]
+
+- name: room_c2
+  priority: ${ second_priority }
+  label: C2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?2$/]
+
+- name: room_c3
+  priority: ${ second_priority }
+  label: C3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?3$/]
+
+- name: room_c4
+  priority: ${ second_priority }
+  label: C4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?4$/]
+
+- name: room_c5
+  priority: ${ second_priority }
+  label: C5
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?5$/]
+
+- name: room_c6
+  priority: ${ second_priority }
+  label: C6
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?6$/]
+
+- name: room_c7
+  priority: ${ second_priority }
+  label: C7
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?7$/]
+
+- name: room_c8
+  priority: ${ second_priority }
+  label: C8
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^c-?8$/]
+
+- name: room_d1
+  priority: ${ second_priority }
+  label: D1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^d-?1$/]
+
+- name: room_d2
+  priority: ${ second_priority }
+  label: D2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^d-?2$/]
+
+- name: room_d3
+  priority: ${ second_priority }
+  label: D3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^d-?3$/]
+
+- name: room_d4
+  priority: ${ second_priority }
+  label: D4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^d-?4$/]
+
+- name: room_e1
+  priority: ${ second_priority }
+  label: E1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^e-?1$/]
+
+- name: room_e2
+  priority: ${ second_priority }
+  label: E2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^e-?2$/]
+
+- name: room_e3
+  priority: ${ second_priority }
+  label: E3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^e-?3$/]
+
+- name: room_e4
+  priority: ${ second_priority }
+  label: E4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^e-?4$/]
+
+- name: room_e5
+  priority: ${ second_priority }
+  label: E5
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^e-?5$/]
+
+- name: room_f1
+  priority: ${ second_priority }
+  label: F1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^f-?1$/]
+
+- name: room_f2
+  priority: ${ second_priority }
+  label: F2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^f-?2$/]
+
+- name: room_f3
+  priority: ${ second_priority }
+  label: F3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^f-?3$/]
+
+- name: room_f4
+  priority: ${ second_priority }
+  label: F4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^f-?4$/]
+
+- name: room_f5
+  priority: ${ second_priority }
+  label: F5
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^f-?5$/]
+
+
+- name: room_g1
+  priority: ${ second_priority }
+  label: G1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^g-?1$/]
+
+- name: room_g2
+  priority: ${ second_priority }
+  label: G2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^g-?2$/]
+
+- name: room_g3
+  priority: ${ second_priority }
+  label: G3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^g-?3$/]
+
+- name: room_h1
+  priority: ${ second_priority }
+  label: H1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^h-?1$/]
+
+- name: room_h2
+  priority: ${ second_priority }
+  label: H2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^h-?2$/]
+
+- name: room_i1
+  priority: ${ second_priority }
+  label: I1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^i-?1$/]
+
+- name: room_i2
+  priority: ${ second_priority }
+  label: I2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^i-?2$/]
+
+- name: room_i3
+  priority: ${ second_priority }
+  label: I3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^i-?3$/]
+
+- name: room_i4
+  priority: ${ second_priority }
+  label: I4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^i-?4$/]
+
+
+- name: room_i1A
+  priority: ${ second_priority }
+  label: I1A
+  type: token
+  keep: true
+  pattern: |
+       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^1-?a$/]
+
+- name: room_i2A
+  priority: ${ second_priority }
+  label: I2A
+  type: token
+  keep: true
+  pattern: |
+       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^2-?a$/]
+
+- name: room_i3A
+  priority: ${ second_priority }
+  label: I3A
+  type: token
+  keep: true
+  pattern: |
+       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^3-?a$/]
+
+- name: room_i4A
+  priority: ${ second_priority }
+  label: I4A
+  type: token
+  keep: true
+  pattern: |
+       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^4-?a$/]
+
+- name: room_j1
+  priority: ${ second_priority }
+  label: J1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^j-?1$/]
+
+- name: room_j2
+  priority: ${ second_priority }
+  label: J2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^j-?2$/]
+
+- name: room_j3
+  priority: ${ second_priority }
+  label: J3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^j-?3$/]
+
+- name: room_j4
+  priority: ${ second_priority }
+  label: J4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^j-?4$/]
+
+- name: room_k1
+  priority: ${ second_priority }
+  label: K1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^k-?1$/]
+
+- name: room_k2
+  priority: ${ second_priority }
+  label: K2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^k-?2$/]
+
+- name: room_k3
+  priority: ${ second_priority }
+  label: K3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^k-?3$/]
+
+- name: room_k4
+  priority: ${ second_priority }
+  label: K4
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^k-?4$/]
+
+
+- name: room_l1
+  priority: ${ second_priority }
+  label: L1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^l-?1$/]
+
+- name: room_l2
+  priority: ${ second_priority }
+  label: L2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^l-?2$/]
+
+- name: room_l3
+  priority: ${ second_priority }
+  label: L3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^l-?3$/]
+
+- name: room_m1
+  priority: ${ second_priority }
+  label: M1
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^m-?1$/]
+
+- name: room_m2
+  priority: ${ second_priority }
+  label: M2
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^m-?2$/]
+
+- name: room_m3
+  priority: ${ second_priority }
+  label: M3
+  type: token
+  keep: true
+  pattern: |
+          [lemma=/(?i)^room/]? [lemma=/(?i)^m-?3$/]

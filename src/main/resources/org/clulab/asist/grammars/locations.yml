@@ -2,8 +2,9 @@ vars: org/clulab/asist/grammars/vars.yml
 
 
 rules:
-  - import: org/clulab/asist/grammars/rooms.yml
+# - import: org/clulab/asist/grammars/study_2_rooms.yml
     #we're importing this here to keep the files clean and uncluttered
+  - import: org/clulab/asist/grammars/study_3_rooms.yml
 
 
   - name: infrastructure_detection
@@ -19,7 +20,7 @@ rules:
     priority: ${ second_priority }
     label: Room
     type: token
-    keep: true
+    keep: false
     pattern: |
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^room/ & outgoing=compound]) |
       [lemma=/(?i)^room/]|
@@ -158,3 +159,11 @@ rules:
     type: token
     pattern: |
       [mention=Location]{2,4}
+
+  - name: threat_room_toke
+    priority: ${ second_priority }
+    label: ThreatRoom
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^threat$/] [word=/(?i)^room/] | [word=/(?i)^threatroom/]

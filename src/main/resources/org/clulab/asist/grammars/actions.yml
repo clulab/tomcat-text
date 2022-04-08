@@ -41,6 +41,16 @@ rules:
       location: Location? = >/${ positional_preps_+advmod }/
       agent: Entity? = >/${agents}/
 
+  - name: triage_get
+    priority: ${ rulepriority }
+    label: Save
+    example: "I will save the victim"
+    pattern: |
+      trigger = [word=get]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
   - name: triage2
     priority: ${ rulepriority }
     label: Save
@@ -64,6 +74,47 @@ rules:
       location: Location? = >/${ positional_preps_+advmod }/
       agent: Entity? = >/${agents}/
 ## This one is not working right now, working on it -Remo
+
+  - name: stabilize_victim
+    priority: ${ rulepriority }
+    label: Stabilize
+    example: "I'm stabilizing this victim"
+    pattern: |
+      trigger = [lemma=/(?i)^stabilize/]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+  - name: stabilize_person
+    priority: ${ rulepriority }
+    label: Stabilize
+    example: "I'm stabilizing this guy"
+    pattern: |
+      trigger = [lemma=/(?i)^stabilize/]
+      target: Person = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+
+  - name: wakeup
+    priority: ${ rulepriority }
+    label: WakeUp
+    example: "I'm waking this guy"
+    pattern: |
+      trigger = [lemma=/(?i)^wake/]
+      target: Person = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
+
+  - name: wakeup_victim
+    priority: ${ rulepriority }
+    label: WakeUp
+    example: "I'm waking this victim"
+    pattern: |
+      trigger = [lemma=/(?i)^wake/]
+      target: Victim = >dobj
+      location: Location? = >/${ positional_preps_+advmod }/
+      agent: Entity? = >/${agents}/
 
   - import: org/clulab/asist/grammars/lvo_template_no_passive.yml
     vars:
@@ -199,6 +250,8 @@ rules:
       target: Deictic = >/nmod_(inside|into)/
       agent: Entity? = >/${agents}/
 
+  - import: org/clulab/asist/grammars/movement.yml
+
   # ------------------------------------------------------------------- sight
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -227,6 +280,14 @@ rules:
       trigger: ${ sight_triggers }
       object_type: EventLike
 
+  - name: seeOnMap
+    priority: ${ rulepriority }
+    example: "I have a threatsign on my map"
+    label: Sight
+    pattern: |
+      trigger = [lemma=/(?i)^have/]
+      item: Item = >dobj
+      map: Map = >dobj >nmod_on
 
 ##----------------------------------------------------------------------------------------- clear
 
@@ -258,7 +319,7 @@ rules:
     label: Block
     example: "Some rubble is blocking this door"
     pattern: |
-      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      trigger = (?<! [lemma=marker] ) [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
       source: Concept? = >/${agents}/
       target: Concept? = >/dobj|acl/
 
@@ -266,7 +327,7 @@ rules:
     priority: ${ rulepriority }
     label: Block
     pattern: |
-      trigger = [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
+      trigger = (?<! [lemma=marker] ) [lemma=/(?i)^(${ block_triggers })/ & tag=/^V/]
       source: Obstacle? =  <acl
       target: Concept? = >/dobj|acl/
 
@@ -294,6 +355,41 @@ rules:
     pattern: |
       trigger = [tag=/^V/]
       target: Entity? = <dobj
+
+# ---- marker block related actions
+
+  - name: placeMarker1
+    label: PlaceMarker
+    example: "I'm placing a marker for critical victim in front of D2."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/^${ place_triggers }/]
+      target: MarkerBlock = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      marker_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: placeMarker_leave
+    label: PlaceMarker
+    example: "I'm leaving a marker in front of D2."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/leave/]
+      target: MarkerBlock = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      marker_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: placeMarker_throw
+    label: PlaceMarker
+    example: "I can throw down a marker here."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/throw/]
+      target: MarkerBlock = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      marker_meaning: Concept? = >dobj >/nmod_for/
 
 #\\ todo: #"put down marker block"
 #\\ todo: #review the instruction rule... "And going to go renew my hammer and then come back."

@@ -1,0 +1,78 @@
+- name: marker_block
+  priority: ${ second_priority }
+  label: MarkerBlock
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)marker/ & !mention=MarkerBlock] [lemma=block]?
+
+- name: critical_marker_token
+  priority: ${ rulepriority }
+  label: CriticalMarkerBlock
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)critical/] [lemma=victim]? [lemma=marker] [lemma=block]?
+
+- name: regular_marker_token
+  priority: ${ rulepriority }
+  label: RegularMarkerBlock
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)regular/] [lemma=victim]? [lemma=marker] [lemma=block]?
+
+- name: no_victim_marker_token
+  priority: ${ rulepriority }
+  label: NoVictimMarkerBlock
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)empty/] [lemma=marker] [lemma=block]?
+
+- name: threatmarker
+  priority: ${ rulepriority }
+  label: ThreatRoomMarker
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)^threat/] [lemma=room]? [lemma=marker] [lemma=block]? | [lemma=/(?i)^threat/] [lemma=room]? [lemma=markerblock] | [word=/(?i)^threatmarker/]
+
+- name: type_A_marker
+  priority: ${ rulepriority }
+  label: TypeAMarker
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)\ba\b/] [word=type] [word=marker] [word=block]? (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see]) |
+    [word=marker] [word=block]? []? [word=type] [lemma=/(?i)\ba\b/] | [word=type] [lemma=/(?i)\ba\b/] [word=marker] [word=block]? (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
+
+- name: type_B_marker
+  priority: ${ rulepriority }
+  label: TypeBMarker
+  type: token
+  keep: true
+  pattern: |
+    [lemma=/(?i)\bb\b/] [word=type] [word=marker] [word=block]? (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see]) |
+    [word=marker] [word=block]? []? [word=type] [lemma=/(?i)\bb\b/] | [word=type] [lemma=/(?i)\bb\b/] [word=marker] [word=block]? (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
+
+- name: rubble_marker
+  priority: ${ rulepriority }
+  label: RubbleMarker
+  type: token
+  keep: true
+  pattern: |
+    @Rubble [word=marker] [word=block]? (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see]) |
+    [word=marker] [word=block]? []? @Rubble
+
+- name: SOS_marker
+  priority: ${ rulepriority }
+  label: SOSMarker
+  type: token
+  keep: true
+  pattern: |
+    [word=/(?i)\bsos\b/] [word=marker] [word=block]? |
+        [word=marker] [word=block]? [word=for] [word=/(?i)\bsos\b/] |
+            [word=/(?i)\bhelp\b/] [word=marker] [word=block]?

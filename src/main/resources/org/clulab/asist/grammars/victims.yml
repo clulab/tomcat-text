@@ -1,0 +1,113 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: victim
+    priority: ${ rulepriority }
+    label: Victim
+    type: token
+    keep: true
+    pattern: |
+      (?<! [lemma=/no|critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/] (?! [word=type])
+
+  - name: critical_victim
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
+
+  - name: critical_solitary
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<=a|an|the|some) [word=/(?i)critical/] (?! [word=marker])
+
+  - name: critical_injured_victim
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      critically injured [lemma=/(patient|victim|one)/]
+
+  - name: critical_victim_one
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)critical/] [lemma=/(?i)^one$|^dude|^guy$/]
+
+  - name: critical_victim_one_c
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^c$/] [lemma=/(?i)^one$|^dude|^guy$/]
+
+  - name: regular_victim_one
+    priority: ${ rulepriority }
+    label: RegularVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/regular|normal/] [lemma=/^one$|^dude|^guy$|victim/]
+
+  - name: no_victim_one
+    priority: ${ rulepriority }
+    label: NoVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/\bno\b/] [lemma=/\bone\b|victim/]
+
+# ---- victim types ----
+
+# we're picking up all variations of type B here, ASR sometimes transcribes this as "type b" and "type P", hence lemma=/(?i)(b.?)|P/
+  - name: victimB
+    priority: ${ rulepriority }
+    label: VictimTypeB
+    type: token
+    keep: true
+    pattern: |
+     [word=/(?i)\b(b.?)|P\b/] [word=of]? [word=type] [lemma=/(?i)(${ victim_triggers })/]? | [lemma=type] [word=/(?i)\b(b.?)|P\b/] [lemma=/(?i)(${ victim_triggers })/]? |
+      [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [word=/(?i)\b(b.?)|P\b/] [word=type] |  [lemma=/(?i)(${ victim_triggers })/]? [lemma=type] [word=/(?i)\b(b.?)|P\b/]
+
+  - name: victimA
+    priority: ${ rulepriority }
+    label: VictimTypeA
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\ba\b/] | [lemma=type] [lemma=/(?i)\ba\b/] [lemma=/(?i)(${ victim_triggers })/]? |
+       [lemma=/(?i)(${ victim_triggers })/] [word=of]? [lemma=/(?i)\ba\b/] [word=type] |  [lemma=/(?i)\ba\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]
+
+  - name: victimA_a_type
+    priority: ${ rulepriority }
+    label: VictimTypeA
+    type: token
+    keep: true
+    pattern: |
+       [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
+  - name: victimC
+    priority: ${ rulepriority }
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\b(c|see)\b/] | [lemma=type] [lemma=/(?i)\b(c|see)\b/] [lemma=/(?i)(${ victim_triggers })/]? |
+       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=/(?i)\b(c|see)\b/] [word=type] |  [lemma=/(?i)\b(c|see)\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]?
+
+  - name: victim_type_extraction
+    priority: ${ rulepriority }
+    label: Type
+    type: token
+    keep: false
+    pattern: |
+      [lemma=type] [lemma=of]? [lemma=victim]? | [lemma=victim]? [lemma=type]
