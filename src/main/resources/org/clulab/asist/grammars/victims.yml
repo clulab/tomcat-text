@@ -95,6 +95,24 @@ rules:
     pattern: |
        [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
 
+  - name: victimA_an_a_type
+    priority: ${ rulepriority }
+    example: "an a victim"
+    label: VictimTypeA
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=an])  [lemma=/(?i)\ba\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
+  - name: victimA_a_b_type
+    priority: ${ rulepriority }
+    example: "a b victim"
+    label: VictimTypeB
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=a])  [lemma=/(?i)\bb\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
   - name: victimC
     priority: ${ rulepriority }
     label: CriticalVictim
@@ -103,6 +121,15 @@ rules:
     pattern: |
       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\b(c|see)\b/] | [lemma=type] [lemma=/(?i)\b(c|see)\b/] [lemma=/(?i)(${ victim_triggers })/]? |
        [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=/(?i)\b(c|see)\b/] [word=type] |  [lemma=/(?i)\b(c|see)\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]?
+
+  - name: victimA_a_c_type
+    priority: ${ rulepriority }
+    example: "a c victim"
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=a])  [lemma=/(?i)\bc\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
 
   - name: victim_type_extraction
     priority: ${ rulepriority }
