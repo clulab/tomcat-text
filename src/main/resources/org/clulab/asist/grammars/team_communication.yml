@@ -38,6 +38,15 @@ rules:
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ | <aux
 
+  - name: instruction_take_care_of
+    priority: ${ rulepriority }
+    label: Instruction
+    example: "Could you take care of the rubble, blue?"
+    pattern: |
+      trigger = [word=/(?i)^(Could|Will|Can|Would)/](you)(please?)(take care of)(?=[tag=/^DT?/])(?=[tag=/^N?/])
+      agent: Entity? = >/^nsubj/
+      topic: Action = >/dobj|ccomp/
+
   - name: prep_need_role
     priority: ${ rulepriority }
     label: NeedRole
