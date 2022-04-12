@@ -44,8 +44,8 @@ rules:
     example: "Could you take care of the rubble, blue?"
     pattern: |
       trigger = [word=/(?i)^(Could|Will|Can|Would)/](you)(please?)(take care of)(?=[tag=/^DT?/])(?=[tag=/^N?/])
-      agent: Entity? = >/^nsubj/
-      topic: Action = >/dobj|ccomp/
+      agent: Entity? = </aux/ >/^nsubj/
+      topic: Action = </aux/
 
   - name: prep_need_role
     priority: ${ rulepriority }
