@@ -347,7 +347,7 @@ rules:
     example: "I need help."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
+      trigger = [word=/(?i)need|require/] []? [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
       agent: Entity? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/
@@ -389,9 +389,31 @@ rules:
   - name: "HelpOffer_no_helpee"
     label: HelpOffer
     example: "Let me help. I will help."
+    priority: ${ second_priority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/ & !mention=HelpOffer]
+      agent: Self = >nsubj|<xcomp >nsubj
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "Help_command"
+    label: HelpCommand
+    example: "You should help him."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [lemma=/assist|help|aid|support/] [!mention=HelpOffer]
-      agent: Self = >nsubj|<xcomp >nsubj
+      trigger = [lemma=/assist|help|aid|support/]
+      agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
+      helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "Help_command_no_agent"
+    label: HelpCommand
+    example: "You should help him. Help me!"
+    priority: ${ second_priority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/ & !mention=HelpRequest & !mention=HelpOffer]
+      #agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
+      helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
       location: Location? = >/${preps}/|
                >/advmod/

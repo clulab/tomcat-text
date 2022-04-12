@@ -135,7 +135,8 @@
         - Sight
         - PlaceMarker
         - Communicate:
-          - Instruction
+          - Instruction:
+              - HelpCommand
           - ReportStatus:
             - Stuck
             - ReportLocation
