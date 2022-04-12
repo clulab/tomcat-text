@@ -380,7 +380,18 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [lemma=/assist|help|aid|support/]
-      agent: Entity = >nsubj|<xcomp >nsubj
+      agent: Self = >nsubj|<xcomp >nsubj
       helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+
+  - name: "HelpOffer_no_helpee"
+    label: HelpOffer
+    example: "Let me help. I will help."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/] [!mention=HelpOffer]
+      agent: Self = >nsubj|<xcomp >nsubj
       location: Location? = >/${preps}/|
                >/advmod/
