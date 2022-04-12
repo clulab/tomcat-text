@@ -403,7 +403,7 @@ rules:
     pattern: |
       trigger = [lemma=/assist|help|aid|support/]
       agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
-      helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
+      helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
       location: Location? = >/${preps}/|
                >/advmod/
 
@@ -413,7 +413,6 @@ rules:
     priority: ${ second_priority }
     pattern: |
       trigger = [lemma=/assist|help|aid|support/ & !mention=HelpRequest & !mention=HelpOffer]
-      #agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
-      helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
+      helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
       location: Location? = >/${preps}/|
                >/advmod/
