@@ -373,3 +373,14 @@ rules:
       agent: Entity? = >/nsubj/
       location: Location? = >/${preps}/|
                >/advmod/
+
+  - name: "HelpOffer"
+    label: HelpOffer
+    example: "Let me help you. I will help you."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/]
+      agent: Entity = >nsubj|<xcomp >nsubj
+      helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
+      location: Location? = >/${preps}/|
+               >/advmod/

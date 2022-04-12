@@ -154,6 +154,7 @@
             - NeedAction
             - HelpRequest:
                 - AmTrapped
+          - HelpOffer
           - Question:
             - QuestionParticle
             - LocationQuestion
