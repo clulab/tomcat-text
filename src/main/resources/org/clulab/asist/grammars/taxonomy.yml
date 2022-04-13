@@ -135,7 +135,8 @@
         - Sight
         - PlaceMarker
         - Communicate:
-          - Instruction
+          - Instruction:
+              - HelpCommand
           - ReportStatus:
             - Stuck
             - ReportLocation
@@ -154,6 +155,7 @@
             - NeedAction
             - HelpRequest:
                 - AmTrapped
+          - HelpOffer
           - Question:
             - QuestionParticle
             - LocationQuestion

@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.1.0</code></p>
-<p>Document generation timestamp (UTC): <code>2022-04-12 20:45:36.016882</code></p>
+<p>Document generation timestamp (UTC): <code>2022-04-13 15:11:10.320103</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -114,20 +114,30 @@
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Location|Rubble) ()
+          - target (Rubble|Location) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - Communicate
           - Agreement
           - Disagreement
+          - HelpOffer
+            - agent (Self) ()
+            - helpee (Entity) ()
+            - [location] (Location) (?)
+
           - Instruction
             - [agent] (Entity) (?)
             - topic (Action) ()
 
+            - HelpCommand
+              - agent (Entity) ()
+              - helpee (Entity) ()
+              - [location] (Location) (?)
+
           - KnowledgeSharing
-            - exists (Item|Victim|PuzzleConcept|Person|EventLike) ()
+            - exists (Victim|Person|Item|EventLike|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -188,7 +198,7 @@
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Action|Need) ()
+              - topic (Need|Action) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
 
@@ -213,7 +223,7 @@
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatSign|ThreatRoom|ThreatRoomMarker) ()
+                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -228,14 +238,14 @@
           - Enter
             - [target] (Location) (?)
             - [agent] (Entity) (?)
-            - target (Location|Deictic) ()
+            - target (Deictic|Location) ()
 
           - MoveFrom
             - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Location|Entity|Deictic) ()
+            - target (Deictic|Location|Entity) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
@@ -254,7 +264,7 @@
 
         - RescueInteractions
           - Save
-            - target (Entity|Victim|Person) ()
+            - target (Victim|Entity|Person) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -274,7 +284,7 @@
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|Entity|EventLike) ()
+          - target (Entity|Item|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
