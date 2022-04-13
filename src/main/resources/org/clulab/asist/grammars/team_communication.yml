@@ -347,7 +347,7 @@ rules:
     example: "I need help."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [word=/(?i)need|require/] [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
+      trigger = [word=/(?i)need|require/] []? [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
       agent: Entity? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/
@@ -371,5 +371,48 @@ rules:
     pattern: |
       trigger = [word=/(?i)trapped|\bstuck\b|\bdead\b|\bhurt\b/]
       agent: Entity? = >/nsubj/
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "HelpOffer"
+    label: HelpOffer
+    example: "Let me help you. I will help you."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/]
+      agent: Self = >nsubj|<xcomp >nsubj
+      helpee: Entity = >ccomp >nsubj | >ccomp | >dep | >dobj
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+
+  - name: "HelpOffer_no_helpee"
+    label: HelpOffer
+    example: "Let me help. I will help."
+    priority: ${ second_priority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/ & !mention=HelpOffer]
+      agent: Self = >nsubj|<xcomp >nsubj
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "Help_command"
+    label: HelpCommand
+    example: "You should help him."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/]
+      agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
+      helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "Help_command_no_agent"
+    label: HelpCommand
+    example: "You should help him. Help me!"
+    priority: ${ second_priority }
+    pattern: |
+      trigger = [lemma=/assist|help|aid|support/ & !mention=HelpRequest & !mention=HelpOffer]
+      helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
       location: Location? = >/${preps}/|
                >/advmod/

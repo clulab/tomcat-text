@@ -101,11 +101,12 @@ class TestCommunications extends BaseTest {
 
   }
 
-  passingTest should "parse instructions" in {
+  passingTest should "parse help command" in {
     val text = "Come help me here!"
     val mentions = extractor.extractFrom(text)
-    val action = DesiredMention("GenericAction", "help")
-    val inst = DesiredMention("Instruction", "Come help", Map("topic" -> Seq(action)))
+    val helpee = DesiredMention("Self", "me")
+    val location = DesiredMention("Deictic", "here")
+    val inst = DesiredMention("HelpCommand", "help me here", Map("helpee" -> Seq(helpee), "location" ->Seq(location)))
 
     testMention(mentions, inst)
   }
@@ -150,6 +151,14 @@ class TestCommunications extends BaseTest {
     testMention(mentions, toolBroken)
   }
 
+  passingTest should "parse help offers" in {
+    val text = "I can help you."
+    val mentions = extractor.extractFrom(text)
+    val you = DesiredMention("You","you")
+    val save = DesiredMention("HelpOffer", "help you", Map("helpee" -> Seq(you)),Set(AGENT_SELF))
+
+    testMention(mentions,save)
+  }
 
 
 

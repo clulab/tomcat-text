@@ -93,6 +93,7 @@ rules:
   - import: org/clulab/asist/grammars/team_communication.yml
     vars:
       rulepriority: "6+"
+      second_priority: "7+"
 
   # Extract temporal extractions
   - import: org/clulab/asist/grammars/temporal_extractions.yml
