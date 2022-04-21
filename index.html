@@ -15,8 +15,8 @@
 <body>
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
-<p>Agent version: <code>4.1.1</code></p>
-<p>Document generation timestamp (UTC): <code>2022-04-15 20:13:39.780274</code></p>
+<p>Agent version: <code>4.1.2</code></p>
+<p>Document generation timestamp (UTC): <code>2022-04-21 22:16:17.264652</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -109,7 +109,7 @@
 
       - SimpleAction
         - Block
-          - [source] (Concept|Obstacle) (?)
+          - [source] (Obstacle|Concept) (?)
           - [target] (Concept) (?)
 
         - Clear
@@ -117,7 +117,7 @@
           - target (Location|Rubble) ()
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - Communicate
           - Agreement
@@ -137,7 +137,7 @@
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Person|Item|Victim|PuzzleConcept|EventLike) ()
+            - exists (Person|EventLike|Item|PuzzleConcept|Victim) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -189,7 +189,7 @@
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Move|Entity) ()
+              - topic (Entity|Move) ()
               - [location] (Location) (?)
 
             - [QuestionParticle]
@@ -245,11 +245,11 @@
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Location|Deictic|Entity) ()
+            - target (Entity|Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Location|Entity) (?)
+            - [target] (Entity|Location) (?)
 
         - Open
           - [agent] (Entity) (?)
