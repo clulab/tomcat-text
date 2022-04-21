@@ -15,11 +15,21 @@ import org.json4s.jackson.Serialization.read
  *  Dialog Agent Message
  *
  *  DialogAgentMessages published on the Message Bus
+ *
+ *  Fields required by the Testbed to be included with published JSON
+ *  have "not_set" values by default
+ *
+ *  Optional fields have "N/A" values, used in place of "null".
+ *  The DialogAgent will not publish a field with this value
+ *
+ *  Testbed specification:
+ *  https://gitlab.asist.aptima.com/asist/testbed\
+ *  /-/blob/master/MessageSpecs/DialogAgent/chat_analysis_message.json
  */
 
 // Part of the DialogAgentMessageData class 
 case class DialogAgentMessageUtteranceSource(
-  source_type: String = "N/A",
+  source_type: String = "not_set",
   source_name: String = "N/A"
 )
 
@@ -37,18 +47,19 @@ case class DialogAgentMessageUtteranceExtraction(
 
 // Part of the DialogAgentMessage class
 case class DialogAgentMessageData(
-  participant_id: String = "N/A", // omitted if null
-  asr_msg_id: String = "N/A", // omitted if null
-  text: String = "N/A",
+  participant_id: String = "not_set",
+  asr_msg_id: String = "not_set",
+  text: String = "not_set",
   utterance_source: DialogAgentMessageUtteranceSource,
-  extractions:Seq[DialogAgentMessageUtteranceExtraction] = Seq.empty
+  extractions:Seq[DialogAgentMessageUtteranceExtraction] =
+    Seq.empty // required
 )
 
 // published on the Message Bus
 case class DialogAgentMessage (
-  header: CommonHeader,
-  msg: CommonMsg,
-  data: DialogAgentMessageData
+  header: CommonHeader, // required
+  msg: CommonMsg, // required
+  data: DialogAgentMessageData // required
 )
 
 // member functions
@@ -164,7 +175,7 @@ object DialogAgentMessage {
         timestamp = timestamp,
       ),
       DialogAgentMessageData(
-        participant_id = participant_id.getOrElse("N/A"),
+        participant_id = participant_id.getOrElse("not_set"),
         text = utterance_text,
         utterance_source = DialogAgentMessageUtteranceSource(
           source_type,
