@@ -5,9 +5,8 @@ package org.clulab.asist.messages
  *
  *  Components used for subscription and publication on the Message Bus
  *
- *  Optional fields are omitted from output if value is not known
- *
- *  Fields required by the Testbed have "not_set" values by default
+ *  Fields required by the Testbed to be included with published JSON 
+ *  have "not_set" values by default
  *
  *  Optional fields have "N/A" values, used in place of "null".  
  *  The DialogAgent will not publish a field with this value
@@ -18,7 +17,8 @@ case class Topic(
 )
 
 // Testbed specification:
-// https://gitlab.asist.aptima.com/asist/testbed/-/blob/master/MessageSpecs/Common_Header/common_header.json
+// https://gitlab.asist.aptima.com/asist\
+// /testbed/-/blob/master/MessageSpecs/Common_Header/common_header.json
 case class CommonHeader(
   timestamp: String = "not_set",
   message_type: String = "not_set", 
@@ -26,7 +26,8 @@ case class CommonHeader(
 )
 
 // Testbed specification:
-// https://gitlab.asist.aptima.com/asist/testbed/-/blob/master/MessageSpecs/Common_Message/common_message.json
+// https://gitlab.asist.aptima.com/asist\
+// /testbed/-/blob/master/MessageSpecs/Common_Message/common_message.json
 case class CommonMsg (
   experiment_id: String = "not_set",
   trial_id: String = "N/A",

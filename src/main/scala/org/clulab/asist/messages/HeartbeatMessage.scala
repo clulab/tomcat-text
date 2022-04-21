@@ -7,9 +7,10 @@ import ai.lum.common.ConfigFactory
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Heartbeat Message based on:
- *
- *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/AsistDataIngesterContainer/src/AsistDataIngester/Models/HeartbeatMessage.cs
+ *  Testbed specification:
+ *  https://gitlab.asist.aptima.com/asist\
+ *  /testbed/-/blob/develop/AsistDataIngesterContainer/src\
+ *  /AsistDataIngester/Models/HeartbeatMessage.cs
  *
  */
 
