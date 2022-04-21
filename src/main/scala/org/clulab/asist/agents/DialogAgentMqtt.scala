@@ -134,6 +134,7 @@ class DialogAgentMqtt(
       }
       else if(TrialMessage.isStop(trial)) { // Trial Stop
         heartbeatProducer.stop
+        doNextJob
       }
     case _ => 
     doNextJob
