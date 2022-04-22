@@ -47,6 +47,11 @@ object HeartbeatMessage {
     status = config.getString("Heartbeat.data.status")
   )
 
+  /** Build from nothing 
+   *  @return A new HeartbeatMessage based on default values
+   */
+  def apply(): HeartbeatMessage = HeartbeatMessage(header, msg, data)
+
   /** Build from a trial message
    *  @param trial A trial message
    *  @return A new HeartbeatMessage based on the trial message
