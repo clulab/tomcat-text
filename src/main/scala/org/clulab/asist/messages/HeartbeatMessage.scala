@@ -7,9 +7,10 @@ import ai.lum.common.ConfigFactory
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
- *  Heartbeat Message based on:
- *
- *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/AsistDataIngesterContainer/src/AsistDataIngester/Models/HeartbeatMessage.cs
+ *  Testbed specification:
+ *  https://gitlab.asist.aptima.com/asist\
+ *  /testbed/-/blob/develop/AsistDataIngesterContainer/src\
+ *  /AsistDataIngester/Models/HeartbeatMessage.cs
  *
  */
 
@@ -45,6 +46,11 @@ object HeartbeatMessage {
     active = config.getBoolean("Heartbeat.data.active"),
     status = config.getString("Heartbeat.data.status")
   )
+
+  /** Build from nothing 
+   *  @return A new HeartbeatMessage based on default values
+   */
+  def apply(): HeartbeatMessage = HeartbeatMessage(header, msg, data)
 
   /** Build from a trial message
    *  @param trial A trial message

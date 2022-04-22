@@ -35,9 +35,6 @@ class DialogAgentMqtt(
   // enqueue messages from the bus if they're coming in too fast.
   private val queue: Queue[BusMessage] = new Queue 
 
-  // Testbed heartbeat
-  private val heartbeatProducer = new HeartbeatProducer(this)
-
   private val source_type = "message_bus"
 
   // communication with Message Bus
@@ -56,6 +53,9 @@ class DialogAgentMqtt(
     ),
     this
   )
+
+  // Testbed heartbeat (this will start immediately)
+  private val heartbeatProducer = new HeartbeatProducer(this)
 
   /** Publish a list of bus messages
    * @param output A list of objects to be published to the Message Bus
@@ -128,12 +128,8 @@ class DialogAgentMqtt(
           topicPubVersionInfo,
           outputJson
         )
-        heartbeatProducer.start(trial)
+        heartbeatProducer.set_trial_info(trial)
         writeOutput(List(output))
-        doNextJob
-      }
-      else if(TrialMessage.isStop(trial)) { // Trial Stop
-        heartbeatProducer.stop
         doNextJob
       }
     case _ => 
