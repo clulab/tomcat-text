@@ -49,6 +49,7 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
    */
   def set_trial_info(trial: TrialMessage): Unit = {
     base = HeartbeatMessage(trial)
+    beat
   }
 
   // publish the heartbeat message 
