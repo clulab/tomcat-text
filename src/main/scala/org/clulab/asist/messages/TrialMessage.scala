@@ -23,6 +23,8 @@ object TrialMessage {
   // state flags
   private val trial_start: String = 
     config.getString("Trial.msg.sub_type.trial_start")
+  private val trial_stop: String = 
+    config.getString("Trial.msg.sub_type.trial_stop")
  
   // subscription filter
   private val header_message_type: String = 
@@ -41,6 +43,13 @@ object TrialMessage {
    */
   def isStart(trial: TrialMessage): Boolean = 
     (trial.msg.sub_type == trial_start)
+
+  /* test for trial stop
+   * @param trial A Trial message that may or may not be a trial stop
+   * @return true if the message is a Trial Stop
+   */
+  def isStop(trial: TrialMessage): Boolean = 
+    (trial.msg.sub_type == trial_stop)
 
   /* only messages meeting these criteria are processed
    * @param trial A Chat message that may or may not meet the criteria

@@ -132,6 +132,12 @@ class DialogAgentMqtt(
         writeOutput(List(output))
         doNextJob
       }
+      else if(TrialMessage.isStop(trial)) { // Trial Stop
+        // heartbeats lose the trial_id 
+        val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
+        heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
+        doNextJob
+      }
     case _ => 
     doNextJob
   }

@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>4.1.4</code></p>
-<p>Document generation timestamp (UTC): <code>2022-04-22 17:19:42.843430</code></p>
+<p>Document generation timestamp (UTC): <code>2022-04-22 20:49:12.572525</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -81,7 +81,7 @@
     - Action
       - ComplexAction
         - ChangePriority
-          - target (Victim|Person) ()
+          - target (Person|Victim) ()
           - [agent] (Entity) (?)
 
         - Continue
@@ -114,7 +114,7 @@
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Location|Rubble) ()
+          - target (Rubble|Location) ()
 
         - Close
           - [target] (DemPron|Infrastructure) (?)
@@ -137,7 +137,7 @@
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Item|PuzzleConcept|Victim|Person|EventLike) ()
+            - exists (PuzzleConcept|EventLike|Victim|Person|Item) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -223,7 +223,7 @@
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoom|ThreatRoomMarker|ThreatSign) ()
+                - threat (ThreatRoomMarker|ThreatRoom|ThreatSign) ()
                 - room (Room) ()
 
               - RoomClear
@@ -245,11 +245,11 @@
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Deictic|Location|Entity) ()
+            - target (Entity|Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Location|Entity) (?)
+            - [target] (Entity|Location) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -264,17 +264,17 @@
 
         - RescueInteractions
           - Save
-            - target (Victim|Person|Entity) ()
+            - target (Person|Entity|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
           - Stabilize
-            - target (Victim|Person) ()
+            - target (Person|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
           - WakeUp
-            - target (Victim|Person) ()
+            - target (Person|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -284,7 +284,7 @@
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (Entity|EventLike|Item) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
