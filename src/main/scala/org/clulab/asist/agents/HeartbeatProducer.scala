@@ -13,7 +13,7 @@ import scala.language.postfixOps
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal
  *
- * Publishes a Heartbeat to the message bus on a regular interval. 
+ * Publishes a Heartbeat to the message bus on a regular interval
  *
  * @param agent A DialogAgentMqtt connected to the Message Bus 
  */
@@ -30,14 +30,11 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
   private implicit val system: ActorSystem = ActorSystem("HeartbeatProducer")
   import system.dispatcher  // from system now in scope
 
-  // An optional instance of a HeartbeatMessage with all fields initialized 
-  // except the timestamps.  If defined, this gets used as a base for
-  // the creation of heartbeat messages.  Setting it to None will stop
-  // the publication of heartbeat messages
-  private var base: Option[HeartbeatMessage] = None
+  // The heartbeats are a copy of this HeartbeatMessage with 
+  // current timestamps
+  private var base: HeartbeatMessage = HeartbeatMessage()
 
-  // Start the beat on a fixed interval. The beat is always running,
-  // but the heartbeat message is only published if the base is defined.
+  // Start the beat on a fixed interval. 
   system.scheduler.scheduleWithFixedDelay(
     startSeconds seconds, 
     beatSeconds seconds
@@ -47,23 +44,17 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
     }
   }
 
-  /** Define the base to start publishing heartbeats
+  /** redefine the base heartbeat with information from each trial
    *@param trial The current Testbed trial
    */
-  def start(trial: TrialMessage): Unit = {
-    base = Some(HeartbeatMessage(trial))
+  def set_trial_info(trial: TrialMessage): Unit = {
+    base = HeartbeatMessage(trial)
   }
 
-  /** Undefine the base to stop publishing heartbeats */
-  def stop: Unit = {
-    base = None
-  }
-
-  // publish the heartbeat message if defined
-  private def beat: Unit = base.foreach {
-    hm: HeartbeatMessage =>
+  // publish the heartbeat message 
+  private def beat: Unit = {
       val currentHeartbeat = HeartbeatMessage(
-        hm,
+        base,
         Clock.systemUTC.instant.toString
       )
       val json = JsonUtils.writeJson(currentHeartbeat)
@@ -72,4 +63,5 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
 
   logger.info(s"Heartbeat publication topic: ${topic}")
   logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
+
 }
