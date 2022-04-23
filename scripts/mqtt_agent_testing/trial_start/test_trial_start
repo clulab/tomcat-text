@@ -21,7 +21,7 @@ received_heartbeat_json="heartbeat_received.json"
 received_version_info_json="version_info_received.json"
 echo ""
 echo ""
-echo "TESTING: Trial Start"
+echo "TESTING: Trial start"
 
 # delete prior generated files
 rm -f *received*.*
@@ -56,3 +56,5 @@ echo "Diffing expected and received heartbeat messages:"
 diff $expected_heartbeat_json $received_heartbeat_json
 echo "Diffing expected and received version info messages:"
 diff $expected_version_info_json $received_version_info_json
+
+exit 0
