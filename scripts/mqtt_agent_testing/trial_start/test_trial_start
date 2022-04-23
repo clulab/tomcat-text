@@ -36,8 +36,8 @@ mosquitto_version_info_pid="$!"
 
 ./elkless_replayer $publication_metadata > /dev/null
 
-# Wait a few seconds for a response
-sleep 2 
+# Wait for processing (trial responses are fast)
+sleep 1 
 
 # kill mosquittos
 kill $mosquitto_heartbeat_pid

@@ -31,7 +31,7 @@ mosquitto_pid="$!"
 ./elkless_replayer $publication_metadata > /dev/null
 
 # Wait a few seconds for a response
-sleep 2 
+sleep 3 
 
 # kill mosquitto
 kill $mosquitto_pid
