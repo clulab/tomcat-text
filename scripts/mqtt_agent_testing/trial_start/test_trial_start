@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+# Publish a trial start message and inspect the heartbeat and
+# version info messages produced by the MQTT Dialog Agent
+
+# published to message bus
+publication_metadata="Testathon_3_24_2022_trial_start.metadata"
+
+# pretty-format JSON that should resemble what is read from the message bus
+expected_heartbeat_json="heartbeat_expected.json"
+expected_version_info_json="version_info_expected.json"
+
+# compact JSON read from the Message Bus
+received_heartbeat_metadata="heartbeat_received.metadata"
+received_version_info_metadata="version_info_received.metadata"
+
+# pretty-format JSON converted from received_metadata
+received_heartbeat_json="heartbeat_received.json"
+received_version_info_json="version_info_received.json"
+echo ""
+echo ""
+echo "TESTING: Trial start"
+
+# delete prior generated files
+rm -f *received*.*
+
+# subscribe to the heartbeat topic:
+mosquitto_sub -t agent/uaz_dialog_agent/heartbeats > $received_heartbeat_metadata &
+mosquitto_heartbeat_pid="$!"
+
+# subscribe to the versioninfo topic:
+mosquitto_sub -t agent/tomcat_textAnalyzer/versioninfo > $received_version_info_metadata &
+mosquitto_version_info_pid="$!"
+
+./elkless_replayer $publication_metadata > /dev/null
+
+# Wait a few seconds for a response
+sleep 2 
+
+# kill mosquittos
+kill $mosquitto_heartbeat_pid
+kill $mosquitto_version_info_pid
+
+# pretty-print the last line of the received heartbeat file
+tail -1 $received_heartbeat_metadata | jq > $received_heartbeat_json
+
+# pretty-print the received version info file
+cat $received_version_info_metadata | jq > $received_version_info_json
+
+echo ""
+
+# Only the timestamps should differ
+echo "Diffing expected and received heartbeat messages:"
+diff $expected_heartbeat_json $received_heartbeat_json
+echo "Diffing expected and received version info messages:"
+diff $expected_version_info_json $received_version_info_json
+
+exit 0
