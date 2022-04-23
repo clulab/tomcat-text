@@ -79,27 +79,22 @@ object VersionInfo
         config.getString("DialogAgent.msg.sub_type")
       ),
       VersionInfoDataMessageChannel(
-        config.getString("VersionInfo.topic"),
-        config.getString("VersionInfo.header.message_type"),
-        config.getString("VersionInfo.msg.sub_type")
-      ),
-      VersionInfoDataMessageChannel(
         config.getString("Heartbeat.topic"),
         config.getString("Heartbeat.header.message_type"),
         config.getString("Heartbeat.msg.sub_type")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("RollcallResponse.topic"),
+        config.getString("RollcallResponse.header.message_type"),
+        config.getString("RollcallResponse.msg.sub_type")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("VersionInfo.topic"),
+        config.getString("VersionInfo.header.message_type"),
+        config.getString("VersionInfo.msg.sub_type")
       )
     ),
     subscribes = List(
-      VersionInfoDataMessageChannel(
-        config.getString("Trial.topic"),
-        config.getString("Trial.header.message_type"),
-        config.getString("Trial.msg.sub_type.trial_start")
-      ),
-      VersionInfoDataMessageChannel(
-        config.getString("Trial.topic"),
-        config.getString("Trial.header.message_type"),
-        config.getString("Trial.msg.sub_type.trial_stop")
-      ),
       VersionInfoDataMessageChannel(
         config.getString("Asr.topic"),
         config.getString("Asr.header.message_type"),
@@ -109,6 +104,21 @@ object VersionInfo
         config.getString("Chat.topic"),
         config.getString("Chat.header.message_type"),
         config.getString("Chat.msg.sub_type")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("RollcallRequest.topic"),
+        config.getString("RollcallRequest.header.message_type"),
+        config.getString("RollcallRequest.msg.sub_type")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("Trial.topic"),
+        config.getString("Trial.header.message_type"),
+        config.getString("Trial.msg.sub_type.trial_start")
+      ),
+      VersionInfoDataMessageChannel(
+        config.getString("Trial.topic"),
+        config.getString("Trial.header.message_type"),
+        config.getString("Trial.msg.sub_type.trial_stop")
       )
     )
   )
