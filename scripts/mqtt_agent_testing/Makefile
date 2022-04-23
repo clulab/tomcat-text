@@ -1,10 +1,12 @@
 # test message bus telemetry
 
-test:
-	make single_pass -s
-	make single_pass -s
+# Test everything twice so we know the Agent can survie multiple trials
+test: FORCE
+	make test_every_topic -s
+	make test_every_topic -s
 
-single_pass:
+# A complete tour of every subscribed topic tested
+test_every_topic: FORCE
 	make test_asr -s
 	make test_chat -s
 	make test_trial -s

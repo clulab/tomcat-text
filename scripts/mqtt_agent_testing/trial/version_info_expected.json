@@ -31,6 +31,11 @@
         "topic": "trial"
       },
       {
+        "message_type": "trial",
+        "sub_type": "stop",
+        "topic": "trial"
+      },
+      {
         "message_type": "observation",
         "sub_type": "asr:transcription",
         "topic": "agent/asr/final"
