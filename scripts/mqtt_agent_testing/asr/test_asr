@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+
+# Publish an ASR message and inspect MQTT Dialog Agent message
+
+# published to message bus
+publication_metadata="Testathon_3_24_2022_asr.metadata"
+
+# pretty-format JSON that should resemble what is read from the message bus
+expected_json="dialog_agent_message_expected.json"
+
+# compact JSON read from the Message Bus
+received_metadata="dialog_agent_message_received.metadata"
+
+# pretty-format JSON converted from received_metadata
+received_json="dialog_agent_message_received.json"
+
+echo ""
+echo ""
+echo "TESTING: ASR message"
+
+# delete prior generated files
+rm -f *received*.*
+
+# subscribe to the Dialog Agent topic:
+mosquitto_sub -t agent/dialog > $received_metadata &
+mosquitto_pid="$!"
+
+./elkless_replayer $publication_metadata > /dev/null
+
+# Wait a few seconds for a response
+sleep 2 
+
+# kill mosquitto
+kill $mosquitto_pid
+
+# pretty-print the last line of the temp file
+tail -1 $received_metadata | jq > $received_json
+
+echo ""
+
+# Only the timestamps should differ
+echo "Diffing expected and received files:"
+diff $expected_json $received_json
+
+exit 0
