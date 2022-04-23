@@ -1,7 +1,7 @@
 # test message bus telemetry
 
 test: FORCE
-	./test_dialog_agent
+	./test_asr
 
 
 # remove intermediate test result files
