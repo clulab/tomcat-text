@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+# test name
+test_name="heartbeat_trial_stop"
+
+# published to the Message Bus to trigger production of result
+publication_metadata="Testathon_3_24_2022_trial_stop.metadata"
+
+# subscription topic for result
+subscription_topic="agent/uaz_dialog_agent/heartbeats"
+
+# expected result filename
+expected_result_json="heartbeat_trial_stop_expected.json"
+
+
+call="./mqtt_test $test_name $publication_metadata $subscription_topic $expected_result_json"
+
+$call
+
+exit 0
