@@ -12,9 +12,9 @@ publication_metadata="Testathon_3_24_2022_chat.metadata"
 subscription_topic="agent/dialog"
 
 # expected result filename
-expected_result_json="dialog_agent_message_from_chat_expected.json"
+expected_json="dialog_agent_message_from_chat_expected.json"
 
-call="./mqtt_test $test_name $publication_metadata $subscription_topic $expected_result_json"
+call="./mqtt_test $test_name $publication_metadata $subscription_topic $expected_json"
 
 $call
 
