@@ -1,0 +1,19 @@
+{
+  "data": {
+    "active": true,
+    "state": "ok",
+    "status": "I am processing messages"
+  },
+  "header": {
+    "message_type": "status",
+    "timestamp": "2022-04-22T05:22:14.064Z",
+    "version": "0.6"
+  },
+  "msg": {
+    "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
+    "source": "uaz_dialog_agent",
+    "sub_type": "heartbeat",
+    "timestamp": "2022-04-22T05:22:14.064Z",
+    "version": "4.0.3"
+  }
+}

@@ -1,0 +1,56 @@
+
+                MQTT Dialog Agent testing
+
+
+type "make" to run the tests.
+
+
+This directory contains test scripts for each of the topics subscribed to
+on the Message Bus.  The test output is the diff of what is the Agent is 
+expected to produce for the given metadata input file, and what is actually
+received on the Message Bus.  
+
+There should be no differences except timestamps and possibly Agent version numbers
+
+
+
+PASSING TEST EXAMPLE:
+
+9c9
+<     "timestamp": "2022-04-22T05:22:14.064Z",
+---
+>     "timestamp": "2022-04-23T01:34:14.665Z",
+16,17c16,17
+<     "timestamp": "2022-04-22T05:22:14.064Z",
+<     "version": "4.0.3"
+---
+>     "timestamp": "2022-04-23T01:34:14.665Z",
+>     "version": "4.1.4"
+
+
+
+FAILING TEST EXAMPLE: 
+
+33a34,38
+>         "message_type": "trial",
+>         "sub_type": "stop",
+>         "topic": "trial"
+>       },
+>       {
+44c49
+<     "version": "4.0.3"
+---
+>     "version": "4.1.4"
+48c53
+<     "timestamp": "2022-04-22T20:07:30.260Z",
+---
+>     "timestamp": "2022-04-23T01:43:11.714Z",
+55c60
+<     "timestamp": "2022-04-22T20:07:30.260Z",
+---
+>     "timestamp": "2022-04-23T01:43:11.714Z",
+57c62
+<     "version": "4.0.3"
+---
+>     "version": "4.1.4"
+
