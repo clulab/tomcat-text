@@ -2,7 +2,7 @@
 # test message bus telemetry
 
 test: FORCE
-	./test_dialog_agent
+	./test_chat
 
 
 # remove intermediate test result files
