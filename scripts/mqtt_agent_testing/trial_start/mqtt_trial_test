@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+
+# INPUT:
+#
+#  test_name
+#   This can be set to any value, it identifies the test.
+#
+#  publication_metadata
+#   A file to be published on the Message bus using the elkless_replayer
+#   This can contain 1-n messages for publication.
+#
+#  expected_json
+#   This file contains what the message received on the subscription topic
+#   is expected to be. The file is expected to be in pretty-formatted JSON 
+#   to allow line-by-line comparison of values.
+
+
+# INTERPRETING RESULTS:  
+# 
+#   The expected_json file is diffed with data read from the message bus
+#   on the subscription topic.  A passing test is indicated by no differences
+#   other than the timestamps.  
+#
+
+test_name=$1
+publication_metadata=$2
+subscription_topic=$3
+expected_json=$4
+
+if [[ $test_name == "" ]]; then
+    echo "USAGE:"
+    echo "$0 test_name metadata_publication_file subscription_topic expected_json_file"
+    echo "please include the test name"
+    exit 1
+fi
+if [[ $publication_metadata == "" ]]; then
+    echo "USAGE:"
+    echo "$0 test_name metadata_publication_file subscription_topic expected_json_file"
+    echo "please include the filename of metadata to publish"
+    exit 1
+fi
+if [[ $expected_json == "" ]]; then
+    echo "USAGE:"
+    echo "$0 test_name metadata_publication_file subscription_topic expected_json_file"
+    echo "please include the expected JSON filename"
+    exit 1
+fi
+
+
+received="_received"
+
+# compact JSON read from the Message Bus
+received_metadata=$test_name$received.metadata
+
+# multi-line JSON converted from received_metadata
+received_json=$test_name$received.json
+echo ""
+echo ""
+echo "TESTING: $test_name"
+
+# delete prior generated files
+rm -f $received_metadata
+rm -f $received_json
+
+# subscribe to the versioninfo topic:
+mosquitto_sub -t agent/uaz_dialog_agent/heartbeats \
+  -t agent/tomcat_textAnalyzer/versioninfo > $received_metadata &
+mosquitto_pid="$!"
+
+./elkless_replayer $publication_metadata > /dev/null
+
+# Wait a few seconds for a response
+sleep 2 
+
+# kill mosquitto
+kill $mosquitto_pid
+
+sleep 1
+
+# pretty-print the last line of the temp file
+tail -1 $received_metadata | jq > $received_json
+
+echo ""
+
+# Only the timestamps should differ
+echo "Diffing expected and received files:"
+diff $expected_json $received_json
