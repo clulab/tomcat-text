@@ -104,82 +104,56 @@ class DialogAgentMqtt(
   }
 
   /** process the next message in the queue*/
-  def processNextMessage(): Unit = {
-    queue.dequeue  // delete the queue head, we just finished it
-    if(!queue.isEmpty) processMessage(queue.head)  
+  def processNextMessage(): Unit = if(!queue.isEmpty) {
+    processMessage(queue.head)  
+    queue.dequeue 
+    processNextMessage
   }
 
   private def processMessage(
     message: BusMessage
   ): Unit = message.topic match {
-    case `topicSubAsr` => processAsrMessage(message)
-    case `topicSubChat` => processChatMessage(message)
-    case `topicSubRollcallRequest` => processRollcallRequestMessage(message)
-    case `topicSubTrial` => processTrialMessage(message)
-  }
-
-  /** process a UAZ ASR message
-   * @param input: Incoming traffic from Message Bus
-   */
-  private def processAsrMessage(input: BusMessage): Unit = {
-    AsrMessage(input.text).foreach(asr => {
-      publish (
-        topicPubDialogAgent, 
-        JsonUtils.writeJson(
-          DialogAgentMessage(source_type, input.topic, asr, this)
+    case `topicSubAsr` => 
+      AsrMessage(message.text).foreach(asr => {
+        publish (
+          topicPubDialogAgent, 
+          JsonUtils.writeJson(
+            DialogAgentMessage(source_type, message.topic, asr, this)
+          )
         )
-      )
-    })
-    processNextMessage
-  }
-
-  /** process a Minecraft Chat message
-   * @param input: Incoming traffic from Message Bus
-   */
-  private def processChatMessage(input: BusMessage): Unit = {
-    ChatMessage(input.text).foreach(chat => {
-      publish (
-        topicPubDialogAgent, 
-        JsonUtils.writeJson(
-          DialogAgentMessage(source_type, input.topic, chat, this)
+      })
+    case `topicSubChat` => 
+      ChatMessage(message.text).foreach(chat => {
+        publish (
+          topicPubDialogAgent, 
+          JsonUtils.writeJson(
+            DialogAgentMessage(source_type, message.topic, chat, this)
+          )
         )
-      )
-    })
-    processNextMessage
-  }
-
-  /** process a Rollcall Request message
-   * @param input: Incoming traffic from Message Bus
-   */
-  private def processRollcallRequestMessage(input: BusMessage): Unit = {
-    RollcallRequestMessage(input.text).foreach(request => {
-      publish(
-        topicPubRollcallResponse,
-        JsonUtils.writeJson(RollcallResponseMessage(uptimeMillis, request))
-      )
-    })
-    processNextMessage
-  }
-
-  /** send VersionInfo if we receive a TrialMessage with subtype "start", 
-   * @param input: Incoming traffic from Message Bus
-   */
-  private def processTrialMessage(input: BusMessage): Unit = {
-    TrialMessage(input.text).foreach(trial => {
-      if(TrialMessage.isStart(trial)) { // Trial Start
-        heartbeatProducer.set_trial_info(trial)
+      })
+    case `topicSubRollcallRequest` => 
+      RollcallRequestMessage(message.text).foreach(request => {
         publish(
-          topicPubVersionInfo, 
-          JsonUtils.writeJson(VersionInfo(trial))
+          topicPubRollcallResponse,
+          JsonUtils.writeJson(RollcallResponseMessage(uptimeMillis, request))
         )
-      }
-      else if(TrialMessage.isStop(trial)) { // Trial Stop
-        // heartbeats lose the trial_id 
-        val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
-        heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
-      }
-    })
-    processNextMessage
+      })
+    case `topicSubTrial` => 
+      TrialMessage(message.text).foreach(trial => {
+        if(TrialMessage.isStart(trial)) { // Trial Start
+          heartbeatProducer.set_trial_info(trial)
+          publish(
+            topicPubVersionInfo, 
+            JsonUtils.writeJson(VersionInfo(trial))
+          )
+        }
+        else if(TrialMessage.isStop(trial)) { // Trial Stop
+          // heartbeats lose the trial_id 
+          val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
+          heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
+        }
+      })
+    case _ =>
   }
 
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
