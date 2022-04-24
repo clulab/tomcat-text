@@ -1,8 +1,9 @@
 package org.clulab.asist.messages
 
+import ai.lum.common.ConfigFactory
 import buildinfo.BuildInfo
 import com.typesafe.config.Config
-import ai.lum.common.ConfigFactory
+import java.time.Clock
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal
@@ -12,11 +13,12 @@ import ai.lum.common.ConfigFactory
  *
  */
 
-// part of the RollcallResponseMessage class
+// part of the RollcallResponseMessage class.  
+// TODO find this spec on the testbed
 case class RollcallResponseMessageData(
-  state: String = "N/A",
-  active: Boolean = false,
+  version: String = "N/A",  
   status: String = "N/A",
+  uptime: Double = 0.0,
   rollcall_id: String = "not_set"
 )
 
@@ -41,7 +43,8 @@ object RollcallResponseMessage {
     version = BuildInfo.version,
   )
   val data: RollcallResponseMessageData = RollcallResponseMessageData(
-    status = config.getString("RollcallResponse.data.status")
+    status = config.getString("RollcallResponse.data.status"),
+    version = BuildInfo.version,
   )
 
   /** Build from RollcallRequest
@@ -50,14 +53,22 @@ object RollcallResponseMessage {
    */
   def apply(
     request: RollcallRequestMessage
-  ): RollcallResponseMessage = RollcallResponseMessage(
-    header.copy(
-      version = request.header.version
-    ),
-    msg.copy(
-      trial_id = request.msg.trial_id,
-      experiment_id = request.msg.experiment_id
-    ),
-    data.copy()
-  )
+  ): RollcallResponseMessage = {
+    val timestamp = Clock.systemUTC.instant.toString
+    RollcallResponseMessage(
+      header.copy(
+        version = request.header.version,
+        timestamp = timestamp
+      ),
+      msg.copy(
+        trial_id = request.msg.trial_id,
+        experiment_id = request.msg.experiment_id,
+        timestamp = timestamp
+      ),
+      data.copy(
+        rollcall_id = request.data.rollcall_id,
+        status = "up"
+      )
+    )
+  }
 }
