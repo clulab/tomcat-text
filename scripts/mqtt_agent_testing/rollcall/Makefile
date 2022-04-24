@@ -1,6 +1,6 @@
 # test message bus telemetry. 
 test: FORCE
-	./test_trial_stop
+	./test_rollcall
 
 
 # remove intermediate test result files
