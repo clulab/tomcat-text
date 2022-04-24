@@ -3,7 +3,6 @@ package org.clulab.asist.agents
 import akka.actor.ActorSystem
 import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
-import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 
@@ -101,16 +100,18 @@ class DialogAgentMqtt(
 
     // If the queue was not busy, we must start the job directly
     // because it will be deleted when it finishes
-    if(!busy) doJob(job)
+    if(!busy) processMessage(job)
   }
 
   /** process the next message in the queue*/
-  def doNextJob(): Unit = {
+  def processNextMessage(): Unit = {
     queue.dequeue  // delete the queue head, we just finished it
-    if(!queue.isEmpty) doJob(queue.head)  
+    if(!queue.isEmpty) processMessage(queue.head)  
   }
 
-  private def doJob(message: BusMessage): Unit = message.topic match {
+  private def processMessage(
+    message: BusMessage
+  ): Unit = message.topic match {
     case `topicSubAsr` => processAsrMessage(message)
     case `topicSubChat` => processChatMessage(message)
     case `topicSubRollcallRequest` => processRollcallRequestMessage(message)
@@ -120,74 +121,65 @@ class DialogAgentMqtt(
   /** process a UAZ ASR message
    * @param input: Incoming traffic from Message Bus
    */
-  private def processAsrMessage(input: BusMessage): Unit = 
-    publishDialogAgentMessage(
-      input,
-      AsrMessage(input.text)
-        .map(DialogAgentMessage(source_type, input.topic, _, this))
-    )
+  private def processAsrMessage(input: BusMessage): Unit = {
+    AsrMessage(input.text).foreach(asr => {
+      publish (
+        topicPubDialogAgent, 
+        JsonUtils.writeJson(
+          DialogAgentMessage(source_type, input.topic, asr, this)
+        )
+      )
+    })
+    processNextMessage
+  }
 
   /** process a Minecraft Chat message
    * @param input: Incoming traffic from Message Bus
    */
-  private def processChatMessage(input: BusMessage): Unit = 
-    publishDialogAgentMessage(
-      input,
-      ChatMessage(input.text)
-        .map(DialogAgentMessage(source_type, input.topic, _, this))
-    )
+  private def processChatMessage(input: BusMessage): Unit = {
+    ChatMessage(input.text).foreach(chat => {
+      publish (
+        topicPubDialogAgent, 
+        JsonUtils.writeJson(
+          DialogAgentMessage(source_type, input.topic, chat, this)
+        )
+      )
+    })
+    processNextMessage
+  }
 
   /** process a Rollcall Request message
    * @param input: Incoming traffic from Message Bus
    */
-  private def processRollcallRequestMessage(input: BusMessage): Unit = 
+  private def processRollcallRequestMessage(input: BusMessage): Unit = {
     RollcallRequestMessage(input.text).foreach(request => {
-      val response = RollcallResponseMessage(request)
       publish(
         topicPubRollcallResponse,
-        JsonUtils.writeJson(response)
+        JsonUtils.writeJson(RollcallResponseMessage(request))
       )
     })
+    processNextMessage
+  }
 
   /** send VersionInfo if we receive a TrialMessage with subtype "start", 
    * @param input: Incoming traffic from Message Bus
    */
-  private def processTrialMessage(
-    input: BusMessage
-  ): Unit = TrialMessage(input.text) match {
-    case Some(trial) => 
+  private def processTrialMessage(input: BusMessage): Unit = {
+    TrialMessage(input.text).foreach(trial => {
       if(TrialMessage.isStart(trial)) { // Trial Start
         heartbeatProducer.set_trial_info(trial)
         publish(
           topicPubVersionInfo, 
           JsonUtils.writeJson(VersionInfo(trial))
         )
-        doNextJob
       }
       else if(TrialMessage.isStop(trial)) { // Trial Stop
         // heartbeats lose the trial_id 
         val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
         heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
-        doNextJob
       }
-    case _ => 
-    doNextJob
-  }
-
-  /** post-processing steps 
-   * @param topic: where the originating message was subscribed
-   * @param message: A completed Dialog Agent Message
-   */
-  private def publishDialogAgentMessage(
-    input: BusMessage,
-    messageMaybe: Option[DialogAgentMessage]
-  ): Unit = {
-    messageMaybe match {
-      case Some(message) =>
-        publish(topicPubDialogAgent, JsonUtils.writeJson(message))
-      case None => // no message
-    }
-    doNextJob
+    })
+    processNextMessage
   }
 
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
