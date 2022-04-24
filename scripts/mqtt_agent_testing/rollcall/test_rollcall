@@ -3,29 +3,30 @@
 # Author: Joseph Astier
 
 
-# Publish a Minecraft Chat message and inspect MQTT Dialog Agent message
+# Publish a rollcall request message and inspect the rollcall response
 
 # published to message bus
-publication_metadata="Testathon_3_24_2022_chat.metadata"
+publication_metadata="synthetic_rollcall_request.metadata"
 
 # pretty-format JSON that should resemble what is read from the message bus
-expected_json="dialog_agent_message_expected.json"
+expected_json="rollcall_response_expected.json"
 
 # compact JSON read from the Message Bus
-received_metadata="dialog_agent_message_received.metadata"
+received_metadata="rollcall_response_received.metadata"
 
 # pretty-format JSON converted from received_metadata
-received_json="dialog_agent_message_received.json"
+received_json="rollcall_response_received.json"
 
 echo ""
 echo ""
-echo "TESTING: Minecraft Chat message"
+echo "TESTING: Rollcall Response"
+echo "Note: uptime will vary"
 
 # delete prior generated files
 rm -f *received*.*
 
-# subscribe to the Dialog Agent topic:
-mosquitto_sub -t agent/dialog > $received_metadata &
+# subscribe to the rollcall response topic:
+mosquitto_sub -t agent/control/rollcall/response > $received_metadata &
 mosquitto_pid="$!"
 
 ./elkless_replayer $publication_metadata > /dev/null
@@ -34,7 +35,7 @@ echo ""
 echo "$publication_metadata published to message bus"
 
 # Wait for message bus
-echo -n "waiting for Dialog Agent Message"
+echo -n "waiting for Dialog Agent response"
 for i in {1..10}
 do
     if [ -s $received_metadata ]
@@ -58,7 +59,7 @@ if [ -s $received_metadata ]
         echo "Diffing expected and received messages:"
         diff $expected_json $received_json
     else
-        echo "No Dialog Agent Message was received."
+        echo "No response from Dialog Agent."
 fi
 
 exit 0

@@ -18,9 +18,9 @@ import scala.language.postfixOps
  * @param agent A DialogAgentMqtt connected to the Message Bus 
  */
 
-class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
+class HeartbeatProducer(mqttAgent: DialogAgentMqtt) extends LazyLogging {
 
-  private val config: Config = agent.config
+  private val config: Config = mqttAgent.config
   private val topic: String = config.getString("Heartbeat.topic")
   private val startSeconds: Long = 0
   private val beatSeconds: Long = config.getInt("Heartbeat.beat_seconds")
@@ -59,10 +59,8 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
         Clock.systemUTC.instant.toString
       )
       val json = JsonUtils.writeJson(currentHeartbeat)
-      agent.writeOutput(topic, json)
+      mqttAgent.publish(topic, json)
   }
 
-  logger.info(s"Heartbeat publication topic: ${topic}")
   logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
-
 }

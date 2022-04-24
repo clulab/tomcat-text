@@ -36,25 +36,50 @@ mosquitto_version_info_pid="$!"
 
 ./elkless_replayer $publication_metadata > /dev/null
 
-# Wait a few seconds for a response
-sleep 2 
+echo ""
+echo "$publication_metadata published to message bus"
+
+
+# Wait for message bus
+echo -n "waiting for Heartbeat and Version Info Messages..."
+for i in {1..10}
+do
+    if [ -s $received_heartbeat_metadata ] && [ -s $received_version_info_metadata ]
+        then
+            break
+        else
+            echo -n "."
+    fi
+    sleep 1
+done
+echo ""
 
 # kill mosquittos
 kill $mosquitto_heartbeat_pid
 kill $mosquitto_version_info_pid
 
-# pretty-print the last line of the received heartbeat file
-tail -1 $received_heartbeat_metadata | jq > $received_heartbeat_json
+# Check heartbeat
+if [ -s $received_heartbeat_metadata ]
+    then
+        # pretty-print the last line of the temp file
+        tail -1 $received_heartbeat_metadata | jq > $received_heartbeat_json
+        # Only the timestamps should differ
+        echo "Diffing expected and received Heartbeat messages:"
+        diff $expected_heartbeat_json $received_heartbeat_json
+    else
+        echo "No Heartbeat Message was received"
+fi
 
-# pretty-print the received version info file
-cat $received_version_info_metadata | jq > $received_version_info_json
-
-echo ""
-
-# Only the timestamps should differ
-echo "Diffing expected and received heartbeat messages:"
-diff $expected_heartbeat_json $received_heartbeat_json
-echo "Diffing expected and received version info messages:"
-diff $expected_version_info_json $received_version_info_json
+# Check version info
+if [ -s $received_version_info_metadata ]
+    then
+        # pretty-print the last line of the temp file
+        tail -1 $received_version_info_metadata | jq > $received_version_info_json
+        # Only the timestamps should differ
+        echo "Diffing expected and received Version Info Messages:"
+        diff $expected_version_info_json $received_version_info_json
+    else
+        echo "No Version Info Message was received"
+fi
 
 exit 0
