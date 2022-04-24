@@ -1,6 +1,4 @@
 {
-  "@timestamp": "2022-03-24T19:20:59.689Z",
-  "@version": "1",
   "data": {
     "rollcall_id": "6a845119-00d4-41ee-ad19-8e6603fe4318",
     "status": "up",
@@ -12,14 +10,12 @@
     "timestamp": "2022-03-24T19:20:59.678170Z",
     "version": "0.6"
   },
-  "host": "134669f60646",
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
     "source": "uaz_dialog_agent",
     "sub_type": "rollcall:response",
     "timestamp": "2022-03-24T19:20:59.678170Z",
-    "trial_id": "0a11991f-fae4-4750-8ac5-af51d40273e3",
+    "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",
     "version": "4.1.5"
-  },
-  "topic": "agent/control/rollcall/response"
+  }
 }
