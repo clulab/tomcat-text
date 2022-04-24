@@ -62,7 +62,5 @@ class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
       agent.writeOutput(topic, json)
   }
 
-  logger.info(s"Heartbeat publication topic: ${topic}")
   logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
-
 }
