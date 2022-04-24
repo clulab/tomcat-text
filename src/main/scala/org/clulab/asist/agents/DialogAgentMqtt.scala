@@ -42,15 +42,17 @@ class DialogAgentMqtt(
     host,
     port,
     subscriptions = List(
-      topicSubChat,
       topicSubAsr,
+      topicSubChat,
+      topicSubRollcallRequest,
       topicSubTrial
-    ),
+    ).sorted,
     publications = List(
       topicPubDialogAgent,
-      topicPubVersionInfo,
-      topicPubHeartbeat
-    ),
+      topicPubHeartbeat,
+      topicPubRollcallResponse,
+      topicPubVersionInfo
+    ).sorted,
     this
   )
 
@@ -60,7 +62,7 @@ class DialogAgentMqtt(
   /** Publish a list of bus messages
    * @param output A list of objects to be published to the Message Bus
    */
-  def writeOutput(
+  def publish(
     output: List[BusMessage]
   ): Unit = output match {
     case head::tail =>
@@ -68,7 +70,7 @@ class DialogAgentMqtt(
         head.topic, 
         JsonUtils.noNulls(head.text) // do not publish nulls
       )
-      writeOutput(tail)
+      publish(tail)
     case _ => 
   }
 
@@ -76,8 +78,8 @@ class DialogAgentMqtt(
    * @param topic:  The message bus topic on which to publish the message
    * @param json:  A JSON message structure
    */
-  def writeOutput (topic: String, json: String): Unit = 
-    writeOutput(List(BusMessage(topic, json)))
+  def publish (topic: String, json: String): Unit = 
+    publish(List(BusMessage(topic, json)))
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -109,37 +111,10 @@ class DialogAgentMqtt(
   }
 
   private def doJob(message: BusMessage): Unit = message.topic match {
-    case `topicSubTrial` => processTrialMessage(message)
-    case `topicSubChat` => processChatMessage(message)
     case `topicSubAsr` => processAsrMessage(message)
-  }
-
-  /** send VersionInfo if we receive a TrialMessage with subtype "start", 
-   * @param input: Incoming traffic from Message Bus
-   */
-  private def processTrialMessage(
-    input: BusMessage
-  ): Unit = TrialMessage(input.text) match {
-    case Some(trial) => 
-      if(TrialMessage.isStart(trial)) { // Trial Start
-        val versionInfo: VersionInfo = VersionInfo(trial)
-        val outputJson: String = JsonUtils.writeJson(versionInfo)
-        val output: BusMessage = BusMessage(
-          topicPubVersionInfo,
-          outputJson
-        )
-        heartbeatProducer.set_trial_info(trial)
-        writeOutput(List(output))
-        doNextJob
-      }
-      else if(TrialMessage.isStop(trial)) { // Trial Stop
-        // heartbeats lose the trial_id 
-        val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
-        heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
-        doNextJob
-      }
-    case _ => 
-    doNextJob
+    case `topicSubChat` => processChatMessage(message)
+    case `topicSubRollcallRequest` => processRollcallRequestMessage(message)
+    case `topicSubTrial` => processTrialMessage(message)
   }
 
   /** process a UAZ ASR message
@@ -162,6 +137,43 @@ class DialogAgentMqtt(
         .map(DialogAgentMessage(source_type, input.topic, _, this))
     )
 
+  /** process a Rollcall Request message
+   * @param input: Incoming traffic from Message Bus
+   */
+  private def processRollcallRequestMessage(input: BusMessage): Unit = 
+    RollcallRequestMessage(input.text).foreach(request => {
+      val response = RollcallResponseMessage(request)
+      publish(
+        topicPubRollcallResponse,
+        JsonUtils.writeJson(response)
+      )
+    })
+
+  /** send VersionInfo if we receive a TrialMessage with subtype "start", 
+   * @param input: Incoming traffic from Message Bus
+   */
+  private def processTrialMessage(
+    input: BusMessage
+  ): Unit = TrialMessage(input.text) match {
+    case Some(trial) => 
+      if(TrialMessage.isStart(trial)) { // Trial Start
+        heartbeatProducer.set_trial_info(trial)
+        publish(
+          topicPubVersionInfo, 
+          JsonUtils.writeJson(VersionInfo(trial))
+        )
+        doNextJob
+      }
+      else if(TrialMessage.isStop(trial)) { // Trial Stop
+        // heartbeats lose the trial_id 
+        val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
+        heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
+        doNextJob
+      }
+    case _ => 
+    doNextJob
+  }
+
   /** post-processing steps 
    * @param topic: where the originating message was subscribed
    * @param message: A completed Dialog Agent Message
@@ -172,7 +184,7 @@ class DialogAgentMqtt(
   ): Unit = {
     messageMaybe match {
       case Some(message) =>
-        writeOutput(topicPubDialogAgent, JsonUtils.writeJson(message))
+        publish(topicPubDialogAgent, JsonUtils.writeJson(message))
       case None => // no message
     }
     doNextJob
