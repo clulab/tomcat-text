@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `4.1.5`
 
-Document generation timestamp (UTC): `2022-04-23 21:10:26.728770`
+Document generation timestamp (UTC): `2022-04-24 05:41:22.177313`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -136,7 +136,7 @@ Extractions
 
       - SimpleAction
         - Block
-          - [source] (Obstacle|Concept) (?)
+          - [source] (Concept|Obstacle) (?)
           - [target] (Concept) (?)
 
         - Clear
@@ -164,7 +164,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Victim|Item|EventLike|Person|PuzzleConcept) ()
+            - exists (Victim|EventLike|Item|PuzzleConcept|Person) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -250,7 +250,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatSign|ThreatRoom|ThreatRoomMarker) ()
+                - threat (ThreatRoomMarker|ThreatRoom|ThreatSign) ()
                 - room (Room) ()
 
               - RoomClear
@@ -311,7 +311,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (EventLike|Entity|Item) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
