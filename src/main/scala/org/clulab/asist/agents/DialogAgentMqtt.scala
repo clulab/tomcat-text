@@ -155,7 +155,7 @@ class DialogAgentMqtt(
     RollcallRequestMessage(input.text).foreach(request => {
       publish(
         topicPubRollcallResponse,
-        JsonUtils.writeJson(RollcallResponseMessage(request))
+        JsonUtils.writeJson(RollcallResponseMessage(uptimeMillis, request))
       )
     })
     processNextMessage

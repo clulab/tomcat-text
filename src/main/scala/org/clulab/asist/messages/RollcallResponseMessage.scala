@@ -18,7 +18,7 @@ import java.time.Clock
 case class RollcallResponseMessageData(
   version: String = "N/A",  
   status: String = "N/A",
-  uptime: Double = 0.0,
+  uptime: Double = 0.0,   // currently reported in seconds
   rollcall_id: String = "not_set"
 )
 
@@ -52,6 +52,7 @@ object RollcallResponseMessage {
    *  @return A new RollcallResponseMessage based on the request message
    */
   def apply(
+    uptimeMillis: Double,
     request: RollcallRequestMessage
   ): RollcallResponseMessage = {
     val timestamp = Clock.systemUTC.instant.toString
@@ -67,7 +68,8 @@ object RollcallResponseMessage {
       ),
       data.copy(
         rollcall_id = request.data.rollcall_id,
-        status = "up"
+        status = "up",
+        uptime = uptimeMillis/1000.0
       )
     )
   }
