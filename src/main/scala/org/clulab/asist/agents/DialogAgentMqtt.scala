@@ -89,11 +89,10 @@ class DialogAgentMqtt(
     text: String 
   ): Unit = {
 
-    // if the queue is empty, there is no aynchronous job in
-    // progress and it is safe to start a new one.
-    val busy: Boolean = !queue.isEmpty
-    
     val job: BusMessage = BusMessage(topic, text)
+
+    // An empty queue indicates no asynchonous job in process
+    val busy: Boolean = !queue.isEmpty
 
     // Add message to the processing queue
     queue.enqueue(job)
@@ -104,56 +103,60 @@ class DialogAgentMqtt(
   }
 
   /** process the next message in the queue*/
-  def processNextMessage(): Unit = if(!queue.isEmpty) {
-    processMessage(queue.head)  
-    queue.dequeue 
-    processNextMessage
+  def processNextMessage(): Unit = {
+    queue.dequeue
+    if(!queue.isEmpty) {
+      processMessage(queue.head)  
+    }
   }
 
   private def processMessage(
     message: BusMessage
-  ): Unit = message.topic match {
-    case `topicSubAsr` => 
-      AsrMessage(message.text).foreach(asr => {
-        publish (
-          topicPubDialogAgent, 
-          JsonUtils.writeJson(
-            DialogAgentMessage(source_type, message.topic, asr, this)
+  ): Unit = {
+    message.topic match {
+      case `topicSubAsr` => 
+        AsrMessage(message.text).foreach(asr => {
+          publish (
+            topicPubDialogAgent, 
+            JsonUtils.writeJson(
+              DialogAgentMessage(source_type, message.topic, asr, this)
+            )
           )
-        )
-      })
-    case `topicSubChat` => 
-      ChatMessage(message.text).foreach(chat => {
-        publish (
-          topicPubDialogAgent, 
-          JsonUtils.writeJson(
-            DialogAgentMessage(source_type, message.topic, chat, this)
+        })
+      case `topicSubChat` => 
+        ChatMessage(message.text).foreach(chat => {
+          publish (
+            topicPubDialogAgent, 
+            JsonUtils.writeJson(
+              DialogAgentMessage(source_type, message.topic, chat, this)
+            )
           )
-        )
-      })
-    case `topicSubRollcallRequest` => 
-      RollcallRequestMessage(message.text).foreach(request => {
-        publish(
-          topicPubRollcallResponse,
-          JsonUtils.writeJson(RollcallResponseMessage(uptimeMillis, request))
-        )
-      })
-    case `topicSubTrial` => 
-      TrialMessage(message.text).foreach(trial => {
-        if(TrialMessage.isStart(trial)) { // Trial Start
-          heartbeatProducer.set_trial_info(trial)
+        })
+      case `topicSubRollcallRequest` => 
+        RollcallRequestMessage(message.text).foreach(request => {
           publish(
-            topicPubVersionInfo, 
-            JsonUtils.writeJson(VersionInfo(trial))
+            topicPubRollcallResponse,
+            JsonUtils.writeJson(RollcallResponseMessage(uptimeMillis, request))
           )
-        }
-        else if(TrialMessage.isStop(trial)) { // Trial Stop
-          // heartbeats lose the trial_id 
-          val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
-          heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
-        }
-      })
-    case _ =>
+        })
+      case `topicSubTrial` => 
+        TrialMessage(message.text).foreach(trial => {
+          if(TrialMessage.isStart(trial)) { // Trial Start
+            heartbeatProducer.set_trial_info(trial)
+            publish(
+              topicPubVersionInfo, 
+              JsonUtils.writeJson(VersionInfo(trial))
+            )
+          }
+          else if(TrialMessage.isStop(trial)) { // Trial Stop
+            // heartbeats lose the trial_id 
+            val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
+            heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
+          }
+        })
+      case _ => logger.error("Unknown topic read: " + message.topic)
+    }
+    processNextMessage
   }
 
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
