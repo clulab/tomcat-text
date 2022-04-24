@@ -10,8 +10,7 @@ on the Message Bus.  The test output is the diff of what is the Agent is
 expected to produce for the given metadata input file, and what is actually
 received on the Message Bus.  
 
-There should be no differences except timestamps and possibly Agent version numbers
-
+There should be no differences except timestamps unless otherwise noted.
 
 
 PASSING TEST EXAMPLE:
@@ -22,10 +21,8 @@ PASSING TEST EXAMPLE:
 >     "timestamp": "2022-04-23T01:34:14.665Z",
 16,17c16,17
 <     "timestamp": "2022-04-22T05:22:14.064Z",
-<     "version": "4.0.3"
 ---
 >     "timestamp": "2022-04-23T01:34:14.665Z",
->     "version": "4.1.4"
 
 
 
