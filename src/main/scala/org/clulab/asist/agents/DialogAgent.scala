@@ -26,12 +26,15 @@ class DialogAgent (
   val config: Config = ConfigFactory.load()
 
   // Message Bus communication
-  val topicSubChat = config.getString("Chat.topic")
   val topicSubAsr = config.getString("Asr.topic")
+  val topicSubChat = config.getString("Chat.topic")
+  val topicSubRollcallRequest = config.getString("RollcallRequest.topic")
   val topicSubTrial = config.getString("Trial.topic")
+
   val topicPubDialogAgent = config.getString("DialogAgent.topic")
-  val topicPubVersionInfo = config.getString("VersionInfo.topic")
   val topicPubHeartbeat = config.getString("Heartbeat.topic")
+  val topicPubRollcallResponse = config.getString("RollcallResponse.topic")
+  val topicPubVersionInfo = config.getString("VersionInfo.topic")
 
   // Run the rule engine to get its lazy init out of the way
   logger.info("Initializing Extractor (this may take a few seconds) ...")
