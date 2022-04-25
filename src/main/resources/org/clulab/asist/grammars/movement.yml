@@ -48,7 +48,7 @@ rules:
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
-      trigger = [lemma=/(?i)${ moveto_triggers }/] (?! ([]? away) | (to [tag=/^VB/]))
+      trigger = (?<! there we) [lemma=/(?i)${ moveto_triggers }/] (?! ([]? away) | (to [tag=/^VB/]))
       target: Deictic = >/nmod_(through|to|towards)/ | >advmod
       agent: Entity? = >/${agents}/
 
