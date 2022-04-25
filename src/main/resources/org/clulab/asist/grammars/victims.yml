@@ -24,7 +24,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<=a|an|the|some) [word=/(?i)critical/] (?! [word=marker])
+      (?<=a|an|the|some) [word=/(?i)critical/] (?! [word=marker]| [word=/(?i)^zone/])
 
   - name: critical_injured_victim
     priority: ${ rulepriority }
