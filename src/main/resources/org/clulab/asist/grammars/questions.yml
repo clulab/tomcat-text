@@ -14,7 +14,8 @@ rules:
         >/nsubj|dobj|nmod/
         >dep |
         <advmod [lemma=be]
-        <cop
+        <cop |
+        <advmod >nsubj?
       location: Location? = >/${positional_preps}/
 # the second entity version is there so we can capture cases such as "where are you at green?" and extract green as the entity
 
