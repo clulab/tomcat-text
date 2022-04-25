@@ -1,10 +1,12 @@
 package org.clulab.asist.agents
 
+import ai.lum.common.ConfigFactory
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
-import org.clulab.asist.messages._
+import org.clulab.asist.messages.{HeartbeatMessage, TrialMessage}
+import org.clulab.utils.MessageBusClient
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
@@ -15,12 +17,12 @@ import scala.language.postfixOps
  *
  * Publishes a Heartbeat to the message bus on a regular interval
  *
- * @param agent A DialogAgentMqtt connected to the Message Bus 
+ * @param bus A connection to the Message Bus
  */
 
-class HeartbeatProducer(mqttAgent: DialogAgentMqtt) extends LazyLogging {
+class HeartbeatProducer(bus: MessageBusClient) extends LazyLogging {
 
-  private val config: Config = mqttAgent.config
+  private val config: Config = ConfigFactory.load()
   private val topic: String = config.getString("Heartbeat.topic")
   private val startSeconds: Long = 0
   private val beatSeconds: Long = config.getInt("Heartbeat.beat_seconds")
@@ -53,14 +55,15 @@ class HeartbeatProducer(mqttAgent: DialogAgentMqtt) extends LazyLogging {
   }
 
   // publish the heartbeat message 
-  private def beat: Unit = {
-      val currentHeartbeat = HeartbeatMessage(
+  private def beat: Unit = bus.publish(
+    topic,
+    JsonUtils.writeJsonNoNulls(
+      HeartbeatMessage(
         base,
         Clock.systemUTC.instant.toString
       )
-      val json = JsonUtils.writeJson(currentHeartbeat)
-      mqttAgent.publish(topic, json)
-  }
+    )
+  )
 
   logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
 }
