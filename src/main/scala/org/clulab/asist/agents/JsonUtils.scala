@@ -16,11 +16,17 @@ object JsonUtils extends LazyLogging{
   // the "N/A" value with quotes indicates a missing value
   val notSet = "\"N/A\""
 
-  /** Translate a structure to single-line JSON text
+  /** Translate a structure to compact JSON text
    *  @param a The structure to be translated
    */
   def writeJson[A <: AnyRef](a: A)(implicit formats: Formats): String 
     = write(a)
+
+  /** Translate a structure to compact JSON text without null values
+   *  @param a The structure to be translated
+   */
+  def writeJsonNoNulls[A <: AnyRef](a: A)(implicit formats: Formats): String 
+    = noNulls(writeJson(a))
 
   /** Deserialize a string into a case class 
    *  @param s JSON string to deserialize

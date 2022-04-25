@@ -21,7 +21,7 @@ received_heartbeat_json="heartbeat_received.json"
 received_version_info_json="version_info_received.json"
 echo ""
 echo ""
-echo "TESTING: Trial start"
+echo "TESTING: Trial.start message"
 
 # delete prior generated files
 rm -f *received*.*
@@ -36,12 +36,11 @@ mosquitto_version_info_pid="$!"
 
 ./elkless_replayer $publication_metadata > /dev/null
 
-echo ""
 echo "$publication_metadata published to message bus"
 
 
 # Wait for message bus
-echo -n "waiting for Heartbeat and Version Info Messages..."
+echo -n "waiting for HeartbeatMessage and VersionInfoMessage replies"
 for i in {1..10}
 do
     if [ -s $received_heartbeat_metadata ] && [ -s $received_version_info_metadata ]
@@ -67,7 +66,7 @@ if [ -s $received_heartbeat_metadata ]
         echo "Diffing expected and received Heartbeat messages:"
         diff $expected_heartbeat_json $received_heartbeat_json
     else
-        echo "No Heartbeat Message was received"
+        echo "No HeartbeatMessage received"
 fi
 
 # Check version info
@@ -79,7 +78,7 @@ if [ -s $received_version_info_metadata ]
         echo "Diffing expected and received Version Info Messages:"
         diff $expected_version_info_json $received_version_info_json
     else
-        echo "No Version Info Message was received"
+        echo "No VersionInfoMessage received"
 fi
 
 exit 0
