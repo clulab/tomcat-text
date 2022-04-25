@@ -19,7 +19,7 @@ received_json="heartbeat_received.json"
 
 echo ""
 echo ""
-echo "TESTING: Trial stop"
+echo "TESTING: Trial.stop message"
 
 # delete prior generated files
 rm -f *received*.*
@@ -30,11 +30,10 @@ mosquitto_pid="$!"
 
 ./elkless_replayer $publication_metadata > /dev/null
 
-echo ""
 echo "$publication_metadata published to message bus"
 
 # Wait for message bus
-echo -n "waiting for Dialog Agent response"
+echo -n "waiting for HeartbeatMessage reply"
 for i in {1..10}
 do
     if [ -s $received_metadata ]
@@ -58,7 +57,7 @@ if [ -s $received_metadata ]
         echo "Diffing expected and received messages:"
         diff $expected_json $received_json
     else
-        echo "No response from Dialog Agent."
+        echo "No HeartbeatMessage received."
 fi
 
 exit 0
