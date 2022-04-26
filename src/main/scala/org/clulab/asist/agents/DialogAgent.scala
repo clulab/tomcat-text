@@ -45,9 +45,12 @@ class DialogAgent (
   val runtimeStart:Long = Clock.systemUTC.millis
 
   /**
-   * @return How long the agent has been running in milliseconds 
+   * @return How long the agent has been running in seconds
    */
-  def uptimeMillis(): Long = Clock.systemUTC.millis - runtimeStart
+  def uptimeSeconds(): Double = {
+    val uptimeMillis: Long = Clock.systemUTC.millis - runtimeStart
+    uptimeMillis / 1000.0
+  }
 
   /**
    * Extract Odin mentions from text.

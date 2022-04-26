@@ -54,7 +54,7 @@ object RollcallResponseMessage {
    *  @return A new RollcallResponseMessage based on the request message
    */
   def apply(
-    uptimeMillis: Double,
+    uptimeSeconds: Double,
     request: RollcallRequestMessage
   ): RollcallResponseMessage = {
     val timestamp = Clock.systemUTC.instant.toString
@@ -72,7 +72,7 @@ object RollcallResponseMessage {
       data.copy(
         rollcall_id = request.data.rollcall_id,
         status = "up",
-        uptime = uptimeMillis/1000.0
+        uptime = uptimeSeconds
       )
     )
   }

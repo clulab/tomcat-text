@@ -111,7 +111,7 @@ class DialogAgentMqtt(
           bus.publish(
             topicPubRollcallResponse,
             JsonUtils.writeJsonNoNulls(
-              RollcallResponseMessage(uptimeMillis, request)
+              RollcallResponseMessage(uptimeSeconds, request)
                 .copy(topic = "N/A")
             )
           )

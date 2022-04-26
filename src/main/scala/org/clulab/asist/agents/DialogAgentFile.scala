@@ -59,19 +59,14 @@ class DialogAgentFile(
     fileNames
       .filter(_.endsWith(".vtt"))
       .foreach(WebVttFileProcessor(_, printWriter, this))
-//      .map(WebVttFileProcessor(_, printWriter, this))
-//      .flatten
-//      .foreach(_ => logger.info("VTT processing happened!"))
 
     // process plaintext files
     fileNames
       .filter(_.endsWith(".txt"))
       .foreach(TextFileProcessor(_, printWriter, this))
-//      .map(TextFileProcessor(_, printWriter, this))
-//      .flatten
-//      .foreach(_ => logger.info("Text processing happened!"))
 
-      printWriter.foreach(pw => pw.close)
+    logger.info(s"Uptime seconds = ${uptimeSeconds}")
+    printWriter.foreach(pw => pw.close)
   }
 }
 
@@ -279,7 +274,7 @@ object MetadataFileProcessor extends LazyLogging {
       case agent.topicSubRollcallRequest =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         RollcallRequestMessage(line).foreach(request => {
-          val msg = RollcallResponseMessage(agent.uptimeMillis, request)
+          val msg = RollcallResponseMessage(agent.uptimeSeconds, request)
           val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
           printWriter.foreach(_.write(json))
         })
