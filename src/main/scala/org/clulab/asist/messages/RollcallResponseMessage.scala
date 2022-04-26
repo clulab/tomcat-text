@@ -24,6 +24,7 @@ case class RollcallResponseMessageData(
 
 // published on the Message Bus
 case class RollcallResponseMessage (
+  topic: String = "N/A",
   header: CommonHeader,
   msg: CommonMsg,
   data: RollcallResponseMessageData
@@ -34,6 +35,7 @@ object RollcallResponseMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
 
+  val topic: String = config.getString("RollcallResponse.topic")
   val header: CommonHeader = CommonHeader(
     message_type = config.getString("RollcallResponse.header.message_type"),
   )
@@ -57,6 +59,7 @@ object RollcallResponseMessage {
   ): RollcallResponseMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     RollcallResponseMessage(
+      topic,
       header.copy(
         version = request.header.version,
         timestamp = timestamp

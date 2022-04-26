@@ -44,6 +44,7 @@ case class VersionInfoData(
 
 // published on the Message Bus
 case class VersionInfo (
+  topic: String = "N/A",
   header: CommonHeader,
   msg: CommonMsg,
   data: VersionInfoData
@@ -56,6 +57,8 @@ object VersionInfo
   private val config: Config = ConfigFactory.load()
   private val testbed = config.getString("VersionInfo.testbed")
   private val dataSource = s"${testbed}:${BuildInfo.version}"
+
+  val topic: String = config.getString("VersionInfo.topic")
 
   val header: CommonHeader = CommonHeader(
     message_type = config.getString("VersionInfo.header.message_type"),
@@ -129,6 +132,7 @@ object VersionInfo
   def apply(trialMessage: TrialMessage): VersionInfo = {
     val timestamp = Clock.systemUTC.instant.toString
     VersionInfo(
+      topic,
       header.copy(
         timestamp = timestamp,
         version = trialMessage.header.version

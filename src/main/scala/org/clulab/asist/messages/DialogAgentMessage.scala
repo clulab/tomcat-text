@@ -57,6 +57,7 @@ case class DialogAgentMessageData(
 
 // published on the Message Bus
 case class DialogAgentMessage (
+  topic: String = "N/A",
   header: CommonHeader, // required
   msg: CommonMsg, // required
   data: DialogAgentMessageData // required
@@ -66,6 +67,8 @@ case class DialogAgentMessage (
 object DialogAgentMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
+
+  val topic: String = config.getString("DialogAgent.topic")
 
   val header: CommonHeader = CommonHeader(
     message_type = config.getString("DialogAgent.header.message_type"),
@@ -91,6 +94,7 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
+      topic,
       header.copy(
         timestamp = timestamp,
         version = chat.header.version
@@ -128,6 +132,7 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
+      topic,
       header.copy(
         timestamp = timestamp,
         version = asr.header.version
@@ -168,6 +173,7 @@ object DialogAgentMessage {
   ):DialogAgentMessage = {
     val timestamp = Clock.systemUTC.instant.toString
     DialogAgentMessage(
+      topic,
       header.copy(
         timestamp = timestamp,
       ),
