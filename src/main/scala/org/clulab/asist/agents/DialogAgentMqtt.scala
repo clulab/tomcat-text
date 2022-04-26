@@ -81,6 +81,7 @@ class DialogAgentMqtt(
     }
   }
 
+  // Publish messages.  Do not include topic
   private def processMessage(
     message: BusMessage
   ): Unit = {
@@ -91,6 +92,7 @@ class DialogAgentMqtt(
             topicPubDialogAgent, 
             JsonUtils.writeJsonNoNulls(
               DialogAgentMessage(source_type, message.topic, asr, this)
+                .copy(topic = "N/A")
             )
           )
         })
@@ -100,6 +102,7 @@ class DialogAgentMqtt(
             topicPubDialogAgent, 
             JsonUtils.writeJsonNoNulls(
               DialogAgentMessage(source_type, message.topic, chat, this)
+                .copy(topic = "N/A")
             )
           )
         })
@@ -108,7 +111,8 @@ class DialogAgentMqtt(
           bus.publish(
             topicPubRollcallResponse,
             JsonUtils.writeJsonNoNulls(
-              RollcallResponseMessage(uptimeMillis, request)
+              RollcallResponseMessage(uptimeSeconds, request)
+                .copy(topic = "N/A")
             )
           )
         })
@@ -120,6 +124,7 @@ class DialogAgentMqtt(
               topicPubVersionInfo, 
               JsonUtils.writeJsonNoNulls(
                 VersionInfo(trial)
+                  .copy(topic = "N/A")
               )
             )
           }
