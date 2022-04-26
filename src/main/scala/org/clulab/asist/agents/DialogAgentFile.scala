@@ -85,6 +85,7 @@ object WebVttFileProcessor extends LazyLogging {
     printWriter: Option[PrintWriter],
     agent: DialogAgent
   ): Unit = try {
+    logger.info("")
     logger.info(s"processing '${fileName}' ...")
     VttDissector(new FileInputStream(new File(fileName))) match {
       case Success(blocks) =>
@@ -193,24 +194,24 @@ object MetadataFileProcessor extends LazyLogging {
   *  @return A list of DialogAgent Message Bus output messages based on input
   */
   def apply(
-    inputFileName: String,
+    fileName: String,
     printWriter: Option[PrintWriter],
     agent: DialogAgent
   ): Option[MetadataReport] = {
     logger.info("")
-    logger.info(s"processing '${inputFileName}' ...")
+    logger.info(s"processing '${fileName}' ...")
 
-    val inputFile: File = new File(inputFileName);
+    val inputFile: File = new File(fileName);
     if(!inputFile.exists) {
-      logger.error(s"File: ${inputFileName} does not exist")
+      logger.error(s"File: ${fileName} does not exist")
       None
     }
     else Some(
       processLines (
-        Source.fromFile(inputFileName).getLines,
+        Source.fromFile(fileName).getLines,
         printWriter,
         agent,
-        new MetadataReport(fileName = inputFileName)
+        new MetadataReport(fileName = fileName)
       )
     )
   }
@@ -328,6 +329,7 @@ object TextFileProcessor extends LazyLogging {
     printWriter: Option[PrintWriter],
     agent: DialogAgent
   ): Unit = {
+    logger.info("")
     logger.info(s"processing '${fileName}' ...")
     val lineIterator: Iterator[String] = 
       Source.fromFile(new File(fileName)).getLines
