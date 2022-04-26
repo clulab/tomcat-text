@@ -403,21 +403,6 @@ _Arguments_
 
 ----------------------------------
 
-###  Continue
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Continue`, `ComplexAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | _none_ | `true`
-
-----------------------------------
-
 ###  MoveVictim
 
 |Attribute        |  Value | 

@@ -740,24 +740,6 @@ keep      | `true`
 
 --------
 
-#### rule: _continue_action_
-
-attribute | value
------  |   ---- 
-type |  GraphExtractor
-labels    | [`Continue`, `ComplexAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
-keep      | `true`
-
-
-**argument name** | **label(s)** | **quantifier** | **required?**
-:---- | :---- | :---- | :----
- agent | `Entity` | _none_ | `true` 
-
-&nbsp;
-
---------
-
 #### rule: _critical_marker_token_
 
 attribute | value
@@ -2316,6 +2298,44 @@ keep      | `true`
  location | `Location` | `?` | `false` 
  obstacle | `Obstacle` | `?` | `false` 
  map | `Map` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _found_thing_got_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ exists | `EventLike` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _found_thing_have_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ exists | `EventLike` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
 
 &nbsp;
 
@@ -4745,6 +4765,22 @@ _No arguments_
 
 --------
 
+#### rule: _victim_type_extraction_kind_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Type`, `Victim`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _type_A_marker_
 
 attribute | value
@@ -4946,6 +4982,25 @@ _No arguments_
 --------
 
 #### rule: _type_question_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`WhichVictimType`, `Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ topic | `Type` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _type_question_what_
 
 attribute | value
 -----  |   ---- 
