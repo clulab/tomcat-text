@@ -51,7 +51,7 @@ class DialogAgentFile(
       .filter(_.endsWith(".metadata"))
       .map(MetadataFileProcessor(_, printWriter, this))
       .flatten
-      .foreach(report => MetadataReport)
+      .foreach(MetadataReport(_))
 
     // process VTT input
 
@@ -230,7 +230,7 @@ case class MetadataReport(
 )
 
 object MetadataReport extends LazyLogging {
-  def report(report: MetadataReport): Unit = {
+  def apply(report: MetadataReport): Unit = {
     logger.info("")
     logger.info(s"PROCESSED METADATA FILE: ${report.fileName}")
     logger.info("Messages read:")
@@ -263,6 +263,7 @@ object MetadataFileProcessor extends LazyLogging {
     printWriter: Option[PrintWriter],
     agent: DialogAgent
   ): Option[MetadataReport] = {
+    logger.info("")
     logger.info(s"processing '${inputFileName}' ...")
 
     val inputFile: File = new File(inputFileName);
@@ -302,18 +303,20 @@ object MetadataFileProcessor extends LazyLogging {
     )
   }
 
-
   private def processLine(
     printWriter: Option[PrintWriter],
     agent: DialogAgent,
     line: String,
-    report: MetadataReport
+    previous_report: MetadataReport
   ): MetadataReport = {
     val topic: String = 
       JsonUtils.readJson[Topic](line).getOrElse(Topic()).topic 
-
+    val report = previous_report.copy(
+      lines_read = previous_report.lines_read +1
+    )
     topic match {
       case agent.topicSubAsr =>
+        logger.info(s"line ${report.lines_read} topic = ${topic}")
         AsrMessage(line).foreach(asr => {
           val msg = DialogAgentMessage(source_type, topic, asr, agent)
           val json = JsonUtils.writeJsonNoNulls(msg)
@@ -325,6 +328,7 @@ object MetadataFileProcessor extends LazyLogging {
         )
 
       case agent.topicSubChat =>
+        logger.info(s"line ${report.lines_read} topic = ${topic}")
         ChatMessage(line).foreach(chat => {
           val msg = DialogAgentMessage(source_type, topic, chat, agent)
           val json = JsonUtils.writeJsonNoNulls(msg)
@@ -335,6 +339,7 @@ object MetadataFileProcessor extends LazyLogging {
           written_dialog_agent = report.written_dialog_agent + 1
         )
       case agent.topicSubRollcallRequest =>
+        logger.info(s"line ${report.lines_read} topic = ${topic}")
         RollcallRequestMessage(line).foreach(request => {
           val msg = RollcallResponseMessage(agent.uptimeMillis, request)
           val json = JsonUtils.writeJsonNoNulls(msg)
@@ -348,6 +353,7 @@ object MetadataFileProcessor extends LazyLogging {
         TrialMessage(line) match {
           case Some(trial) => 
             if(TrialMessage.isStart(trial)) { // Trial Start
+              logger.info(s"line ${report.lines_read} topic = ${topic}.start")
               val msg = VersionInfo(trial)
               val json = JsonUtils.writeJsonNoNulls(msg)
               printWriter.foreach(_.write(json))
@@ -357,6 +363,7 @@ object MetadataFileProcessor extends LazyLogging {
               )
             }
             else if (TrialMessage.isStop(trial)) {
+              logger.info(s"line ${report.lines_read} topic = ${topic}.stop")
               report.copy(
                 read_trial_stop = report.read_trial_stop +1
               )
