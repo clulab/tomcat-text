@@ -8,12 +8,11 @@ import java.io.{File, FileInputStream, PrintWriter}
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 
+import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.control.Exception._
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
-import scala.annotation.tailrec
-
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -49,11 +48,17 @@ class DialogAgentFile(
     val fileNames = LocalFileUtils.getFileNames(inputFilename)
 
     // process metadata files
-    fileNames
+    val reports: List[MetadataReport] = fileNames
       .filter(_.endsWith(".metadata"))
       .map(MetadataFileProcessor(_, printWriter, this))
       .flatten
-      .foreach(MetadataReport(_))
+
+    // give comprehensive summary at end of Metadata processing.
+    logger.info("")
+    logger.info("")
+    logger.info("All Metadata file processing has finished.")
+    logger.info(s"Metadata files processed: ${reports.length}")
+    MetadataReport(MetadataReport.summarize(reports))
 
     // process VTT files
     fileNames
@@ -65,7 +70,9 @@ class DialogAgentFile(
       .filter(_.endsWith(".txt"))
       .foreach(TextFileProcessor(_, printWriter, this))
 
-    logger.info(s"Uptime seconds = ${uptimeSeconds}")
+    logger.info("")
+    logger.info(s"File Agent Uptime seconds = ${uptimeSeconds}")
+    logger.info("Agent is shutting down.")
     printWriter.foreach(pw => pw.close)
   }
 }
@@ -151,35 +158,84 @@ object WebVttFileProcessor extends LazyLogging {
 
 // keep track of what is encountered in metadata files
 case class MetadataReport(
-  fileName: String = "not_set",
+  title: String = "not_set",
   read_chat: Int = 0,
   read_asr: Int = 0,
   read_trial_start: Int = 0,
   read_trial_stop: Int = 0,
-  read_unknown: Int = 0,
   read_rollcall: Int = 0,
+  read_unknown: Int = 0,
   written_dialog_agent: Int = 0,
   written_version_info: Int = 0,
   written_rollcall: Int = 0,
   lines_read: Int = 0,
+  start_time_s: Double = 0,
+  processing_time_s: Double = 0
 )
 
 object MetadataReport extends LazyLogging {
+
+  def summarize(reports: List[MetadataReport]): MetadataReport = 
+    summarize(reports, new MetadataReport)
+  
+  private def summarize(
+    reports: List[MetadataReport],
+    result: MetadataReport
+  ): MetadataReport = reports match {
+    case head::tail =>
+      summarize(
+        tail,
+        result.copy(
+          title = "Summary of all Metadata file processing:",
+          read_chat = 
+            result.read_chat + head.read_chat,
+          read_asr = 
+            result.read_asr + head.read_asr,
+          read_trial_start = 
+            result.read_trial_start + head.read_trial_start,
+          read_trial_stop = 
+            result.read_trial_stop + head.read_trial_stop,
+          read_rollcall =
+            result.read_rollcall + head.read_rollcall,
+          read_unknown =
+            result.read_unknown + head.read_unknown,
+          written_dialog_agent =
+            result.written_dialog_agent + head.written_dialog_agent,
+          written_version_info =
+            result.written_version_info + head.written_version_info,
+          written_rollcall =
+            result.written_rollcall + head.written_rollcall,
+          lines_read =
+            result.lines_read + head.lines_read,
+          processing_time_s =
+            result.processing_time_s + head.processing_time_s
+        )
+      )
+    case _ => result
+  }
+
   def apply(report: MetadataReport): Unit = {
     logger.info("")
-    logger.info(s"PROCESSED METADATA FILE: ${report.fileName}")
+    logger.info(report.title)
     logger.info("Messages read:")
-    logger.info(s" Chat: ${report.read_chat}")
-    logger.info(s" ASR: ${report.read_asr}")
-    logger.info(s" Trial start: ${report.read_trial_start}")
-    logger.info(s" Trial stop: ${report.read_trial_stop}")
-    logger.info(s" Rollcall request: ${report.read_rollcall}")
-    logger.info(s" Others: ${report.read_unknown}")
-    logger.info(s" Total lines read: ${report.lines_read}")
+    logger.info(s"  Chat: ${report.read_chat}")
+    logger.info(s"  ASR: ${report.read_asr}")
+    logger.info(s"  Trial start: ${report.read_trial_start}")
+    logger.info(s"  Trial stop: ${report.read_trial_stop}")
+    logger.info(s"  Rollcall request: ${report.read_rollcall}")
+    logger.info(s"  Others: ${report.read_unknown}")
+    logger.info(s"  Total lines read: ${report.lines_read}")
     logger.info("Messages written:")
-    logger.info(s" DialogAgent: ${report.written_dialog_agent}")
-    logger.info(s" Rollcall response: ${report.written_rollcall}")
-    logger.info(s" Version info: ${report.written_version_info}")
+    logger.info(s"  Dialog Agent: ${report.written_dialog_agent}")
+    logger.info(s"  Rollcall response: ${report.written_rollcall}")
+    logger.info(s"  Version info: ${report.written_version_info}")
+
+    val processing_time_s: Double = 
+      BigDecimal(report.processing_time_s)
+        .setScale(2, BigDecimal.RoundingMode.HALF_UP)
+        .toDouble
+
+    logger.info(s"Processing time: ${processing_time_s} seconds")
   }
 }
 
@@ -211,7 +267,10 @@ object MetadataFileProcessor extends LazyLogging {
         Source.fromFile(fileName).getLines,
         printWriter,
         agent,
-        new MetadataReport(fileName = fileName)
+        new MetadataReport(
+          title = s"Filename: ${fileName}", 
+          start_time_s = agent.uptimeSeconds
+        ),
       )
     )
   }
@@ -223,7 +282,11 @@ object MetadataFileProcessor extends LazyLogging {
     agent: DialogAgent,
     report: MetadataReport
   ): MetadataReport = if(!lineIterator.hasNext) {
-    report
+    val final_report = report.copy(
+      processing_time_s = agent.uptimeSeconds - report.start_time_s
+    )
+    MetadataReport(final_report)
+    final_report
   } else { 
     processLines(
       lineIterator,
