@@ -18,7 +18,6 @@ clear_triggers: "clear|remove|clear|break|excavate"
 
 close_triggers: "close|shut"
 
-continue_triggers: "going"
 
 craft_triggers: "craft|make|produce|brew|create"
 

@@ -138,3 +138,11 @@ rules:
     keep: false
     pattern: |
       [lemma=type] [lemma=of]? [lemma=victim]? | [lemma=victim]? [lemma=type]
+
+  - name: victim_type_extraction_kind
+    priority: ${ rulepriority }
+    label: Type
+    type: token
+    keep: false
+    pattern: |
+      [lemma=kind] [lemma=of] [lemma=victim]?

@@ -96,6 +96,15 @@ rules:
       topic: Type = <det
       location: Location? = <det (</nsubj/|>/nmod/)
 
+  - name: type_question_what
+    example: "What type of victim is it?"
+    priority: ${ rulepriority }
+    label: WhichVictimType
+    pattern: |
+      trigger = [lemma=what]
+      topic: Type = <det
+      location: Location? = <det (</nsubj/|>/nmod/)
+
 
 
 #leave this here so I can remember how to do these complex dependencies

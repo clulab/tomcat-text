@@ -75,13 +75,6 @@ rules:
       action: Action = >xcomp
 
 
-  - name: continue_action
-    priority: ${ rulepriority }
-    label: Continue
-    pattern: |
-      trigger = [lemma=/(?i)^(${ continue_triggers })/]
-      agent: Entity = >/${agents}/
-
   - name: change_priority
     priority: ${ rulepriority }
     label: ChangePriority
@@ -310,7 +303,29 @@ rules:
                >/${preps}/|
                >/advmod/
 
+  - name: found_thing_have
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "I have some rubble here"
+    pattern: |
+      trigger =[lemma=/(?i)have/]
+      exists: EventLike = >/${objects}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
 
+  - name: found_thing_got
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "I got some rubble here"
+    pattern: |
+      trigger =[word=/(?i)got$/]
+      exists: EventLike = >/${objects}/
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/|
+               >/advmod/
 
   - name: room_clear
     priority: ${ rulepriority }
