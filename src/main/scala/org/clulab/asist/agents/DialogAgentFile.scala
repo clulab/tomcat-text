@@ -34,9 +34,9 @@ class DialogAgentFile(
 
   // First set up the output stream
   if (outputFilename == "/dev/null") {
-    begin(None)
+    process_files(None)
   } else try {
-    begin(Some(new PrintWriter(new File(outputFilename))))
+    process_files(Some(new PrintWriter(new File(outputFilename))))
   } catch {
     case NonFatal(t)  =>
       logger.error(s"Problem opening ${outputFilename} for writing:")
@@ -44,106 +44,37 @@ class DialogAgentFile(
   }
 
   // then work through all supported file types
-  def begin(printWriter: Option[PrintWriter]): Unit = {
+  def process_files(printWriter: Option[PrintWriter]): Unit = {
+
+    val fileNames = LocalFileUtils.getFileNames(inputFilename)
 
     // process metadata files
-    LocalFileUtils.getFileNames(inputFilename)
+    fileNames
       .filter(_.endsWith(".metadata"))
       .map(MetadataFileProcessor(_, printWriter, this))
       .flatten
       .foreach(MetadataReport(_))
 
-    // process VTT input
-
-  }
-
-
-
-      /*
-    // web vtt input
-    val webVttJobs: List[DialogAgentMessage] = fileNames
+    // process VTT files
+    fileNames
       .filter(_.endsWith(".vtt"))
-      .map(WebVttFileProcessor(_, this))
-      .flatten
-    if(!webVttJobs.isEmpty)
-      logger.info(s"WebVtt messages read: ${webVttJobs.length}")
+      .foreach(WebVttFileProcessor(_, printWriter, this))
+//      .map(WebVttFileProcessor(_, printWriter, this))
+//      .flatten
+//      .foreach(_ => logger.info("VTT processing happened!"))
 
-    // plain text input
-    val textJobs: List[DialogAgentMessage] = fileNames
+    // process plaintext files
+    fileNames
       .filter(_.endsWith(".txt"))
-      .map(TextFileProcessor(_, this))
-      .flatten
-    if(!textJobs.isEmpty)
-      logger.info(s"Text messages read: ${textJobs.length}")
+      .foreach(TextFileProcessor(_, printWriter, this))
+//      .map(TextFileProcessor(_, printWriter, this))
+//      .flatten
+//      .foreach(_ => logger.info("Text processing happened!"))
 
-    List(metadataJobs, webVttJobs, textJobs).flatten
+      printWriter.foreach(pw => pw.close)
   }
-  else List.empty
-
-  private val jobsIter: Iterator[Any] = jobs.iterator
-
-  // startup
-  jobs.length match {
-    case 0 =>
-      logger.info("No input was found.")
-      shutdown
-    case n =>
-      logger.info(s"Processing ${n} messages...")
-      logger.info(s"Writing output to ${outputFilename}")
-      doNextJob
-  } 
-
-  private def process(a: Any): Unit = a match {
-    case v: VersionInfo => processVersionInfo(v)
-    case d: DialogAgentMessage => processDialogAgentMessage(d)
-    case _ => doNextJob
-  }
-
-  private def processVersionInfo(v: VersionInfo): Unit = {
-    logger.info(s"Processing VersionInfo, timestamp = ${v.header.timestamp}")
-    val json = JsonUtils.writeJson(v)
-    writeOutput(
-      topicPubVersionInfo,
-      json
-    )
-    doNextJob
-  }
-
-  private def processDialogAgentMessage(m: DialogAgentMessage): Unit = {
-    logger.info(
-      s"Processing DialogAgentMessage, timestamp = ${m.header.timestamp}"
-    )
-    val json = JsonUtils.writeJson(m)
-    writeOutput(topicPubDialogAgent,json)
-    doNextJob
-  }
-
-  // need to get topic in output
-  private def writeOutput(
-    topic: String,
-    text: String
-  ): Unit = {
-    val jsonNoNulls = JsonUtils.noNulls(topic, text) // do not publish nulls
-    printWriter.foreach(_.write(s"${jsonNoNulls}\n"))
-  }
-
-  def doNextJob(): Unit = 
-  if(jobsIter.hasNext) 
-    process(jobsIter.next)
-  else {
-    logger.info("All operations completed successfully.")
-    shutdown
-  }
-
-  def writeOutput(messages: List[BusMessage]): Unit =  
-    messages.foreach(m => writeOutput(m.topic, m.text))
-
-  def shutdown: Unit = {
-    logger.info("Agent is shutting down")
-    printWriter.foreach(_.close)
-  }
-  */
 }
+
 
 object WebVttFileProcessor extends LazyLogging {
 
@@ -156,18 +87,24 @@ object WebVttFileProcessor extends LazyLogging {
   */
   def apply(
     fileName: String,
+    printWriter: Option[PrintWriter],
     agent: DialogAgent
-  ): List[DialogAgentMessage] = try {
+  ): Unit = try {
     logger.info(s"processing '${fileName}' ...")
     VttDissector(new FileInputStream(new File(fileName))) match {
       case Success(blocks) =>
-        blocks.map{block =>
+        val blockIterator = blocks.iterator
+        while(blockIterator.hasNext) {
           processWebVttElement(
             fileName,
+            printWriter,
             agent,
-            block.lines.toList
-          )
-        }.toList.flatten
+            blockIterator.next.lines.toList
+          ).foreach(msg => {
+            val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
+            printWriter.foreach(_.write(json))
+          })
+        }
       case Failure(f) =>
         logger.error("VttDissector could not parse '%s'".format(fileName))
         logger.error(f.toString)
@@ -187,6 +124,7 @@ object WebVttFileProcessor extends LazyLogging {
   */
   private def processWebVttElement(
     fileName: String,
+    printWriter: Option[PrintWriter],
     agent: DialogAgent,
     lines: List[String]
   ): Option[DialogAgentMessage] = lines match {
@@ -215,6 +153,7 @@ object WebVttFileProcessor extends LazyLogging {
   }
 }
 
+// keep track of what is encountered in metadata files
 case class MetadataReport(
   fileName: String = "not_set",
   read_chat: Int = 0,
@@ -319,19 +258,18 @@ object MetadataFileProcessor extends LazyLogging {
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         AsrMessage(line).foreach(asr => {
           val msg = DialogAgentMessage(source_type, topic, asr, agent)
-          val json = JsonUtils.writeJsonNoNulls(msg)
+          val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
           printWriter.foreach(_.write(json))
         })
         report.copy(
           read_asr = report.read_asr + 1,
           written_dialog_agent = report.written_dialog_agent + 1
         )
-
       case agent.topicSubChat =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         ChatMessage(line).foreach(chat => {
           val msg = DialogAgentMessage(source_type, topic, chat, agent)
-          val json = JsonUtils.writeJsonNoNulls(msg)
+          val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
           printWriter.foreach(_.write(json))
         })
         report.copy(
@@ -342,7 +280,7 @@ object MetadataFileProcessor extends LazyLogging {
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         RollcallRequestMessage(line).foreach(request => {
           val msg = RollcallResponseMessage(agent.uptimeMillis, request)
-          val json = JsonUtils.writeJsonNoNulls(msg)
+          val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
           printWriter.foreach(_.write(json))
         })
         report.copy(
@@ -355,7 +293,7 @@ object MetadataFileProcessor extends LazyLogging {
             if(TrialMessage.isStart(trial)) { // Trial Start
               logger.info(s"line ${report.lines_read} topic = ${topic}.start")
               val msg = VersionInfo(trial)
-              val json = JsonUtils.writeJsonNoNulls(msg)
+              val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
               printWriter.foreach(_.write(json))
               report.copy(
                 read_trial_start = report.read_trial_start + 1,
@@ -364,26 +302,19 @@ object MetadataFileProcessor extends LazyLogging {
             }
             else if (TrialMessage.isStop(trial)) {
               logger.info(s"line ${report.lines_read} topic = ${topic}.stop")
-              report.copy(
-                read_trial_stop = report.read_trial_stop +1
-              )
+              report.copy(read_trial_stop = report.read_trial_stop + 1)
             }
-            else report.copy (
-              read_unknown = report.read_unknown + 1
-            )
-          case _ =>
-            report.copy(
-              read_unknown = report.read_unknown + 1
-            )
+            else // unknown trial subtype
+              report.copy (read_unknown = report.read_unknown + 1)
+          case _ => // trial message that didn't parse
+            report.copy(read_unknown = report.read_unknown + 1)
          }
-      case _ => // do not process unknown topics
-        report.copy(
-          read_unknown = report.read_unknown + 1
-        )
-
+      case _ =>  // unknown topic
+        report.copy(read_unknown = report.read_unknown + 1)
     }
   }
 }
+
 
 /* Create DialogAgentMessages from a text file.  Each line of input data
  * is processed into one DialogAgent Message */
@@ -399,25 +330,32 @@ object TextFileProcessor extends LazyLogging {
   */
   def apply(
     fileName: String,
+    printWriter: Option[PrintWriter],
     agent: DialogAgent
-  ): List[DialogAgentMessage] = {
+  ): Unit = {
     logger.info(s"processing '${fileName}' ...")
-    Source.fromFile(new File(fileName))
-      .getLines
-      .toList
-      .map(processLine(fileName,agent,_))
+    val lineIterator: Iterator[String] = 
+      Source.fromFile(new File(fileName)).getLines
+    while(lineIterator.hasNext) {
+      processLine(fileName, printWriter, agent, lineIterator.next)
+    }
   }
 
   private def processLine(
     fileName: String,
+    printWriter: Option[PrintWriter],
     agent: DialogAgent,
     text: String
-  ): DialogAgentMessage = 
-    DialogAgentMessage(
+  ): Unit = {
+    logger.info(s"Read: ${text}")
+    val msg = DialogAgentMessage(
       source_type, 
       fileName, 
       participant_id,
       text,
       agent
     )
+    val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
+    printWriter.foreach(_.write(json))
+  }
 }
