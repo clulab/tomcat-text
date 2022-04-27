@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `4.1.5`
 
-Document generation timestamp (UTC): `2022-04-26 20:02:19.331188`
+Document generation timestamp (UTC): `2022-04-27 05:23:22.043143`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -108,7 +108,7 @@ Extractions
     - Action
       - ComplexAction
         - ChangePriority
-          - target (Victim|Person) ()
+          - target (Person|Victim) ()
           - [agent] (Entity) (?)
 
         - MoveVictim
@@ -138,10 +138,10 @@ Extractions
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Location|Rubble) ()
+          - target (Rubble|Location) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - Communicate
           - Agreement
@@ -161,7 +161,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Victim|Item|Person|PuzzleConcept|EventLike) ()
+            - exists (Person|Victim|Item|EventLike|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -213,7 +213,7 @@ Extractions
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Entity|Move) ()
+              - topic (Move|Entity) ()
               - [location] (Location) (?)
 
             - [QuestionParticle]
@@ -247,7 +247,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoom|ThreatSign|ThreatRoomMarker) ()
+                - threat (ThreatSign|ThreatRoom|ThreatRoomMarker) ()
                 - room (Room) ()
 
               - RoomClear
@@ -262,14 +262,14 @@ Extractions
           - Enter
             - [target] (Location) (?)
             - [agent] (Entity) (?)
-            - target (Location|Deictic) ()
+            - target (Deictic|Location) ()
 
           - MoveFrom
             - target (Deictic|Location) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Location|Entity|Deictic) ()
+            - target (Deictic|Location|Entity) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
@@ -288,17 +288,17 @@ Extractions
 
         - RescueInteractions
           - Save
-            - target (Entity|Victim|Person) ()
+            - target (Person|Victim|Entity) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
           - Stabilize
-            - target (Victim|Person) ()
+            - target (Person|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
           - WakeUp
-            - target (Victim|Person) ()
+            - target (Person|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -308,7 +308,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|Entity|EventLike) ()
+          - target (Item|EventLike|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
