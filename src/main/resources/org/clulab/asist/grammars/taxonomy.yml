@@ -2,13 +2,13 @@
   - Tense:
       - PastTense
       - FutureTense
-  - MarkerMeaning
+  - MarkerMeaning # not used in study 3
   - Number
   - RoomTag
   - Switch
   - EventLike:
     - Time:
-      - TimeUnit
+      - TimeUnit # example: "three minutes"
     - Location:
       - Inferred:
         - Deictic
@@ -116,90 +116,87 @@
       - Rubble
       - Fire
     - Action:
-      - GenericAction
+      - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
-        - Block
+        - Block # for things blocking environments: "There's some rubble blocking B2."
         - Move:
           - MoveTo
           - MoveFrom
           - Enter
-          - OnMyWay
+          - OnMyWay # for players stating that they are coming to other players: "I'm on my way to you"
         - Open
         - Close
         - Push
         - Toggle
-        - RescueInteractions:
-          - Save
+        - RescueInteractions: # interactions with victims
+          - Save # saving/triaging the victim
           - WakeUp
           - Stabilize
         - Sight
-        - PlaceMarker
+        - PlaceMarker # "I'm placing a marker here"
         - Communicate:
           - Instruction:
-              - HelpCommand
+              - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
           - ReportStatus:
-            - Stuck
-            - ReportLocation
-            - RoleDeclare
+            - Stuck # for players stuck in a room (for whichever reason), has some overlap with AmTrapped
+            - ReportLocation # players reporting on their, or other players locations: "I'm in B2"
+            - RoleDeclare # players declaring their role to the team
             - RoomStatus:
-                - RoomClear
-                - ReportThreatRoom
+                - RoomClear # "A1 is clear"
+                - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"
             - ReportItemStatus:
               - ToolBroken
               - DoorOpen
               - DoorClosed
-          - KnowledgeSharing
-          - Need:
+          - KnowledgeSharing # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
+          - Need: # labels for players discussing the needs of the team or their own needs
             - NeedRole
             - NeedItem
             - NeedAction
-            - HelpRequest:
-                - AmTrapped
-          - HelpOffer
+            - HelpRequest: # examples: "I need help in B4"
+                - AmTrapped # for players reporting that they are trapped in a location: "I'm trapped in B4"
+          - HelpOffer # examples: "I can help/assist/aid you"
           - Question:
-            - QuestionParticle
+            - QuestionParticle # who/what/why/when/where
             - LocationQuestion
             - YesNoQuestion
             - HowQuestion
-            - WhichVictimType
+            - WhichVictimType # example: "What kind of victim is it?"
           - Plan:
-              - ContingentPlan
-              - PlanLanguage #This label is for general language around planning, such as "strategy" "plan", etc
+              - ContingentPlan # planning dependent on a condition: "If we remove the rubble, we can save the victim"
+              - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
               - Commitment:
-                - MakeCommitment
-                - DeliberatePlan
+                - MakeCommitment # players making or offering a commitment to an action: "I can clear the rooms on the right"
+                - DeliberatePlan # players stating their future move: "I will help you"
           - Agreement
           - Disagreement
-        - Clear
-        - RoleSwitch
+        - Clear # example: "I am clearing B2"
+        - RoleSwitch # example: "I will switch to engineer"
       - ComplexAction:
-          - Search         # Seach(Location)
+          - Search         # Search(Location), example: "I'm searching the rooms here."
           - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
-          - Continue
-          - MoveVictim
-          - Precedence
-         # - Planning
-          - OfferHelp
-  - Entity:
+          - MoveVictim # example: "I'm moving the victim out of the room"
+          - Precedence # players talking about sequences of actions, example: "First we remove the rubble, THEN we save the victim", "after we do X, we can do Y"
+  - Entity: # victims, players, and other entities, DISCLAIMER: these will usually show up as ATTACHMENTS, not as labels
     - Person
-    - Other
-    - Self
+    - Other # all third-person pronouns will match here, such as: "he/him, she/her, it"
+    - Self # "I/my"
     - You
-    - Team
-    - DemPron
+    - Team # "we/us"
+    - DemPron # "this/those/that/these"
     - Role:
       - Transporter
       - Medic
       - Searcher
       - Engineer
     - Victim:
-        - Type
+        - Type # unspecified type of victim
         - Yellow
-        - CriticalVictim
+        - CriticalVictim # also matched "type C victim"
         - RegularVictim:
             - VictimTypeA
             - VictimTypeB
-        - NoVictim
+        - NoVictim # example: "no victim here"
     - Player:
       - Red
       - Blue
