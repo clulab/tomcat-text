@@ -73,7 +73,7 @@ class DialogAgentFile(
     logger.info("")
     logger.info(s"File Agent Uptime seconds = ${uptimeSeconds}")
     logger.info("Agent is shutting down.")
-    printWriter.foreach(pw => pw.close)
+    printWriter.foreach(_.close)
   }
 }
 
