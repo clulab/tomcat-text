@@ -140,13 +140,11 @@ class DialogAgentReprocessor (
     pw: Option[PrintWriter]
   ): Unit = JsonUtils.readJson[TrialMessage](line) match {
     case Some(trialMessage) =>
-      // transcribe the trial start message 
+      // transcribe the trial message 
+     pw.foreach(_.write(line))
+
       TrialMessage(line) match {
         case Some(trial) =>
-          val trialJson = JsonUtils.writeJsonNoNulls(trial) + "\n"
-          // TEST
-          pw.foreach(_.write(trialJson))
-
           if(TrialMessage.isStart(trial)) { 
             // write the version info message if trial start
 
