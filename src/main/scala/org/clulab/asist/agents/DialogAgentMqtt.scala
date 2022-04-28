@@ -1,19 +1,15 @@
 package org.clulab.asist.agents
 
-import akka.actor.ActorSystem
 import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 
-import scala.collection.mutable.Queue
-import scala.concurrent.ExecutionContext
-
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- * This class is part of the ASIST Testbed.  Messages are queued
- * and processed in FIFO order.
+ * This class is part of the ASIST Testbed.  Messages are 
+ * processed in FIFO order.
  *
  * No null JSON value are published
  *
@@ -27,13 +23,6 @@ class DialogAgentMqtt(
 ) extends DialogAgent
     with LazyLogging
     with MessageBusClientListener { 
-
-  // Actor concurrency system
-  implicit val ec:ExecutionContext = ExecutionContext.global
-  implicit val system: ActorSystem = ActorSystem("MessageBusAgent")
-
-  // enqueue messages from the bus if they're coming in too fast.
-  private val queue: Queue[BusMessage] = new Queue 
 
   // CommonMsg source type for all MQTT publishing
   private val source_type = "message_bus"
@@ -67,76 +56,56 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     text: String 
-  ): Unit = {
-    queue.enqueue(BusMessage(topic, text))
-    // Restart processing if the queue was empty
-    if(queue.length == 1) processMessage(queue.head)
-  }
-
-  /** process the next message in the queue*/
-  private def processNextMessage(): Unit = {
-    queue.dequeue
-    if(!queue.isEmpty) {
-      processMessage(queue.head)  
-    }
-  }
-
-  // Publish messages.  Do not include topic
-  private def processMessage(
-    message: BusMessage
-  ): Unit = {
-    message.topic match {
-      case `topicSubAsr` => 
-        AsrMessage(message.text).foreach(asr => {
-          bus.publish (
-            topicPubDialogAgent, 
-            JsonUtils.writeJsonNoNulls(
-              DialogAgentMessage(source_type, message.topic, asr, this)
-                .copy(topic = "N/A")
-            )
+  ): Unit = topic match {
+    case `topicSubAsr` => 
+      AsrMessage(text).foreach(asr => 
+        bus.publish (
+          topicPubDialogAgent, 
+          JsonUtils.writeJsonNoNulls(
+            DialogAgentMessage(source_type, topic, asr, this)
+              .copy(topic = "N/A")  // do not publish topic
           )
-        })
-      case `topicSubChat` => 
-        ChatMessage(message.text).foreach(chat => {
-          bus.publish (
-            topicPubDialogAgent, 
-            JsonUtils.writeJsonNoNulls(
-              DialogAgentMessage(source_type, message.topic, chat, this)
-                .copy(topic = "N/A")
-            )
+        )
+      )
+    case `topicSubChat` => 
+      ChatMessage(text).foreach(chat => 
+        bus.publish (
+          topicPubDialogAgent, 
+          JsonUtils.writeJsonNoNulls(
+            DialogAgentMessage(source_type, topic, chat, this)
+              .copy(topic = "N/A")
           )
-        })
-      case `topicSubRollcallRequest` => 
-        RollcallRequestMessage(message.text).foreach(request => {
+        )
+      )
+    case `topicSubRollcallRequest` => 
+      RollcallRequestMessage(text).foreach(request => 
+        bus.publish(
+          topicPubRollcallResponse,
+          JsonUtils.writeJsonNoNulls(
+            RollcallResponseMessage(uptimeSeconds, request)
+              .copy(topic = "N/A")
+          )
+        )
+      )
+    case `topicSubTrial` => 
+      TrialMessage(text).foreach(trial => 
+        if(TrialMessage.isStart(trial)) { // Trial Start
+          heartbeatProducer.set_trial_info(trial)
           bus.publish(
-            topicPubRollcallResponse,
+            topicPubVersionInfo, 
             JsonUtils.writeJsonNoNulls(
-              RollcallResponseMessage(uptimeSeconds, request)
+              VersionInfo(trial)
                 .copy(topic = "N/A")
             )
           )
-        })
-      case `topicSubTrial` => 
-        TrialMessage(message.text).foreach(trial => {
-          if(TrialMessage.isStart(trial)) { // Trial Start
-            heartbeatProducer.set_trial_info(trial)
-            bus.publish(
-              topicPubVersionInfo, 
-              JsonUtils.writeJsonNoNulls(
-                VersionInfo(trial)
-                  .copy(topic = "N/A")
-              )
-            )
-          }
-          else if(TrialMessage.isStop(trial)) { // Trial Stop
-            // heartbeats lose the trial_id 
-            val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
-            heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
-          }
-        })
-      case _ => logger.error("Unknown topic read: " + message.topic)
-    }
-    processNextMessage
+        }
+        else if(TrialMessage.isStop(trial)) { // Trial Stop
+          // heartbeats lose the trial_id 
+          val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
+          heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
+        }
+      )
+    case _ => 
   }
 
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
