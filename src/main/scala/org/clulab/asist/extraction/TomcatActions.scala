@@ -21,11 +21,11 @@ class TomcatActions() extends Actions with LazyLogging {
     // convert any agent argument to an attachment
     val agentResolved = convertAgents(mentions, state)
     val excluded = excludeArgEqualsParent(agentResolved, state)
-//    val notSubsumed = mostSpecificOnly(agentResolved, state)
     val withAttachments = addAttachments(excluded, state)
     keepLongest(withAttachments, state)
   }
 
+  // unknown purpose
   def excludeArgEqualsParent(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.filterNot{ parent =>
       val args = parent.arguments
@@ -44,7 +44,7 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(convertAgent)
-  }//converting multiple agents into attachments
+  } //converting multiple agents into attachments
 
   //converting Agent arg into an attachment, we need this because the argument of an extraction cannot be equal in span to the extraction
   //agents (subjects) blow up the span size of our extractions, which is why we need this. attachments do not figure into the span size
@@ -66,7 +66,7 @@ class TomcatActions() extends Actions with LazyLogging {
 
     copy
   }
-
+// responsible for defining the new span after taking out agent
   def mkInterval(m: Mention, args: Map[String, Seq[Mention]]): Interval = {
     val triggerOffsets = m match {
       case em: EventMention => Seq(em.trigger.start, em.trigger.end)
@@ -113,18 +113,7 @@ class TomcatActions() extends Actions with LazyLogging {
     } yield m
   }
 
-  def mostSpecificOnly(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    var localState = new State()
-    for(m <- mentions.sortBy(-_.labels.length)) {
-      val sameSpan = localState.mentionsFor(m.sentence, m.tokenInterval).filter(_.tokenInterval == m.tokenInterval)
-      val compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
-      if (compatibleLabel.isEmpty) {
-        localState = localState.updated(Seq(m))
-      }
-    }
-    // the almost equivalent of `allMentions` but not filtering for _.keep
-    localState.lookUpTable.values.toStream.flatten.distinct.toVector
-  }
+
 
   def addAttachments(mentions: Seq[Mention], state: State): Seq[Mention] = {
     mentions.map(addAttachments(_, state))
@@ -243,8 +232,6 @@ class TomcatActions() extends Actions with LazyLogging {
 
   def requireSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     // trigger should be before all the arguments
-    // todo: revisit when the no_agent branch merged
-    // FIXME!!
     // comment by Remo: The hasSubjectVerbInversion method is broken, I cannot figure out why. However, it may be better to leave it.
     for {
       mention <- mentions
