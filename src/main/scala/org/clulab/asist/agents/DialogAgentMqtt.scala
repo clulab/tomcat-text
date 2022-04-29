@@ -28,13 +28,6 @@ class DialogAgentMqtt(
   // CommonMsg source type for all MQTT publishing
   private val source_type: String = "message_bus"
 
-  // seconds between received TDAC heartbeats
-  private var lastTdacHeartbeat: Double = 0.0
-
-  // the longest we will wait from the last received TDAC heartbeat
-  private val tdacHeartbeatWindow: Double = 
-    config.getInt("TdacHeartbeat.beat_seconds") * 2.0
-
   // communication with the MQTT Message Bus
   private val bus: MessageBusClient = new MessageBusClient(
     host,
@@ -43,7 +36,6 @@ class DialogAgentMqtt(
       topicSubAsr,
       topicSubChat,
       topicSubRollcallRequest,
-      topicSubTdacHeartbeat,
       topicSubTrial
     ).sorted,
     publications = List(
@@ -59,10 +51,7 @@ class DialogAgentMqtt(
   private val heartbeatProducer = new HeartbeatProducer(bus)
 
   // each incoming message gets an ID number in the logfile
-  var count: Int = 1
-
-  def activeTdac: Boolean = 
-    (uptimeSeconds - lastTdacHeartbeat) < tdacHeartbeatWindow
+  var count: Int = 0
 
   /** Receive a message from the message bus
    * @param topic:  The message bus topic where the message was published
@@ -72,12 +61,12 @@ class DialogAgentMqtt(
     topic: String,
     text: String 
   ): Unit = {
-    logger.info(s"${count}: ${topic}")
     count += 1
 
+    logger.info(s"Read # ${count}: read ${topic}")
     topic match {
       case `topicSubAsr` => 
-        AsrMessage(text).foreach(asr => 
+        AsrMessage(text).foreach(asr =>
           bus.publish (
             topicPubDialogAgent, 
             JsonUtils.writeJsonNoNulls(
@@ -86,12 +75,8 @@ class DialogAgentMqtt(
             )
           )
         )
-      case `topicSubTdacHeartbeat` => 
-        TdacHeartbeatMessage(text).foreach(tdacHeartbeat => 
-          lastTdacHeartbeat = uptimeSeconds
-        )
       case `topicSubChat` => 
-        ChatMessage(text).foreach(chat => 
+        ChatMessage(text).foreach(chat =>
           bus.publish (
             topicPubDialogAgent, 
             JsonUtils.writeJsonNoNulls(
@@ -101,7 +86,7 @@ class DialogAgentMqtt(
           )
         )
       case `topicSubRollcallRequest` => 
-        RollcallRequestMessage(text).foreach(request => 
+        RollcallRequestMessage(text).foreach(request =>
           bus.publish(
             topicPubRollcallResponse,
             JsonUtils.writeJsonNoNulls(
@@ -113,6 +98,7 @@ class DialogAgentMqtt(
       case `topicSubTrial` => 
         TrialMessage(text).foreach(trial => 
           if(TrialMessage.isStart(trial)) { // Trial Start
+            logger.info("trial start")
             heartbeatProducer.set_trial_info(trial)
             bus.publish(
               topicPubVersionInfo, 
@@ -123,7 +109,8 @@ class DialogAgentMqtt(
             )
           }
           else if(TrialMessage.isStop(trial)) { // Trial Stop
-            // heartbeats lose the trial_id 
+            logger.info("trial stop")
+            // heartbeats stop producing the trial_id 
             val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
             heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
           }

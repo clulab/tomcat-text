@@ -65,5 +65,5 @@ class HeartbeatProducer(bus: MessageBusClient) extends LazyLogging {
     )
   )
 
-  logger.info(s"Heartbeat interval seconds: ${beatSeconds}")
+  logger.info(s"Heartbeat publication interval: ${beatSeconds} seconds")
 }

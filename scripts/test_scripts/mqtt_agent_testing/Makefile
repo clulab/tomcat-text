@@ -12,6 +12,10 @@ test_everything: FORCE
 	make test_rollcall -s
 	make test_asr -s
 	make test_chat -s
+	make test_rollcall -s
+	make test_asr -s
+	make test_chat -s
+	make test_rollcall -s
 	make test_trial_stop -s
 
 test_asr: FORCE

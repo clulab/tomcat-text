@@ -114,11 +114,6 @@ object VersionInfo
         config.getString("RollcallRequest.msg.sub_type")
       ),
       VersionInfoDataMessageChannel(
-        config.getString("TdacHeartbeat.topic"),
-        config.getString("TdacHeartbeat.header.message_type"),
-        config.getString("TdacHeartbeat.msg.sub_type")
-      ),
-      VersionInfoDataMessageChannel(
         config.getString("Trial.topic"),
         config.getString("Trial.header.message_type"),
         config.getString("Trial.msg.sub_type.trial_start")

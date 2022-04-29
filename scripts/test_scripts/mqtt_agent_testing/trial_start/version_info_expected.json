@@ -46,11 +46,6 @@
         "topic": "agent/control/rollcall/request"
       },
       {
-        "message_type": "status",
-        "sub_type": "tdac_heartbeat",
-        "topic": "agent/uaz_tdac_agent/heartbeats"
-      },
-      {
         "message_type": "trial",
         "sub_type": "start",
         "topic": "trial"

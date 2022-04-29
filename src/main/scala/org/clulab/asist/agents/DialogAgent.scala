@@ -30,7 +30,6 @@ class DialogAgent (
   val topicSubAsr = config.getString("Asr.topic")
   val topicSubChat = config.getString("Chat.topic")
   val topicSubRollcallRequest = config.getString("RollcallRequest.topic")
-  val topicSubTdacHeartbeat = config.getString("TdacHeartbeat.topic")
   val topicSubTrial = config.getString("Trial.topic")
   val topicPubDialogAgent = config.getString("DialogAgent.topic")
   val topicPubHeartbeat = config.getString("Heartbeat.topic")
