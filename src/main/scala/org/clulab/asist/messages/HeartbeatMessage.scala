@@ -36,7 +36,7 @@ object HeartbeatMessage {
   val header: CommonHeader = CommonHeader(
     message_type = config.getString("Heartbeat.header.message_type"),
   )
-  val msg: CommonMsg =  CommonMsg(
+  val msg: CommonMsg = CommonMsg(
     source = config.getString("Heartbeat.msg.source"),
     sub_type = config.getString("Heartbeat.msg.sub_type"),
     version = BuildInfo.version,
