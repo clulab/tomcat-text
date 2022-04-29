@@ -6,7 +6,6 @@ import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 
-
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -33,9 +32,8 @@ class DialogAgentMqtt(
   private var lastTdacHeartbeat: Double = 0.0
 
   // the longest we will wait from the last received TDAC heartbeat
-  // before we declare the TDAC dead
   private val tdacHeartbeatWindow: Double = 
-    Config.getDouble("TdacHeartbeat.beat_seconds") * 2.0
+    config.getInt("TdacHeartbeat.beat_seconds") * 2.0
 
   // communication with the MQTT Message Bus
   private val bus: MessageBusClient = new MessageBusClient(
