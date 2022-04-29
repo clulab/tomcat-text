@@ -36,20 +36,14 @@ class MessageBusClient(
   val listener: MessageBusClientListener
 ) extends MqttCallback with LazyLogging {
 
-  val uri = "tcp://%s:%s".format(host,port)
-  val qos = 2 // highest quality of service, send msg exactly once.
-  val publisher: MqttClient = new MqttClient(
-    uri, 
-    "dialog_agent_subscriber", 
-    new MemoryPersistence()
-  ) 
-  val subscriber: MqttAsyncClient = new MqttAsyncClient(
-    uri,
-    "dialog_agent_publisher", 
-    new MemoryPersistence()
-  )
+  val uri = s"tcp://${host}:${port}"
+  val publisher: MqttClient = 
+    new MqttClient(uri, "sub", new MemoryPersistence()) 
+  val subscriber: MqttAsyncClient = 
+    new MqttAsyncClient(uri,"pub", new MemoryPersistence())
 
   // Try to connect to the Message Bus
+  val qos = 2 // highest quality of service, send msg exactly once.
   try {
     publisher.connect(new MqttConnectOptions)
     subscriber.connect(new MqttConnectOptions).waitForCompletion
@@ -64,8 +58,8 @@ class MessageBusClient(
 
   // Report status of our connection to the Message Bus
   if(subscriber.isConnected && publisher.isConnected) {
-    subscriptions.foreach(s => logger.info(s"Subscribed to topic: ${s}"))
-    publications.foreach(p => logger.info(s"Publishing on topic: ${p}"))
+    subscriptions.foreach(s => logger.info(s"Subscribed to: ${s}"))
+    publications.foreach(p => logger.info(s"Publishing on: ${p}"))
     logger.info(s"Connected to Message Bus at ${uri}")
   } else {
     logger.error(s"Could not connect to Message Bus at ${uri}")
