@@ -22,8 +22,15 @@ tomcat_text_input_dir="reprocessor_test_input"
 tomcat_text_output_dir="reprocessor_test_output"
 
 # input file to reprocess
+input_metadata="$this_input_dir/reprocessor_test.metadata"
+
+# reprocessed input file 
 reprocessed_metadata="$this_output_dir/reprocessor_test.metadata"
+
+# reprocessed input file in pretty-format JSON
 reprocessed_json="$this_output_dir/reprocessor_test.json"
+
+# expected result in pretty-format JSON
 expected_json="$this_expected_dir/reprocessor_test_expected.json"
 
 # Remove previous test results
@@ -33,9 +40,9 @@ rm -f $reprocessed_json
 # Move to tomcat-text repo directory
 cd ../../../../tomcat-text
 
-# Clean any existing test results
-rm -rf $tomcat_text_input_dir
-rm -rf $tomcat_text_output_dir
+# Clean any existing links to test directories
+rm -f $tomcat_text_input_dir
+rm -f $tomcat_text_output_dir
 
 # Link test directories
 ln -s $this_input_dir $tomcat_text_input_dir
@@ -45,15 +52,20 @@ ln -s $this_output_dir $tomcat_text_output_dir
 sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess $tomcat_text_input_dir $tomcat_text_output_dir"
 
 # Unlink test directories
-rm $tomcat_text_input_dir
-rm $tomcat_text_output_dir
+rm -f $tomcat_text_input_dir
+rm -f $tomcat_text_output_dir
 
-# Move to the output directory and convert reprocessed metadata into pretty-format JSON
+# Move to the output directory and convert compact JSON metadata into pretty JSON
 cd $this_output_dir
+
+# translate compact JSON metadata into pretty JSON for diffing by line
 jq < $reprocessed_metadata > $reprocessed_json
 
 # Only the timestamps should differ
-echo "Diffing expected and reprocessed files:"
+echo "Test input: $input_metadata"
+echo "expected output: $expected_json"
+echo "reprocessed output: $reprocessed_json"
+echo "Diffing expected output and reprocessed output:"
 diff $expected_json $reprocessed_json
 
 exit 0

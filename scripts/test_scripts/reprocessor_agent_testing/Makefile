@@ -9,6 +9,6 @@ test: FORCE
 clean: FORCE
 	rm -f ../../../../tomcat-text/reprocessor_test_input
 	rm -f ../../../../tomcat-text/reprocessor_test_output
-
+	rm -f output/*.*
 
 FORCE: ;
