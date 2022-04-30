@@ -7,8 +7,8 @@ test: FORCE
 # remove intermediate test result files
 
 clean: FORCE
-	rm -rf project
-	rm -rf target
+	rm -f ../../../../tomcat-text/reprocessor_test_input
+	rm -f ../../../../tomcat-text/reprocessor_test_output
 
 
 FORCE: ;

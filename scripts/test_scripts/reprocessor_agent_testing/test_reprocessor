@@ -7,40 +7,53 @@
 # Reprocess DialogAgent metadata and compare the output with
 # an expected file
 
-inputdir="scripts/test_scripts/reprocessor_agent_testing/input"
-outputdir="~scripts/test_scripts/reprocessor_agent_testing/output"
-
-# pretty-format JSON that should resemble the reprocessed file
-expected_json="$outputdir/reprocessor_test_expected.json"
-
-# compact JSON read from the Message Bus
-reprocessed_metadata="$outputdir/reprocessor_test.metadata"
-
-# pretty-format JSON converted from reprocessed_metadata
-reprocessed_json="$outputdir/reprocessor_test.json"
-
 echo ""
 echo ""
 echo "REPROCESSOR TESTING: "
 
-# delete prior generated files
-rm -f *expected*.*
+# paths to this directory
+this_dir=$(pwd)
+this_input_dir="$this_dir/input"
+this_output_dir="$this_dir/output"
+this_expected_dir="$this_dir/expected"
 
-# Run the reprocessor on the target files
-cd ~/tomcat-text
-sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess $inputdir $outputdir"
-cd ..
+# paths relative to tomcat-text directory
+tomcat_text_input_dir="reprocessor_test_input"
+tomcat_text_output_dir="reprocessor_test_output"
 
+# input file to reprocess
+reprocessed_metadata="$this_output_dir/reprocessor_test.metadata"
+reprocessed_json="$this_output_dir/reprocessor_test.json"
+expected_json="$this_expected_dir/reprocessor_test_expected.json"
 
-if [ -s $reprocessed_metadata ]
-    then
-        # pretty-print the last line of the temp file
-        tail -1 $reprocessed_metadata | jq > $reprocessed_json
-        # Only the timestamps should differ
-        echo "Diffing expected and reprocessed files:"
-        diff $expected_json $reprocessed_json
-    else
-        echo "No reprocessed file was found."
-fi
+# Remove previous test results
+rm -f $reprocessed_metadata
+rm -f $reprocessed_json
+
+# Move to tomcat-text repo directory
+cd ../../../../tomcat-text
+
+# Clean any existing test results
+rm -rf $tomcat_text_input_dir
+rm -rf $tomcat_text_output_dir
+
+# Link test directories
+ln -s $this_input_dir $tomcat_text_input_dir
+ln -s $this_output_dir $tomcat_text_output_dir
+
+# Run the reprocessor on the linked directories
+sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess $tomcat_text_input_dir $tomcat_text_output_dir"
+
+# Unlink test directories
+rm $tomcat_text_input_dir
+rm $tomcat_text_output_dir
+
+# Move to the output directory and convert reprocessed metadata into pretty-format JSON
+cd $this_output_dir
+jq < $reprocessed_metadata > $reprocessed_json
+
+# Only the timestamps should differ
+echo "Diffing expected and reprocessed files:"
+diff $expected_json $reprocessed_json
 
 exit 0
