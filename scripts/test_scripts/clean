@@ -2,7 +2,6 @@
 
 # Author: Joseph Astier
 
-echo "Cleaning all Dialog Agent tests"
-cd ./reprocessor_agent_testing; ./clean; cd ..
 cd ./file_agent_testing; ./clean; cd ..
+cd ./reprocessor_agent_testing; ./clean; cd ..
 cd ./mqtt_agent_testing; ./clean; cd ..

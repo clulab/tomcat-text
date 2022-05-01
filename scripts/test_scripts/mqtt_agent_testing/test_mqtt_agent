@@ -2,7 +2,7 @@
 
 # Author: Joseph Astier
 
-echo "MQTT AGENT TESTING: full trial"
+echo "MQTT AGENT TESTING: n trials"
 
 this_dir=$(pwd)
 
@@ -19,7 +19,22 @@ function test_full_trial () {
     cd trial_stop; ./test_trial_stop; cd $this_dir
 }
 
+# Start the MQTT agent
+echo "Starting MQTT agent.   Testing will begin in 90 seconds"
+cd ../../../../tomcat-text
+sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt localhost 1883" &
+mqtt_agent_pid="$!"
+
+sleep 90 # weaksauce, we need to detect a running agent 
+
+cd $this_dir
+echo "testing ..."
+
 # simulate n Testbed trials
 test_full_trial
 test_full_trial
 test_full_trial
+
+# stop the MQTT agent
+kill $mqtt_agent_pid
+echo "MQTT agent done"
