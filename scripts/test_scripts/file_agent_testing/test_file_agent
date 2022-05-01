@@ -14,7 +14,7 @@ echo "FILE AGENT TESTING: "
 # paths to this directory
 this_dir=$(pwd)
 input_dir="$this_dir/input"
-test_results_dir="$this_dir/test_results"
+results_dir="$this_dir/results"
 expected_results_dir="$this_dir/expected_results"
 
 echo "Input files:"
@@ -22,12 +22,12 @@ echo $(ls $input_dir)
 
 # expected result in pretty-format JSON
 expected_results_json="$expected_results_dir/expected.json"
-test_results_metadata="$test_results_dir/test_results.metadata"
-test_results_json="$test_results_dir/test_results.json"
+results_metadata="$results_dir/results.metadata"
+results_json="$results_dir/results.json"
 
 # Remove previous test results
-rm -f $test_results_metadata
-rm -f $test_results_json
+rm -f $results_metadata
+rm -f $results_json
 
 # Move to tomcat-text repo directory
 cd ../../../../tomcat-text
@@ -35,18 +35,18 @@ cd ../../../../tomcat-text
 # Test the agent
 echo "Starting File Agent:"
 sbt "runMain org.clulab.asist.apps.RunDialogAgent file \
-    $input_dir $test_results_metadata"
+    $input_dir $results_metadata"
 
 cd $this_dir
 
 # translate compact JSON metadata into pretty JSON for diffing by line
-jq < $test_results_metadata > $test_results_json
+jq < $results_metadata > $results_json
 
 # Only the timestamps should differ
 echo "Test input: $input_metadata"
 echo "expected results: $expected_results_json"
-echo "test results: $test_results_json"
+echo "test results: $results_json"
 echo "Diffing expected results and test results:"
-diff $expected_results_json $test_results_json
+diff $expected_results_json $results_json
 
 exit 0
