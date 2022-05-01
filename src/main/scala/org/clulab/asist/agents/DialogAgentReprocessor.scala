@@ -113,16 +113,17 @@ class DialogAgentReprocessor (
 
 
   /** Reprocess line if DialogAgent-related metadata, otherwise copy
+   * @param line A complete JSON message from the Message Bus
    * @param rs State with input line loaded
    */
   def processLine(
-    inputText: String,
+    line: String,
     pw: Option[PrintWriter]
-  ): Unit = readTopic(inputText) match {
+  ): Unit = readTopic(line) match {
     case `topicSubTrial` => 
-      processTrialMetadata(inputText, pw)
+      processTrialMetadata(line, pw)
     case `topicPubDialogAgent` => 
-      reprocessDialogAgentMetadata(inputText, pw)
+      reprocessDialogAgentMetadata(line, pw)
     case `topicPubVersionInfo` => 
       // Delete existing DialogAgent-generated VersionInfo
     case _ => 
