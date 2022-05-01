@@ -41,7 +41,7 @@ echo "$publication_metadata published to message bus"
 
 # Wait for message bus
 echo -n "waiting for HeartbeatMessage and VersionInfoMessage replies"
-for i in {1..10}
+for i in {1..100}
 do
     if [ -s $received_heartbeat_metadata ] && [ -s $received_version_info_metadata ]
         then
