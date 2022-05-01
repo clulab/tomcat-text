@@ -80,6 +80,22 @@ object DialogAgentMessage {
     version = BuildInfo.version
   )
 
+  /** build without topic
+   *  @param header A CommonHeader object
+   *  @param msg  A CommonMsg object
+   *  @param data A DialogAgentMessageData object
+   */
+  def apply(
+    header: CommonHeader, // required
+    msg: CommonMsg, // required
+    data: DialogAgentMessageData // required
+  ): DialogAgentMessage = DialogAgentMessage(
+    topic = "N/A",
+    header,
+    msg,
+    data
+  )
+
   /** build from Minecraft chat object
    *  @param source_type Source of message data
    *  @param source_name topic or filename
