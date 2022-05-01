@@ -22,8 +22,8 @@ echo $(ls $input_dir)
 
 # expected result in pretty-format JSON
 expected_results_json="$expected_results_dir/expected.json"
-results_metadata="$results_dir/results.metadata"
-results_json="$results_dir/results.json"
+results_metadata="$results_dir/test_results.metadata"
+results_json="$results_dir/test_results.json"
 
 # Remove previous test results
 rm -f $results_metadata
