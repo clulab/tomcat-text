@@ -33,6 +33,7 @@ rm -f $test_results_json
 cd ../../../../tomcat-text
 
 # Test the agent
+echo "Starting File Agent:"
 sbt "runMain org.clulab.asist.apps.RunDialogAgent file \
     $input_dir $test_results_metadata"
 

@@ -33,6 +33,7 @@ rm -f $test_results_json
 cd ../../../../tomcat-text
 
 # Run the reprocessor on the linked directories
+echo "Starting Reprocesor Agent:"
 sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess \
     $input_dir $test_results_dir"
 
