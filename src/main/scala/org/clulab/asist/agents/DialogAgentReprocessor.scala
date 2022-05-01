@@ -125,11 +125,10 @@ class DialogAgentReprocessor (
       reprocessDialogAgentMetadata(inputText, pw)
     case `topicPubVersionInfo` => 
       // Delete existing DialogAgent-generated VersionInfo
-    case `topicPubRollcallResponse` => 
-      // write a new rollcallResponse
     case _ => 
-      // Transcribe Unhandled cases
-      //processUnprocessedData(inputText,pw)
+      // Transcribe cases we don't produce.  
+      // Also transcribe the Rollcall Response, which we do not reprocess
+      pw.foreach(_.write(line))
   }
 
   /** Parse a TrialMessage and report our configuration if trial start.
