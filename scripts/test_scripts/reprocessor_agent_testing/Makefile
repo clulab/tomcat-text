@@ -6,6 +6,5 @@ test:
 # remove test result files
 .PHONY: clean
 clean:
-	rm -f ../../../../tomcat-text/reprocessor_test_input
-	rm -f ../../../../tomcat-text/reprocessor_test_output
-	rm -f output/*.*
+	rm -f test_results/test_results.metadata
+	rm -f test_results/test_results.json
