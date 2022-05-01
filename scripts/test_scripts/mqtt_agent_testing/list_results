@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+echo "MQTT Agent test results:"
+cd trial_start; ./list_results; cd ..
+cd asr; ./list_results; cd ..
+cd chat; ./list_results; cd ..
+cd rollcall_request; ./list_results; cd ..
+cd trial_stop; ./list_results; cd ..
