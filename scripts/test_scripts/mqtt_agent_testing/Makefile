@@ -1,49 +1,55 @@
-# test message bus telemetry
+# test the MQTT Dialog Agent
 
 # Test everything a few times to test moving across trial boundaries.
-test: FORCE
+.PHONY: test
+test:
 	make test_everything -s
 	make test_everything -s
 	make test_everything -s
 
 # A complete tour of every subscribed topic tested
-test_everything: FORCE
+.PHONY: test_everything
+test_everything:
 	make test_trial_start -s
-	make test_rollcall -s
+	make test_rollcall_request -s
 	make test_asr -s
 	make test_chat -s
-	make test_rollcall -s
+	make test_rollcall_request -s
 	make test_asr -s
 	make test_chat -s
-	make test_rollcall -s
+	make test_rollcall_request -s
 	make test_trial_stop -s
 
-test_asr: FORCE
+.PHONY: test_asr
+test_asr:
 	cd asr; make test -s
 
-test_chat: FORCE
+.PHONY: test_chat
+test_chat:
 	cd chat; make test -s
 
-test_rollcall: FORCE
-	cd rollcall; make test -s
+.PHONY: test_rollcall_request
+test_rollcall_request:
+	cd rollcall_request; make test -s
 
-test_trial_start: FORCE
+.PHONY: test_trial_start
+test_trial_start:
 	cd trial_start; make test -s
 
-test_trial_stop: FORCE
+.PHONY: test_trial_stop
+test_trial_stop:
 	cd trial_stop; make test -s
 
 
 # remove intermediate test result files
-clean: FORCE
+.PHONY: clean
+clean:
 	cd trial_start; make clean -s
-	cd rollcall; make clean -s
+	cd rollcall_request; make clean -s
 	cd asr; make clean -s
 	cd chat; make clean -s
 	cd trial_stop; make clean -s
 
-show_received_files: FORCE
+.PHONY: show_received_files
+show_received_files:
 	find -name "*received*.*"; 
-
-
-FORCE: ;
