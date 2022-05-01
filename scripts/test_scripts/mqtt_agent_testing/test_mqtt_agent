@@ -2,36 +2,8 @@
 
 # Author: Joseph Astier
 
-echo "MQTT AGENT TESTING: "
-
-this_dir=$(pwd)
-
-#start the agent
-#cd ../../../../tomcat-text
-#sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt localhost 1883" > /dev/null &
-#agent_pid="$!"
-
-#echo "Agent is starting, this may take a moment."
-
-#cd $this_dir
-
-# simulate a full Message Bus trial
-test_trial(){
-    cd trial_start; ./test_trial_start; cd $this_dir
-    cd rollcall_request; ./test_rollcall_request; cd $this_dir
-    cd chat; ./test_chat; cd $this_dir
-    cd asr; ./test_asr; cd $this_dir
-    cd rollcall_request; ./test_rollcall_request; cd $this_dir
-    cd chat; ./test_chat; cd $this_dir
-    cd asr; ./test_asr; cd $this_dir
-    cd rollcall_request; ./test_rollcall_request; cd $this_dir
-    cd trial_stop; ./test_trial_stop; cd $this_dir
-}
-
 # Run several simulated trials to simulate the Testbed
-test_trial
-test_trial
-test_trial
+./test_trial
+./test_trial
+./test_trial
 
-# kill agent
-#kill $agent_pid
