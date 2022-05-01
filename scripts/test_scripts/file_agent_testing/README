@@ -8,6 +8,8 @@
 
 Each of the subscribed Mesage Bus metadata messages is tested.
 
+No output is produced for the Heartbeat message in the File Agent
+
 This test only checks the content of the output for correctness.
 
 Other testing must be done, such as gigabyte-scale input files.
