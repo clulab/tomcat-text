@@ -1,4 +1,32 @@
 {
+  "@version": "1",
+  "data": {
+    "version": "3.5.1",
+    "status": "up",
+    "uptime": 4106.469767,
+    "rollcall_id": "7085e638-6919-4518-8f64-326399cc5468"
+  },
+  "topic": "agent/control/rollcall/response",
+  "msg": {
+    "source": "uaz_dialog_agent",
+    "experiment_id": "8c36c59a-71a1-4ba8-bfd3-1c5f02be8389",
+    "trial_id": "8b37dcbf-8230-400c-8a0b-01b19b58a017",
+    "replay_id": "951ea810-b457-426b-8b77-17435e29ee18",
+    "replay_parent_id": "8b37dcbf-8230-400c-8a0b-01b19b58a017",
+    "version": "0.1",
+    "replay_parent_type": "TRIAL",
+    "sub_type": "rollcall:response",
+    "timestamp": "2022-04-09T21:07:03.303765Z"
+  },
+  "@timestamp": "2022-04-18T17:56:32.799Z",
+  "header": {
+    "version": "0.1",
+    "message_type": "agent",
+    "timestamp": "2022-04-09T21:07:03.303765Z"
+  },
+  "host": "b236a83d245f"
+}
+{
   "data": {
     "notes": [
       "Test"
@@ -134,14 +162,14 @@
   },
   "header": {
     "message_type": "agent",
-    "timestamp": "2022-04-30T03:44:16.503Z",
+    "timestamp": "2022-05-01T22:22:42.136Z",
     "version": "0.6"
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
     "source": "uaz_dialog_agent",
     "sub_type": "versioninfo",
-    "timestamp": "2022-04-30T03:44:16.503Z",
+    "timestamp": "2022-05-01T22:22:42.136Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",
     "version": "4.1.5"
   },
