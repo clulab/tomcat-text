@@ -1,11 +1,10 @@
 # test the File Dialog Agent
 .PHONY: test
 test:
-	./test_file_agent
+	./test
 
 # remove test result files
 .PHONY: clean
 clean:
-	rm -f ../../../../tomcat-text/file_test_input
-	rm -f ../../../../tomcat-text/file_test_output
-	rm -f output/*.*
+	rm -f test_results/test_results.metadata
+	rm -f test_results/test_results.json
