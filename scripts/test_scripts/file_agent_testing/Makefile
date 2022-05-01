@@ -6,5 +6,4 @@ test:
 # remove test result files
 .PHONY: clean
 clean:
-	rm -f test_results/test_results.metadata
-	rm -f test_results/test_results.json
+	./clean

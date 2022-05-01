@@ -22,7 +22,7 @@ echo $(ls $input_dir)
 
 # expected result in pretty-format JSON
 expected_results_json="$expected_results_dir/expected.json"
-test_results_metadata="$test_results_dir/test_results.metadata"
+test_results_metadata="$test_results_dir/reprocessor_test.metadata"
 test_results_json="$test_results_dir/test_results.json"
 
 # Remove previous test results
@@ -34,7 +34,7 @@ cd ../../../../tomcat-text
 
 # Run the reprocessor on the linked directories
 sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess \
-    $input_dir $results_dir"
+    $input_dir $test_results_dir"
 
 cd $this_dir
 
