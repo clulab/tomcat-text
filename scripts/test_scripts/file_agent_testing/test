@@ -11,7 +11,6 @@ echo ""
 echo ""
 echo "FILE AGENT TESTING: "
 
-
 # paths to this directory
 this_dir=$(pwd)
 input_dir="$this_dir/input"
@@ -21,9 +20,8 @@ expected_results_dir="$this_dir/expected_results"
 echo "Input files:"
 echo $(ls $input_dir)
 
-
 # expected result in pretty-format JSON
-expected_results_json="$expected_results_dir/file_test_expected.json"
+expected_results_json="$expected_results_dir/expected.json"
 test_results_metadata="$test_results_dir/test_results.metadata"
 test_results_json="$test_results_dir/test_results.json"
 
