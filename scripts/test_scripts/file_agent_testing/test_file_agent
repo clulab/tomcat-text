@@ -32,8 +32,9 @@ rm -f $test_results_json
 # Move to tomcat-text repo directory
 cd ../../../../tomcat-text
 
-# Run the agent on the linked directories
-sbt "runMain org.clulab.asist.apps.RunDialogAgent file $input_dir $test_results_metadata"
+# Test the agent
+sbt "runMain org.clulab.asist.apps.RunDialogAgent file \
+    $input_dir $test_results_metadata"
 
 cd $this_dir
 
