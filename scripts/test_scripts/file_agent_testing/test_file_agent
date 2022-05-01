@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+# File Agent testing
+
+# process DialogAgent metadata and compare the output with
+# an expected file
+
+echo ""
+echo ""
+echo "FILE AGENT TESTING: "
+
+# paths to this directory
+this_dir=$(pwd)
+input_dir="$this_dir/input"
+results_dir="$this_dir/results"
+expected_results_dir="$this_dir/expected_results"
+
+echo "Input files:"
+echo $(ls $input_dir)
+
+# expected result in pretty-format JSON
+expected_results_json="$expected_results_dir/expected.json"
+results_metadata="$results_dir/test_results.metadata"
+results_json="$results_dir/test_results.json"
+
+# Remove previous test results
+rm -f $results_metadata
+rm -f $results_json
+
+# Move to tomcat-text repo directory
+cd ../../../../tomcat-text
+
+# Test the agent
+echo "Starting File Agent:"
+sbt "runMain org.clulab.asist.apps.RunDialogAgent file \
+    $input_dir $results_metadata"
+
+cd $this_dir
+
+# translate compact JSON metadata into pretty JSON for diffing by line
+jq < $results_metadata > $results_json
+
+# Only the timestamps should differ
+echo "Test input: $input_metadata"
+echo "expected results: $expected_results_json"
+echo "test results: $results_json"
+echo "Diffing expected results and test results:"
+diff $expected_results_json $results_json
+
+exit 0

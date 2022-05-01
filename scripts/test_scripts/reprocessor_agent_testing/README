@@ -1,0 +1,53 @@
+
+                Reprocessor Agent Testing
+
+                       -Joseph Astier
+
+
+
+Each of the reprocessed Mesage Bus metadata messages is tested.
+
+This test only checks the content of the output for correctness.
+
+Other testing must be done, such as gigabyte-scale input files.
+
+
+
+PASSING TEST EXAMPLE:
+
+9c9
+<     "timestamp": "2022-04-22T05:22:14.064Z",
+---
+>     "timestamp": "2022-04-23T01:34:14.665Z",
+16,17c16,17
+<     "timestamp": "2022-04-22T05:22:14.064Z",
+---
+>     "timestamp": "2022-04-23T01:34:14.665Z",
+
+
+
+FAILING TEST EXAMPLE: 
+
+33a34,38
+>         "message_type": "trial",
+>         "sub_type": "stop",
+>         "topic": "trial"
+>       },
+>       {
+44c49
+<     "version": "4.0.3"
+---
+>     "version": "4.1.4"
+48c53
+<     "timestamp": "2022-04-22T20:07:30.260Z",
+---
+>     "timestamp": "2022-04-23T01:43:11.714Z",
+55c60
+<     "timestamp": "2022-04-22T20:07:30.260Z",
+---
+>     "timestamp": "2022-04-23T01:43:11.714Z",
+57c62
+<     "version": "4.0.3"
+---
+>     "version": "4.1.4"
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+# remember where we parked
+this_dir=$(pwd)
+
+
+# Test the File Agent 
+cd ./file_agent_testing; ./test_file_agent; cd $this_dir
+
+# Test the Reprocessor Agent 
+cd ./reprocessor_agent_testing; ./test_reprocessor_agent; cd $this_dir
+
+# Test the MQTT Agent 
+cd ./mqtt_agent_testing; ./test_mqtt_agent; cd $this_dir
+
+echo "All Dialog Agent tests have completed"

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# Author: Joseph Astier
-
-make clean -s
