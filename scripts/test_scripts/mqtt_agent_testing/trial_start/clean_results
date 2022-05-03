@@ -7,4 +7,4 @@ f1="heartbeat_received.metadata"
 f2="heartbeat_received.json"
 f3="version_info_received.metadata"
 f4="version_info_received.json"
-../../utils/clean_test "Trial start" $f1 $f2 $f3 $f4
+../../utils/clean_results "MQTT Agent Trial start" $f1 $f2 $f3 $f4
