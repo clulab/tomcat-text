@@ -27,7 +27,7 @@
       }
     ],
     "source": [
-      "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:4.1.5"
+      "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:4.1.6"
     ],
     "subscribes": [
       {
@@ -56,7 +56,7 @@
         "topic": "trial"
       }
     ],
-    "version": "4.1.5"
+    "version": "4.1.6"
   },
   "header": {
     "message_type": "agent",
@@ -69,6 +69,6 @@
     "sub_type": "versioninfo",
     "timestamp": "2022-04-29T00:05:24.966Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",
-    "version": "4.1.5"
+    "version": "4.1.6"
   }
 }
