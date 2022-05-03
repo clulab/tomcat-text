@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# Author: Joseph Astier
-
-cd ./file_agent_testing; ./clean; cd ..
-cd ./reprocessor_agent_testing; ./clean; cd ..
-cd ./mqtt_agent_testing; ./clean; cd ..
