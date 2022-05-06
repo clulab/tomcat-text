@@ -385,6 +385,17 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [word=/(?i)trapped|\bstuck\b|\bdead\b|\bhurt\b/]
+      agent: Entity = >/nsubj/
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+
+  - name: trapped_no_agent
+    label: AmTrapped
+    example: "I'm trapped in B2"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = (?<= [lemma=be]|[word=am] )[word=/(?i)trapped|\bstuck\b|\bdead\b|\bhurt\b/]
       agent: Entity? = >/nsubj/
       location: Location? = >/${preps}/|
                >/advmod/
