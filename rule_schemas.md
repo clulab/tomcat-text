@@ -190,6 +190,25 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
+ agent | `Entity` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _trapped_no_agent_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`AmTrapped`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
  location | `Location` | `?` | `false` 
 
