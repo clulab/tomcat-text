@@ -17,6 +17,16 @@ class TomcatActions() extends Actions with LazyLogging {
     mentions
   }
 
+  /**
+   * This function has four steps:
+   * 1. Convert any agent argument to an attachment sequence;
+   * 2. Exclude the agent attachment sequence that are overlapping with parent mentions
+   * 3. Add the excluded attachment sequence to a new attachment sequence
+   * 4. For each mention found, only use the longest one
+   * @param mentions
+   * @param state
+   * @return sequence of attachments
+   */
   def globalAction(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     // convert any agent argument to an attachment
     val agentResolved = convertAgents(mentions, state)
@@ -26,6 +36,12 @@ class TomcatActions() extends Actions with LazyLogging {
     keepLongest(withAttachments, state)
   }
 
+  /**
+   * Exclude the overlapping parts of parent mention and the argument mention
+   * @param mentions
+   * @param state
+   * @return sequence mention without the overlapping part
+   */
   def excludeArgEqualsParent(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.filterNot{ parent =>
       val args = parent.arguments
@@ -33,18 +49,32 @@ class TomcatActions() extends Actions with LazyLogging {
     }
   }
 
-  def argsSubsumeParent(argMentions: Seq[Mention], parentMention: Mention): Boolean = {
-    argMentions.exists(m => argIsParent(m, parentMention))
-  }
+  // Below function is not used anywhere else and very similar to the argIsParent function; probably no use
+//  def argsSubsumeParent(argMentions: Seq[Mention], parentMention: Mention): Boolean = {
+//    argMentions.exists(m => argIsParent(m, parentMention))
+//  }
 
+  /**
+   * check if an argument is a parent mention and the span of the parent mention is equal to the argument mention
+   * @param argMention
+   * @param parentMention
+   * @return true/false
+   */
   def argIsParent(argMention: Mention, parentMention: Mention): Boolean = {
     argMention.sentence == parentMention.sentence &&
       argMention.tokenInterval == parentMention.tokenInterval
   }
 
+  /**
+   * Convert multiple agents into attachments
+   * @param mentions
+   * @param state
+   * @return sequence of Odin mention
+   */
   def convertAgents(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(convertAgent)
   }//converting multiple agents into attachments
+
 
   //converting Agent arg into an attachment, we need this because the argument of an extraction cannot be equal in span to the extraction
   //agents (subjects) blow up the span size of our extractions, which is why we need this. attachments do not figure into the span size
@@ -67,6 +97,12 @@ class TomcatActions() extends Actions with LazyLogging {
     copy
   }
 
+  /**
+   * Find the longest span of the agent argument and return the span of the argument mention
+   * @param m Mention
+   * @param args
+   * @return the span of the argument mention
+   */
   def mkInterval(m: Mention, args: Map[String, Seq[Mention]]): Interval = {
     val triggerOffsets = m match {
       case em: EventMention => Seq(em.trigger.start, em.trigger.end)
@@ -75,12 +111,18 @@ class TomcatActions() extends Actions with LazyLogging {
     val argOffsets = args.toSeq.flatMap(_._2)
       .map(_.tokenInterval)
       .flatMap(t => Seq(t.start, t.end))
+    // find the longest
     val allOffsets = triggerOffsets ++ argOffsets
     val start = allOffsets.min
     val end = allOffsets.max
     Interval(start, end)
   }
 
+  /**
+   * Put all agent information including text, label, and token span into attachment
+   * @param m Mention
+   * @return Attachment
+   */
   def mkAgent(m: Mention): Attachment = Agent(m.text, m.label, m.labels, m.tokenInterval)
 
 /** Keeps the longest mention for each group of overlapping mentions **/
@@ -103,33 +145,19 @@ class TomcatActions() extends Actions with LazyLogging {
     } yield longest
     mns.toVector.distinct
   }
+  
 
-  def noRepeats(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    for {
-      m <- mentions
-      sameSpan = state.mentionsFor(m.sentence, m.tokenInterval)
-      compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
-      if compatibleLabel.isEmpty
-    } yield m
-  }
-
-  def mostSpecificOnly(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-    var localState = new State()
-    for(m <- mentions.sortBy(-_.labels.length)) {
-      val sameSpan = localState.mentionsFor(m.sentence, m.tokenInterval).filter(_.tokenInterval == m.tokenInterval)
-      val compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
-      if (compatibleLabel.isEmpty) {
-        localState = localState.updated(Seq(m))
-      }
-    }
-    // the almost equivalent of `allMentions` but not filtering for _.keep
-    localState.lookUpTable.values.toStream.flatten.distinct.toVector
-  }
 
   def addAttachments(mentions: Seq[Mention], state: State): Seq[Mention] = {
     mentions.map(addAttachments(_, state))
   }
 
+  /**
+   * Add negation, tense, victim type, and marker ID into attachments
+   * @param mention
+   * @param state
+   * @return attachments with new added information
+   */
   def addAttachments(mention: Mention, state: State): Mention = {
     // negation
     val negation = findNegation(mention, state)
@@ -144,6 +172,16 @@ class TomcatActions() extends Actions with LazyLogging {
     withMoreAttachments(mention, attachments.toSeq)
   }
 
+  /**
+   * Find negation:
+   * 1. For all event mentions:
+   *    a. if verb in a mention, look for negation coming from a token in the trigger
+   *    b. else, look for negation in the span
+   * 2. For all non-event mentions, look for negation in the span
+   * @param mention
+   * @param state
+   * @return array of index of negation mention
+   */
   def findNegation(mention: Mention, state: State): Option[Negation] = {
     mention match {
       case event: EventMention =>
@@ -160,6 +198,18 @@ class TomcatActions() extends Actions with LazyLogging {
     }
   }
 
+  /**
+   * This function aims to find the negation mention without the VICTIM label
+   * It has three steps:
+   * 1. Exclude any mention with victim label
+   * 2. Get the index of negation mention
+   *     (either by the "neg" label (get from the outgoingNeg function)
+   *     or by the word "not" (get from the prevTokenNot function))
+   * 3. Exclude any negation mention with victim label
+   * @param mention
+   * @param state
+   * @return the index array of negation mention
+   */
   def negationFrom(mention: Mention, state: State): Option[Negation] = {
     if (mention.matches(VICTIM)) return None
 
@@ -169,12 +219,22 @@ class TomcatActions() extends Actions with LazyLogging {
     else None
   }
 
+  /**
+   * Find mention occurring right after the word "not"; if found, add the index of the mention start into an array
+   * @param mention
+   * @return an array of index of the mention start where the mention occurs after "not"
+   */
   def prevTokenNot(mention: Mention): Array[Int] = {
     if (mention.start == 0) Array.empty
     else if (mention.sentenceObj.words(mention.start - 1) == "not") Array(mention.start)
     else Array.empty
   }
 
+  /**
+   * ??? Find the negation dependency and add the index of negation token into an array
+   * @param mention
+   * @return an array consists of the index of the negation token
+   */
   def outgoingNeg(mention: Mention): Array[Int] = {
     mention
       .sentenceObj.dependencies.get // should be safe bc sentence has been parsed
@@ -187,6 +247,11 @@ class TomcatActions() extends Actions with LazyLogging {
       .map(_._1)
   }
 
+  /**
+   * Check whether the tag of a mention starts with V; if true, it is a verb; if false, not a verb
+   * @param mention
+   * @return true / false
+   */
   def hasVerb(mention: TextBoundMention): Boolean = {
     mention
       // the tags for the mention or an empty sequence
@@ -195,6 +260,16 @@ class TomcatActions() extends Actions with LazyLogging {
       .exists(tag => tag.startsWith("V"))
   }
 
+  /**
+   * Find tense:
+   * 1. For all event mentions:
+   *    a. if verb in a mention, look for tense coming from a token in the trigger
+   *    b. else, look for tense in the span
+   * 2. For all non-event mentions, look for tense in the span
+   * @param mention
+   * @param state
+   * @return array of index of tense mention
+   */
   def findTense(mention: Mention, state: State): Option[Tense] = {
     mention match {
       case event: EventMention =>
@@ -211,6 +286,13 @@ class TomcatActions() extends Actions with LazyLogging {
     }
   }
 
+  /**
+   * Find mentions with label "PastTense" or "FutureTense"
+   * @param mention
+   * @param state
+   * @return the array of the tense mention index
+   */
+
   def tenseFrom(mention: Mention, state: State): Option[Tense] = {
     if (state.hasMentionsFor(mention.sentence, mention.tokenInterval, label = "PastTense")) {
       Some(Tense(value = Tense.PAST))
@@ -219,6 +301,11 @@ class TomcatActions() extends Actions with LazyLogging {
     } else None
   }
 
+  /**
+   * For all event mentions, find the marker ID and convert to number format.
+   * @param mention
+   * @return the marker ID
+   */
   def findMarkerId(mention: Mention): Option[MarkerId] = {
     mention.label match {
       case MARKER_MEANING =>
@@ -233,7 +320,7 @@ class TomcatActions() extends Actions with LazyLogging {
       case _ => None
     }
   }
-
+// ??????????????????? The below series of functions are all related and they seem to be broken. ???????????????????
   def preventSubjectVerbInversion(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     for {
       mention <- mentions
@@ -252,6 +339,7 @@ class TomcatActions() extends Actions with LazyLogging {
     } yield mention
   }
 
+  // For event mentions, check if the SubjectVerbInversion happens. For non-event mentions, return true.
   def hasSubjectVerbInversionOrNotApplicable(mention: Mention): Boolean = {
     mention match {
       case em: EventMention => hasSubjectVerbInversion(em)
@@ -294,11 +382,20 @@ class TomcatActions() extends Actions with LazyLogging {
     triggerStart < leftMostAll
   }
 
+
   def mkVictim(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
     mentions.map(mkVictimArg(_, Some(ENTITY)))
   }
 
-
+  /**
+   * 1. Check if the mention label is "target":
+   *    if yes, copy the labels of the mention with certain conditions;
+   *    else, keep the argument mention
+   *  2. Copy new arguments of the mention
+   * @param mention
+   * @param typeConstraint Some(Entity)
+   * @return nested array of the mention and the label
+   */
   def mkVictimArg(mention: Mention, typeConstraint: Option[String]): Mention = {
     val newArgs = mention.arguments.toSeq.map { case (name, argMentions) =>
       name match {
@@ -313,6 +410,7 @@ class TomcatActions() extends Actions with LazyLogging {
     copyWithNewArgs(mention, newArgs.toMap)
   }
 
+// ??? 
   def findVictim(mention: Mention): Option[VictimType] = {
     mention.label match {
       case MARKER_MEANING => mkVictimType(mention.arguments("meaning").head)
@@ -320,6 +418,11 @@ class TomcatActions() extends Actions with LazyLogging {
     }
   }
 
+  /**
+   * Find the victim types listed below
+   * @param mention
+   * @return mentions with listed victim labels or none
+   */
   def mkVictimType(mention: Mention): Option[VictimType] = {
     mention.label match {
       case CRITICAL_VICTIM => Some(VictimType(VictimType.CRITICAL))
@@ -330,6 +433,7 @@ class TomcatActions() extends Actions with LazyLogging {
     }
   }
 
+// ?? unknown
   def copyWithNewArgs(m: Mention, newArgs: Map[String, Seq[Mention]]): Mention = {
     m match {
       case tb: TextBoundMention => ???
@@ -338,6 +442,15 @@ class TomcatActions() extends Actions with LazyLogging {
     }
   }
 
+  /**
+   * This function copies the labels of the mention with conditions:
+   * 1. It returns mentions that already have victim labels or do not contain entity labels.
+   * 2. ??? Check if the mention matches certain conditions.
+   * @param m mention
+   * @param label (VICTIM)
+   * @param typeConstraint Some(ENTITY)
+   * @return
+   */
   def copyWithNewLabel(m: Mention, label: String, typeConstraint: Option[String]): Mention = {
     if (
       // If the label is already there, don't add
@@ -346,6 +459,7 @@ class TomcatActions() extends Actions with LazyLogging {
         !typeConstraint.forall(c => m.labels.contains(c))
     ) return m
 
+    // ?? Not sure why match occurs after the if condition
     m match {
       case tb: TextBoundMention => tb.copy(labels = Seq(label) ++ tb.labels)
       case rm: RelationMention => rm.copy(labels = Seq(label) ++ rm.labels)
