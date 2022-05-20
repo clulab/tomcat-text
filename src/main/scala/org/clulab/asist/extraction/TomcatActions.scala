@@ -19,7 +19,7 @@ class TomcatActions() extends Actions with LazyLogging {
 
   /**
    * This function has four steps:
-   * 1. Covert any agent argument to an attachment sequence;
+   * 1. Convert any agent argument to an attachment sequence;
    * 2. Exclude the agent attachment sequence that are overlapping with parent mentions
    * 3. Add the excluded attachment sequence to a new attachment sequence
    * 4. For each mention found, only use the longest one
@@ -145,30 +145,7 @@ class TomcatActions() extends Actions with LazyLogging {
     } yield longest
     mns.toVector.distinct
   }
-
-  // *****************The noRepeats function is not used anywhere. It could be deleted.*****************
-//  def noRepeats(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-//    for {
-//      m <- mentions
-//      sameSpan = state.mentionsFor(m.sentence, m.tokenInterval)
-//      compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
-//      if compatibleLabel.isEmpty
-//    } yield m
-//  }
-
-// The mostSpecificOnly function is not used anywhere. It could be deleted.
-//  def mostSpecificOnly(mentions: Seq[Mention], state: State = new State()): Seq[Mention] = {
-//    var localState = new State()
-//    for(m <- mentions.sortBy(-_.labels.length)) {
-//      val sameSpan = localState.mentionsFor(m.sentence, m.tokenInterval).filter(_.tokenInterval == m.tokenInterval)
-//      val compatibleLabel = sameSpan.filter(_.labels.contains(m.label))
-//      if (compatibleLabel.isEmpty) {
-//        localState = localState.updated(Seq(m))
-//      }
-//    }
-//    // the almost equivalent of `allMentions` but not filtering for _.keep
-//    localState.lookUpTable.values.toStream.flatten.distinct.toVector
-//  }
+  
 
 
   def addAttachments(mentions: Seq[Mention], state: State): Seq[Mention] = {
