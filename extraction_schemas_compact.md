@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `4.1.6`
 
-Document generation timestamp (UTC): `2022-05-06 22:47:29.931379`
+Document generation timestamp (UTC): `2022-05-20 18:22:03.212517`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -138,7 +138,7 @@ Extractions
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Rubble|Location) ()
+          - target (Location|Rubble) ()
 
         - Close
           - [target] (Infrastructure|DemPron) (?)
@@ -161,7 +161,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Person|Item|EventLike|Victim|PuzzleConcept) ()
+            - exists (PuzzleConcept|Person|EventLike|Victim|Item) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -214,7 +214,7 @@ Extractions
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Move|Entity) ()
+              - topic (Entity|Move) ()
               - [location] (Location) (?)
 
             - [QuestionParticle]
@@ -223,7 +223,7 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Need|Action) ()
+              - topic (Action|Need) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
 
@@ -248,7 +248,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoom|ThreatSign|ThreatRoomMarker) ()
+                - threat (ThreatSign|ThreatRoomMarker|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -270,11 +270,11 @@ Extractions
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Deictic|Location|Entity) ()
+            - target (Deictic|Entity|Location) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Location|Entity) (?)
+            - [target] (Entity|Location) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -289,7 +289,7 @@ Extractions
 
         - RescueInteractions
           - Save
-            - target (Person|Victim|Entity) ()
+            - target (Entity|Person|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -309,7 +309,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (Entity|Item|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
