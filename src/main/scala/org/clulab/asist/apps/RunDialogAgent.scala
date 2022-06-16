@@ -34,6 +34,7 @@ object RunDialogAgent extends App {
     "",
     "-v         : Set the TA3 version number of reprocessed metadata files.",
     "             If not set, existing TA3 version numbers are incremented by 1",
+    "--nochat   : Exclude Minecraft Chat messages from processing",
     "inputfile  : supported file extensions are .vtt and .metadata",
     "              (also handles directories containing files with those extensions)",
     "outputfile : Processed file input will be written here.",
