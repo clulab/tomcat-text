@@ -29,6 +29,7 @@ import scala.util.{Failure, Success}
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
+  val nochat: Boolean = false
 ) extends DialogAgent with LazyLogging {
 
   // get rule engine lazy init out of the way
@@ -221,8 +222,8 @@ object MetadataReport extends LazyLogging {
     logger.info("")
     logger.info(report.title)
     logger.info("Messages read:")
-    logger.info(s"  Chat: ${report.read_chat}")
     logger.info(s"  ASR: ${report.read_asr}")
+    logger.info(s"  Chat: ${report.read_chat}")
     logger.info(s"  Trial start: ${report.read_trial_start}")
     logger.info(s"  Trial stop: ${report.read_trial_stop}")
     logger.info(s"  Rollcall request: ${report.read_rollcall}")
@@ -255,7 +256,7 @@ object MetadataFileProcessor extends LazyLogging {
   def apply(
     fileName: String,
     printWriter: Option[PrintWriter],
-    agent: DialogAgent
+    agent: DialogAgentFile
   ): Option[MetadataReport] = {
     logger.info("")
     logger.info(s"processing '${fileName}' ...")
@@ -282,7 +283,7 @@ object MetadataFileProcessor extends LazyLogging {
   private def processLines(
     lineIterator: Iterator[String],
     printWriter: Option[PrintWriter],
-    agent: DialogAgent,
+    agent: DialogAgentFile,
     report: MetadataReport
   ): MetadataReport = if(!lineIterator.hasNext) {
     val final_report = report.copy(
@@ -306,7 +307,7 @@ object MetadataFileProcessor extends LazyLogging {
 
   private def processLine(
     printWriter: Option[PrintWriter],
-    agent: DialogAgent,
+    agent: DialogAgentFile,
     line: String,
     previous_report: MetadataReport
   ): MetadataReport = {
@@ -328,16 +329,19 @@ object MetadataFileProcessor extends LazyLogging {
           written_dialog_agent = report.written_dialog_agent + 1
         )
       case ChatMessage.topic =>
-        logger.info(s"line ${report.lines_read} topic = ${topic}")
-        ChatMessage(line).foreach(chat => {
-          val msg = DialogAgentMessage(source_type, topic, chat, agent)
-          val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
-          printWriter.foreach(_.write(json))
-        })
-        report.copy(
-          read_chat = report.read_chat + 1,
-          written_dialog_agent = report.written_dialog_agent + 1
-        )
+        if(agent.nochat) report 
+        else {
+          logger.info(s"line ${report.lines_read} topic = ${topic}")
+          ChatMessage(line).foreach(chat => {
+            val msg = DialogAgentMessage(source_type, topic, chat, agent)
+            val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
+            printWriter.foreach(_.write(json))
+          })
+          report.copy(
+            read_chat = report.read_chat + 1,
+            written_dialog_agent = report.written_dialog_agent + 1
+          )
+        }
       case RollcallRequestMessage.topic =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         RollcallRequestMessage(line).foreach(request => {

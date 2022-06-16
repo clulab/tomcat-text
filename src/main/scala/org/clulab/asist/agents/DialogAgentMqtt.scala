@@ -21,6 +21,7 @@ import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
+  val nochat: Boolean = false
 ) extends DialogAgent
     with LazyLogging
     with MessageBusClientListener { 
@@ -28,22 +29,30 @@ class DialogAgentMqtt(
   // CommonMsg source type for all MQTT publishing
   private val source_type: String = "message_bus"
 
+  // Message Bus subscriptions
+  val chatMaybe: List[String] = 
+    PartialFunction.condOpt(ChatMessage.topic){case x if !nochat => x}.toList
+
+  val subscriptions: List[String] = List(
+    AsrMessage.topic,
+    RollcallRequestMessage.topic,
+    TrialMessage.topic
+  ) ++ chatMaybe
+
+  // Message Bus publications
+  val publications: List[String] = List(
+    DialogAgentMessage.topic,
+    HeartbeatMessage.topic,
+    RollcallResponseMessage.topic,
+    VersionInfoMessage.topic
+  )
+
   // communication with the MQTT Message Bus
   private val bus: MessageBusClient = new MessageBusClient(
     host,
     port,
-    subscriptions = List(
-      AsrMessage.topic,
-      ChatMessage.topic,
-      RollcallRequestMessage.topic,
-      TrialMessage.topic
-    ).sorted,
-    publications = List(
-      DialogAgentMessage.topic,
-      HeartbeatMessage.topic,
-      RollcallResponseMessage.topic,
-      VersionInfoMessage.topic
-    ).sorted,
+    subscriptions.sorted,
+    publications.sorted,
     this
   )
 
