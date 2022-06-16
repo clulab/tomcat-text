@@ -33,6 +33,8 @@ object HeartbeatMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
 
+  val topic: String = config.getString("Heartbeat.topic")
+
   val header: CommonHeader = CommonHeader(
     message_type = config.getString("Heartbeat.header.message_type"),
   )
@@ -51,6 +53,21 @@ object HeartbeatMessage {
    *  @return A new HeartbeatMessage based on default values
    */
   def apply(): HeartbeatMessage = HeartbeatMessage(header, msg, data)
+
+
+  /** Build with custom data
+   *  @return A new default HeartbeatMessage with custom data
+   */
+  def apply(
+    state: String,
+    active: Boolean,
+    status: String
+  ): HeartbeatMessage = HeartbeatMessage(
+    header,
+    msg,
+    new HeartbeatMessageData(state, active, status)
+  )
+
 
   /** Build from a trial message
    *  @param trial A trial message
