@@ -13,7 +13,7 @@ import org.clulab.asist.agents.JsonUtils
 //  part of the AsrMessage class
 case class AsrMessageData(
   participant_id: String = "N/A", 
-  id: String = "N/A", 
+  id: String = "N/A",   // ASR message ID
   text: String = "N/A"
 )
 

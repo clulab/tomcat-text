@@ -9,7 +9,7 @@ import java.time.Clock
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
  *  Testbed specification:
- *  ???
+ *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/MessageSpecs/Agent/rollcall/agent_rollcall_response.json
  *
  */
 
