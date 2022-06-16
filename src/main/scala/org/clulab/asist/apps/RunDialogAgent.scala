@@ -64,7 +64,7 @@ object RunDialogAgent extends App {
    */
   @tailrec
   def nochat(arglist: List[String]): Boolean = arglist match {
-    case "-nochat"::l => true
+    case "--nochat"::l => true
     case head::l => nochat(l)
     case _ => false
   }
