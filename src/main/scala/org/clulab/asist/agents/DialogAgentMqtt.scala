@@ -47,6 +47,23 @@ class DialogAgentMqtt(
     this
   )
 
+  // send heartbeat advising of initialization
+  val init_heartbeat = HeartbeatMessage(
+    HeartbeatMessage("info", false, "Initializing."),
+    Clock.systemUTC.instant.toString
+  )
+
+  bus.publish(
+    HeartbeatMessage.topic,
+    JsonUtils.writeJsonNoNulls(
+      init_heartbeat
+    )
+  )
+  logger.info("init heartbeat published")
+
+  // get rule engine lazy init out of the way
+  startEngine()
+
   // Heartbeat message publication on a fixed interval
   private val heartbeatProducer = new HeartbeatProducer(bus)
 
