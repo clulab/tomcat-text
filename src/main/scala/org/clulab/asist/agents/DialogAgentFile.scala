@@ -354,7 +354,7 @@ object MetadataFileProcessor extends LazyLogging {
           case Some(trial) => 
             if(TrialMessage.isStart(trial)) { // Trial Start
               logger.info(s"line ${report.lines_read} topic = ${topic}.start")
-              val msg = VersionInfo(trial)
+              val msg = VersionInfoMessage(trial)
               val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
               printWriter.foreach(_.write(json))
               report.copy(

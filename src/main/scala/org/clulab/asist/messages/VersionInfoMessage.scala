@@ -17,47 +17,48 @@ import java.time.Clock
  *  start message is received
  */
 
-// Part of the VersionInfo class 
-case class VersionInfoDataConfig(
+// Part of the VersionInfoMessage class 
+case class VersionInfoMessageDataConfig(
   name: String = "N/A",
   value: String = "N/A",
 )
 
-// Part of the VersionInfo class 
-case class VersionInfoDataMessageChannel(
+// Part of the VersionInfoMessage class 
+case class VersionInfoMessageDataTopic(
   topic: String = "N/A",
   message_type: String = "N/A",
   sub_type: String = "N/A",
 )
 
-// Part of the VersionInfo class 
-case class VersionInfoData(
+// Part of the VersionInfoMessage class 
+case class VersionInfoMessageData(
   agent_name: String = "N/A",
   owner: String = "N/A",
   version: String = "N/A",
   source: Seq[String] = List(),
   dependencies: Seq[String] = List(),
-  config: Seq[VersionInfoDataConfig] = List(),
-  publishes: Seq[VersionInfoDataMessageChannel] = List(),
-  subscribes: Seq[VersionInfoDataMessageChannel] = List()
+  config: Seq[VersionInfoMessageDataConfig] = List(),
+  publishes: Seq[VersionInfoMessageDataTopic] = List(),
+  subscribes: Seq[VersionInfoMessageDataTopic] = List()
 )
 
 // published on the Message Bus
-case class VersionInfo (
+case class VersionInfoMessage (
   topic: String = "N/A",
   header: CommonHeader,
   msg: CommonMsg,
-  data: VersionInfoData
+  data: VersionInfoMessageData
 ) 
 
 // member functions
-object VersionInfo 
+object VersionInfoMessage 
 {
   // remember config settings
   private val config: Config = ConfigFactory.load()
   private val testbed = config.getString("VersionInfo.testbed")
   private val dataSource = s"${testbed}:${BuildInfo.version}"
 
+  // publication topic
   val topic: String = config.getString("VersionInfo.topic")
 
   val header: CommonHeader = CommonHeader(
@@ -68,7 +69,7 @@ object VersionInfo
     sub_type = config.getString("VersionInfo.msg.sub_type"),
     version = BuildInfo.version,
   )
-  val data: VersionInfoData = VersionInfoData(
+  val data: VersionInfoMessageData = VersionInfoMessageData(
     agent_name = config.getString("VersionInfo.data.agent_name"),
     owner = config.getString("VersionInfo.data.owner"),
     version = BuildInfo.version,
@@ -76,49 +77,49 @@ object VersionInfo
     dependencies = List(),
     config = List(),
     publishes = List(
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("DialogAgent.topic"),
         config.getString("DialogAgent.header.message_type"),
         config.getString("DialogAgent.msg.sub_type")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("Heartbeat.topic"),
         config.getString("Heartbeat.header.message_type"),
         config.getString("Heartbeat.msg.sub_type")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("RollcallResponse.topic"),
         config.getString("RollcallResponse.header.message_type"),
         config.getString("RollcallResponse.msg.sub_type")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("VersionInfo.topic"),
         config.getString("VersionInfo.header.message_type"),
         config.getString("VersionInfo.msg.sub_type")
       )
     ),
     subscribes = List(
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("Asr.topic"),
         config.getString("Asr.header.message_type"),
         config.getString("Asr.msg.sub_type")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("Chat.topic"),
         config.getString("Chat.header.message_type"),
         config.getString("Chat.msg.sub_type")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("RollcallRequest.topic"),
         config.getString("RollcallRequest.header.message_type"),
         config.getString("RollcallRequest.msg.sub_type")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("Trial.topic"),
         config.getString("Trial.header.message_type"),
         config.getString("Trial.msg.sub_type.trial_start")
       ),
-      VersionInfoDataMessageChannel(
+      VersionInfoMessageDataTopic(
         config.getString("Trial.topic"),
         config.getString("Trial.header.message_type"),
         config.getString("Trial.msg.sub_type.trial_stop")
@@ -129,9 +130,9 @@ object VersionInfo
   /** Build from Trial Message
    *  @param trial A testbed Trial object
    */
-  def apply(trialMessage: TrialMessage): VersionInfo = {
+  def apply(trialMessage: TrialMessage): VersionInfoMessage = {
     val timestamp = Clock.systemUTC.instant.toString
-    VersionInfo(
+    VersionInfoMessage(
       topic,
       header.copy(
         timestamp = timestamp,

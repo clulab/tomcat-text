@@ -42,7 +42,7 @@ class DialogAgentMqtt(
       DialogAgentMessage.topic,
       HeartbeatMessage.topic,
       RollcallResponseMessage.topic,
-      VersionInfo.topic
+      VersionInfoMessage.topic
     ).sorted,
     this
   )
@@ -119,7 +119,7 @@ class DialogAgentMqtt(
             bus.publish(
               TrialMessage.topic, 
               JsonUtils.writeJsonNoNulls(
-                VersionInfo(trial)
+                VersionInfoMessage(trial)
                   .copy(topic = "N/A")
               )
             )
