@@ -9,7 +9,7 @@ import java.time.Clock
  *  Authors:  Joseph Astier, Adarsh Pyarelal
  *
  *  Testbed specification:
- *  ???
+ *  https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/MessageSpecs/Agent/rollcall/agent_rollcall_response.json
  *
  */
 
@@ -35,7 +35,9 @@ object RollcallResponseMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
 
+  // publication topic
   val topic: String = config.getString("RollcallResponse.topic")
+
   val header: CommonHeader = CommonHeader(
     message_type = config.getString("RollcallResponse.header.message_type"),
   )

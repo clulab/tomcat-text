@@ -37,7 +37,7 @@
       },
       {
         "message_type": "chat",
-        "sub_type": "Event:Chat",
+        "sub_type": "event:chat",
         "topic": "minecraft/chat"
       },
       {

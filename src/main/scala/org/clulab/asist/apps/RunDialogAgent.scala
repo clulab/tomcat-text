@@ -27,10 +27,10 @@ object RunDialogAgent extends App {
     "",
     "usage:",
     "",
-    "  mqtt <host> <port>",
+    "  mqtt <host> <port> [-nochat]",
     "  stdin",
-    "  file <inputfile> <outputfile>",
-    "  reprocess <inputdir> <outputdir> [-v ta3_version_number] }",
+    "  file <inputfile> <outputfile> [-nochat]",
+    "  reprocess <inputdir> <outputdir> [-v ta3_version_number] [-nochat]}",
     "",
     "-v         : Set the TA3 version number of reprocessed metadata files.",
     "             If not set, existing TA3 version numbers are incremented by 1",
@@ -58,20 +58,30 @@ object RunDialogAgent extends App {
     case _ => None
   }
 
+  /** Check if the 'nochat' flag is set
+   * @param argList A flat list of keys and values
+   * @return true if the key is found
+   */
+  @tailrec
+  def nochat(arglist: List[String]): Boolean = arglist match {
+    case "--nochat"::l => true
+    case head::l => nochat(l)
+    case _ => false
+  }
+
   /** Create a Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
    * @return A DialogAgent running in the mode with the args
    */
   args.toList match {
     case ("mqtt"::host::port::l) => 
-      new DialogAgentMqtt(host, port)
+      new DialogAgentMqtt(host, port, nochat(l))
     case ("file"::infile::outfile::l) =>
-      new DialogAgentFile(infile, outfile)
+      new DialogAgentFile(infile, outfile, nochat(l))
     case ("stdin"::l) =>
       new DialogAgentStdin
     case ("reprocess"::indir::outdir::l) =>
-      val ta3  = ta3Version(l)
-      new DialogAgentReprocessor(indir, outdir, ta3)
+      new DialogAgentReprocessor(indir, outdir, ta3Version(l))
     case _ =>
       usageText.foreach(println)
   }

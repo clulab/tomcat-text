@@ -13,7 +13,7 @@ import org.clulab.asist.agents.JsonUtils
 //  part of the AsrMessage class
 case class AsrMessageData(
   participant_id: String = "N/A", 
-  id: String = "N/A", 
+  id: String = "N/A",   // ASR message ID
   text: String = "N/A"
 )
 
@@ -27,6 +27,9 @@ case class AsrMessage(
 // member functions
 object AsrMessage{
   private val config: Config = ConfigFactory.load()
+
+  // subscription topic
+  val topic = config.getString("Asr.topic")
 
   // subscription filter
   private val header_message_type: String = 

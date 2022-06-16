@@ -21,6 +21,7 @@ import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 class DialogAgentMqtt(
   val host: String = "",
   val port: String = "",
+  val nochat: Boolean = false
 ) extends DialogAgent
     with LazyLogging
     with MessageBusClientListener { 
@@ -28,24 +29,48 @@ class DialogAgentMqtt(
   // CommonMsg source type for all MQTT publishing
   private val source_type: String = "message_bus"
 
+  // Message Bus subscriptions
+  val chatMaybe: List[String] = 
+    PartialFunction.condOpt(ChatMessage.topic){case x if !nochat => x}.toList
+
+  val subscriptions: List[String] = List(
+    AsrMessage.topic,
+    RollcallRequestMessage.topic,
+    TrialMessage.topic
+  ) ++ chatMaybe
+
+  // Message Bus publications
+  val publications: List[String] = List(
+    DialogAgentMessage.topic,
+    HeartbeatMessage.topic,
+    RollcallResponseMessage.topic,
+    VersionInfoMessage.topic
+  )
+
   // communication with the MQTT Message Bus
   private val bus: MessageBusClient = new MessageBusClient(
     host,
     port,
-    subscriptions = List(
-      topicSubAsr,
-      topicSubChat,
-      topicSubRollcallRequest,
-      topicSubTrial
-    ).sorted,
-    publications = List(
-      topicPubDialogAgent,
-      topicPubHeartbeat,
-      topicPubRollcallResponse,
-      topicPubVersionInfo
-    ).sorted,
+    subscriptions.sorted,
+    publications.sorted,
     this
   )
+
+  // send heartbeat advising of initialization
+  bus.publish(
+    HeartbeatMessage.topic,
+    JsonUtils.writeJsonNoNulls(
+      HeartbeatMessage(
+        HeartbeatMessage("info", false, "Initializing."),
+        Clock.systemUTC.instant.toString
+      )
+    )
+  )
+
+  logger.info("init heartbeat published")
+
+  // get rule engine lazy init out of the way
+  startEngine()
 
   // Heartbeat message publication on a fixed interval
   private val heartbeatProducer = new HeartbeatProducer(bus)
@@ -65,45 +90,45 @@ class DialogAgentMqtt(
 
     logger.info(s"Read # ${count}: read ${topic}")
     topic match {
-      case `topicSubAsr` => 
+      case AsrMessage.topic => 
         AsrMessage(text).foreach(asr =>
           bus.publish (
-            topicPubDialogAgent, 
+            DialogAgentMessage.topic, 
             JsonUtils.writeJsonNoNulls(
               DialogAgentMessage(source_type, topic, asr, this)
                 .copy(topic = "N/A")  // do not publish topic
             )
           )
         )
-      case `topicSubChat` => 
+      case ChatMessage.topic => 
         ChatMessage(text).foreach(chat =>
           bus.publish (
-            topicPubDialogAgent, 
+            DialogAgentMessage.topic, 
             JsonUtils.writeJsonNoNulls(
               DialogAgentMessage(source_type, topic, chat, this)
                 .copy(topic = "N/A")
             )
           )
         )
-      case `topicSubRollcallRequest` => 
+      case RollcallRequestMessage.topic => 
         RollcallRequestMessage(text).foreach(request =>
           bus.publish(
-            topicPubRollcallResponse,
+            RollcallRequestMessage.topic,
             JsonUtils.writeJsonNoNulls(
               RollcallResponseMessage(uptimeSeconds, request)
                 .copy(topic = "N/A")
             )
           )
         )
-      case `topicSubTrial` => 
+      case TrialMessage.topic=> 
         TrialMessage(text).foreach(trial => 
           if(TrialMessage.isStart(trial)) { // Trial Start
             logger.info("trial start")
             heartbeatProducer.set_trial_info(trial)
             bus.publish(
-              topicPubVersionInfo, 
+              TrialMessage.topic, 
               JsonUtils.writeJsonNoNulls(
-                VersionInfo(trial)
+                VersionInfoMessage(trial)
                   .copy(topic = "N/A")
               )
             )

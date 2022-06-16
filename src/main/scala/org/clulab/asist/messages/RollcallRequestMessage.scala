@@ -31,6 +31,9 @@ case class RollcallRequestMessage (
 object RollcallRequestMessage {
   private val config: Config = ConfigFactory.load()
 
+  // subscription topic
+  val topic = config.getString("RollcallRequest.topic")
+
   // subscription filter
   private val header_message_type: String =
     config.getString("RollcallRequest.header.message_type")

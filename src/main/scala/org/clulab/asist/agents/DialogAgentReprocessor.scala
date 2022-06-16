@@ -31,11 +31,11 @@ import scala.io.Source
  * a new DialogAgentMessageData struct with new extractions.  This replaces
  * the error field to transform the metadata into DialogAgentMessage metadata.
  *
- * VersionInfo metadata with the DialogAgent topic are not reprocessed or 
- * copied to the output file.
+ * VersionInfoMessage metadata with the DialogAgent topic are not reprocessed 
+ * or copied to the output file.
  *
  * Trial Start metadata are copied to the output file followed by a new
- * VersionInfo metadata message with the DialogAgent topic.
+ * VersionInfoMessage metadata message with the DialogAgent topic.
  *
  * If a .metadata file ends with Vers-<N>.metadata, the corresponding file
  * in the output directory should end with Vers-<N+1>.metadata (instead of
@@ -51,6 +51,9 @@ class DialogAgentReprocessor (
 ) extends DialogAgent with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version} running")
+
+  // get rule engine lazy init out of the way
+  startEngine()
 
   // for the JSON extractor
   implicit val formats = org.json4s.DefaultFormats
@@ -74,7 +77,7 @@ class DialogAgentReprocessor (
     iter: Iterator[String]
   ): Boolean = {
     if(!iter.hasNext) false
-    else if(readTopic(iter.next) == topicPubDialogAgent) true
+    else if(readTopic(iter.next) == DialogAgentMessage.topic) true
     else withDialogAgentMetadata(fileName, iter)
   }
 
@@ -120,12 +123,12 @@ class DialogAgentReprocessor (
     line: String,
     pw: Option[PrintWriter]
   ): Unit = readTopic(line) match {
-    case `topicSubTrial` => 
+    case TrialMessage.topic => 
       processTrialMetadata(line, pw)
-    case `topicPubDialogAgent` => 
+    case DialogAgentMessage.topic => 
       reprocessDialogAgentMetadata(line, pw)
-    case `topicPubVersionInfo` => 
-      // Delete existing DialogAgent-generated VersionInfo
+    case VersionInfoMessage.topic => 
+      // Delete existing DialogAgent-generated VersionInfoMessage
     case _ => 
       // Transcribe cases we don't produce.  
       // Also transcribe the Rollcall Response, which we do not reprocess
@@ -153,23 +156,25 @@ class DialogAgentReprocessor (
               "@timestamp",trialMessage.msg.timestamp
             )
 
-            // VersionInfo struct
-            val versionInfo:VersionInfo = VersionInfo(trialMessage)
+            // VersionInfoMessage struct
+            val versionInfoMessage:VersionInfoMessage = 
+              VersionInfoMessage(trialMessage)
 
             // JValue representation of struct
-            val versionInfoJValue:JValue = Extraction.decompose(versionInfo)
+            val versionInfoMessageJValue:JValue =
+              Extraction.decompose(versionInfoMessage)
 
             // Merge of @timestamp into JValue 
             val outputJValue:JValue = 
-              versionInfoJValue.merge(metadataTimestamp)
+              versionInfoMessageJValue.merge(metadataTimestamp)
 
             // Write JValue to JSON
-            val versionInfoJson:String = 
+            val versionInfoMessageJson:String = 
               JsonUtils.writeJsonNoNulls(outputJValue) + "\n"
 
             // write the version info message
             // TEST
-            pw.foreach(_.write(versionInfoJson))
+            pw.foreach(_.write(versionInfoMessageJson))
           }
         case _ =>
       } 

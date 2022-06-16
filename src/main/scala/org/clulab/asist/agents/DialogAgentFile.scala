@@ -29,7 +29,11 @@ import scala.util.{Failure, Success}
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
+  val nochat: Boolean = false
 ) extends DialogAgent with LazyLogging {
+
+  // get rule engine lazy init out of the way
+  startEngine()
 
   // First set up the output stream
   if (outputFilename == "/dev/null") {
@@ -218,8 +222,8 @@ object MetadataReport extends LazyLogging {
     logger.info("")
     logger.info(report.title)
     logger.info("Messages read:")
-    logger.info(s"  Chat: ${report.read_chat}")
     logger.info(s"  ASR: ${report.read_asr}")
+    logger.info(s"  Chat: ${report.read_chat}")
     logger.info(s"  Trial start: ${report.read_trial_start}")
     logger.info(s"  Trial stop: ${report.read_trial_stop}")
     logger.info(s"  Rollcall request: ${report.read_rollcall}")
@@ -252,7 +256,7 @@ object MetadataFileProcessor extends LazyLogging {
   def apply(
     fileName: String,
     printWriter: Option[PrintWriter],
-    agent: DialogAgent
+    agent: DialogAgentFile
   ): Option[MetadataReport] = {
     logger.info("")
     logger.info(s"processing '${fileName}' ...")
@@ -279,7 +283,7 @@ object MetadataFileProcessor extends LazyLogging {
   private def processLines(
     lineIterator: Iterator[String],
     printWriter: Option[PrintWriter],
-    agent: DialogAgent,
+    agent: DialogAgentFile,
     report: MetadataReport
   ): MetadataReport = if(!lineIterator.hasNext) {
     val final_report = report.copy(
@@ -303,7 +307,7 @@ object MetadataFileProcessor extends LazyLogging {
 
   private def processLine(
     printWriter: Option[PrintWriter],
-    agent: DialogAgent,
+    agent: DialogAgentFile,
     line: String,
     previous_report: MetadataReport
   ): MetadataReport = {
@@ -313,7 +317,7 @@ object MetadataFileProcessor extends LazyLogging {
       lines_read = previous_report.lines_read +1
     )
     topic match {
-      case agent.topicSubAsr =>
+      case AsrMessage.topic =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         AsrMessage(line).foreach(asr => {
           val msg = DialogAgentMessage(source_type, topic, asr, agent)
@@ -324,18 +328,21 @@ object MetadataFileProcessor extends LazyLogging {
           read_asr = report.read_asr + 1,
           written_dialog_agent = report.written_dialog_agent + 1
         )
-      case agent.topicSubChat =>
-        logger.info(s"line ${report.lines_read} topic = ${topic}")
-        ChatMessage(line).foreach(chat => {
-          val msg = DialogAgentMessage(source_type, topic, chat, agent)
-          val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
-          printWriter.foreach(_.write(json))
-        })
-        report.copy(
-          read_chat = report.read_chat + 1,
-          written_dialog_agent = report.written_dialog_agent + 1
-        )
-      case agent.topicSubRollcallRequest =>
+      case ChatMessage.topic =>
+        if(agent.nochat) report 
+        else {
+          logger.info(s"line ${report.lines_read} topic = ${topic}")
+          ChatMessage(line).foreach(chat => {
+            val msg = DialogAgentMessage(source_type, topic, chat, agent)
+            val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
+            printWriter.foreach(_.write(json))
+          })
+          report.copy(
+            read_chat = report.read_chat + 1,
+            written_dialog_agent = report.written_dialog_agent + 1
+          )
+        }
+      case RollcallRequestMessage.topic =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         RollcallRequestMessage(line).foreach(request => {
           val msg = RollcallResponseMessage(agent.uptimeSeconds, request)
@@ -346,12 +353,12 @@ object MetadataFileProcessor extends LazyLogging {
           read_rollcall = report.read_rollcall + 1,
           written_rollcall = report.written_rollcall + 1
         )
-      case agent.topicSubTrial =>
+      case TrialMessage.topic =>
         TrialMessage(line) match {
           case Some(trial) => 
             if(TrialMessage.isStart(trial)) { // Trial Start
               logger.info(s"line ${report.lines_read} topic = ${topic}.start")
-              val msg = VersionInfo(trial)
+              val msg = VersionInfoMessage(trial)
               val json = JsonUtils.writeJsonNoNulls(msg) + "\n"
               printWriter.foreach(_.write(json))
               report.copy(
