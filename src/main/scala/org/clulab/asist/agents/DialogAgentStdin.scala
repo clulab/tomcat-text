@@ -18,6 +18,9 @@ class DialogAgentStdin extends DialogAgent {
 
   print("\n> ")
 
+  // get rule engine lazy init out of the way
+  startEngine()
+
   // Console input
   val input = new Scanner(System.in)
 

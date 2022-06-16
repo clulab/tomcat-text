@@ -52,6 +52,9 @@ class DialogAgentReprocessor (
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version} running")
 
+  // get rule engine lazy init out of the way
+  startEngine()
+
   // for the JSON extractor
   implicit val formats = org.json4s.DefaultFormats
 

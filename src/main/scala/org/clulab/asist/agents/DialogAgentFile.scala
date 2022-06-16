@@ -31,6 +31,9 @@ class DialogAgentFile(
   val outputFilename: String = "",
 ) extends DialogAgent with LazyLogging {
 
+  // get rule engine lazy init out of the way
+  startEngine()
+
   // First set up the output stream
   if (outputFilename == "/dev/null") {
     process_files(None)

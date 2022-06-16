@@ -32,17 +32,19 @@ class DialogAgent (
   val topicSubRollcallRequest = config.getString("RollcallRequest.topic")
   val topicSubTrial = config.getString("Trial.topic")
   val topicPubDialogAgent = config.getString("DialogAgent.topic")
-  val topicPubHeartbeat = config.getString("Heartbeat.topic")
+  val topicPubHeartbeat = HeartbeatMessage.topic
   val topicPubRollcallResponse = config.getString("RollcallResponse.topic")
   val topicPubVersionInfo = config.getString("VersionInfo.topic")
 
-  // Run the rule engine to get its lazy init out of the way
-  logger.info("Initializing Extractor (this may take a few seconds) ...")
-  engine.extractFrom("green victim")
-  logger.info("Extractor initialized.")
-
   // Used to compute agent uptime
   val runtimeStart:Long = Clock.systemUTC.millis
+
+  // Run the rule engine to get its lazy init out of the way
+  def startEngine(){
+    logger.info("Initializing Extractor (this may take a few seconds) ...")
+    engine.extractFrom("I see a green victim")
+    logger.info("Extractor initialized.")
+  }
 
   /**
    * @return How long the agent has been running in seconds
