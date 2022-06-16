@@ -1,8 +1,6 @@
 package org.clulab.asist.agents
 
-import ai.lum.common.ConfigFactory
 import java.time.Clock
-import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages._
@@ -23,18 +21,6 @@ import scala.util.control.NonFatal
 class DialogAgent (
   val engine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
-
-  val config: Config = ConfigFactory.load()
-
-  // Message Bus communication
-  val topicSubAsr = config.getString("Asr.topic")
-  val topicSubChat = config.getString("Chat.topic")
-  val topicSubRollcallRequest = config.getString("RollcallRequest.topic")
-  val topicSubTrial = config.getString("Trial.topic")
-  val topicPubDialogAgent = config.getString("DialogAgent.topic")
-  val topicPubHeartbeat = HeartbeatMessage.topic
-  val topicPubRollcallResponse = config.getString("RollcallResponse.topic")
-  val topicPubVersionInfo = config.getString("VersionInfo.topic")
 
   // Used to compute agent uptime
   val runtimeStart:Long = Clock.systemUTC.millis

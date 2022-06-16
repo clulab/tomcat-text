@@ -316,7 +316,7 @@ object MetadataFileProcessor extends LazyLogging {
       lines_read = previous_report.lines_read +1
     )
     topic match {
-      case agent.topicSubAsr =>
+      case AsrMessage.topic =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         AsrMessage(line).foreach(asr => {
           val msg = DialogAgentMessage(source_type, topic, asr, agent)
@@ -327,7 +327,7 @@ object MetadataFileProcessor extends LazyLogging {
           read_asr = report.read_asr + 1,
           written_dialog_agent = report.written_dialog_agent + 1
         )
-      case agent.topicSubChat =>
+      case ChatMessage.topic =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         ChatMessage(line).foreach(chat => {
           val msg = DialogAgentMessage(source_type, topic, chat, agent)
@@ -338,7 +338,7 @@ object MetadataFileProcessor extends LazyLogging {
           read_chat = report.read_chat + 1,
           written_dialog_agent = report.written_dialog_agent + 1
         )
-      case agent.topicSubRollcallRequest =>
+      case RollcallRequestMessage.topic =>
         logger.info(s"line ${report.lines_read} topic = ${topic}")
         RollcallRequestMessage(line).foreach(request => {
           val msg = RollcallResponseMessage(agent.uptimeSeconds, request)
@@ -349,7 +349,7 @@ object MetadataFileProcessor extends LazyLogging {
           read_rollcall = report.read_rollcall + 1,
           written_rollcall = report.written_rollcall + 1
         )
-      case agent.topicSubTrial =>
+      case TrialMessage.topic =>
         TrialMessage(line) match {
           case Some(trial) => 
             if(TrialMessage.isStart(trial)) { // Trial Start

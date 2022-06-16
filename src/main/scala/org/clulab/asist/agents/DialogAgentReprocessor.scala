@@ -77,7 +77,7 @@ class DialogAgentReprocessor (
     iter: Iterator[String]
   ): Boolean = {
     if(!iter.hasNext) false
-    else if(readTopic(iter.next) == topicPubDialogAgent) true
+    else if(readTopic(iter.next) == DialogAgentMessage.topic) true
     else withDialogAgentMetadata(fileName, iter)
   }
 
@@ -123,11 +123,11 @@ class DialogAgentReprocessor (
     line: String,
     pw: Option[PrintWriter]
   ): Unit = readTopic(line) match {
-    case `topicSubTrial` => 
+    case TrialMessage.topic => 
       processTrialMetadata(line, pw)
-    case `topicPubDialogAgent` => 
+    case DialogAgentMessage.topic => 
       reprocessDialogAgentMetadata(line, pw)
-    case `topicPubVersionInfo` => 
+    case VersionInfo.topic => 
       // Delete existing DialogAgent-generated VersionInfo
     case _ => 
       // Transcribe cases we don't produce.  

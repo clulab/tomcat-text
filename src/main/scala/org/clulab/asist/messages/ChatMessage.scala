@@ -27,6 +27,9 @@ case class ChatMessage(
 object ChatMessage{
   private val config: Config = ConfigFactory.load()
 
+  // subscription topic
+  val topic = "Chat.topic"
+
   // subscription filter
   private val header_message_type: String =
     config.getString("Chat.header.message_type")

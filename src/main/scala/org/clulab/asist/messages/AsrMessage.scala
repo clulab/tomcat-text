@@ -28,6 +28,9 @@ case class AsrMessage(
 object AsrMessage{
   private val config: Config = ConfigFactory.load()
 
+  // subscription topic
+  val topic = config.getString("Asr.topic")
+
   // subscription filter
   private val header_message_type: String = 
     config.getString("Asr.header.message_type")

@@ -33,32 +33,31 @@ class DialogAgentMqtt(
     host,
     port,
     subscriptions = List(
-      topicSubAsr,
-      topicSubChat,
-      topicSubRollcallRequest,
-      topicSubTrial
+      AsrMessage.topic,
+      ChatMessage.topic,
+      RollcallRequestMessage.topic,
+      TrialMessage.topic
     ).sorted,
     publications = List(
-      topicPubDialogAgent,
-      topicPubHeartbeat,
-      topicPubRollcallResponse,
-      topicPubVersionInfo
+      DialogAgentMessage.topic,
+      HeartbeatMessage.topic,
+      RollcallResponseMessage.topic,
+      VersionInfo.topic
     ).sorted,
     this
   )
 
   // send heartbeat advising of initialization
-  val init_heartbeat = HeartbeatMessage(
-    HeartbeatMessage("info", false, "Initializing."),
-    Clock.systemUTC.instant.toString
-  )
-
   bus.publish(
     HeartbeatMessage.topic,
     JsonUtils.writeJsonNoNulls(
-      init_heartbeat
+      HeartbeatMessage(
+        HeartbeatMessage("info", false, "Initializing."),
+        Clock.systemUTC.instant.toString
+      )
     )
   )
+
   logger.info("init heartbeat published")
 
   // get rule engine lazy init out of the way
@@ -82,43 +81,43 @@ class DialogAgentMqtt(
 
     logger.info(s"Read # ${count}: read ${topic}")
     topic match {
-      case `topicSubAsr` => 
+      case AsrMessage.topic => 
         AsrMessage(text).foreach(asr =>
           bus.publish (
-            topicPubDialogAgent, 
+            DialogAgentMessage.topic, 
             JsonUtils.writeJsonNoNulls(
               DialogAgentMessage(source_type, topic, asr, this)
                 .copy(topic = "N/A")  // do not publish topic
             )
           )
         )
-      case `topicSubChat` => 
+      case ChatMessage.topic => 
         ChatMessage(text).foreach(chat =>
           bus.publish (
-            topicPubDialogAgent, 
+            DialogAgentMessage.topic, 
             JsonUtils.writeJsonNoNulls(
               DialogAgentMessage(source_type, topic, chat, this)
                 .copy(topic = "N/A")
             )
           )
         )
-      case `topicSubRollcallRequest` => 
+      case RollcallRequestMessage.topic => 
         RollcallRequestMessage(text).foreach(request =>
           bus.publish(
-            topicPubRollcallResponse,
+            RollcallRequestMessage.topic,
             JsonUtils.writeJsonNoNulls(
               RollcallResponseMessage(uptimeSeconds, request)
                 .copy(topic = "N/A")
             )
           )
         )
-      case `topicSubTrial` => 
+      case TrialMessage.topic=> 
         TrialMessage(text).foreach(trial => 
           if(TrialMessage.isStart(trial)) { // Trial Start
             logger.info("trial start")
             heartbeatProducer.set_trial_info(trial)
             bus.publish(
-              topicPubVersionInfo, 
+              TrialMessage.topic, 
               JsonUtils.writeJsonNoNulls(
                 VersionInfo(trial)
                   .copy(topic = "N/A")

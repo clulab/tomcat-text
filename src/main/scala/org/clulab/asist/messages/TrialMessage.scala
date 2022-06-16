@@ -20,6 +20,9 @@ case class TrialMessage (
 object TrialMessage {
   private val config: Config = ConfigFactory.load()
 
+  // subscription topic
+  val topic = "Trial.topic"
+
   // state flags
   private val trial_start: String = 
     config.getString("Trial.msg.sub_type.trial_start")

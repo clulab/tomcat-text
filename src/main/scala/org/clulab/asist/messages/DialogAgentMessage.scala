@@ -68,6 +68,7 @@ object DialogAgentMessage {
   // remember config settings
   private val config: Config = ConfigFactory.load()
 
+  // publication topic
   val topic: String = config.getString("DialogAgent.topic")
 
   val header: CommonHeader = CommonHeader(
