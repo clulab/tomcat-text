@@ -21,7 +21,7 @@ object TrialMessage {
   private val config: Config = ConfigFactory.load()
 
   // subscription topic
-  val topic = "Trial.topic"
+  val topic = config.getString("Trial.topic")
 
   // state flags
   private val trial_start: String = 

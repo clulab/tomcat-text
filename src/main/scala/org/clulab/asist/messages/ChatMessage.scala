@@ -28,7 +28,7 @@ object ChatMessage{
   private val config: Config = ConfigFactory.load()
 
   // subscription topic
-  val topic = "Chat.topic"
+  val topic = config.getString("Chat.topic")
 
   // subscription filter
   private val header_message_type: String =

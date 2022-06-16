@@ -32,7 +32,7 @@ object RollcallRequestMessage {
   private val config: Config = ConfigFactory.load()
 
   // subscription topic
-  val topic = "RollcallRequest.topic"
+  val topic = config.getString("RollcallRequest.topic")
 
   // subscription filter
   private val header_message_type: String =
