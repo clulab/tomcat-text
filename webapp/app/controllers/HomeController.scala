@@ -51,6 +51,7 @@ class HomeController @Inject() (cc: ControllerComponents)
   println("[TomcatRuleEngine] Initializing the TomcatRuleEngine ...")
   val engine = new TomcatRuleEngine()
   val agent = new DialogAgent(engine)
+  agent.startEngine() // get lazy init out of the way
   println("[TomcatRuleEngine] Completed initialization ...")
   // -------------------------------------------------
 
