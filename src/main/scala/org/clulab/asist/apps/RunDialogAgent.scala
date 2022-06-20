@@ -26,22 +26,23 @@ import java.io.File
 
 object RunDialogAgent extends App {
 
-    case class Arguments(inputDir: String = "",
-                         outputDir: String = "")
+    case class Arguments(
+      nochat: Boolean = false
+    )
 
     val parser = new scopt.OptionParser[Arguments]("Parsing application") {
 
-        opt[String]('i', "inputDir").
-            required().valueName("").action((value, arguments) => arguments.copy(inputDir = value))
+        head("scopt", "4.0.1")
 
-        opt[String]('o', "outputDir").
-            required().valueName("").action((value, arguments) => arguments.copy(outputDir = value))
+        opt[Unit]("nochat")
+          .action((_, c) => c.copy(nochat = true))
+          .text("nochat is a flag"),
+
 
     }
 
     def run(arguments: Arguments): Unit = {
-        println("Input Dir:" + arguments.inputDir)
-        println("Output Dir:" + arguments.outputDir)
+        println("nochat boolean:" + arguments.nochat)
     }
 
     parser.parse(args, Arguments()) match {
