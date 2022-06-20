@@ -26,7 +26,13 @@ import java.io.File
 
 object RunDialogAgent extends App {
 
+    case class Mqtt(
+      host: String, 
+      port: String
+    )
+
     case class Arguments(
+      mqtt: Option[Mqtt] = None,
       nochat: Boolean = false
     )
 
@@ -42,7 +48,7 @@ object RunDialogAgent extends App {
     }
 
     def run(arguments: Arguments): Unit = {
-        println("nochat boolean:" + arguments.nochat)
+        println("nochat boolean: " + arguments.nochat)
     }
 
     parser.parse(args, Arguments()) match {
