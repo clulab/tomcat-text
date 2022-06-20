@@ -2,8 +2,12 @@ package org.clulab.asist.apps
 
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._
+import scopt.OParser
 
 import scala.annotation.tailrec
+import java.io.File
+
+
 
 
 /**
@@ -21,6 +25,30 @@ import scala.annotation.tailrec
  */
 
 object RunDialogAgent extends App {
+
+    case class Arguments(inputDir: String = "",
+                         outputDir: String = "")
+
+    val parser = new scopt.OptionParser[Arguments]("Parsing application") {
+
+        opt[String]('i', "inputDir").
+            required().valueName("").action((value, arguments) => arguments.copy(inputDir = value))
+
+        opt[String]('o', "outputDir").
+            required().valueName("").action((value, arguments) => arguments.copy(outputDir = value))
+
+    }
+
+    def run(arguments: Arguments): Unit = {
+        println("Input Dir:" + arguments.inputDir)
+        println("Output Dir:" + arguments.outputDir)
+    }
+
+    parser.parse(args, Arguments()) match {
+        case Some(arguments) => run(arguments)
+        case None =>
+    }
+
   
   // splash page if args are not understood
   val usageText = List(
