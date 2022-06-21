@@ -26,35 +26,63 @@ import java.io.File
 
 object RunDialogAgent extends App {
 
-    case class Mqtt(
-      host: String, 
-      port: String
-    )
+  case class Mqtt(
+    host: String, 
+    port: String
+  )
 
-    case class Arguments(
-      mqtt: Option[Mqtt] = None,
-      nochat: Boolean = false
-    )
+  object RunMode extends Enumeration {
+    type RunMode = Value
+    val MQTT, FILE, REPROCESS, STDIN, NONE = Value
+  }
 
-    val parser = new scopt.OptionParser[Arguments]("Parsing application") {
+  import RunMode._
 
-        head("scopt", "4.0.1")
+  case class Arguments(
+    mqtt: Option[Mqtt] = None,
+    host: Option[String] = None,
+    port: Option[String] = None,
+    // optional flag to exclude Minecraft Chat messages from File or Mqtt input
+    nochat: Boolean = false,
 
-        opt[Unit]("nochat")
-          .action((_, c) => c.copy(nochat = true))
-          .text("nochat is a flag"),
+    // which Dialog Agent variant to run
+    runMode: RunMode = RunMode.NONE
+  )
+
+  val parser = new scopt.OptionParser[Arguments]("Parsing application") {
+
+    head("scopt", "4.0.1")
+
+    opt[Unit]("nochat")
+      .action((_, c) => c.copy(nochat = true))
+      .text("nochat is a flag")
+
+    opt[String]("mqtt")
+      .action((h, p, c) => 
+        c.copy(
+          host = Some(h),
+          port = Some(p),
+          runMode = MQTT
+        )
+      )
+      .text("mqtt host is a thing")
 
 
-    }
+  }
 
-    def run(arguments: Arguments): Unit = {
-        println("nochat boolean: " + arguments.nochat)
-    }
+  def run(arguments: Arguments): Unit = {
+    println("nochat: " + arguments.nochat)
+    println("runMode:  " + arguments.runMode.toString) 
+  }
 
-    parser.parse(args, Arguments()) match {
-        case Some(arguments) => run(arguments)
-        case None =>
-    }
+  parser.parse(args, Arguments()) match {
+    case Some(arguments) => run(arguments)
+    case _ =>  // usage will be shown
+  }
+}
+
+
+class Foo{
 
   
   // splash page if args are not understood
@@ -82,6 +110,7 @@ object RunDialogAgent extends App {
    * @param argList A flat list of keys and values
    * @return The value if the key is found, else None
    */
+  /*
   @tailrec
   def ta3Version(arglist: List[String]): Option[Int] = arglist match {
     case "-v"::version::l =>
@@ -93,22 +122,26 @@ object RunDialogAgent extends App {
       ta3Version(l)
     case _ => None
   }
+  */
 
   /** Check if the 'nochat' flag is set
    * @param argList A flat list of keys and values
    * @return true if the key is found
    */
+  /*
   @tailrec
   def nochat(arglist: List[String]): Boolean = arglist match {
     case "--nochat"::l => true
     case head::l => nochat(l)
     case _ => false
   }
+  */
 
   /** Create a Dialog Agent per user args.
    * @param argList A flat list of running mode then n key-value pairs
    * @return A DialogAgent running in the mode with the args
    */
+  /*
   args.toList match {
     case ("mqtt"::host::port::l) => 
       new DialogAgentMqtt(host, port, nochat(l))
@@ -119,6 +152,8 @@ object RunDialogAgent extends App {
     case ("reprocess"::indir::outdir::l) =>
       new DialogAgentReprocessor(indir, outdir, ta3Version(l))
     case _ =>
+
       usageText.foreach(println)
   }
+  */
 }
