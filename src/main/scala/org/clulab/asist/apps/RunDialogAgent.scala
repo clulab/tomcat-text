@@ -7,8 +7,6 @@ import buildinfo.BuildInfo
 
 import java.io.File
 
-
-
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
@@ -17,7 +15,7 @@ import java.io.File
  *
  */
 
-object RunDialogAgent extends App {
+object RunDialogAgent extends App with LazyLogging {
 
   case class Arguments(
     // optional flag to exclude Chat messages from File or Mqtt input
@@ -37,8 +35,14 @@ object RunDialogAgent extends App {
 
     // output location for file and reprocessor agents
     dst: String = "",
+
+    // Optional TA3 file version for reprocessor
+    ta3_version: Option[Int] = None
   )
 
+  val ta3_version_text: String = "Set the TA3 version number of reprocessed metadata files. If not set, existing TA3 version numbers are incremented by 1"
+
+  // set up the parser to use the Dialog Agent command line arguments
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
     head("University of Arizona Dialog Agent", BuildInfo.version)
     help("help").text("prints usage text")
@@ -64,11 +68,11 @@ object RunDialogAgent extends App {
         arg[String]("src")
           .valueName("<String>")
           .action((x, c) =>c.copy(src = x))
-          .text("input (directory or file)"),
+          .text("input file or directory"),
         arg[String]("dst")
           .valueName("<String>")
           .action((x, c) =>c.copy(dst = x))
-          .text("output directory"),
+          .text("output file"),
         opt[Unit]("nochat")
           .action((_, c) => c.copy(nochat = true))
           .text("Optional flag to exclude Minecraft Chat messages")
@@ -86,36 +90,51 @@ object RunDialogAgent extends App {
           .valueName("<String>")
           .action((x, c) =>c.copy(dst = x))
           .text("output directory"),
+        opt[Int]("v")
+          .action((x, c) => c.copy(ta3_version = Some(x)))
+          .text(ta3_version_text)
         )
   }
 
+  // Run the appropriate agent for the given arguments
   def run(arguments: Arguments): Unit = arguments.agent match {
     case "mqtt" =>
-      println("MQTT agent:")
-      println("host:  " + arguments.host) 
-      println("port:  " + arguments.port) 
-      if(arguments.nochat) println("Minecraft Chat messages not processed")
+      logger.info("Starting MQTT agent...")
+      logger.info("  host: " + arguments.host) 
+      logger.info("  port: " + arguments.port) 
+      if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
+      new DialogAgentMqtt(arguments.host, arguments.port, arguments.nochat)
     case "file" =>
-      println("File agent:")
-      println("src:  " + arguments.src) 
-      println("dst:  " + arguments.dst) 
-      if(arguments.nochat) println("Minecraft Chat messages not processed")
+      logger.info("Starting File agent...")
+      logger.info("  input: " + arguments.src) 
+      logger.info("  output file: " + arguments.dst) 
+      if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
+      new DialogAgentFile(arguments.src, arguments.dst, arguments.nochat)
     case "reprocess" =>
-      println("Reprocess agent:")
-      println("src:  " + arguments.src) 
-      println("dst:  " + arguments.dst) 
+      logger.info("Starting Reprocessor agent...")
+      logger.info("  input dir: " + arguments.src) 
+      logger.info("  output dir: " + arguments.dst) 
+      arguments.ta3_version.foreach(v => 
+        logger.info("  ta3 version: " + v)
+      )
+      new DialogAgentReprocessor(
+        arguments.src,
+        arguments.dst,
+        arguments.ta3_version
+      )
     case "stdin" =>
-      println("Stdin agent:")
+      logger.info("Starting Stdin agent...")
+      new DialogAgentStdin
     case _ =>
-      println(f"Could not run agent '${arguments.agent}'")
-      println("valid agent types are [mqtt, reprocess, stdin, file]")
-
+      logger.error(f"Could not run agent '${arguments.agent}'")
+      logger.error("valid agent types are [mqtt, reprocess, stdin, file]")
   }
 
+  // Run the arguments if parsing was successful
   parser.parse(args, Arguments()) match {
     case Some(arguments) => 
       run(arguments)
-    case _ =>  // usage will be shown
+    case _ =>  // usage will be shown otherwise
   }
 }
 
