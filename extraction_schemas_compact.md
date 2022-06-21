@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `4.1.6`
 
-Document generation timestamp (UTC): `2022-06-21 22:11:45.641187`
+Document generation timestamp (UTC): `2022-06-21 22:12:57.170265`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -108,7 +108,7 @@ Extractions
     - Action
       - ComplexAction
         - ChangePriority
-          - target (Person|Victim) ()
+          - target (Victim|Person) ()
           - [agent] (Entity) (?)
 
         - MoveVictim
@@ -141,7 +141,7 @@ Extractions
           - target (Location|Rubble) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - Communicate
           - Agreement
@@ -161,7 +161,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (PuzzleConcept|Victim|Item|Person|EventLike) ()
+            - exists (Person|PuzzleConcept|Item|EventLike|Victim) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -214,7 +214,7 @@ Extractions
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Move|Entity) ()
+              - topic (Entity|Move) ()
               - [location] (Location) (?)
 
             - [QuestionParticle]
@@ -248,7 +248,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
+                - threat (ThreatSign|ThreatRoom|ThreatRoomMarker) ()
                 - room (Room) ()
 
               - RoomClear
@@ -289,17 +289,17 @@ Extractions
 
         - RescueInteractions
           - Save
-            - target (Person|Victim|Entity) ()
+            - target (Entity|Victim|Person) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
           - Stabilize
-            - target (Person|Victim) ()
+            - target (Victim|Person) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
           - WakeUp
-            - target (Person|Victim) ()
+            - target (Victim|Person) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -309,7 +309,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Entity|Item) ()
+          - target (Item|Entity|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
