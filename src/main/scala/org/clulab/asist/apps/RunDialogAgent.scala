@@ -37,7 +37,10 @@ object RunDialogAgent extends App {
     src: String = "",
 
     // output location for file and reprocessor agents
-    dst: String = ""
+    dst: String = "",
+
+    // experimental mqtt type with map arg
+    mqtt: Option[Map[String, String]] = None
   )
 
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
@@ -61,18 +64,24 @@ object RunDialogAgent extends App {
       .text("Message Bus host machine port (mqtt agent)")
 
     opt[String]("src")
-      .valueName("<filename or directory>")
+      .valueName("<file or dir>")
       .action((x, c) =>c.copy(src = x))
       .text("input location (file and reprocessor agents)")
 
     opt[String]("dst")
-      .valueName("<directory>")
+      .valueName("<dir>")
       .action((x, c) =>c.copy(dst = x))
       .text("output location (file and reprocessor agents)")
 
     opt[Unit]("nochat")
+      .valueName("flag")
       .action((_, c) => c.copy(nochat = true))
       .text("Optional flag to exclude Minecraft Chat messages (mqtt and file agents)")
+
+    opt[Map[String, String]]("mqtt")
+      .valueName("args")
+      .action((x, c) => c.copy(mqtt = Some(x)))
+      .text("MQTT agent with kwargs")
   }
 
   def run(arguments: Arguments): Unit = arguments.agent.toLowerCase match {
@@ -98,7 +107,11 @@ object RunDialogAgent extends App {
   }
 
   parser.parse(args, Arguments()) match {
-    case Some(arguments) => run(arguments)
+    case Some(arguments) => 
+      run(arguments)
+      arguments.mqtt.foreach(mqtt =>
+          println("MQTT: ")
+      )
     case _ =>  // usage will be shown
   }
 }
