@@ -13,12 +13,13 @@ import java.util.Scanner
 
 class DialogAgentStdin extends DialogAgent { 
 
-  // get rule engine lazy init out of the way
-  startEngine()
-
   println(s"\nRunning Dialog Agent stdin extractor version ${BuildInfo.version}")
   println("Enter plaintext for extraction, [CTRL-D] to exit.")
+
   print("\n> ")
+
+  // get rule engine lazy init out of the way
+  startEngine()
 
   // Console input
   val input = new Scanner(System.in)
