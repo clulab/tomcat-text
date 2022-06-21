@@ -26,22 +26,19 @@ import java.io.File
 
 object RunDialogAgent extends App {
 
-  object RunMode extends Enumeration {
-    type RunMode = Value
-    val MQTT, FILE, REPROCESS, STDIN, NONE = Value
-  }
-
-  import RunMode._
-
   case class Arguments(
     // optional flag to exclude Minecraft Chat messages from File or Mqtt input
     nochat: Boolean = false,
 
     // which Dialog Agent variant to run
-    runMode: RunMode = RunMode.NONE,
+    agent: String = "",
 
-    // Dialog Agent variants and their args
-    kwargs: Map[String, String] = Map()
+    // Mosquitto broker host for mqtt runmode
+    host: String = "",
+
+    // Mosquitto broker port for mqtt runmode
+    port: String = "",
+
   )
 
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
@@ -50,21 +47,40 @@ object RunDialogAgent extends App {
 
     opt[Unit]("nochat")
       .action((_, c) => c.copy(nochat = true))
-      .text("nochat is a flag")
+      .text("Optional flag to exclude Minecraft Chat messages from mqtt and file runmodes")
 
-    opt[String]("mqtt")
-      .action((_, c) =>c.copy(runMode = MQTT))
-      .text("mqtt host is a thing")
+    opt[String]("agent")
+      .required()
+      .valueName("<type>")
+      .action((x, c) =>c.copy(agent = x))
+      .text("One of [mqtt, reprocess, stdin, file]")
 
-    opt[Map[String, String]]("kwargs")
-      .valueName("k1=v1,k2=v2...")
-      .action((x, c) => c.copy(kwargs = x))
-      .text("other arguments"),
+    opt[String]("host")
+      .valueName("<name>")
+      .action((x, c) =>c.copy(host = x))
+      .text("Message Bus host machine name")
+
+    opt[String]("port")
+      .valueName("<number>")
+      .action((x, c) =>c.copy(port = x))
+      .text("Message Bus host machine port")
   }
 
-  def run(arguments: Arguments): Unit = {
-    println("nochat: " + arguments.nochat)
-    println("runMode:  " + arguments.runMode.toString) 
+  def run(arguments: Arguments): Unit = arguments.agent.toLowerCase match {
+    case "mqtt" =>
+      println("MQTT agent:")
+      println("host:  " + arguments.host) 
+      println("port:  " + arguments.port) 
+      if(arguments.nochat) println("Minecraft Chat messages not processed")
+    case "file" =>
+      println("File agent:")
+    case "reprocess" =>
+      println("Reprocess agent:")
+    case "stdin" =>
+      println("Stdin agent:")
+    case _ =>
+      println(f"Could not run agent '${arguments.agent}', valid agent types are [mqtt, reprocess, stdin, file]")
+
   }
 
   parser.parse(args, Arguments()) match {
