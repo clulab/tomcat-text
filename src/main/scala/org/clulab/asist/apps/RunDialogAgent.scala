@@ -26,11 +26,6 @@ import java.io.File
 
 object RunDialogAgent extends App {
 
-  case class Mqtt(
-    host: String, 
-    port: String
-  )
-
   object RunMode extends Enumeration {
     type RunMode = Value
     val MQTT, FILE, REPROCESS, STDIN, NONE = Value
@@ -39,14 +34,14 @@ object RunDialogAgent extends App {
   import RunMode._
 
   case class Arguments(
-    mqtt: Option[Mqtt] = None,
-    host: Option[String] = None,
-    port: Option[String] = None,
     // optional flag to exclude Minecraft Chat messages from File or Mqtt input
     nochat: Boolean = false,
 
     // which Dialog Agent variant to run
-    runMode: RunMode = RunMode.NONE
+    runMode: RunMode = RunMode.NONE,
+
+    // Dialog Agent variants and their args
+    kwargs: Map[String, String] = Map()
   )
 
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
@@ -58,16 +53,13 @@ object RunDialogAgent extends App {
       .text("nochat is a flag")
 
     opt[String]("mqtt")
-      .action((h, p, c) => 
-        c.copy(
-          host = Some(h),
-          port = Some(p),
-          runMode = MQTT
-        )
-      )
+      .action((_, c) =>c.copy(runMode = MQTT))
       .text("mqtt host is a thing")
 
-
+    opt[Map[String, String]]("kwargs")
+      .valueName("k1=v1,k2=v2...")
+      .action((x, c) => c.copy(kwargs = x))
+      .text("other arguments"),
   }
 
   def run(arguments: Arguments): Unit = {
