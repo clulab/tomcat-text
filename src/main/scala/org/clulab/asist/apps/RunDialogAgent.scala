@@ -13,15 +13,9 @@ import java.io.File
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
+ *  This application will run the DialogAgent on the Message Bus, 
+ *  file input, or interactively.
  *
- *  This application will run the DialogAgent on an input file, on the
- *  message bus, or interactively depending on user inputs.
- *
- *  The arguments are expected as an Array of string vaue with the element
- *  at index 0 being the run mode, and the remainder as key-value pairs:  
- *  
- *    Array("mode","key1","value1","key2","value2", ...)
  */
 
 object RunDialogAgent extends App {
@@ -33,21 +27,22 @@ object RunDialogAgent extends App {
     // which Dialog Agent variant to run
     agent: String = "",
 
-    // Mosquitto broker host for mqtt runmode
+    // Mosquitto broker host for mqtt agent
     host: String = "",
 
-    // Mosquitto broker port for mqtt runmode
+    // Mosquitto broker port for mqtt agent
     port: String = "",
 
+    // input location for file and reprocessor agents
+    src: String = "",
+
+    // output location for file and reprocessor agents
+    dst: String = ""
   )
 
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
 
     head("scopt", "4.0.1")
-
-    opt[Unit]("nochat")
-      .action((_, c) => c.copy(nochat = true))
-      .text("Optional flag to exclude Minecraft Chat messages from mqtt and file runmodes")
 
     opt[String]("agent")
       .required()
@@ -58,12 +53,26 @@ object RunDialogAgent extends App {
     opt[String]("host")
       .valueName("<name>")
       .action((x, c) =>c.copy(host = x))
-      .text("Message Bus host machine name")
+      .text("Message Bus host machine name (mqtt agent)")
 
     opt[String]("port")
       .valueName("<number>")
       .action((x, c) =>c.copy(port = x))
-      .text("Message Bus host machine port")
+      .text("Message Bus host machine port (mqtt agent)")
+
+    opt[String]("src")
+      .valueName("<filename or directory>")
+      .action((x, c) =>c.copy(src = x))
+      .text("input location (file and reprocessor agents)")
+
+    opt[String]("dst")
+      .valueName("<directory>")
+      .action((x, c) =>c.copy(dst = x))
+      .text("output location (file and reprocessor agents)")
+
+    opt[Unit]("nochat")
+      .action((_, c) => c.copy(nochat = true))
+      .text("Optional flag to exclude Minecraft Chat messages (mqtt and file agents)")
   }
 
   def run(arguments: Arguments): Unit = arguments.agent.toLowerCase match {
@@ -74,8 +83,13 @@ object RunDialogAgent extends App {
       if(arguments.nochat) println("Minecraft Chat messages not processed")
     case "file" =>
       println("File agent:")
+      println("src:  " + arguments.src) 
+      println("dst:  " + arguments.dst) 
+      if(arguments.nochat) println("Minecraft Chat messages not processed")
     case "reprocess" =>
       println("Reprocess agent:")
+      println("src:  " + arguments.src) 
+      println("dst:  " + arguments.dst) 
     case "stdin" =>
       println("Stdin agent:")
     case _ =>
