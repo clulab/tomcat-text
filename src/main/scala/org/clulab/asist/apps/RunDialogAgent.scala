@@ -3,10 +3,9 @@ package org.clulab.asist.apps
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._
 import scopt.OParser
+import buildinfo.BuildInfo
 
-import scala.annotation.tailrec
 import java.io.File
-
 
 
 
@@ -21,7 +20,7 @@ import java.io.File
 object RunDialogAgent extends App {
 
   case class Arguments(
-    // optional flag to exclude Minecraft Chat messages from File or Mqtt input
+    // optional flag to exclude Chat messages from File or Mqtt input
     nochat: Boolean = false,
 
     // which Dialog Agent variant to run
@@ -41,41 +40,56 @@ object RunDialogAgent extends App {
   )
 
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
-
-    head("scopt", "4.0.1")
-
-    arg[String]("agent")
-      .required()
-      .valueName("<type>")
-      .action((x, c) =>c.copy(agent = x))
-      .text("One of [mqtt, reprocess, stdin, file]")
-
-    opt[String]("host")
-      .valueName("<name>")
-      .action((x, c) =>c.copy(host = x))
-      .text("Message Bus host machine name (mqtt agent)")
-
-    opt[String]("port")
-      .valueName("<number>")
-      .action((x, c) =>c.copy(port = x))
-      .text("Message Bus host machine port (mqtt agent)")
-
-    opt[String]("src")
-      .valueName("<file or dir>")
-      .action((x, c) =>c.copy(src = x))
-      .text("input location (file and reprocessor agents)")
-
-    opt[String]("dst")
-      .valueName("<dir>")
-      .action((x, c) =>c.copy(dst = x))
-      .text("output location (file and reprocessor agents)")
-
-    opt[Unit]("nochat")
-      .action((_, c) => c.copy(nochat = true))
-      .text("Optional flag to exclude Minecraft Chat messages (mqtt and file agents)")
+    head("University of Arizona Dialog Agent", BuildInfo.version)
+    help("help").text("prints usage text")
+    version("version").text("prints header text")
+    cmd("mqtt")
+      .action((_, c) =>c.copy(agent = "mqtt"))
+      .children(
+        arg[String]("host")
+          .valueName("<String>")
+          .action((x, c) =>c.copy(host = x))
+          .text("Message Bus host machine name"),
+        arg[String]("port")
+          .valueName("<String>")
+          .action((x, c) =>c.copy(port = x))
+          .text("Message Bus host port name"),
+        opt[Unit]("nochat")
+          .action((_, c) => c.copy(nochat = true))
+          .text("Optional flag to exclude Minecraft Chat messages")
+        )
+    cmd("file")
+      .action((_, c) =>c.copy(agent = "file"))
+      .children(
+        arg[String]("src")
+          .valueName("<String>")
+          .action((x, c) =>c.copy(src = x))
+          .text("input (directory or file)"),
+        arg[String]("dst")
+          .valueName("<String>")
+          .action((x, c) =>c.copy(dst = x))
+          .text("output directory"),
+        opt[Unit]("nochat")
+          .action((_, c) => c.copy(nochat = true))
+          .text("Optional flag to exclude Minecraft Chat messages")
+        )
+    cmd("stdin")
+      .action((_, c) =>c.copy(agent = "stdin"))
+    cmd("reprocess")
+      .action((_, c) =>c.copy(agent = "reprocess"))
+      .children(
+        arg[String]("src")
+          .valueName("<String>")
+          .action((x, c) =>c.copy(src = x))
+          .text("input directory"),
+        arg[String]("dst")
+          .valueName("<String>")
+          .action((x, c) =>c.copy(dst = x))
+          .text("output directory"),
+        )
   }
 
-  def run(arguments: Arguments): Unit = arguments.agent.toLowerCase match {
+  def run(arguments: Arguments): Unit = arguments.agent match {
     case "mqtt" =>
       println("MQTT agent:")
       println("host:  " + arguments.host) 
@@ -93,7 +107,8 @@ object RunDialogAgent extends App {
     case "stdin" =>
       println("Stdin agent:")
     case _ =>
-      println(f"Could not run agent '${arguments.agent}', valid agent types are [mqtt, reprocess, stdin, file]")
+      println(f"Could not run agent '${arguments.agent}'")
+      println("valid agent types are [mqtt, reprocess, stdin, file]")
 
   }
 
