@@ -8,7 +8,6 @@ import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
 import org.json4s.{Extraction,_}
 
-import scala.annotation.tailrec
 import scala.util.control.NonFatal
 import scala.io.Source
 
