@@ -38,16 +38,13 @@ object RunDialogAgent extends App {
 
     // output location for file and reprocessor agents
     dst: String = "",
-
-    // experimental mqtt type with map arg
-    mqtt: Option[Map[String, String]] = None
   )
 
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
 
     head("scopt", "4.0.1")
 
-    opt[String]("agent")
+    arg[String]("agent")
       .required()
       .valueName("<type>")
       .action((x, c) =>c.copy(agent = x))
@@ -74,14 +71,8 @@ object RunDialogAgent extends App {
       .text("output location (file and reprocessor agents)")
 
     opt[Unit]("nochat")
-      .valueName("flag")
       .action((_, c) => c.copy(nochat = true))
       .text("Optional flag to exclude Minecraft Chat messages (mqtt and file agents)")
-
-    opt[Map[String, String]]("mqtt")
-      .valueName("args")
-      .action((x, c) => c.copy(mqtt = Some(x)))
-      .text("MQTT agent with kwargs")
   }
 
   def run(arguments: Arguments): Unit = arguments.agent.toLowerCase match {
@@ -109,86 +100,7 @@ object RunDialogAgent extends App {
   parser.parse(args, Arguments()) match {
     case Some(arguments) => 
       run(arguments)
-      arguments.mqtt.foreach(mqtt =>
-          println("MQTT: ")
-      )
     case _ =>  // usage will be shown
   }
 }
 
-
-class Foo{
-
-  
-  // splash page if args are not understood
-  val usageText = List(
-    "",
-    "usage:",
-    "",
-    "  mqtt <host> <port> [--nochat]",
-    "  stdin",
-    "  file <inputfile> <outputfile> [--nochat]",
-    "  reprocess <inputdir> <outputdir> [-v ta3_version_number]}",
-    "",
-    "-v         : Set the TA3 version number of reprocessed metadata files.",
-    "             If not set, existing TA3 version numbers are incremented by 1",
-    "--nochat   : Exclude Minecraft Chat messages from processing",
-    "inputfile  : supported file extensions are .vtt and .metadata",
-    "              (also handles directories containing files with those extensions)",
-    "outputfile : Processed file input will be written here.",
-    "inputdir   : A directory of .metadata files to be reprocessed by the DialogAgent",
-    "outputdir  : A directory where reprocessed .metadata files will be saved.",
-    ""
-  )
-
-  /** Find the TA3 Version number arg in the arg list
-   * @param argList A flat list of keys and values
-   * @return The value if the key is found, else None
-   */
-  /*
-  @tailrec
-  def ta3Version(arglist: List[String]): Option[Int] = arglist match {
-    case "-v"::version::l =>
-      try Some(version.toInt)
-      catch {
-        case e: Exception => None
-      }
-    case head::l =>
-      ta3Version(l)
-    case _ => None
-  }
-  */
-
-  /** Check if the 'nochat' flag is set
-   * @param argList A flat list of keys and values
-   * @return true if the key is found
-   */
-  /*
-  @tailrec
-  def nochat(arglist: List[String]): Boolean = arglist match {
-    case "--nochat"::l => true
-    case head::l => nochat(l)
-    case _ => false
-  }
-  */
-
-  /** Create a Dialog Agent per user args.
-   * @param argList A flat list of running mode then n key-value pairs
-   * @return A DialogAgent running in the mode with the args
-   */
-  /*
-  args.toList match {
-    case ("mqtt"::host::port::l) => 
-      new DialogAgentMqtt(host, port, nochat(l))
-    case ("file"::infile::outfile::l) =>
-      new DialogAgentFile(infile, outfile, nochat(l))
-    case ("stdin"::l) =>
-      new DialogAgentStdin
-    case ("reprocess"::indir::outdir::l) =>
-      new DialogAgentReprocessor(indir, outdir, ta3Version(l))
-    case _ =>
-
-      usageText.foreach(println)
-  }
-  */
-}
