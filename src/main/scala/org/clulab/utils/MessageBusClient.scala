@@ -22,15 +22,15 @@ trait MessageBusClientListener {
 }
 
 /** A client that manages publishing and subscribing to the Message Bus
- * @param host MQTT host to connect to.
- * @param port MQTT network port to connect to.
+ * @param host MQTT broker machine.
+ * @param port MQTT broker port.
  * @param subscriptions MQTT topics from which messages to process are read.
  * @param publications MQTT topic for publishing processed messages
  * @param listener A MessageBusClientListener that will process messages
  */
 class MessageBusClient(
-  val host: String = "",
-  val port: String = "",
+  val host: String = "localhost",
+  val port: Int = 1883,
   val subscriptions: List[String] = List.empty,
   val publications: List[String] = List.empty,
   val listener: MessageBusClientListener

@@ -19,8 +19,8 @@ import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
  */
 
 class DialogAgentMqtt(
-  val host: String = "",
-  val port: String = "",
+  val host: String = "localhost",
+  val port: Int = 1883,
   val nochat: Boolean = false
 ) extends DialogAgent
     with LazyLogging
