@@ -2,88 +2,137 @@ package org.clulab.asist.apps
 
 import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.agents._
+import scopt.OParser
+import buildinfo.BuildInfo
 
-import scala.annotation.tailrec
-
+import java.io.File
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  Updated:  2021 June
+ *  This application will run the DialogAgent on the Message Bus, 
+ *  file input, or interactively.
  *
- *  This application will run the DialogAgent on an input file, on the
- *  message bus, or interactively depending on user inputs.
- *
- *  The arguments are expected as an Array of string vaue with the element
- *  at index 0 being the run mode, and the remainder as key-value pairs:  
- *  
- *    Array("mode","key1","value1","key2","value2", ...)
  */
 
-object RunDialogAgent extends App {
-  
-  // splash page if args are not understood
-  val usageText = List(
-    "",
-    "usage:",
-    "",
-    "  mqtt <host> <port> [--nochat]",
-    "  stdin",
-    "  file <inputfile> <outputfile> [--nochat]",
-    "  reprocess <inputdir> <outputdir> [-v ta3_version_number]}",
-    "",
-    "-v         : Set the TA3 version number of reprocessed metadata files.",
-    "             If not set, existing TA3 version numbers are incremented by 1",
-    "--nochat   : Exclude Minecraft Chat messages from processing",
-    "inputfile  : supported file extensions are .vtt and .metadata",
-    "              (also handles directories containing files with those extensions)",
-    "outputfile : Processed file input will be written here.",
-    "inputdir   : A directory of .metadata files to be reprocessed by the DialogAgent",
-    "outputdir  : A directory where reprocessed .metadata files will be saved.",
-    ""
+object RunDialogAgent extends App with LazyLogging {
+
+  case class Arguments(
+    // optional flag to exclude Chat messages from File or Mqtt input
+    nochat: Boolean = false,
+
+    // which Dialog Agent variant to run
+    agent: String = "",
+
+    // Mosquitto broker host for mqtt agent
+    host: String = "localhost",
+
+    // Mosquitto broker port for mqtt agent
+    port: Int = 1883,
+
+    // input location for file and reprocessor agents
+    src: String = "",
+
+    // output location for file and reprocessor agents
+    dst: String = "",
+
+    // Optional TA3 file version for reprocessor
+    ta3_version: Option[Int] = None
   )
 
-  /** Find the TA3 Version number arg in the arg list
-   * @param argList A flat list of keys and values
-   * @return The value if the key is found, else None
-   */
-  @tailrec
-  def ta3Version(arglist: List[String]): Option[Int] = arglist match {
-    case "-v"::version::l =>
-      try Some(version.toInt)
-      catch {
-        case e: Exception => None
-      }
-    case head::l =>
-      ta3Version(l)
-    case _ => None
+  // set up the parser to use the Dialog Agent command line arguments
+  val parser = new scopt.OptionParser[Arguments]("Parsing application") {
+    head("University of Arizona Dialog Agent", BuildInfo.version)
+    help("help").text("prints usage text")
+    version("version").text("prints header text")
+    cmd("mqtt")
+      .action((_, c) => c.copy(agent = "mqtt"))
+      .children(
+        opt[String]("host")
+          .valueName("<String>")
+          .action((x, c) => c.copy(host = x))
+          .text("Optional MQTT broker host machine. Defaults to localhost if not set"),
+        opt[Int]("port")
+          .valueName("<Int>")
+          .action((x, c) => c.copy(port = x))
+          .text("Optional MQTT broker host port. Defaults to 1883 if not set"),
+        opt[Unit]("nochat")
+          .action((_, c) => c.copy(nochat = true))
+          .text("Optional flag to exclude Minecraft Chat messages")
+        )
+    cmd("file")
+      .action((_, c) => c.copy(agent = "file"))
+      .children(
+        arg[String]("src")
+          .valueName("<String>")
+          .action((x, c) => c.copy(src = x))
+          .text("Input file or directory"),
+        arg[String]("dst")
+          .valueName("<String>")
+          .action((x, c) => c.copy(dst = x))
+          .text("Output file"),
+        opt[Unit]("nochat")
+          .action((_, c) => c.copy(nochat = true))
+          .text("Optional flag to exclude Minecraft Chat messages")
+        )
+    cmd("stdin")
+      .action((_, c) => c.copy(agent = "stdin"))
+    cmd("reprocess")
+      .action((_, c) => c.copy(agent = "reprocess"))
+      .children(
+        arg[String]("src")
+          .valueName("<String>")
+          .action((x, c) => c.copy(src = x))
+          .text("Input directory"),
+        arg[String]("dst")
+          .valueName("<String>")
+          .action((x, c) => c.copy(dst = x))
+          .text("Output directory"),
+        opt[Int]("v")
+          .action((x, c) => c.copy(ta3_version = Some(x)))
+          .text("Optional TA3 version number for reprocessed files. Existing TA3 version numbers are incremented by 1 if not set")
+        )
   }
 
-  /** Check if the 'nochat' flag is set
-   * @param argList A flat list of keys and values
-   * @return true if the key is found
-   */
-  @tailrec
-  def nochat(arglist: List[String]): Boolean = arglist match {
-    case "--nochat"::l => true
-    case head::l => nochat(l)
-    case _ => false
-  }
-
-  /** Create a Dialog Agent per user args.
-   * @param argList A flat list of running mode then n key-value pairs
-   * @return A DialogAgent running in the mode with the args
-   */
-  args.toList match {
-    case ("mqtt"::host::port::l) => 
-      new DialogAgentMqtt(host, port, nochat(l))
-    case ("file"::infile::outfile::l) =>
-      new DialogAgentFile(infile, outfile, nochat(l))
-    case ("stdin"::l) =>
+  // Run the appropriate agent for the given arguments
+  def run(arguments: Arguments): Unit = arguments.agent match {
+    case "mqtt" =>
+      logger.info("Starting MQTT agent...")
+      logger.info("  host: " + arguments.host) 
+      logger.info("  port: " + arguments.port) 
+      if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
+      new DialogAgentMqtt(arguments.host, arguments.port, arguments.nochat)
+    case "file" =>
+      logger.info("Starting File agent...")
+      logger.info("  input: " + arguments.src) 
+      logger.info("  output file: " + arguments.dst) 
+      if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
+      new DialogAgentFile(arguments.src, arguments.dst, arguments.nochat)
+    case "reprocess" =>
+      logger.info("Starting Reprocessor agent...")
+      logger.info("  input dir: " + arguments.src) 
+      logger.info("  output dir: " + arguments.dst) 
+      arguments.ta3_version.foreach(v => 
+        logger.info("  ta3 version: " + v)
+      )
+      new DialogAgentReprocessor(
+        arguments.src,
+        arguments.dst,
+        arguments.ta3_version
+      )
+    case "stdin" =>
+      logger.info("Starting Stdin agent...")
       new DialogAgentStdin
-    case ("reprocess"::indir::outdir::l) =>
-      new DialogAgentReprocessor(indir, outdir, ta3Version(l))
     case _ =>
-      usageText.foreach(println)
+      logger.error(f"Could not run agent '${arguments.agent}'")
+      logger.error("valid agent types are [mqtt, reprocess, stdin, file]")
+  }
+
+  // Run the arguments if parsing was successful
+  parser.parse(args, Arguments()) match {
+    case Some(arguments) => 
+      run(arguments)
+    case _ =>  // usage will be shown otherwise
   }
 }
+
