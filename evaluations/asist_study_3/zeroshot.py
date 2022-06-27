@@ -10,7 +10,7 @@
 
 # Example usage
 # -------------
-# python zeroshot.py /home/tomcat/annotations/ie-annotations Movement,Precedence,Inform
+# python zeroshot.py /home/tomcat/annotations/transcriptions Movement,Precedence,Inform
 
 
 import pandas as pd
