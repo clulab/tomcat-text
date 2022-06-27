@@ -13,82 +13,97 @@
 # python zeroshot.py /home/tomcat/annotations/ie-annotations Movement,Precedence,Inform
 
 
-
-
 import pandas as pd
 import glob
 import os
 import sys
 import torch
 from transformers import pipeline
+import logging
+from logging import info
+from tqdm import tqdm
 
 
+logging.basicConfig(level=logging.INFO)
 directory = sys.argv[1]
-candidate_labels = sys.argv[2].split(',')
+candidate_labels = sys.argv[2].split(",")
+
 
 def loadFiles(directory):
     files = glob.glob(os.path.join(directory, "*.csv"))
     files.sort()
     files = files[:32]
     files
-    dfs = (pd.read_csv(f,index_col=None, header=0).fillna("0") for f in files)
+    dfs = (pd.read_csv(f, index_col=None, header=0).fillna("0") for f in files)
     df = pd.concat(dfs, ignore_index=True)
     return df["utt"].tolist()
 
+
 utt = loadFiles(directory)
 
-def Zeroshot(candidate_labels = ['Movement',
-                    'Precedence',
-                    'Triage',
-                    'Inform',
-                    'Report Location',
-                    'Search',
-                    'Request',
-                    'Question',
-                    'Instruction',
-                    'Plan']):
 
-    classifier = pipeline("zero-shot-classification",
-                        model="oigele/Fb_improved_zeroshot")
+def Zeroshot(
+    candidate_labels=[
+        "Movement",
+        "Precedence",
+        "Triage",
+        "Inform",
+        "Report Location",
+        "Search",
+        "Request",
+        "Question",
+        "Instruction",
+        "Plan",
+    ]
+):
+
+    info("Setting up classifier")
+    classifier = pipeline(
+        "zero-shot-classification", model="oigele/Fb_improved_zeroshot"
+    )
     res = []
 
-    for sentence in utt:
-        res.append(classifier(sentence, candidate_labels,multi_label=True))
+    for sentence in tqdm(utt, unit="sentence"):
+        res.append(classifier(sentence, candidate_labels, multi_label=True))
 
     return pd.DataFrame(res)
 
+
 out = Zeroshot(candidate_labels)
 
-#zip
+# zip
 def ZipLabelScore(out):
-    labels = out['labels'].to_list()
-    scores = out['scores'].to_list()
+    labels = out["labels"].to_list()
+    scores = out["scores"].to_list()
     label_score = []
     for i in range(len(labels)):
-        l = list(zip(labels[i],scores[i]))
-        dct = {j[0]:j[1] for j in l}
+        l = list(zip(labels[i], scores[i]))
+        dct = {j[0]: j[1] for j in l}
         label_score.append(dct)
-    return list(zip(out['sequence'],label_score))
+    return list(zip(out["sequence"], label_score))
+
 
 utt_label_score = ZipLabelScore(out)
 
+
 def labelCsv(label):
-    outList = [[i[0],i[1][label]] for i in utt_label_score]
-    df = pd.DataFrame(outList,columns=["sequence","score"])
-    filename = label + '.csv'
-    df.to_csv(filename,index=False)
+    outList = [[i[0], i[1][label]] for i in utt_label_score]
+    df = pd.DataFrame(outList, columns=["sequence", "score"])
+    filename = label + ".csv"
+    df.to_csv(filename, index=False)
+
 
 if candidate_labels:
     for label in candidate_labels:
         labelCsv(label)
 else:
-    labelCsv('Movement')
-    labelCsv('Precedence')
-    labelCsv('Triage')
-    labelCsv('Inform')
-    labelCsv('Report Location')
-    labelCsv('Search')
-    labelCsv('Request')
-    labelCsv('Question')
-    labelCsv('Instruction')
-    labelCsv('Plan')
+    labelCsv("Movement")
+    labelCsv("Precedence")
+    labelCsv("Triage")
+    labelCsv("Inform")
+    labelCsv("Report Location")
+    labelCsv("Search")
+    labelCsv("Request")
+    labelCsv("Question")
+    labelCsv("Instruction")
+    labelCsv("Plan")
