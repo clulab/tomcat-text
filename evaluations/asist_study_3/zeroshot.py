@@ -26,8 +26,6 @@ from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO)
 directory = sys.argv[1]
-candidate_labels = sys.argv[2].split(",")
-
 
 def loadFiles(directory):
     files = glob.glob(os.path.join(directory, "*.csv"))
@@ -37,8 +35,6 @@ def loadFiles(directory):
     dfs = (pd.read_csv(f, index_col=None, header=0).fillna("0") for f in files)
     df = pd.concat(dfs, ignore_index=True)
     return df["utt"].tolist()
-
-
 utt = loadFiles(directory)
 
 
@@ -68,8 +64,11 @@ def Zeroshot(
 
     return pd.DataFrame(res)
 
-
-out = Zeroshot(candidate_labels)
+if len(sys.argv) == 3:
+    candidate_labels = sys.argv[2].split(",")
+    out = Zeroshot(candidate_labels)
+else:
+    out = Zeroshot()
 
 # zip
 def ZipLabelScore(out):
@@ -81,10 +80,7 @@ def ZipLabelScore(out):
         dct = {j[0]: j[1] for j in l}
         label_score.append(dct)
     return list(zip(out["sequence"], label_score))
-
-
 utt_label_score = ZipLabelScore(out)
-
 
 def labelCsv(label):
     outList = [[i[0], i[1][label]] for i in utt_label_score]
@@ -92,8 +88,7 @@ def labelCsv(label):
     filename = label + ".csv"
     df.to_csv(filename, index=False)
 
-
-if candidate_labels:
+if len(sys.argv) == 3:
     for label in candidate_labels:
         labelCsv(label)
 else:
