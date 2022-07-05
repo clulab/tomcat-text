@@ -11,7 +11,7 @@ import java.io.File
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
  *  This application will run the DialogAgent on the Message Bus, 
- *  file input, or interactively.
+ *  with file input, or interactively.
  *
  */
 
