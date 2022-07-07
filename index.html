@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>5.0.0</code></p>
-<p>Document generation timestamp (UTC): <code>2022-06-22 00:32:40.594159</code></p>
+<p>Document generation timestamp (UTC): <code>2022-07-07 04:03:51.789865</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -106,7 +106,7 @@
 
       - SimpleAction
         - Block
-          - [source] (Obstacle|Concept) (?)
+          - [source] (Concept|Obstacle) (?)
           - [target] (Concept) (?)
 
         - Clear
@@ -114,7 +114,7 @@
           - target (Rubble|Location) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - Communicate
           - Agreement
@@ -134,7 +134,7 @@
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (EventLike|Person|Item|PuzzleConcept|Victim) ()
+            - exists (EventLike|Item|Victim|PuzzleConcept|Person) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -196,7 +196,7 @@
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Action|Need) ()
+              - topic (Need|Action) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
 
@@ -262,7 +262,7 @@
 
         - RescueInteractions
           - Save
-            - target (Person|Entity|Victim) ()
+            - target (Entity|Person|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -272,7 +272,7 @@
             - [agent] (Entity) (?)
 
           - WakeUp
-            - target (Person|Victim) ()
+            - target (Victim|Person) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 

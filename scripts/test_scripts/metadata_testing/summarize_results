@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+# 
+# summarize result of testing Testbed runs
+#
+
+
+echo ""
+echo "Test results:"
+for dir in "$@"
+do
+    cd $dir
+    echo "$dir:"
+    grep 'True' test_results.txt
+    grep 'False' test_results.txt
+    cd ..
+done
+
+echo ""
+echo "$# Metadata runs tested"

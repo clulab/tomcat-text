@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+# 
+# run a series of metadata directory validations
+#
+
+output_file="./all_results.txt"
+
+# record time at start of testing
+t0=$(date)
+
+echo "Validating Testbed metadata using uaz_dialog_agent.py" > $output_file
+cat $output_file
+
+# run each test in its own directory
+for dir in "$@"
+do
+    echo "" >> $output_file
+    echo "$dir..." >> $output_file
+    ./validate_testbed_run "$dir"
+    
+    # append the directory result file to our output file
+    cd $dir
+    cat ./test_results.txt >> ../$output_file
+    cd ..
+
+done
+
+
+# record time at end of testing
+t1=$(date)
+
+# report test results
+./summarize_results $@ >> $output_file
+
+# report testing time
+echo "" >> $output_file
+echo "uaz_dialog_agent.py metadata testing is complete." >> $output_file
+echo "Started:  $t0" >> $output_file
+echo "Finished: $t1" >> $output_file
+
+cat $output_file
