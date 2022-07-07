@@ -22,7 +22,7 @@ function test_full_trial () {
 # Start the MQTT agent
 echo "Starting MQTT agent.   Testing will begin in 90 seconds"
 cd ../../../../tomcat-text
-sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt localhost 1883" &
+sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt --host localhost --port 1883" &
 mqtt_agent_pid="$!"
 
 sleep 90 # weaksauce, we need to detect a running agent 
