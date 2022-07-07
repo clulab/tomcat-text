@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+# 
+# Test one Testbed metadata group and write the results to an output file
+#
+
+dirname=$1
+results_file="./test_results.txt"
+
+
+rm -rf $dirname
+mkdir $dirname
+cd $dirname
+
+echo "Testing $dirname..."
+
+echo "downloading data"
+gsutil -m cp gs://studies.aptima.com/study-3_2022/*$dirname*.metadata .
+
+echo "Testing data"
+
+# test the data and write the results to a file
+python ../uaz_dialog_agent.py *.metadata > $results_file
+
+# show the results file
+cat $results_file
+
+cd ../
