@@ -76,7 +76,7 @@ room_twoword_first_word_regex: "(cubicle|sundollar|Herbalife|limping lamb|lamb|s
 
 room_twoword_second_word_regex: "(room|cafe|office|terrace|area|storage|coffee|chophouse)"
 
-rubble_triggers: "rubble|blockage|pile|obstacle|barricade|rebel|gravel"
+rubble_triggers: "rubble|blockage|pile|obstacle|barricade|rebel|gravel|debris"
 
 search_spec_triggers: "search|service|searcher|scout"
 
