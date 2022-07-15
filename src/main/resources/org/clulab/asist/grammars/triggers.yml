@@ -82,6 +82,8 @@ search_spec_triggers: "search|service|searcher|scout"
 
 search_triggers: "hunt|look|search|check"
 
+search_triggers_no_look: "search|check|investigate"
+
 self_triggers: "i|me|my"
 
 sight_triggers: "see|observe|glimpse"
