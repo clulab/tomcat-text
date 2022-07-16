@@ -42,7 +42,7 @@ object RollcallResponseMessage {
     message_type = config.getString("RollcallResponse.header.message_type"),
   )
   val msg: CommonMsg =  CommonMsg(
-    source = config.getString("RollcallResponse.msg.source"),
+    source = config.getString("CommonMsg.source"),
     sub_type = config.getString("RollcallResponse.msg.sub_type"),
     version = BuildInfo.version,
   )

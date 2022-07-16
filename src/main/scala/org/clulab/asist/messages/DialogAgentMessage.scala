@@ -76,7 +76,7 @@ object DialogAgentMessage {
     version = config.getString("CommonHeader.version")
   )
   val msg: CommonMsg = CommonMsg(
-    source = config.getString("DialogAgent.msg.source"),
+    source = config.getString("CommonMsg.source"),
     sub_type = config.getString("DialogAgent.msg.sub_type"),
     version = BuildInfo.version
   )

@@ -65,7 +65,7 @@ object VersionInfoMessage
     message_type = config.getString("VersionInfo.header.message_type"),
   )
   val msg: CommonMsg = CommonMsg(
-    source = config.getString("VersionInfo.msg.source"),
+    source = config.getString("CommonMsg.source"),
     sub_type = config.getString("VersionInfo.msg.sub_type"),
     version = BuildInfo.version,
   )
