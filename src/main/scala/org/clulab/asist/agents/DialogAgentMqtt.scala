@@ -9,6 +9,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
 import scala.collection.mutable.Queue
+import scala.collection.mutable.MutableList
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
@@ -46,17 +47,9 @@ class DialogAgentMqtt(
   // CommonMsg source type for all MQTT publishing
   private val source_type: String = "message_bus"
 
-  // each message gets an ID number in the logfile
-  var versionInfoCount: Int = 0
-  var rollcallResponseCount: Int = 0
-  var dialogCount: Int = 0
-  var heartbeatCount: Int = 0
-
-  var asrCount:Int = 0
-  var chatCount:Int = 0
-  var rollcallRequestCount:Int = 0
-  var trialStartCount:Int = 0
-  var trialStopCount:Int = 0
+  // count messages coming and going
+  val subscribedTraffic: MutableList[String] = MutableList.empty
+  val publishedTraffic: MutableList[String] = MutableList.empty
 
   // One message read from the bus
   case class BusMessage(
@@ -67,22 +60,9 @@ class DialogAgentMqtt(
   // enqueue messages from the bus if they're coming in too fast.
   private val queue: Queue[BusMessage] = new Queue
 
-  def checkQueue(): Unit = {
-    logger.info("checkQueue:")
-    if(processing) 
-      logger.info("  Queue is processing")
-    else {
-      val sz = queue.size
-      logger.info("  Queue not processing, size = " + sz)
-      if(sz > 0) {
-        logger.info("  Restarting queue processing")
-        processNextMessage
-      } else {
-        logger.info("  I'm bored")
-      }
-    }
-  }
-
+  // if the message processing queue has stalled, restart it
+  def checkQueue(): Unit = 
+    if((queue.size > 0) && (!processing)) processNextMessage
 
   // Message Bus subscriptions
   val chatMaybe: List[String] = 
@@ -111,24 +91,22 @@ class DialogAgentMqtt(
     this
   )
 
-  // write message to the bus on the message topic.  Do not write topic.
+  def publish(topic: String, json: String): Unit = {
+    bus.publish(topic, json)
+    logger.info(s"Write ${topic}")
+    publishedTraffic += topic
+  }
+
+  // write message to the bus.  Do not write topic.
   def publish[A <: AnyRef](a: A): Unit = a match {
     case m: DialogAgentMessage =>
-      bus.publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
-      dialogCount += 1
-      logger.info(s"Write ${m.topic} # ${dialogCount}")
+      publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
     case m: HeartbeatMessage =>
-      bus.publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
-      heartbeatCount += 1
-      logger.info(s"Write ${m.topic} # ${heartbeatCount}")
+      publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
     case m: RollcallResponseMessage =>
-      bus.publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
-      rollcallResponseCount += 1
-      logger.info(s"Write ${m.topic} # ${rollcallResponseCount}")
+      publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
     case m: VersionInfoMessage =>
-      bus.publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
-      versionInfoCount += 1
-      logger.info(s"Write ${m.topic} # ${versionInfoCount}")
+      publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
     case _ =>
   }
 
@@ -151,10 +129,12 @@ class DialogAgentMqtt(
   ): Unit = {
 
     // Add message to the processing queue
-    val message = BusMessage(topic, text)
-    queue.enqueue(message)
+    queue.enqueue(BusMessage(topic, text))
+    val sz = queue.length
 
-    logger.info("Message Arrived.  Queue length is now " + queue.length)
+    // only announce the arrival if the line is getting long
+    if(queue.length > 3)
+      logger.info("Message Arrived.  Queue length = " + sz)
   }
 
   /** process the next message in the queue*/
@@ -162,77 +142,71 @@ class DialogAgentMqtt(
     if(queue.isEmpty) processing = false
     else {
       processing = true
-      logger.info(s"Procesing message, queue length = ${queue.length}")
+      val sz = queue.length
+
+      // Let the user know if the processing line is getting long
+      if(sz > 3) 
+        logger.info(s"Procesing message, queue length = ${sz}")
+
       processMessage(queue.dequeue)
     }
   }
 
-  // reset the counts at the start of a trial
-  def resetTrafficCounts(): Unit = {
-    trialStartCount = 0
-    versionInfoCount = 0
-    rollcallRequestCount = 0
-    rollcallResponseCount = 0
-    asrCount = 0
-    chatCount = 0
-    dialogCount = 0
-    heartbeatCount = 0
-    trialStopCount = 0
+  // report the traffic for this log and then clear it
+  def reportTraffic(log: MutableList[String]): Unit = {
+    val topics = log.toSet.toList.sorted
+    topics.foreach(topic => {
+      val sz = log.filter(a => a == topic).size
+      logger.info(s" ${sz}\t  ${topic}")
+    })
+    log.clear
   }
 
   // report the counts at the end of a trial
   def reportTrafficCounts(): Unit= {
-    logger.info("Message Bus traffic for this trial:")
-    logger.info(s"trialStart:       ${trialStartCount}")
-    logger.info(s"versionInfo:      ${versionInfoCount}")
-    logger.info(s"rollcallRequest:  ${rollcallRequestCount}")
-    logger.info(s"rollcallResponse: ${rollcallResponseCount}")
-    logger.info(s"asr:              ${asrCount}")
-    logger.info(s"chat:             ${chatCount}")
-    logger.info(s"dialog:           ${dialogCount}")
-    logger.info(s"heartbeat:        ${heartbeatCount}")
-    logger.info(s"trialStop:        ${trialStopCount}")
+    logger.info("TRIAL STOPPED:")
+    logger.info("Messages read:")
+    reportTraffic(subscribedTraffic)
+    logger.info("Messages written:")
+    reportTraffic(publishedTraffic)
   }
 
 
   def processMessage(
     message: BusMessage
   ): Unit = {
-
     val topic = message.topic
     val text = message.text
 
+    logger.info(s"Read ${topic}")
+
     topic match {
       case AsrMessage.topic =>
-        asrCount += 1
-        logger.info(s"Read ${topic} # ${asrCount}")
+        subscribedTraffic += topic
         AsrMessage(text).foreach(asr =>
           publish(DialogAgentMessage(source_type, topic, asr, this))
         )
       case ChatMessage.topic =>
-        chatCount += 1
-        logger.info(s"Read ${topic} # ${chatCount}")
+        subscribedTraffic += topic
         ChatMessage(text).foreach(chat =>
           publish(DialogAgentMessage(source_type, topic, chat, this))
         )
       case RollcallRequestMessage.topic =>
-        rollcallRequestCount += 1
-        logger.info(s"Read ${topic} # ${rollcallRequestCount}")
+        subscribedTraffic += topic
         RollcallRequestMessage(text).foreach(request =>
           publish(RollcallResponseMessage(uptimeSeconds, request))
         ) 
       case TrialMessage.topic => 
         TrialMessage(text).foreach(trial => 
           if(TrialMessage.isStart(trial)) { // Trial Start
-            resetTrafficCounts
-            trialStartCount += 1
-            logger.info(s"Read trial start # ${trialStartCount}")
+            subscribedTraffic.clear
+            publishedTraffic.clear
+            subscribedTraffic += topic
             heartbeatProducer.set_trial_info(trial)
             publish(VersionInfoMessage(trial))
           }
           else if(TrialMessage.isStop(trial)) { // Trial Stop
-            trialStopCount += 1
-            logger.info(s"Read trial stop # ${trialStopCount}")
+            subscribedTraffic += topic
             // heartbeats stop producing the trial_id 
             val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
             heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
