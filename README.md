@@ -192,7 +192,7 @@ message bus.
     "experiment_id": "367624f8-81cd-4661-a03f-b61908c39581",
     "trial_id": "78822ceb-448a-436e-a1f1-f154f2066261",
     "timestamp": "2021-10-07T18:27:42.843Z",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "Event:dialogue_event",
     "version": "2.3.0",
     "replay_root_id": "",
