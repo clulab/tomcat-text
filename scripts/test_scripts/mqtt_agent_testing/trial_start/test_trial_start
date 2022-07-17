@@ -27,7 +27,7 @@ echo "TESTING: Trial.start message"
 rm -f *received*.*
 
 # subscribe to the heartbeat topic:
-mosquitto_sub -t agent/uaz_dialog_agent/heartbeats > $received_heartbeat_metadata &
+mosquitto_sub -t agent/AC_UAZ_TA1_DialogAgent/heartbeats > $received_heartbeat_metadata &
 mosquitto_heartbeat_pid="$!"
 
 # subscribe to the versioninfo topic:

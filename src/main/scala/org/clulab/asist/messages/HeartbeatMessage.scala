@@ -23,6 +23,7 @@ case class HeartbeatMessageData(
 
 // published on the Message Bus
 case class HeartbeatMessage (
+  topic: String = "N/A",
   header: CommonHeader,
   msg: CommonMsg,
   data: HeartbeatMessageData
@@ -40,7 +41,7 @@ object HeartbeatMessage {
     message_type = config.getString("Heartbeat.header.message_type"),
   )
   val msg: CommonMsg = CommonMsg(
-    source = config.getString("Heartbeat.msg.source"),
+    source = config.getString("CommonMsg.source"),
     sub_type = config.getString("Heartbeat.msg.sub_type"),
     version = BuildInfo.version,
   )
@@ -53,7 +54,7 @@ object HeartbeatMessage {
   /** Build from nothing 
    *  @return A new HeartbeatMessage based on default values
    */
-  def apply(): HeartbeatMessage = HeartbeatMessage(header, msg, data)
+  def apply(): HeartbeatMessage = HeartbeatMessage(topic, header, msg, data)
 
 
   /** Build with custom data
@@ -64,6 +65,7 @@ object HeartbeatMessage {
     active: Boolean,
     status: String
   ): HeartbeatMessage = HeartbeatMessage(
+    topic,
     header,
     msg,
     new HeartbeatMessageData(state, active, status)
@@ -77,6 +79,7 @@ object HeartbeatMessage {
   def apply(
     trial: TrialMessage
   ): HeartbeatMessage = HeartbeatMessage(
+    topic, 
     header.copy(
       version = trial.header.version
     ),
@@ -96,6 +99,7 @@ object HeartbeatMessage {
       hm: HeartbeatMessage,
       timestamp: String
   ): HeartbeatMessage = HeartbeatMessage (
+    hm.topic,
     hm.header.copy(timestamp = timestamp),
     hm.msg.copy(timestamp = timestamp),
     hm.data.copy()

@@ -1,6 +1,6 @@
 {
   "data": {
-    "agent_name": "uaz_dialog_agent",
+    "agent_name": "AC_UAZ_TA1_DialogAgent",
     "config": [],
     "dependencies": [],
     "owner": "University of Arizona",
@@ -13,7 +13,7 @@
       {
         "message_type": "status",
         "sub_type": "heartbeat",
-        "topic": "agent/uaz_dialog_agent/heartbeats"
+        "topic": "agent/AC_UAZ_TA1_DialogAgent/heartbeats"
       },
       {
         "message_type": "agent",
@@ -27,7 +27,7 @@
       }
     ],
     "source": [
-      "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:4.1.6"
+      "https://gitlab.asist.aptima.com:5050/asist/testbed/AC_UAZ_TA1_DialogAgent:4.1.6"
     ],
     "subscribes": [
       {
@@ -65,7 +65,7 @@
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "versioninfo",
     "timestamp": "2022-04-29T00:05:24.966Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",

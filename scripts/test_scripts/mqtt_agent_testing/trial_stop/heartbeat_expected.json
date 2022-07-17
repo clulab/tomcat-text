@@ -11,7 +11,7 @@
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "heartbeat",
     "timestamp": "2022-04-23T21:55:28.952Z",
     "version": "4.1.6"

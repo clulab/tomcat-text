@@ -18,7 +18,7 @@ header.version | string | Dialog Agent software version.  Follows trial.header.v
 msg.experiment_id | string | The experiment id this message is associated with
 msg.trial_id | string | The trial id this message is associated with
 msg.timestamp | string | same as header.timestamp
-msg.source | string | The name of this testbed component. Hardcoded to "**uaz_dialog_agent**"
+msg.source | string | The name of this testbed component. Hardcoded to "**AC_UAZ_TA1_DialogAgent**"
 msg.sub_type | string | The subtype of the data.  Hardcoded to "**Event:dialogue_event**"
 msg.version | string | Same as header.version
 msg.replay_root_id | string | The replay_root_id if being used for the root of a replay.
@@ -53,7 +53,7 @@ taxonomy_matches | Seq[(string, string)] | arguments mapping to the span
     "experiment_id":"123e4567-e89b-12d3-a456-426655440000",
     "trial_id": "123e4567-e89b-12d3-a456-426655440000",
     "timestamp": "2019-12-26T14:05:02.1412Z",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "Event:dialogue_event",
     "version": "3.1.5",
     "replay_root_id": "123e4567-e89b-12d3-a456-426655440000",

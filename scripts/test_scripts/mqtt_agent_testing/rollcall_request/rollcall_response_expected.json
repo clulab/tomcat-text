@@ -12,7 +12,7 @@
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "rollcall:response",
     "timestamp": "2022-03-24T19:20:59.678170Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",

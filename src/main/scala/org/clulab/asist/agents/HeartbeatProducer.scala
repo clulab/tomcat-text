@@ -17,13 +17,12 @@ import scala.language.postfixOps
  *
  * Publishes a Heartbeat to the message bus on a regular interval
  *
- * @param bus A connection to the Message Bus
+ * @param agent A connection to the Message Bus
  */
 
-class HeartbeatProducer(bus: MessageBusClient) extends LazyLogging {
+class HeartbeatProducer(agent: DialogAgentMqtt) extends LazyLogging {
 
   private val config: Config = ConfigFactory.load()
-  private val topic: String = config.getString("Heartbeat.topic")
   private val startSeconds: Long = 0
   private val beatSeconds: Long = config.getInt("Heartbeat.beat_seconds")
 
@@ -55,15 +54,8 @@ class HeartbeatProducer(bus: MessageBusClient) extends LazyLogging {
   }
 
   // publish the heartbeat message 
-  private def beat: Unit = bus.publish(
-    topic,
-    JsonUtils.writeJsonNoNulls(
-      HeartbeatMessage(
-        base,
-        Clock.systemUTC.instant.toString
-      )
-    )
-  )
+  private def beat: Unit = 
+    agent.publish(HeartbeatMessage(base, Clock.systemUTC.instant.toString))
 
   logger.info(s"Heartbeat publication interval: ${beatSeconds} seconds")
 }

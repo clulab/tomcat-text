@@ -14,7 +14,7 @@ export ROOT
 VERSION=$(cat $ROOT/version.sbt | cut -d'"' -f2)
 
 GITLAB_URL=gitlab.asist.aptima.com:5050
-DOCKER_IMAGE="${GITLAB_URL}/asist/testbed/uaz_dialog_agent:${VERSION}"
+DOCKER_IMAGE="${GITLAB_URL}/asist/testbed/AC_UAZ_TA1_DialogAgent:${VERSION}"
 
 docker login "$GITLAB_URL"
 

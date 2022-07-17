@@ -10,7 +10,7 @@ output_file="./all_results.txt"
 # record time at start of testing
 t0=$(date)
 
-echo "Validating Testbed metadata using uaz_dialog_agent.py" > $output_file
+echo "Validating Testbed metadata using ac_uaz_ta1_dialog_agent.py" > $output_file
 cat $output_file
 
 # run each test in its own directory
@@ -36,7 +36,7 @@ t1=$(date)
 
 # report testing time
 echo "" >> $output_file
-echo "uaz_dialog_agent.py metadata testing is complete." >> $output_file
+echo "ac_uaz_ta1_dialog_agent.py metadata testing is complete." >> $output_file
 echo "Started:  $t0" >> $output_file
 echo "Finished: $t1" >> $output_file
 
