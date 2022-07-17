@@ -120,7 +120,7 @@
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "Event:dialogue_event",
     "timestamp": "2022-05-01T22:54:01.441Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",
@@ -173,7 +173,7 @@
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "Event:dialogue_event",
     "timestamp": "2022-05-01T22:54:06.402Z",
     "trial_id": "0a11991f-fae4-4750-8ac5-af51d40273e3",
@@ -183,7 +183,7 @@
 }
 {
   "data": {
-    "agent_name": "uaz_dialog_agent",
+    "agent_name": "AC_UAZ_TA1_DialogAgent",
     "config": [],
     "dependencies": [],
     "owner": "University of Arizona",
@@ -196,7 +196,7 @@
       {
         "message_type": "status",
         "sub_type": "heartbeat",
-        "topic": "agent/uaz_dialog_agent/heartbeats"
+        "topic": "agent/AC_UAZ_TA1_DialogAgent/heartbeats"
       },
       {
         "message_type": "agent",
@@ -210,7 +210,7 @@
       }
     ],
     "source": [
-      "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:4.1.6"
+      "https://gitlab.asist.aptima.com:5050/asist/testbed/AC_UAZ_TA1_DialogAgent:4.1.6"
     ],
     "subscribes": [
       {
@@ -248,7 +248,7 @@
   },
   "msg": {
     "experiment_id": "8e6c2b0d-004b-49ae-8707-cb2417aa8629",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "versioninfo",
     "timestamp": "2022-05-01T22:54:06.733Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",
@@ -270,7 +270,7 @@
   },
   "msg": {
     "experiment_id": "8c36c59a-71a1-4ba8-bfd3-1c5f02be8389",
-    "source": "uaz_dialog_agent",
+    "source": "AC_UAZ_TA1_DialogAgent",
     "sub_type": "rollcall:response",
     "timestamp": "2022-05-01T22:54:06.781Z",
     "trial_id": "8b37dcbf-8230-400c-8a0b-01b19b58a017",
