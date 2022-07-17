@@ -48,8 +48,8 @@ class DialogAgentMqtt(
   private val source_type: String = "message_bus"
 
   // count messages coming and going
-  val subscribedTraffic: MutableList[String] = MutableList.empty
-  val publishedTraffic: MutableList[String] = MutableList.empty
+  private val subscribedTraffic: MutableList[String] = MutableList.empty
+  private val publishedTraffic: MutableList[String] = MutableList.empty
 
   // One message read from the bus
   case class BusMessage(
@@ -61,7 +61,7 @@ class DialogAgentMqtt(
   private val queue: Queue[BusMessage] = new Queue
 
   // if the message processing queue has stalled, restart it
-  def checkQueue(): Unit = 
+  private def checkQueue(): Unit = 
     if((queue.size > 0) && (!processing)) processNextMessage
 
   // Message Bus subscriptions
@@ -91,14 +91,20 @@ class DialogAgentMqtt(
     this
   )
 
-  def publish(topic: String, json: String): Unit = {
-    bus.publish(topic, json)
+  /** Write the text to the message bus topic
+   * @param topic:  The message bus publication topic
+   * @param text:  A metadata text string
+   */
+  def publish(topic: String, text: String): Unit = {
+    bus.publish(topic, text)
     logger.info(s"Write ${topic}")
     publishedTraffic += topic
   }
 
-  // write message to the bus.  Do not write topic.
-  def publish[A <: AnyRef](a: A): Unit = a match {
+  /** Write the message to the message bus topic
+   * @param message:  Any of our published messages
+   */
+  def publish[A <: AnyRef](message: A): Unit = message match {
     case m: DialogAgentMessage =>
       publish(m.topic, JsonUtils.writeJsonNoNulls(m.copy(topic = "N/A")))
     case m: HeartbeatMessage =>
@@ -126,34 +132,19 @@ class DialogAgentMqtt(
   def messageArrived(
     topic: String,
     text: String 
-  ): Unit = {
-
-    // Add message to the processing queue
-    queue.enqueue(BusMessage(topic, text))
-    val sz = queue.length
-
-    // only announce the arrival if the line is getting long
-    if(queue.length > 3)
-      logger.info("Message Arrived.  Queue length = " + sz)
-  }
+  ): Unit = queue.enqueue(BusMessage(topic, text))
 
   /** process the next message in the queue*/
-  def processNextMessage(): Unit = {
+  private def processNextMessage(): Unit = {
     if(queue.isEmpty) processing = false
     else {
       processing = true
-      val sz = queue.length
-
-      // Let the user know if the processing line is getting long
-      if(sz > 3) 
-        logger.info(s"Procesing message, queue length = ${sz}")
-
       processMessage(queue.dequeue)
     }
   }
 
   // report the traffic for this log and then clear it
-  def reportTraffic(log: MutableList[String]): Unit = {
+  private def reportTrafficLog(log: MutableList[String]): Unit = {
     val topics = log.toSet.toList.sorted
     topics.foreach(topic => {
       val sz = log.filter(a => a == topic).size
@@ -163,22 +154,24 @@ class DialogAgentMqtt(
   }
 
   // report the counts at the end of a trial
-  def reportTrafficCounts(): Unit= {
+  private def reportTrafficLogs(): Unit= {
     logger.info("TRIAL STOPPED:")
     logger.info("Messages read:")
-    reportTraffic(subscribedTraffic)
+    reportTrafficLog(subscribedTraffic)
     logger.info("Messages written:")
-    reportTraffic(publishedTraffic)
+    reportTrafficLog(publishedTraffic)
   }
 
-
-  def processMessage(
+  private def processMessage(
     message: BusMessage
   ): Unit = {
     val topic = message.topic
     val text = message.text
-
-    logger.info(s"Read ${topic}")
+    val sz = queue.length
+    if(sz > 2)
+      logger.info(s"Read ${topic}, ${sz} messages enqueued")
+    else
+      logger.info(s"Read ${topic}")
 
     topic match {
       case AsrMessage.topic =>
@@ -210,7 +203,7 @@ class DialogAgentMqtt(
             // heartbeats stop producing the trial_id 
             val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
             heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
-            reportTrafficCounts
+            reportTrafficLogs
           }
         )
       case _ => 
@@ -222,8 +215,8 @@ class DialogAgentMqtt(
   logger.info(s"DialogAgentMqtt version ${BuildInfo.version} running.")
 
   // Check on the queue every second
-  val start: Long = 0
-  val frequency: Long = 1
+  private val start: Long = 0
+  private val frequency: Long = 1
   system.scheduler.scheduleWithFixedDelay(
     start seconds, 
     frequency seconds
