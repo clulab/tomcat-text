@@ -25,7 +25,7 @@ echo "TESTING: Trial.stop message"
 rm -f *received*.*
 
 # subscribe to the heartbeat topic:
-mosquitto_sub -t agent/uaz_dialog_agent/heartbeats > $received_metadata &
+mosquitto_sub -t agent/AC_UAZ_TA1_DialogAgent/heartbeats > $received_metadata &
 mosquitto_pid="$!"
 
 ./elkless_replayer $publication_metadata > /dev/null

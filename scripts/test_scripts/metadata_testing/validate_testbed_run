@@ -21,7 +21,7 @@ gsutil -m cp gs://studies.aptima.com/study-3_2022/*$dirname*.metadata .
 echo "Testing data"
 
 # test the data and write the results to a file
-python ../uaz_dialog_agent.py *.metadata > $results_file
+python ../ac_uaz_ta1_dialog_agent.py *.metadata > $results_file
 
 # show the results file
 cat $results_file

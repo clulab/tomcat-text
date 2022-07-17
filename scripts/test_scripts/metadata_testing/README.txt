@@ -1,7 +1,7 @@
 
 Automated testing of Testbed metadata.
 
-This script will quantitatively analyze Testbed metadata, using uaz_dialog_agent.py   
+This script will quantitatively analyze Testbed metadata, using ac_uaz_ta1_dialog_agent.py   
 
 Usage is "validate_testbed_runs " followed by an arbitrary number of Testbed run names
 
@@ -17,5 +17,5 @@ Testing will create (or overwrite) in this directory:
 
 REQUIREMENTS:
   * You must have gsutil access to the Testbed metadata google drive.
-  * Suffient local file storage space for the downloaded metadata files.
+  * Sufficient local file storage space for the downloaded metadata files.
 

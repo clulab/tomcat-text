@@ -89,7 +89,7 @@
           "type": "string",
           "title": "The msg source schema",
           "default": "",
-          "examples": [ "uaz_dialog_agent" ],
+          "examples": [ "AC_UAZ_TA1_DialogAgent" ],
           "pattern": "^(.*)$"
         },
         "sub_type": {
