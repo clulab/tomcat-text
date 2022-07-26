@@ -4,7 +4,7 @@
 		module="tomcat-text-build"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20220717100004"
+		publication="20220726230635"
 		e:sbtVersion="1.0" e:scalaVersion="2.12"
 	>
 		<description>
