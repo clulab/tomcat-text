@@ -6,28 +6,40 @@ import java.util.Scanner
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  An interactive Dialog Agent that will return extractions for text entered
- *  on the command line
+ *  An interactive Dialog Agent that will return extractions for 
+ *  text entered on the command line
  *
  */
 
 class DialogAgentStdin extends DialogAgent { 
 
-  println(s"\nRunning Dialog Agent stdin extractor version ${BuildInfo.version}")
-  println("Enter plaintext for extraction, [CTRL-D] to exit.")
-
-  print("\n> ")
-
   // get rule engine lazy init out of the way
   startEngine()
 
-  // Console input
-  val input = new Scanner(System.in)
+  val v = BuildInfo.version
+  println(s"\nDialog Agent standard input text extractor version ${v}")
+  println("Enter plaintext for extraction, two blank lines to exit.")
 
-  // Read keyboard input until user hits [CTRL-D]
-  while (input.hasNextLine){
-    val extractions = engine.extractFrom(input.nextLine, keepText = true)
-    extractions.map(getExtraction).map(f => println(JsonUtils.writeJson(f)))
+  // Console input
+  val input:Scanner = new Scanner(System.in)
+
+  var blankLines = 0
+
+  // scan input until user enters two consecutive blank lines
+  while(blankLines < 2) {
     print("\n> ")
+    val text: String = input.nextLine
+    if(text.isEmpty) {
+      blankLines += 1
+    }
+    else {
+      val extractions = engine.extractFrom(text, keepText = true)
+      extractions.map(getExtraction).map(f => 
+        println(JsonUtils.writeJson(f))
+      )
+      blankLines = 0
+    }
   }
+
+  println("\nExiting program...")
 }
