@@ -1,33 +1,45 @@
 package org.clulab.asist.agents
 
+import scala.annotation.tailrec
 import buildinfo.BuildInfo
 import java.util.Scanner
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
  *
- *  An interactive Dialog Agent that will return extractions for text entered
- *  on the command line
+ *  An interactive Dialog Agent that will return extractions for 
+ *  text entered on the command line
  *
  */
 
 class DialogAgentStdin extends DialogAgent { 
 
-  println(s"\nRunning Dialog Agent stdin extractor version ${BuildInfo.version}")
-  println("Enter plaintext for extraction, [CTRL-D] to exit.")
-
-  print("\n> ")
-
   // get rule engine lazy init out of the way
   startEngine()
 
-  // Console input
-  val input = new Scanner(System.in)
+  val v = BuildInfo.version
+  println(s"\nDialog Agent standard input text extractor version ${v}")
+  println("Enter plaintext for extraction, two blank lines to exit.")
 
-  // Read keyboard input until user hits [CTRL-D]
-  while (input.hasNextLine){
-    val extractions = engine.extractFrom(input.nextLine, keepText = true)
-    extractions.map(getExtraction).map(f => println(JsonUtils.writeJson(f)))
+  // Console input
+  val input:Scanner = new Scanner(System.in)
+
+  readInput(0)
+  println("\nExiting program...")
+
+  @tailrec
+  private def readInput(blankLines: Int): Unit = if(blankLines < 2) {
     print("\n> ")
+    val text: String = input.nextLine
+    if(text.isEmpty) {
+      readInput(blankLines + 1)
+    }
+    else {
+      val extractions = engine.extractFrom(text, keepText = true)
+      extractions.map(getExtraction).map(f => 
+        println(JsonUtils.writeJson(f))
+      )
+      readInput(0)
+    }
   }
 }
