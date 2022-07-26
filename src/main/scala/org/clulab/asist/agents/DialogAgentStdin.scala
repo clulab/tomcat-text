@@ -1,6 +1,5 @@
 package org.clulab.asist.agents
 
-import scala.annotation.tailrec
 import buildinfo.BuildInfo
 import java.util.Scanner
 
@@ -24,22 +23,23 @@ class DialogAgentStdin extends DialogAgent {
   // Console input
   val input:Scanner = new Scanner(System.in)
 
-  readInput(0)
-  println("\nExiting program...")
+  var blankLines = 0
 
-  @tailrec
-  private def readInput(blankLines: Int): Unit = if(blankLines < 2) {
+  // scan input until user enters two consecutive blank lines
+  while(blankLines < 2) {
     print("\n> ")
     val text: String = input.nextLine
     if(text.isEmpty) {
-      readInput(blankLines + 1)
+      blankLines += 1
     }
     else {
       val extractions = engine.extractFrom(text, keepText = true)
       extractions.map(getExtraction).map(f => 
         println(JsonUtils.writeJson(f))
       )
-      readInput(0)
+      blankLines = 0
     }
   }
+
+  println("\nExiting program...")
 }
