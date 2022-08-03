@@ -617,7 +617,7 @@ _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
+| _agent_ | [`Self`, `Entity`] | `?` | `false`
 | _location_ | [`Location`] | `?` | `false`
 | _helper_ | [`Entity`] | `?` | `false`
 
@@ -634,7 +634,7 @@ _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | [_none_, `?`] | [`false`, `true`]
+| _agent_ | [`Self`, `Entity`] | [_none_, `?`] | [`false`, `true`]
 | _location_ | [`Location`] | `?` | `false`
 
 ----------------------------------

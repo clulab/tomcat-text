@@ -190,7 +190,7 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- agent | `Entity` | _none_ | `true` 
+ agent | `Self` | _none_ | `true` 
  location | `Location` | `?` | `false` 
 
 &nbsp;
@@ -1764,7 +1764,7 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- agent | `Entity` | `?` | `false` 
+ agent | `Self` | `?` | `false` 
  location | `Location` | `?` | `false` 
 
 &nbsp;
