@@ -363,7 +363,7 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [word=/(?i)need|require/] []? [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
-      agent: Entity? = >/${agents}/
+      agent: Self? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/
 
@@ -385,7 +385,7 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [word=/(?i)trapped|\bstuck\b|\bdead\b|\bhurt\b/]
-      agent: Entity = >/nsubj/
+      agent: Self = >/nsubj/
       location: Location? = >/${preps}/|
                >/advmod/
 

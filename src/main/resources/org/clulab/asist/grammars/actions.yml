@@ -121,7 +121,7 @@ rules:
       name: search
       template_priority: ${ rulepriority }
       label: Search
-      trigger: ${ search_triggers }
+      trigger: ${ search_triggers_no_look }
       object_type: Location
 
 
@@ -131,7 +131,7 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = [lemma=/${ search_triggers }/]
+      trigger = (?<! [word=it] )[lemma=/${ search_triggers }/]
       area: Location = ${ search_relations }
       target: Concept? = >nmod_for
       agent: Entity? = >/${agents}/
@@ -141,7 +141,7 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
+      trigger = (?<! [word=it] ) [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
       agent: Entity = >/${agents}/
       target: Concept? = >nmod_for
 
