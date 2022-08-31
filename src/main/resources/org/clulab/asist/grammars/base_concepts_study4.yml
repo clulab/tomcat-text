@@ -1,0 +1,11 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: bomb1
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)bomb/ & tag=/^N/]

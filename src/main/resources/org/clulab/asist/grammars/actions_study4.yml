@@ -1,0 +1,10 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: defuse1
+    priority: ${ rulepriority }
+    label: Defuse
+    pattern: |
+      trigger = [lemma=/(?i)^defuse/ & tag=/^V/]
+      target: Bomb = >dobj

@@ -48,6 +48,11 @@ rules:
     vars:
       rulepriority: "5+"
 
+  # Extract the study 4 base_concepts
+  - import: org/clulab/asist/grammars/base_concepts_study4.yml
+    vars:
+      rulepriority: "5+"
+
   # Extract the puzzle concepts
   - import: org/clulab/asist/grammars/puzzle_concepts.yml
     vars:
@@ -65,6 +70,12 @@ rules:
 
   # Extract the simple events
   - import: org/clulab/asist/grammars/actions.yml
+    vars:
+      rulepriority: "8"
+      genericpriority: "9"
+
+  # Extract the simple events
+  - import: org/clulab/asist/grammars/actions_study4.yml
     vars:
       rulepriority: "8"
       genericpriority: "9"
