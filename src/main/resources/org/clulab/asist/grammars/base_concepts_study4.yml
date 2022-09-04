@@ -9,3 +9,11 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)bomb/ & tag=/^N/]
+
+  - name: product1
+    priority: ${ rulepriority }
+    label: Product
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)speed|health/ & tag=/^N/]

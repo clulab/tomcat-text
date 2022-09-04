@@ -8,3 +8,10 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^defuse/ & tag=/^V/]
       target: Bomb = >dobj
+
+  - name: shop1
+    priority: ${ rulepriority }
+    label: Shop
+    pattern: |
+      trigger = [lemma=/(?i)^buy/ & tag=/^V/]
+      target: Product = >dobj

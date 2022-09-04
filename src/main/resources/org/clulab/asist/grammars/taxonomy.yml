@@ -119,6 +119,7 @@
       - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
         - Defuse
+        - Shop
         - Block # for things blocking environments: "There's some rubble blocking B2."
         - Move:
           - MoveTo
@@ -219,6 +220,7 @@
       - West
   - Item:
     - Bomb
+    - Product
     - MarkerBlock:
         - RegularMarkerBlock:
             - TypeAMarker
