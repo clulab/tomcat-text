@@ -16,4 +16,4 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)speed|health|durability|detector|map/ & tag=/^N/]
+      [lemma=/(?i)speed|health|durability|detector|map|points|device/ & tag=/^N/]
