@@ -46,6 +46,15 @@ rules:
       topic: Concept = >nsubj
       location: Location? = >/${positional_preps_liberal+advmod}/
 
+  - name: information_gathering_question_that3
+    example: "What room is that?"
+    priority: ${ rulepriority }
+    label: Question
+    pattern: |
+      trigger = @QuestionParticle (?= [tag=/^NN/]) (?= [lemma=be])
+      topic: Concept = >det
+      location: Location? = >/${positional_preps_liberal+advmod}/
+
   - name: information_gathering_question_clarification
     example: "What is the plan? | What is the type of the victim in room c?"
     priority: ${ rulepriority }
@@ -55,6 +64,21 @@ rules:
       topic: Concept = >nsubj
       location: Location? = >nsubj >/${positional_preps}/ | >nsubj >/nmod_of/  >/${positional_preps}/
 
+  - name: which_question
+    example: "Which room are you in?"
+    priority: ${ rulepriority }
+    label: Question
+    pattern: |
+      trigger = [lemma=which]
+      topic: Concept = <det
+
+  - name: divergent_question
+    example: "What do you think?"
+    priority: ${ rulepriority }
+    label: Question
+    pattern: |
+      trigger = @QuestionParticle (?= [lemma=/be|do|may|can/])
+      topic: Action = <dobj
 
   - name: mannerquestion
     example: "How are we going to do that?"
@@ -75,6 +99,16 @@ rules:
       topic: Action = <aux
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
+
+  - name: binary_question_confirm
+    priority: ${ rulepriority }
+    label: YesNoQuestion
+    example: "Is there a victim？| Is he an engineer?"
+    action: requireSubjectVerbInversion
+    pattern: |
+      trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be/ & tag=/VBP|VBZ/] [tag=/PRP|EX/]
+      target: Entity = <cop| >nsubj
+      location: Location? = >advmod | >${ search_relations }
 
   - name: binary_question_help
     example: "Do you need help?"
