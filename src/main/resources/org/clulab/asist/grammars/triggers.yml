@@ -121,3 +121,5 @@ you_triggers: "you"
 zone_triggers: "zone|area|side|section"
 
 place_triggers: "place|put|drop"
+
+shop_triggers: "buy|have|purchase|get"

@@ -13,5 +13,5 @@ rules:
     priority: ${ rulepriority }
     label: Shop
     pattern: |
-      trigger = [lemma=/(?i)^buy/ & tag=/^V/]
+      trigger = [lemma=/(?i)^(${ shop_triggers })/]
       target: Product = >dobj
