@@ -10,6 +10,14 @@ rules:
     pattern: |
       [lemma=/(?i)bomb/ & tag=/^N/]
 
+  - name: sequencer1
+    priority: ${ rulepriority }
+    label: SequenceDetector
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)sequence/]? [lemma=/(?i)detector/]
+
   - name: product1
     priority: ${ rulepriority }
     label: Product

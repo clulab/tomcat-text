@@ -220,7 +220,11 @@
       - West
   - Item:
     - Bomb
-    - Product
+    - Product:
+        - SequenceDetector
+        - Map:
+              - ThreatSign: #this refers to the sign on the map!
+                  - Threat
     - MarkerBlock:
         - RegularMarkerBlock:
             - TypeAMarker
@@ -234,9 +238,6 @@
       - Hammer
       - MedKit
       - Stretcher
-      - Map:
-          - ThreatSign: #this refers to the sign on the map!
-              - Threat
   - Sentiment:
     #- Uncertainty  # include the agent
     - Positive:
