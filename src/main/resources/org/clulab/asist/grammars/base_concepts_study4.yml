@@ -20,8 +20,32 @@ rules:
 
   - name: product1
     priority: ${ rulepriority }
-    label: Product
+    label: Speed
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)speed|health|durability|detector|map|points|device/ & tag=/^N/]
+      [lemma=/(?i)speed/ & tag=/^N/]
+
+  - name: product2
+    priority: ${ rulepriority }
+    label: Health
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ health_triggers })/ & tag=/^N/]
+
+  - name: product3
+    priority: ${ rulepriority }
+    label: Detector
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)^(${ detector_triggers })/ & tag=/^N/]
+
+  - name: product4
+    priority: ${ rulepriority }
+    label: Durability
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)durability/ & tag=/^N/]

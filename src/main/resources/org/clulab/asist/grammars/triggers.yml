@@ -122,4 +122,8 @@ zone_triggers: "zone|area|side|section"
 
 place_triggers: "place|put|drop"
 
-shop_triggers: "buy|have|purchase|get"
+shop_triggers: "buy|purchase|get"
+
+health_triggers: "health|point"
+
+detector_triggers: "detector|device"

@@ -222,6 +222,10 @@
     - Bomb
     - Product:
         - SequenceDetector
+        - Speed
+        - Health
+        - Detector
+        - Durability
         - Map:
               - ThreatSign: #this refers to the sign on the map!
                   - Threat
