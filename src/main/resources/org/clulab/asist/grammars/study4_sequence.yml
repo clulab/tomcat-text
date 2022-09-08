@@ -4,6 +4,7 @@ rules:
 
 
   - name: difficult
+    example: "red blue green blue sequence"
     priority: ${ rulepriority }
     label: DifficultSequence
     type: token

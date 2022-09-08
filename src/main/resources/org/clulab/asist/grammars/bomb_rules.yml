@@ -4,6 +4,7 @@ rules:
 
 
   - name: bomb_with
+    example: "There's a bomb with a difficult sequence"
     priority: ${ rulepriority }
     label: BombIsType
     pattern: |
@@ -11,6 +12,7 @@ rules:
       type:  Sequence = >/nmod/
 
   - name: bomb_is
+    example: "This bomb is difficult"
     priority: ${ rulepriority }
     label: BombIsType
     pattern: |
