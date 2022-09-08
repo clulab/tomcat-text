@@ -237,7 +237,8 @@ rules:
       exists: Item = >/${agents}/
       location: Location? = >/advmod/|
                >/${agents}/
-               >/${preps}/
+               >/${preps}/|
+      >/${agents}/ >/nmod/ >/nmod/
       obstacle: Obstacle? = >/${agents}/
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/

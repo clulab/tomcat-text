@@ -1,0 +1,16 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+
+  - name: "HelpRequests_simple_action"
+    label: HelpRequest
+    example: "I need help with defusing the bomb."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|require/] []? [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
+      agent: Self? = >/${agents}/
+      action: Action = >/advcl/|
+                      >/acl/
+      location: Location? = >/${preps}/|
+               >/advmod/

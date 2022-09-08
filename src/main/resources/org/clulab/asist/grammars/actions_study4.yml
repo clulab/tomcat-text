@@ -6,7 +6,7 @@ rules:
     priority: ${ rulepriority }
     label: Defuse
     pattern: |
-      trigger = [lemma=/(?i)^defuse/ & tag=/^V/]
+      trigger = [lemma=/(?i)^defuse|^clear/ & tag=/^V/]
       target: Bomb = >dobj
 
   - name: shop1
@@ -15,3 +15,4 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ shop_triggers })/]
       target: Product = >dobj
+

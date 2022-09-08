@@ -25,6 +25,16 @@ rules:
     vars:
       rulepriority: "3+"
 
+  # Extract the sequences
+  - import: org/clulab/asist/grammars/study4_sequence.yml
+    vars:
+      rulepriority: "5+"
+
+  # Extract the bomb_rules
+  - import: org/clulab/asist/grammars/bomb_rules.yml
+    vars:
+      rulepriority: "6+"
+
   # Extract the items
   - import: org/clulab/asist/grammars/items.yml
     vars:
@@ -102,6 +112,12 @@ rules:
 
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
+    vars:
+      rulepriority: "6+"
+      second_priority: "7+"
+
+  # Extract study4_team_comms
+  - import: org/clulab/asist/grammars/study4_team_comm.yml
     vars:
       rulepriority: "6+"
       second_priority: "7+"

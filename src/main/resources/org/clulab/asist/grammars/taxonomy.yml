@@ -1,4 +1,8 @@
 - Concept:
+  - Sequence:
+      - DifficultSequence
+      - MediumSequence
+      - EasySequence
   - Tense:
       - PastTense
       - FutureTense
@@ -199,7 +203,7 @@
             - VictimTypeA
             - VictimTypeB
         - NoVictim # example: "no victim here"
-    - Player:
+    - Color:
       - Red
       - Blue
       - Green
@@ -219,7 +223,9 @@
       - SouthWest
       - West
   - Item:
-    - Bomb
+    - Bomb:
+        - BombAttributes:
+            - BombIsType
     - Product:
         - SequenceDetector
         - Speed

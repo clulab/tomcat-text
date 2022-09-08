@@ -1,0 +1,84 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+
+  - name: difficult
+    priority: ${ rulepriority }
+    label: DifficultSequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?? ) (?<trigger> @Color) []? @second:Color []? @third:Color []? @fourth:Color @sequence:Sequence?
+
+  - name: medium
+    priority: ${ rulepriority }
+    label: MediumSequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+
+  - name: easy
+    priority: ${ rulepriority }
+    label: EasySequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?)  (?<trigger> @Red|Blue|Green)  @sequence:Sequence?  []? (?! []?? [mention=Color])
+
+  - name: sequence
+    priority: ${ rulepriority }
+    label: Sequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [word=difficult]|[word=medium] []?? ) [word=/(?i)sequences?$/ & !mention=Sequence] (?! [word=detector])
+
+  - name: sequence_eas
+    priority: ${ rulepriority }
+    label: EasySequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?? ) [word=easy] [word=/sequences?/ & !mention=Sequence] (?! []?? [mention=Sequence])
+
+  - name: sequence1
+    priority: ${ rulepriority }
+    label: MediumSequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?? ) [word=medium] [word=/sequences?/ & !mention=Sequence] (?! []?? [mention=Sequence])
+
+  - name: sequence2
+    priority: ${ rulepriority }
+    label: DifficultSequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?? ) [word=difficult & !mention=Sequence] [word=/sequences?/ & !mention=Sequence] (?! []?? [mention=Sequence])
+
+  - name: sequence_eas1
+    priority: ${ rulepriority }
+    label: EasySequence
+    type: token
+    keep: false
+    pattern: |
+      [word=easy] [!word=/sequences?/]
+
+  - name: sequence12
+    priority: ${ rulepriority }
+    label: MediumSequence
+    type: token
+    keep: false
+    pattern: |
+     [word=medium] [!word=/sequences?/]
+
+  - name: sequence23
+    priority: ${ rulepriority }
+    label: DifficultSequence
+    type: token
+    keep: false
+    pattern: |
+      [word=difficult] [!word=/sequences?/]

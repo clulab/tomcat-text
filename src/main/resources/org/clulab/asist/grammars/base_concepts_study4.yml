@@ -8,7 +8,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)bomb/ & tag=/^N/]
+      [lemma=/(?i)bomb$|ied/ & tag=/^N/]
 
   - name: sequencer1
     priority: ${ rulepriority }
@@ -36,11 +36,19 @@ rules:
 
   - name: product3
     priority: ${ rulepriority }
-    label: Detector
+    label: SequenceDetector
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ detector_triggers })/ & tag=/^N/]
+      (?<! [lemma=sequence] ) [lemma=/(?i)^(${ detector_triggers })/ & tag=/^N/]
+
+  - name: sequencer
+    priority: ${ rulepriority }
+    label: SequenceDetector
+    type: token
+    keep: true
+    pattern: |
+     [word=/(?i)^sequencer$/ & tag=/^N/]
 
   - name: product4
     priority: ${ rulepriority }
@@ -49,3 +57,11 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)durability/ & tag=/^N/]
+
+  - name: color
+    priority: ${ rulepriority }
+    label: Color
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)color/ & tag=/^N/]

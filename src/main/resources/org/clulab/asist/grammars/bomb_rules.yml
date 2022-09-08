@@ -1,0 +1,18 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+
+  - name: bomb_with
+    priority: ${ rulepriority }
+    label: BombIsType
+    pattern: |
+      trigger = [mention=Bomb]
+      type:  Sequence = >/nmod/
+
+  - name: bomb_is
+    priority: ${ rulepriority }
+    label: BombIsType
+    pattern: |
+      trigger = [mention=Bomb]
+      type:  Sequence = <${agents}
