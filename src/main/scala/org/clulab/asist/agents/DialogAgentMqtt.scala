@@ -99,7 +99,7 @@ class DialogAgentMqtt(
     publishedTraffic += topic
   }
 
-  /** Write the message to the message bus topic
+  /** Write the message to the message bus topic.  Do not publish the topic
    * @param message:  Any of our published messages
    */
   def publish[A <: AnyRef](message: A): Unit = message match {
