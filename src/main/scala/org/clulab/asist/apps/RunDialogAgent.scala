@@ -5,6 +5,10 @@ import org.clulab.asist.agents._
 import scopt.OParser
 import buildinfo.BuildInfo
 
+import com.typesafe.config.Config
+import ai.lum.common.ConfigFactory
+
+
 import java.io.File
 
 /**
@@ -16,6 +20,11 @@ import java.io.File
  */
 
 object RunDialogAgent extends App with LazyLogging {
+
+  // configuration from src/main/resources/application.conf
+  private val config: Config = ConfigFactory.load()
+  val masterRulesPath: String = 
+    config.getString("TomcatRuleEngine.masterRulesPath")
 
   case class Arguments(
     // optional flag to exclude Chat messages from File or Mqtt input
@@ -37,8 +46,17 @@ object RunDialogAgent extends App with LazyLogging {
     dst: String = "",
 
     // Optional TA3 file version for reprocessor
-    ta3_version: Option[Int] = None
+    ta3_version: Option[Int] = None,
+
+    // rule base 
+    rules: String = masterRulesPath
   )
+
+  val rules_hint: String = 
+    s"Optional rule base path. Defaults to ${masterRulesPath} if not set"
+
+  val ta3_hint: String = """Optional TA3 version number for reprocessed files.  
+Existing TA3 version numbers are incremented by 1 if not set"""
 
   // set up the parser to use the Dialog Agent command line arguments
   val parser = new scopt.OptionParser[Arguments]("Parsing application") {
@@ -58,7 +76,11 @@ object RunDialogAgent extends App with LazyLogging {
           .text("Optional MQTT broker host port. Defaults to 1883 if not set"),
         opt[Unit]("nochat")
           .action((_, c) => c.copy(nochat = true))
-          .text("Optional flag to exclude Minecraft Chat messages")
+          .text("Optional flag to exclude Minecraft Chat messages"),
+        opt[String]("rules")
+          .valueName("<String>")
+          .action((x, c) => c.copy(rules = x))
+          .text(rules_hint)
         )
     cmd("file")
       .action((_, c) => c.copy(agent = "file"))
@@ -73,10 +95,20 @@ object RunDialogAgent extends App with LazyLogging {
           .text("Output file"),
         opt[Unit]("nochat")
           .action((_, c) => c.copy(nochat = true))
-          .text("Optional flag to exclude Minecraft Chat messages")
+          .text("Optional flag to exclude Minecraft Chat messages"),
+        opt[String]("rules")
+          .valueName("<String>")
+          .action((x, c) => c.copy(rules = x))
+          .text(rules_hint)
         )
     cmd("stdin")
       .action((_, c) => c.copy(agent = "stdin"))
+      .children(
+        opt[String]("rules")
+          .valueName("<String>")
+          .action((x, c) => c.copy(rules = x))
+          .text(rules_hint)
+        )
     cmd("reprocess")
       .action((_, c) => c.copy(agent = "reprocess"))
       .children(
@@ -88,9 +120,14 @@ object RunDialogAgent extends App with LazyLogging {
           .valueName("<String>")
           .action((x, c) => c.copy(dst = x))
           .text("Output directory"),
-        opt[Int]("v")
+        opt[Int]("ta3")
+          .valueName("<Int>")
           .action((x, c) => c.copy(ta3_version = Some(x)))
-          .text("Optional TA3 version number for reprocessed files. Existing TA3 version numbers are incremented by 1 if not set")
+          .text(ta3_hint),
+        opt[String]("rules")
+          .valueName("<String>")
+          .action((x, c) => c.copy(rules = x))
+          .text(rules_hint)
         )
   }
 
