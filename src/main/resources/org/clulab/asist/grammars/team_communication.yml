@@ -109,7 +109,7 @@ rules:
     label: RoleDeclare
     example: "I am an engineer"
     pattern: |
-      trigger = (?<! @Question | @YesNoQuestion) [lemma=/(?i)^be/ & tag=VBP]
+      trigger = [lemma=/(?i)^be/ & tag=VBP] [!mention=/You|Self/]
       target: Role = <cop
       agent: Entity = <cop >/(${agents})/
 
