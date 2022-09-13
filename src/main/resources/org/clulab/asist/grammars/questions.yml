@@ -17,7 +17,7 @@ rules:
         <cop |
         <advmod >nsubj?
       location: Location? = >/${positional_preps}/
-# the second entity version is there so we can capture cases such as "where are you at green?" and extract green as the entity
+  # the second entity version is there so we can capture cases such as "where are you at green?" and extract green as the entity
 
   - name: location_moving_question
     example: "Where did you go?"
@@ -104,7 +104,6 @@ rules:
     priority: ${ rulepriority }
     label: YesNoQuestion
     example: "Is there a victim？| Is he an engineer?"
-    action: requireSubjectVerbInversion
     pattern: |
       trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be/ & tag=/VBP|VBZ/] [tag=/PRP|EX/]
       target: Entity = <cop| >nsubj
