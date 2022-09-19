@@ -368,7 +368,7 @@ rules:
                >/advmod/
 
   - name: "HelpRequests_complex"
-    label: HelpRequest
+    label: NeedPresence
     example: "Can you help me?"
     priority: ${ rulepriority }
     pattern: |
@@ -378,6 +378,15 @@ rules:
       location: Location? = >/${preps}/|
                >/advmod/
 
+  - name: "HelpRequests_Presence"
+    label: NeedPresence
+    example: "Engineer, We need you here."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|want|come/]
+      helper: Entity? = >nmod:tmod
+      location: Location? = >/${preps}/|
+               >/advmod/
 
   - name: trapped_A
     label: AmTrapped
