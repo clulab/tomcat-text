@@ -3555,6 +3555,24 @@ _No arguments_
 
 --------
 
+#### rule: _divergent_question_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ topic | `Action` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
 #### rule: _information_gathering_question_clarification_
 
 attribute | value
@@ -3607,6 +3625,43 @@ keep      | `true`
 :---- | :---- | :---- | :----
  topic | `Concept` | _none_ | `true` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _information_gathering_question_that3_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ topic | `Concept` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _which_question_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ topic | `Concept` | _none_ | `true` 
 
 &nbsp;
 
@@ -5070,6 +5125,25 @@ action | `Action` | `Some(requireSubjectVerbInversion)`
  topic | `Action` | _none_ | `true` 
  location | `Location` | `?` | `false` 
  agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _binary_question_confirm_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`YesNoQuestion`, `Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Entity` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
 
 &nbsp;
 

@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `5.1.1`
 
-Document generation timestamp (UTC): `2022-08-03 12:37:44.352875`
+Document generation timestamp (UTC): `2022-09-19 16:06:11.812707`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -133,7 +133,7 @@ Extractions
 
       - SimpleAction
         - Block
-          - [source] (Concept|Obstacle) (?)
+          - [source] (Obstacle|Concept) (?)
           - [target] (Concept) (?)
 
         - Clear
@@ -161,14 +161,14 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (EventLike|Victim|Person|PuzzleConcept|Item) ()
+            - exists (EventLike|Person|Victim|Item|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
 
           - Need
             - HelpRequest
-              - [agent] (Entity|Self) (?)
+              - [agent] (Self|Entity) (?)
               - [location] (Location) (?)
               - [helper] (Entity) (?)
 
@@ -207,14 +207,14 @@ Extractions
 
             - PlanLanguage
           - Question
-            - topic (Concept) ()
+            - topic (Action|Concept) ()
             - [location] (Location) (?)
 
             - HowQuestion
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Entity|Move) ()
+              - topic (Move|Entity) ()
               - [location] (Location) (?)
 
             - [QuestionParticle]
@@ -223,9 +223,10 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Action|Need) ()
+              - topic (Need|Action) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
+              - target (Entity) ()
 
           - ReportStatus
             - ReportItemStatus
@@ -248,7 +249,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoom|ThreatRoomMarker|ThreatSign) ()
+                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -270,11 +271,11 @@ Extractions
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Entity|Location|Deictic) ()
+            - target (Location|Deictic|Entity) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Entity|Location) (?)
+            - [target] (Location|Entity) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -289,7 +290,7 @@ Extractions
 
         - RescueInteractions
           - Save
-            - target (Entity|Person|Victim) ()
+            - target (Person|Victim|Entity) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -309,7 +310,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Entity|EventLike|Item) ()
+          - target (Item|EventLike|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()

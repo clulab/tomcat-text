@@ -759,7 +759,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _location_ | [`Location`] | `?` | `false`
-| _topic_ | [`Concept`] | _none_ | `true`
+| _topic_ | [`Concept`, `Action`] | _none_ | `true`
 
 ----------------------------------
 
@@ -834,7 +834,8 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _location_ | [`Location`] | `?` | `false`
-| _topic_ | [`Action`, `Need`] | _none_ | `true`
+| _target_ | [`Entity`] | _none_ | [`false`, `true`]
+| _topic_ | [`Action`, `Need`] | _none_ | [`false`, `true`]
 
 ----------------------------------
 
