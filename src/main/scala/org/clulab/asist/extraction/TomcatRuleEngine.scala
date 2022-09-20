@@ -1,5 +1,7 @@
 package org.clulab.asist.extraction
 
+import com.typesafe.scalalogging.LazyLogging
+
 import com.typesafe.config.{Config, ConfigFactory}
 import org.clulab.odin.{ExtractorEngine, Mention, State}
 import org.clulab.processors.fastnlp.FastNLPProcessor
@@ -7,7 +9,10 @@ import org.clulab.processors.{Document, Processor}
 import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.{Logger, LoggerFactory}
 
-class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Configured {
+class TomcatRuleEngine(
+  val config: Config = ConfigFactory.load(),
+  val rulepath: Option[String] = None
+) extends Configured with LazyLogging {
 
   val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
 
@@ -21,6 +26,8 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
     path
   }
 
+  rulepath.foreach(path => logger.info(s"rulepath = ${path}"))
+
   // These are the values which can be reloaded.  Query them for current assignments.
   class LoadableAttributes(val actions: TomcatActions, val engine: ExtractorEngine)
 
@@ -29,6 +36,9 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
       getPath("masterRulesPath", "/org/clulab/asist/grammars/master.yml")
     val taxonomyPath: String =
       getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
+
+  logger.info("LoadableAttributes:");
+  logger.info(s"masterRulesPath: ${masterRulesPath}");
 
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time based on paths in the config file.
@@ -43,6 +53,7 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
   }
 
   var loadableAttributes = LoadableAttributes()
+
 
   // These public variables are accessed directly by clients which
   // don't know they are loadable and which had better not keep copies.

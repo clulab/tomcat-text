@@ -1,6 +1,8 @@
 package org.clulab.asist.apps
 
 import com.typesafe.scalalogging.LazyLogging
+import org.clulab.asist.extraction.TomcatRuleEngine
+
 import org.clulab.asist.agents._
 import scopt.OParser
 import buildinfo.BuildInfo
@@ -159,7 +161,7 @@ Existing TA3 version numbers are incremented by 1 if not set"""
       )
     case "stdin" =>
       logger.info("Starting Stdin agent...")
-      new DialogAgentStdin
+      new DialogAgentStdin(new TomcatRuleEngine(rulepath = Some(arguments.rulepath)))
     case _ =>
       logger.error(f"Could not run agent '${arguments.agent}'")
       logger.error("valid agent types are [mqtt, reprocess, stdin, file]")

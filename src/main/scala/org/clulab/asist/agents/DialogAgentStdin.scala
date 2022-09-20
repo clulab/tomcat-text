@@ -2,6 +2,8 @@ package org.clulab.asist.agents
 
 import buildinfo.BuildInfo
 import java.util.Scanner
+import org.clulab.asist.extraction.TomcatRuleEngine
+
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -11,7 +13,9 @@ import java.util.Scanner
  *
  */
 
-class DialogAgentStdin extends DialogAgent { 
+class DialogAgentStdin (
+  override val engine: TomcatRuleEngine = new TomcatRuleEngine
+) extends DialogAgent(engine) { 
 
   // get rule engine lazy init out of the way
   startEngine()
