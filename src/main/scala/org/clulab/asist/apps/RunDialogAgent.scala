@@ -49,10 +49,10 @@ object RunDialogAgent extends App with LazyLogging {
     ta3_version: Option[Int] = None,
 
     // rule base 
-    rules: String = masterRulesPath
+    rulepath: String = masterRulesPath
   )
 
-  val rules_hint: String = 
+  val rulepath_hint: String = 
     s"Optional rule base path. Defaults to ${masterRulesPath} if not set"
 
   val ta3_hint: String = """Optional TA3 version number for reprocessed files.  
@@ -77,10 +77,10 @@ Existing TA3 version numbers are incremented by 1 if not set"""
         opt[Unit]("nochat")
           .action((_, c) => c.copy(nochat = true))
           .text("Optional flag to exclude Minecraft Chat messages"),
-        opt[String]("rules")
+        opt[String]("rulepath")
           .valueName("<String>")
-          .action((x, c) => c.copy(rules = x))
-          .text(rules_hint)
+          .action((x, c) => c.copy(rulepath = x))
+          .text(rulepath_hint)
         )
     cmd("file")
       .action((_, c) => c.copy(agent = "file"))
@@ -96,18 +96,18 @@ Existing TA3 version numbers are incremented by 1 if not set"""
         opt[Unit]("nochat")
           .action((_, c) => c.copy(nochat = true))
           .text("Optional flag to exclude Minecraft Chat messages"),
-        opt[String]("rules")
+        opt[String]("rulepath")
           .valueName("<String>")
-          .action((x, c) => c.copy(rules = x))
-          .text(rules_hint)
+          .action((x, c) => c.copy(rulepath = x))
+          .text(rulepath_hint)
         )
     cmd("stdin")
       .action((_, c) => c.copy(agent = "stdin"))
       .children(
-        opt[String]("rules")
+        opt[String]("rulepath")
           .valueName("<String>")
-          .action((x, c) => c.copy(rules = x))
-          .text(rules_hint)
+          .action((x, c) => c.copy(rulepath = x))
+          .text(rulepath_hint)
         )
     cmd("reprocess")
       .action((_, c) => c.copy(agent = "reprocess"))
@@ -124,10 +124,10 @@ Existing TA3 version numbers are incremented by 1 if not set"""
           .valueName("<Int>")
           .action((x, c) => c.copy(ta3_version = Some(x)))
           .text(ta3_hint),
-        opt[String]("rules")
+        opt[String]("rulepath")
           .valueName("<String>")
-          .action((x, c) => c.copy(rules = x))
-          .text(rules_hint)
+          .action((x, c) => c.copy(rulepath = x))
+          .text(rulepath_hint)
         )
   }
 
