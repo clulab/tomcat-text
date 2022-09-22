@@ -14,8 +14,8 @@ import org.clulab.asist.extraction.TomcatRuleEngine
  */
 
 class DialogAgentStdin (
-  override val engine: TomcatRuleEngine = new TomcatRuleEngine
-) extends DialogAgent(engine) { 
+  override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
+) extends DialogAgent(ruleEngine) { 
 
   // get rule engine lazy init out of the way
   startEngine()
@@ -37,7 +37,7 @@ class DialogAgentStdin (
       blankLines += 1
     }
     else {
-      val extractions = engine.extractFrom(text, keepText = true)
+      val extractions = ruleEngine.extractFrom(text, keepText = true)
       extractions.map(getExtraction).map(f => 
         println(JsonUtils.writeJson(f))
       )

@@ -16,6 +16,7 @@ class TomcatRuleEngine(
 
   val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
 
+
   override def getConf: Config = config
 
   protected def getFullName(name: String): String = TomcatRuleEngine.PREFIX + "." + name
@@ -37,9 +38,6 @@ class TomcatRuleEngine(
     )
     val taxonomyPath: String =
       getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
-
-  logger.info("LoadableAttributes:");
-  logger.info(s"masterRulesPath: ${masterRulesPath}");
 
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time based on paths in the config file.

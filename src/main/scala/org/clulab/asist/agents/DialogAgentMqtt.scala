@@ -7,6 +7,8 @@ import com.typesafe.scalalogging.LazyLogging
 import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
+import org.clulab.asist.extraction.TomcatRuleEngine
+
 
 import scala.collection.mutable.MutableList
 import scala.collection.mutable.Queue
@@ -29,8 +31,9 @@ import scala.language.postfixOps
 class DialogAgentMqtt(
   val host: String = "localhost",
   val port: Int = 1883,
-  val nochat: Boolean = false
-) extends DialogAgent
+  val nochat: Boolean = false,
+  override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
+) extends DialogAgent(ruleEngine)
     with LazyLogging
     with MessageBusClientListener { 
 

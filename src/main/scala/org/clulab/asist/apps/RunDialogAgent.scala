@@ -134,37 +134,41 @@ Existing TA3 version numbers are incremented by 1 if not set"""
   }
 
   // Run the appropriate agent for the given arguments
-  def run(arguments: Arguments): Unit = arguments.agent match {
-    case "mqtt" =>
-      logger.info("Starting MQTT agent...")
-      logger.info("  host: " + arguments.host) 
-      logger.info("  port: " + arguments.port) 
-      if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
-      new DialogAgentMqtt(arguments.host, arguments.port, arguments.nochat)
-    case "file" =>
-      logger.info("Starting File agent...")
-      logger.info("  input: " + arguments.src) 
-      logger.info("  output file: " + arguments.dst) 
-      if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
-      new DialogAgentFile(arguments.src, arguments.dst, arguments.nochat)
-    case "reprocess" =>
-      logger.info("Starting Reprocessor agent...")
-      logger.info("  input dir: " + arguments.src) 
-      logger.info("  output dir: " + arguments.dst) 
-      arguments.ta3_version.foreach(v => 
-        logger.info("  ta3 version: " + v)
-      )
-      new DialogAgentReprocessor(
-        arguments.src,
-        arguments.dst,
-        arguments.ta3_version
-      )
-    case "stdin" =>
-      logger.info("Starting Stdin agent...")
-      new DialogAgentStdin(new TomcatRuleEngine(rulepath = Some(arguments.rulepath)))
-    case _ =>
-      logger.error(f"Could not run agent '${arguments.agent}'")
-      logger.error("valid agent types are [mqtt, reprocess, stdin, file]")
+  def run(arguments: Arguments): Unit = {
+    val ruleEngine = new TomcatRuleEngine(rulepath = Some(arguments.rulepath))
+    arguments.agent match {
+      case "mqtt" =>
+        logger.info("Starting MQTT agent...")
+        logger.info("  host: " + arguments.host) 
+        logger.info("  port: " + arguments.port) 
+        if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
+        new DialogAgentMqtt(arguments.host, arguments.port, arguments.nochat, ruleEngine)
+      case "file" =>
+        logger.info("Starting File agent...")
+        logger.info("  input: " + arguments.src) 
+        logger.info("  output file: " + arguments.dst) 
+        if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
+        new DialogAgentFile(arguments.src, arguments.dst, arguments.nochat, ruleEngine)
+      case "reprocess" =>
+        logger.info("Starting Reprocessor agent...")
+        logger.info("  input dir: " + arguments.src) 
+        logger.info("  output dir: " + arguments.dst) 
+        arguments.ta3_version.foreach(v => 
+          logger.info("  ta3 version: " + v)
+        )
+        new DialogAgentReprocessor(
+          arguments.src,
+          arguments.dst,
+          arguments.ta3_version,
+          ruleEngine
+        )
+      case "stdin" =>
+        logger.info("Starting Stdin agent...")
+        new DialogAgentStdin(ruleEngine)
+      case _ =>
+        logger.error(f"Could not run agent '${arguments.agent}'")
+        logger.error("valid agent types are [mqtt, reprocess, stdin, file]")
+    }
   }
 
   // Run the arguments if parsing was successful
