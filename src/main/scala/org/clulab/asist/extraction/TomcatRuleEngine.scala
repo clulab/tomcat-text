@@ -32,8 +32,9 @@ class TomcatRuleEngine(
   class LoadableAttributes(val actions: TomcatActions, val engine: ExtractorEngine)
 
   object LoadableAttributes {
-    val masterRulesPath: String =
+    val masterRulesPath: String = rulepath.getOrElse(
       getPath("masterRulesPath", "/org/clulab/asist/grammars/master.yml")
+    )
     val taxonomyPath: String =
       getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
 
