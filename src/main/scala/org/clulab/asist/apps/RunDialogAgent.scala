@@ -141,14 +141,24 @@ Existing TA3 version numbers are incremented by 1 if not set"""
         logger.info("Starting MQTT agent...")
         logger.info("  host: " + arguments.host) 
         logger.info("  port: " + arguments.port) 
-        if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
-        new DialogAgentMqtt(arguments.host, arguments.port, arguments.nochat, ruleEngine)
+        if(arguments.nochat) logger.info("Chat messages not processed")
+        new DialogAgentMqtt(
+          arguments.host,
+          arguments.port,
+          arguments.nochat,
+          ruleEngine
+        )
       case "file" =>
         logger.info("Starting File agent...")
         logger.info("  input: " + arguments.src) 
         logger.info("  output file: " + arguments.dst) 
-        if(arguments.nochat) logger.info("Minecraft Chat messages not processed")
-        new DialogAgentFile(arguments.src, arguments.dst, arguments.nochat, ruleEngine)
+        if(arguments.nochat) logger.info("Chat messages not processed")
+        new DialogAgentFile(
+          arguments.src,
+          arguments.dst,
+          arguments.nochat, 
+          ruleEngine
+        )
       case "reprocess" =>
         logger.info("Starting Reprocessor agent...")
         logger.info("  input dir: " + arguments.src) 
