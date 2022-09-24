@@ -3,9 +3,9 @@ ASIST Extraction Schemas
 
 Authors: Adarsh Pyarelal, Rebecca Sharp
 
-Agent version: `5.1.1`
+Agent version: `5.1.2`
 
-Document generation timestamp (UTC): `2022-09-19 16:06:11.812707`
+Document generation timestamp (UTC): `2022-09-24 00:07:38.875875`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -141,7 +141,7 @@ Extractions
           - target (Location|Rubble) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - Communicate
           - Agreement
@@ -161,7 +161,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (EventLike|Person|Victim|Item|PuzzleConcept) ()
+            - exists (Person|EventLike|PuzzleConcept|Victim|Item) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -223,7 +223,7 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Need|Action) ()
+              - topic (Action|Need) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
               - target (Entity) ()
@@ -249,7 +249,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
+                - threat (ThreatRoom|ThreatSign|ThreatRoomMarker) ()
                 - room (Room) ()
 
               - RoomClear
@@ -271,7 +271,7 @@ Extractions
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Location|Deictic|Entity) ()
+            - target (Deictic|Location|Entity) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
@@ -310,7 +310,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (EventLike|Item|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()

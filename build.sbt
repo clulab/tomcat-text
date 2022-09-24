@@ -43,6 +43,9 @@ libraryDependencies ++= {
   )
 }
 
+// prevent sbt.TrapExitSecurityException being thrown under termination conditions
+//trapExit := false
+
 // Allow the DialogAgent to run in interactive mode
 connectInput in run := true
 
