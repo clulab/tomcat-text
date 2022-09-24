@@ -24,7 +24,7 @@ case class VersionInfoMessageDataConfig(
 )
 
 // Part of the VersionInfoMessage class 
-case class VersionInfoMessageDataTopic(
+case class VersionInfoChannel(
   topic: String = "N/A",
   message_type: String = "N/A",
   sub_type: String = "N/A",
@@ -38,8 +38,8 @@ case class VersionInfoMessageData(
   source: Seq[String] = List(),
   dependencies: Seq[String] = List(),
   config: Seq[VersionInfoMessageDataConfig] = List(),
-  publishes: Seq[VersionInfoMessageDataTopic] = List(),
-  subscribes: Seq[VersionInfoMessageDataTopic] = List()
+  publishes: Seq[VersionInfoChannel] = List(),
+  subscribes: Seq[VersionInfoChannel] = List()
 )
 
 // published on the Message Bus
@@ -77,49 +77,49 @@ object VersionInfoMessage
     dependencies = List(),
     config = List(),
     publishes = List(
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("DialogAgent.topic"),
         config.getString("DialogAgent.header.message_type"),
         config.getString("DialogAgent.msg.sub_type")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("Heartbeat.topic"),
         config.getString("Heartbeat.header.message_type"),
         config.getString("Heartbeat.msg.sub_type")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("RollcallResponse.topic"),
         config.getString("RollcallResponse.header.message_type"),
         config.getString("RollcallResponse.msg.sub_type")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("VersionInfo.topic"),
         config.getString("VersionInfo.header.message_type"),
         config.getString("VersionInfo.msg.sub_type")
       )
     ),
     subscribes = List(
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("Asr.topic"),
         config.getString("Asr.header.message_type"),
         config.getString("Asr.msg.sub_type")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("Chat.topic"),
         config.getString("Chat.header.message_type"),
         config.getString("Chat.msg.sub_type")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("RollcallRequest.topic"),
         config.getString("RollcallRequest.header.message_type"),
         config.getString("RollcallRequest.msg.sub_type")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("Trial.topic"),
         config.getString("Trial.header.message_type"),
         config.getString("Trial.msg.sub_type.trial_start")
       ),
-      VersionInfoMessageDataTopic(
+      VersionInfoChannel(
         config.getString("Trial.topic"),
         config.getString("Trial.header.message_type"),
         config.getString("Trial.msg.sub_type.trial_stop")

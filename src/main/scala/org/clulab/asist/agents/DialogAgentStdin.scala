@@ -2,6 +2,8 @@ package org.clulab.asist.agents
 
 import buildinfo.BuildInfo
 import java.util.Scanner
+import org.clulab.asist.extraction.TomcatRuleEngine
+
 
 /**
  *  Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -11,7 +13,9 @@ import java.util.Scanner
  *
  */
 
-class DialogAgentStdin extends DialogAgent { 
+class DialogAgentStdin (
+  override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
+) extends DialogAgent(ruleEngine) { 
 
   // get rule engine lazy init out of the way
   startEngine()
@@ -33,7 +37,7 @@ class DialogAgentStdin extends DialogAgent {
       blankLines += 1
     }
     else {
-      val extractions = engine.extractFrom(text, keepText = true)
+      val extractions = ruleEngine.extractFrom(text, keepText = true)
       extractions.map(getExtraction).map(f => 
         println(JsonUtils.writeJson(f))
       )

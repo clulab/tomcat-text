@@ -19,7 +19,7 @@ import scala.util.control.NonFatal
  */
 
 class DialogAgent (
-  val engine: TomcatRuleEngine = new TomcatRuleEngine
+  val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends LazyLogging {
 
   // Used to compute agent uptime
@@ -28,7 +28,7 @@ class DialogAgent (
   // Run the rule engine to get its lazy init out of the way
   def startEngine(){
     logger.info("Initializing Extractor (this may take a few seconds) ...")
-    engine.extractFrom("I see a green victim")
+    ruleEngine.extractFrom("I see a green victim")
     logger.info("Extractor initialized.")
   }
 
@@ -45,22 +45,18 @@ class DialogAgent (
    * @param text String text to extract from, can be multiple sentences.
    * @return sequence of Odin Mentions
    */
-  def extractMentions(text: String): Seq[Mention] = {
-    engine
-      .extractFrom(Option(text).getOrElse(""), keepText = true)
-      .sortBy(m => (m.sentence, m.label))
-  }
+  def extractMentions(text: String): Seq[Mention] = ruleEngine
+    .extractFrom(Option(text).getOrElse(""), keepText = true)
+    .sortBy(m => (m.sentence, m.label))
 
   /**
    * Extract Odin mentions from text.
    * @param doc Document to extract from, can be multiple sentences.
    * @return sequence of Odin Mentions
    */
-  def extractMentions(doc: Document): Seq[Mention] = {
-    engine
-      .extractFrom(doc)
-      .sortBy(m => (m.sentence, m.label))
-  }
+  def extractMentions(doc: Document): Seq[Mention] = ruleEngine
+    .extractFrom(doc)
+    .sortBy(m => (m.sentence, m.label))
 
   /** Return an array of all extractions found in the input text
    *  @param text Text to analyze

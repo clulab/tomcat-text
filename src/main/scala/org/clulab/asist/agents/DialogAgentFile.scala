@@ -7,6 +7,8 @@ import com.typesafe.scalalogging.LazyLogging
 import java.io.{File, FileInputStream, PrintWriter}
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
+import org.clulab.asist.extraction.TomcatRuleEngine
+
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -29,8 +31,10 @@ import scala.util.{Failure, Success}
 class DialogAgentFile(
   val inputFilename: String = "",
   val outputFilename: String = "",
-  val nochat: Boolean = false
-) extends DialogAgent with LazyLogging {
+  val nochat: Boolean = false,
+  override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
+
+) extends DialogAgent(ruleEngine) with LazyLogging {
 
   // get rule engine lazy init out of the way
   startEngine()

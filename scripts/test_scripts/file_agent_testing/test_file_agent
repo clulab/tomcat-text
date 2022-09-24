@@ -34,7 +34,7 @@ cd ../../../../tomcat-text
 
 # Test the agent
 echo "Starting File Agent:"
-sbt "runMain org.clulab.asist.apps.RunDialogAgent file \
+sbt "runMain org.clulab.asist.apps.RunDialogAgent file --rulepath /org/clulab/asist/grammars/master.yml \
     $input_dir $results_metadata"
 
 cd $this_dir
