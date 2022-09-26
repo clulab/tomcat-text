@@ -9,6 +9,9 @@ import org.clulab.processors.{Document, Processor}
 import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.util.control.NonFatal
+import scala.sys
+
 class TomcatRuleEngine(
   val config: Config = ConfigFactory.load(),
   val rulepath: Option[String] = None
@@ -27,8 +30,6 @@ class TomcatRuleEngine(
     path
   }
 
-  rulepath.foreach(path => logger.info(s"rulepath = ${path}"))
-
   // These are the values which can be reloaded.  Query them for current assignments.
   class LoadableAttributes(val actions: TomcatActions, val engine: ExtractorEngine)
 
@@ -40,8 +41,18 @@ class TomcatRuleEngine(
       getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
 
     def apply(): LoadableAttributes = {
-      // Reread these values from their files/resources each time based on paths in the config file.
-      val masterRules = FileUtils.getTextFromResource(masterRulesPath)
+      // Reread these values from their files/resources each time 
+      // based on paths in the config file.
+      val masterRules = try {
+        FileUtils.getTextFromResource(masterRulesPath)
+      } catch {
+        case NonFatal(t) =>
+          val exitCode: Int = 1  // error
+          logger.error(s"Could not read rule path file: ${masterRulesPath}")
+          logger.error(s"Agent is exiting the JVM with code ${exitCode}.")
+          sys.exit(exitCode)
+      }
+
       val actions = TomcatActions()
 
       new LoadableAttributes(
