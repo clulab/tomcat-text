@@ -194,7 +194,7 @@ rules:
     example: "There is a victim here. There is a victim behind this rubble. There is a victim in the library."
     pattern: |
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
-      exists: Victim = >/${agents}/
+      exists: Victim = >/${agents}/ >amod?
       location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
                >/${preps}/
@@ -294,7 +294,7 @@ rules:
   - name: found_victim_got
     priority: ${ rulepriority }
     label: KnowledgeSharing
-    example: "I have a victim here"
+    example: "I got a victim here"
     pattern: |
       trigger =[word=/(?i)got$/]
       exists: Victim = >/${objects}/
@@ -302,6 +302,14 @@ rules:
                >/${objects}/ >/${preps}/|
                >/${preps}/|
                >/advmod/
+
+  - name: got_victim_token
+    label: KnowledgeSharing
+    example: "got a victim here"
+    priority: ${ rulepriority }
+    type: token
+    pattern: |
+      (?<trigger>  [word=/(?i)^got$/])  []? @exists:Victim []? @location:Location
 
   - name: found_thing_have
     priority: ${ rulepriority }

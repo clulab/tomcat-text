@@ -11,12 +11,21 @@ rules:
       target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
       agent: Entity? = >/${agents}/
 
-  - name: move_entity_action
+  - name: move_toward_entity_action
     priority: ${ rulepriority }
     label: MoveTo
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
-      target: Entity =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      target: Entity =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/
+      agent: Entity? = >/${agents}/
+
+  - name: move_entity_action
+    priority: ${ rulepriority }
+    example: "I'll move this"
+    label: MoveEntity
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Entity =  >/${objects}/
       agent: Entity? = >/${agents}/
 
   - name: move_nmod_direction

@@ -146,3 +146,12 @@ rules:
     keep: false
     pattern: |
       [lemma=kind] [lemma=of] [lemma=victim]?
+
+  - name: victim_critical_only
+    priority: ${ rulepriority }
+    example: "critical"
+    label: CriticalVictim
+    type: token
+    keep: true
+    pattern: |
+      [lemma=critical & tag=JJ] (?! [mention=CriticalVictim] )

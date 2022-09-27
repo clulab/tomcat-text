@@ -122,6 +122,7 @@
         - Move:
           - MoveTo
           - MoveFrom
+          - MoveEntity
           - Enter
           - OnMyWay # for players stating that they are coming to other players: "I'm on my way to you"
         - Open
