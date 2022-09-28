@@ -428,13 +428,21 @@
   pattern: |
        [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^2-?a$/]
 
+- name: room_i2A_single
+  priority: ${ second_priority }
+  label: I2A
+  type: token
+  keep: true
+  pattern: |
+    [word=/(?i)^i2a/]
+
 - name: room_i3A
   priority: ${ second_priority }
   label: I3A
   type: token
   keep: true
   pattern: |
-       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^3-?a$/]
+       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^3-?a$/] | [word=/(?i)^i3a/]
 
 - name: room_i4A
   priority: ${ second_priority }
@@ -442,7 +450,7 @@
   type: token
   keep: true
   pattern: |
-       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^4-?a$/]
+       [lemma=/(?i)^room/]? [lemma=/(?i)^i$/]  [lemma=/(?i)^4-?a$/] | [word=/(?i)^i4a/]
 
 - name: room_j1
   priority: ${ second_priority }

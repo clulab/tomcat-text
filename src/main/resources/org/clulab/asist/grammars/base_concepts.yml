@@ -85,3 +85,11 @@ rules:
     type: token
     pattern: |
       [lemma=/(?i)\bplan\b|strategy/]
+
+
+  - name: GPS_token
+    label: GPS
+    priority: ${ rulepriority }
+    type: token
+    pattern: |
+      [word=/(?i)GPS$/]

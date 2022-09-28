@@ -231,6 +231,7 @@
       - Hammer
       - MedKit
       - Stretcher
+      - GPS
       - Map:
           - ThreatSign: #this refers to the sign on the map!
               - Threat

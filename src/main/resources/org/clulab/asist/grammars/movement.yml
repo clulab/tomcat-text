@@ -11,6 +11,15 @@ rules:
       target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
       agent: Entity? = >/${agents}/
 
+  - name: move_go_to
+    priority: ${ rulepriority }
+    label: MoveTo
+    example: "Let's go to i4"
+    pattern: |
+      trigger = [lemma=/(?i)^go$/ & tag=/^V/] [word=to] (?! ([]? away))
+      target: Location =  >nmod_to | >xcomp
+      agent: Entity? = >/${agents}/
+
   - name: move_toward_entity_action
     priority: ${ rulepriority }
     label: MoveTo
@@ -51,6 +60,24 @@ rules:
       trigger = [lemma=/(?i)^(${ move_victim_triggers })$/ & tag=/^V/]
       victim: Victim = >/dobj/
       target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim_bring
+    priority: ${ rulepriority }
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(bring|carry)$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim_take
+    priority: ${ rulepriority }
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^take$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/
       agent: Entity? = >/${agents}/
 
   - name: move_deixis_action
