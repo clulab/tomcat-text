@@ -8,7 +8,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [lemma=/no|critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/] (?! [word=type])
+      (?<! [lemma=/^no$|^critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/] (?! [word=type])
 
   - name: critical_victim
     priority: ${ rulepriority }

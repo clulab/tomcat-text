@@ -72,7 +72,7 @@ rules:
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
-      action: Action = >xcomp
+      action: Action = >xcomp | >advcl_to
 
 
   - name: change_priority

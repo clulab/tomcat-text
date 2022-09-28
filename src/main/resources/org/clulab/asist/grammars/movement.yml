@@ -25,7 +25,7 @@ rules:
     label: MoveEntity
     pattern: |
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
-      target: Entity =  >/${objects}/
+      target: Entity =  >/${objects}/ [!mention=Victim]
       agent: Entity? = >/${agents}/
 
   - name: move_nmod_direction
