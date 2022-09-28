@@ -259,7 +259,7 @@ rules:
     priority: ${ genericpriority }
     keep: false
     pattern: |
-      trigger = [tag=/^V/]
+      trigger = [tag=/^V/ & !lemma=be]
       target: Entity? = <dobj
 
 # ---- marker block related actions

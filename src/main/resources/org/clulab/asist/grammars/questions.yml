@@ -64,6 +64,14 @@ rules:
       topic: Concept = >nsubj
       location: Location? = >nsubj >/${positional_preps}/ | >nsubj >/nmod_of/  >/${positional_preps}/
 
+  - name: information_gathering_token
+    example: "What room are you in?| What victim is this?"
+    priority: ${ rulepriority }
+    type: token
+    label: Question
+    pattern: |
+      (?<trigger> [lemma=what]) (@topic:Location | @topic:Item| @topic:Entity)
+
   - name: which_question
     example: "Which room are you in?"
     priority: ${ rulepriority }
@@ -77,7 +85,7 @@ rules:
     priority: ${ rulepriority }
     label: Question
     pattern: |
-      trigger = @QuestionParticle (?= [lemma=/be|do|may|can/])
+      trigger = @QuestionParticle (?= [lemma=/^(be|do|may|can)$/])
       topic: Action = <dobj
 
   - name: mannerquestion
@@ -95,7 +103,7 @@ rules:
     label: YesNoQuestion
     action: requireSubjectVerbInversion
     pattern: |
-      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^do|can|will|should|have|could|be/] (?= [mention=Entity])
+      trigger = (?<! [mention=QuestionParticle]|How|[mention=Question]) [lemma=/(?i)^(do|can|will|should|have|could|be)$/] (?= [mention=Entity])
       topic: Action = <aux
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
@@ -105,7 +113,7 @@ rules:
     label: YesNoQuestion
     example: "Is there a victim？| Is he an engineer?"
     pattern: |
-      trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be/ & tag=/VBP|VBZ|VBD/]  [tag=/PRP|EX/ | word=there]
+      trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be$/ & tag=/VBP|VBZ|VBD/]  [tag=/PRP|EX/ | word=there]
       target: Entity = <cop | >nsubj
       location: Location? = >advmod | <cop? (${ search_relations })
 
@@ -115,7 +123,7 @@ rules:
     label: YesNoQuestion
     action: requireSubjectVerbInversion
     pattern: |
-      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^do|can|will|should|have|could|be/] (?= [mention=Entity])
+      trigger = (?<! [mention=QuestionParticle]|How) [lemma=/(?i)^(do|can|will|should|have|could|be)$/] (?= [mention=Entity])
       topic: Need = >ccomp
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/

@@ -21,3 +21,4 @@ rules:
       trigger = [tag=/^MD/ & lemma=/^will/] (?! [lemma=not])
       topic: Action = <aux >xcomp?
       agent: Entity? = <aux >nsubj
+

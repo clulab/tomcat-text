@@ -73,11 +73,21 @@ rules:
 
   - name: move_victim_take
     priority: ${ rulepriority }
+    example: "taking the victim to a2"
     label: MoveVictim
     pattern: |
       trigger = [lemma=/(?i)^take$/ & tag=/^V/]
       victim: Victim = >/dobj/
       target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim_take_keep_false
+    priority: ${ rulepriority }
+    keep: false
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^take$/ & tag=/^V/]
+      victim: Victim = >/dobj/
       agent: Entity? = >/${agents}/
 
   - name: move_deixis_action

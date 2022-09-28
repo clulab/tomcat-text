@@ -93,7 +93,7 @@ rules:
     type: token
     keep: true
     pattern: |
-       [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+       [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
 
   - name: victimA_an_a_type
     priority: ${ rulepriority }
@@ -102,7 +102,17 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<= [word=an])  [lemma=/(?i)\ba\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+      (?<= [word=an])  [lemma=/(?i)\ba\b/] [word=victim] (?! [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
+  - name: victimA_an_a_type_keep_false
+    priority: ${ rulepriority }
+    example: "an a victim"
+    label: VictimTypeA
+    type: token
+    keep: true
+    pattern: |
+      (?<= [word=an]|[word=the])  [lemma=/(?i)\ba\b/] (?! [word=victim]|[word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
 
   - name: victimA_a_b_type
     priority: ${ rulepriority }
@@ -111,7 +121,16 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<= [word=a])  [lemma=/(?i)\bb\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+      (?<= [word=a])  [lemma=/(?i)\bb\b/] [word=victim] (?! [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
+  - name: victimA_a_b_type_keep_false
+    priority: ${ rulepriority }
+    example: "a b victim"
+    label: VictimTypeB
+    type: token
+    keep: false
+    pattern: |
+      (?<= [word=a]|[word=the])  [lemma=/(?i)\bb\b/] (?! [word=victim]|[word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
 
   - name: victimC
     priority: ${ rulepriority }
@@ -138,7 +157,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      (?<= [word=a])  [lemma=/(?i)\bc\b/] (?! [word=victim]| [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+      (?<= [word=a]|[word=the])  [lemma=/(?i)\bc\b/] (?! [word=victim]| [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
 
 
   - name: victim_type_extraction
