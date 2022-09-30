@@ -75,4 +75,5 @@
   pattern: |
     [word=/(?i)\bsos\b/] [word=marker] [word=block]? |
         [word=marker] [word=block]? [word=for] [word=/(?i)\bsos\b/] |
-            [word=/(?i)\bhelp\b/] [word=marker] [word=block]?
+            [word=/(?i)\bhelp\b/] [word=marker] [word=block]? |
+             (?<= [tag=DT]) [word=/(?i)\bsos\b/] (?! [word=marker])

@@ -14,10 +14,11 @@ rules:
 
   - name: commit_to_something_plan-type
     priority: ${ rulepriority }
-    example: "I will save this guy"
+    example: "I will save this guy. I'll start going there"
     label: DeliberatePlan
     action: preventSubjectVerbInversion
     pattern: |
       trigger = [tag=/^MD/ & lemma=/^will/] (?! [lemma=not])
-      topic: Action = <aux
+      topic: Action = <aux >xcomp?
       agent: Entity? = <aux >nsubj
+

@@ -174,7 +174,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [word=/${ dem_pron_triggers }/]
+      [word=/(${ dem_pron_triggers })$/]
 
   - name: pro-form-etc
     priority: ${ rulepriority }
@@ -190,7 +190,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [tag=/PRP/ & word=/my/]
+      [tag=/PRP/ & word=/^my$/]
 
   - name: possesive_pronoun_you
     priority: ${ rulepriority }
@@ -198,7 +198,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [tag=/PRP/ & word=/your/]
+      [tag=/PRP/ & word=/your$/]
 
   - name: possesive_pronoun_other
     priority: ${ rulepriority }
@@ -209,3 +209,10 @@ rules:
       [tag=/PRP/ & word=/his|her|their/]
 
 
+  - name: you_ya
+    priority: ${ rulepriority }
+    label: You
+    type: token
+    keep: false
+    pattern: |
+      [tag=/PRP/ & word=ya]

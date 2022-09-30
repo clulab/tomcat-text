@@ -106,6 +106,16 @@ rules:
       location: Location? = >/${ positional_preps_+advmod }/
       agent: Entity? = >/${agents}/
 
+  - name: wakeup_token
+    priority: ${ rulepriority }
+    label: WakeUp
+    example: "wake up"
+    keep: false
+    type: token
+    pattern: |
+        [lemma=/(?i)^wake/] [lemma=up]
+
+
   - name: wakeup_victim
     priority: ${ rulepriority }
     label: WakeUp
@@ -208,7 +218,7 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(${ clear_triggers })/]
       agent: Entity? = >/${agents}/
-      target: Location = >dobj
+      target: Location = >dobj | >nmod_out
 
   - name: obstructing
     priority: ${ rulepriority }
@@ -249,7 +259,7 @@ rules:
     priority: ${ genericpriority }
     keep: false
     pattern: |
-      trigger = [tag=/^V/]
+      trigger = [tag=/^V/ & !lemma=be]
       target: Entity? = <dobj
 
 # ---- marker block related actions
