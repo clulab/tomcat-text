@@ -304,7 +304,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`CriticalVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -348,7 +348,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -408,14 +408,14 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`MoveVictim`, `ComplexAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Location`] | `?` | `false`
+| _target_ | [`Location`] | [_none_, `?`] | [`false`, `true`]
 | _victim_ | [`Victim`] | _none_ | `true`
 
 ----------------------------------
@@ -634,7 +634,7 @@ _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
-| _agent_ | [`Self`, `Entity`] | [_none_, `?`] | [`false`, `true`]
+| _agent_ | [`Entity`, `Self`] | [_none_, `?`] | [`false`, `true`]
 | _location_ | [`Location`] | `?` | `false`
 
 ----------------------------------
@@ -950,12 +950,7 @@ _No arguments_
 |label hierarchy  | [`Stuck`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
 |keep             | `true` 
 
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _location_ | [`Location`] | `?` | `false`
+_No arguments_
 
 ----------------------------------
 
@@ -988,6 +983,22 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _target_ | [`Location`, `Deictic`] | [_none_, `?`] | [`false`, `true`]
+
+----------------------------------
+
+###  MoveEntity
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`MoveEntity`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Entity`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1112,7 +1123,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`WakeUp`, `RescueInteractions`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _Arguments_
 
@@ -2110,6 +2121,17 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _owner_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
+###  GPS
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`GPS`, `Tool`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
 
 ----------------------------------
 

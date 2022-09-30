@@ -178,6 +178,25 @@ _No arguments_
 
 --------
 
+#### rule: _i_am_stuck_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`AmTrapped`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _trapped_A_
 
 attribute | value
@@ -871,7 +890,39 @@ _No arguments_
 
 --------
 
+#### rule: _victimA_a_c_type_keep_false_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _victimC_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _victim_critical_only_
 
 attribute | value
 -----  |   ---- 
@@ -1538,6 +1589,22 @@ _No arguments_
 
 --------
 
+#### rule: _GPS_token_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`GPS`, `Tool`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _genericAction_
 
 attribute | value
@@ -1854,6 +1921,22 @@ _No arguments_
 --------
 
 #### rule: _room_i2A_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I2A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
+priority  | `5`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _room_i2A_single_
 
 attribute | value
 -----  |   ---- 
@@ -2322,6 +2405,27 @@ keep      | `true`
 
 --------
 
+#### rule: _existential_victim_only_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ exists | `Victim` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+ obstacle | `Obstacle` | `?` | `false` 
+ map | `Map` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _found_thing_got_
 
 attribute | value
@@ -2431,6 +2535,22 @@ keep      | `true`
 :---- | :---- | :---- | :----
  exists | `Victim` | _none_ | `true` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _got_victim_token_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -2879,6 +2999,25 @@ keep      | `true`
 
 --------
 
+#### rule: _move_entity_action_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`MoveEntity`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Entity` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _leave_deixis_action_
 
 attribute | value
@@ -2954,25 +3093,6 @@ keep      | `true`
 
 --------
 
-#### rule: _move_entity_action_
-
-attribute | value
------  |   ---- 
-type |  GraphExtractor
-labels    | [`MoveTo`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `8`
-keep      | `true`
-
-
-**argument name** | **label(s)** | **quantifier** | **required?**
-:---- | :---- | :---- | :----
- target | `Entity` | _none_ | `true` 
- agent | `Entity` | `?` | `false` 
-
-&nbsp;
-
---------
-
 #### rule: _move_explicit_1_
 
 attribute | value
@@ -2984,6 +3104,25 @@ keep      | `true`
 
 
 _No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _move_go_to_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`MoveTo`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Location` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
 
 &nbsp;
 
@@ -3008,6 +3147,25 @@ keep      | `true`
 
 --------
 
+#### rule: _move_toward_entity_action_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`MoveTo`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Entity` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _move_victim_
 
 attribute | value
@@ -3022,6 +3180,65 @@ keep      | `true`
 :---- | :---- | :---- | :----
  victim | `Victim` | _none_ | `true` 
  target | `Location` | `?` | `false` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _move_victim_bring_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`MoveVictim`, `ComplexAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ victim | `Victim` | _none_ | `true` 
+ target | `Location` | `?` | `false` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _move_victim_take_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`MoveVictim`, `ComplexAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ victim | `Victim` | _none_ | `true` 
+ target | `Location` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _move_victim_take_keep_false_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`MoveVictim`, `ComplexAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `false`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ victim | `Victim` | _none_ | `true` 
  agent | `Entity` | `?` | `false` 
 
 &nbsp;
@@ -3644,6 +3861,22 @@ keep      | `true`
 :---- | :---- | :---- | :----
  topic | `Concept` | _none_ | `true` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _information_gathering_token_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -4533,25 +4766,6 @@ _No arguments_
 
 --------
 
-#### rule: _i_am_stuck_
-
-attribute | value
------  |   ---- 
-type |  GraphExtractor
-labels    | [`Stuck`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
-keep      | `true`
-
-
-**argument name** | **label(s)** | **quantifier** | **required?**
-:---- | :---- | :---- | :----
- agent | `Entity` | `?` | `false` 
- location | `Location` | `?` | `false` 
-
-&nbsp;
-
---------
-
 #### rule: _switch_
 
 attribute | value
@@ -4967,6 +5181,22 @@ _No arguments_
 
 --------
 
+#### rule: _victimA_an_a_type_keep_false_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _victimA_a_b_type_
 
 attribute | value
@@ -4975,6 +5205,22 @@ type |  TokenExtractor
 labels    | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
 keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _victimA_a_b_type_keep_false_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
 
 
 _No arguments_
@@ -5014,6 +5260,22 @@ keep      | `true`
  target | `Person` | _none_ | `true` 
  location | `Location` | `?` | `false` 
  agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _wakeup_token_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`WakeUp`, `RescueInteractions`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `false`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -5187,6 +5449,22 @@ _No arguments_
 --------
 
 #### rule: _you_token_capture_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`You`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _you_ya_
 
 attribute | value
 -----  |   ---- 

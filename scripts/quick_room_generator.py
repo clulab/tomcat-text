@@ -16,7 +16,7 @@ for letter in letters:
 		writefile.write("\n")
 		writefile.write("  pattern: |")
 		writefile.write("\n")
-		writefile.write(f"          [lemma=/(?i)^room/]? [lemma=/(?i)^{letter}-?{i}$/]")
+		writefile.write(f"          [lemma=/(?i)^room/]? [lemma=/(?i)^{letter}[-\s]?{i}$/]")
 		writefile.write("\n")
 		writefile.write("\n")
 
