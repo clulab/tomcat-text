@@ -153,9 +153,9 @@
             - NeedRole
             - NeedItem
             - NeedAction
-            - NeedPresence
             - HelpRequest: # examples: "I need help in B4"
                 - AmTrapped # for players reporting that they are trapped in a location: "I'm trapped in B4"
+                - NeedPresence # example: "Engineer, I need you here."
           - HelpOffer # examples: "I can help/assist/aid you"
           - Question:
             - QuestionParticle # who/what/why/when/where
