@@ -383,11 +383,12 @@ rules:
     example: "Engineer, We need you here."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [word=/(?i)need|want/]
+      trigger = [word=/(?i)need|want/] (?! []? [word=to])
       helper: Entity = >nmod:tmod|<acl:relcl
       agent: Self? = >/${agents}/
       location: Location? = >/${preps}/|
-               >/advmod/
+               >/advmod/ |
+              </^acl/ >advmod
 
   - name: trapped_A
     label: AmTrapped
