@@ -384,7 +384,7 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [word=/(?i)need|want/] (?! []? [word=to])
-      helper: Entity = >nmod:tmod|<acl:relcl
+      helper: Entity = >nmod:tmod|<acl:relcl|<dep
       agent: Self? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/ |
