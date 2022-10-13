@@ -383,12 +383,13 @@ rules:
     example: "Engineer, We need you here."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [word=/(?i)need|want/] (?! []? [word=to])
-      helper: Entity = >nmod:tmod|<acl:relcl|<dep
+      trigger = [word=/(?i)need|want/] (?! []? [word=to]) (?= [tag=/NN|PRP/])
+      helper: Entity? = >nmod:tmod|<acl:relcl|<dep|>dobj
       agent: Self? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/ |
-              </^acl/ >advmod
+              </^acl/ >advmod |
+              </^acl/ >/^nmod/
 
   - name: trapped_A
     label: AmTrapped
