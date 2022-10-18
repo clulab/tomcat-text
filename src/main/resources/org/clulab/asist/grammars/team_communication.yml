@@ -394,12 +394,24 @@ rules:
     example: "Can you help me?"
     priority: ${ rulepriority }
     pattern: |
-      trigger = (?<= [word=/(?i)can|could|will|would/] []) [lemma=/assist|help/]
+      trigger = (?<= [word=/(?i)can|could|will|would/] []) [lemma=/assist|help/] [!word=you]
       agent: Entity? = >dobj
       helper: Entity? = >nsubj
       location: Location? = >/${preps}/|
                >/advmod/
 
+  - name: "HelpRequests_Presence"
+    label: NeedPresence
+    example: "Engineer, We need you here."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|want/] (?! []? [word=to]) (?= [tag=/NN|PRP/])
+      helper: Entity? = >nmod:tmod|<acl:relcl|<dep|>dobj
+      agent: Self? = >/${agents}/
+      location: Location? = >/${preps}/|
+               >/advmod/ |
+              </^acl/ >advmod |
+              </^acl/ >/^nmod/
 
   - name: trapped_A
     label: AmTrapped
@@ -449,7 +461,7 @@ rules:
     example: "You should help him."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [lemma=/assist|help|aid|support/]
+      trigger = (?<! [word=/(?i)can|could|will|would/] []) [lemma=/assist|help|aid|support/]
       agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
       helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
       location: Location? = >/${preps}/|
