@@ -639,6 +639,23 @@ _Arguments_
 
 ----------------------------------
 
+###  NeedPresence
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`NeedPresence`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Self`] | `?` | `false`
+| _location_ | [`Location`] | `?` | `false`
+| _helper_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
 ###  NeedAction
 
 |Attribute        |  Value | 

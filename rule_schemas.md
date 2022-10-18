@@ -3283,6 +3283,26 @@ keep      | `true`
 
 --------
 
+#### rule: _HelpRequests_Presence_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`NeedPresence`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ helper | `Entity` | `?` | `false` 
+ agent | `Self` | `?` | `false` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _prep_need_role_
 
 attribute | value
