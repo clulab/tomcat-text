@@ -6,7 +6,7 @@
   priority: ${ second_priority }
   label: StorageRoom
   example: "storage room Z"
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     trigger= [word=/(?i)storage/] [word=/(?i)room/]?
     number: RoomTag = </compound/
@@ -15,7 +15,7 @@
   priority: ${ second_priority }
   label: NumberedRoom
   example: "room 2"
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     trigger = [lemma=/(?i)^room/]
     number: Number = >/nummod/
@@ -26,7 +26,7 @@
   priority: ${ second_priority }
   label: KingChrisOffice
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)King/? /(?i)Chris/ /'/? /(?i)Office/ |
     /(?i)King/ /(?i)Chris/? /'/? /(?i)Office/
@@ -35,7 +35,7 @@
   priority: ${ second_priority }
   label: KingTerrace
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)King/? /(?i)Terrace/
 
@@ -43,7 +43,7 @@
   priority: ${ second_priority }
   label: HerbalifeRoom
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)Herbalife/ /(?i)room/? |
     /(?i)herbal/ /(?i)room/ |
@@ -53,7 +53,7 @@
   priority: ${ second_priority }
   label: Library
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)library/
 
@@ -61,7 +61,7 @@
   priority: ${ second_priority }
   label: ComputerFarm
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)Computerfarm/|
     /(?i)Computer/ /farm/|
@@ -72,7 +72,7 @@
   priority: ${ second_priority }
   label: LimpingLambChophouse
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)limping/? /(?i)lamb/ /(?i)chophouse/|
     /(?i)limping/ /(?i)lamb/? /(?i)chophouse/|
@@ -83,7 +83,7 @@
   priority: ${ second_priority }
   label: BreakArea
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)open/? /(?i)break/ /(?i)area/
 
@@ -91,7 +91,7 @@
   priority: ${ second_priority }
   label: SecurityOffice
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)security/ /(?i)office/?|
     /(?i)security/ /(?i)room/
@@ -100,7 +100,7 @@
   priority: ${ second_priority }
   label: AmwayRoom
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)amway/ /(?i)room/?
 
@@ -108,7 +108,7 @@
   priority: ${ second_priority }
   label: MaryKayRoom
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)mary/ /(?i)kay/ /(?i)room/?
 
@@ -116,7 +116,7 @@
   priority: ${ second_priority }
   label: JanitorCloset
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)janitor/? /(?i)closet/
 
@@ -124,7 +124,7 @@
   priority: ${ second_priority }
   label: MensRoom
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)^men/ /'s/? /(?i)room/
 
@@ -132,7 +132,7 @@
   priority: ${ second_priority }
   label: WomensRoom
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)women/ /'s/? /'/? /(?i)room/|
     /(?i)ladies/ /'/? /(?i)room/
@@ -141,7 +141,7 @@
   priority: ${ second_priority }
   label: DataStorage
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)data/ /storage/  /room/?
 
@@ -149,14 +149,14 @@
   priority: ${ second_priority }
   label: Lobby
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)^lobby/
 
 - name: office_numbered
   priority: ${ second_priority }
   label: Office
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     trigger = [lemma=/(?i)^office/]
     number: Number? = >/nummod/
@@ -165,7 +165,7 @@
   priority: ${ second_priority }
   label: Buffet
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)^buffet/
 
@@ -173,7 +173,7 @@
   priority: ${ second_priority }
   label: Kitchen
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)^kitchen/
 
@@ -181,7 +181,7 @@
   priority: ${ second_priority }
   label: SundollarCoffee
   type: token
-  keep: true
+  keep: ${ keep_locations}
   pattern: |
     /(?i)^sundollar/ /(?i)^coffee/?|
     /(?i)^sun/ /(?i)^dollar/ /(?i)^coffee/|

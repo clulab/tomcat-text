@@ -41,3 +41,11 @@ positional_preps_liberal: "nmod_(behind|beneath|in|in_front_of|on|over|under|[a-
 positional_preps_+advmod: "nmod_(behind|beneath|in|in_front_of|on|over|under)|advmod"
 
 # Todo: nmod_from "X will follow from Y"
+
+keep_entities: "false"
+
+keep_locations: "false"
+
+keep_items: "false"
+
+keep_markers: "true"

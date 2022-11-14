@@ -8,7 +8,7 @@ rules:
     priority: ${ rulepriority }
     label: Searcher
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [word=/(?i)(${ search_spec_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
@@ -16,7 +16,7 @@ rules:
     priority: ${ rulepriority }
     label: Searcher
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [word=/(?i)(${ evacuator_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
@@ -24,7 +24,7 @@ rules:
     priority: ${ rulepriority }
     label: Transporter
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [word=/(?i)transporter|transport/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
@@ -32,7 +32,7 @@ rules:
     priority: ${ rulepriority }
     label: Transporter
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [word=/(?i)transporter|transport/ & tag=/^NN/] [word=/(?i)guy|dude|man|person/]
 
@@ -40,7 +40,7 @@ rules:
     priority: ${ rulepriority }
     label: Medic
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [word=/(?i)\b${ medic_triggers }\b/] [word=/(?i)(${ specialist_triggers })/]?
 
@@ -48,7 +48,7 @@ rules:
     priority: ${ rulepriority }
     label: Medic
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       /\bmedic\b/ [word=/(?i)(${ specialist_triggers })/]?
 
@@ -57,7 +57,7 @@ rules:
     priority: ${ rulepriority }
     label: Medic
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [word=/(?i)medical/] [word=/(?i)(${ specialist_triggers })/]
 
@@ -65,7 +65,7 @@ rules:
     priority: ${ rulepriority }
     label: Engineer
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)${ engineer_triggers }/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
 
@@ -73,7 +73,7 @@ rules:
     priority: ${ rulepriority }
     label: Engineer
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       ([word=/\bhammer\b/] [lemma=/(?i)^(${ person_triggers })/])
 
