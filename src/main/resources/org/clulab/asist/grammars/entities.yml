@@ -83,7 +83,7 @@ rules:
     priority: ${ rulepriority }
     label: Switch
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)(${ switch_triggers })/ & tag=/^N/]
 
@@ -132,7 +132,7 @@ rules:
     label: Green
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)^(green)/]
 
@@ -140,7 +140,7 @@ rules:
     label: Red
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)^(red)/] | /RAD/
 
@@ -148,7 +148,7 @@ rules:
     label: Blue
     priority: ${ rulepriority }
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)^(blue)/]
 

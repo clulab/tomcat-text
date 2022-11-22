@@ -5,7 +5,7 @@ rules:
     priority: ${ priority }
     label: ${ label }
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ trigger })\b/ & outgoing=compound]) |
       [lemma=/(?i)^(${ trigger })\b/]+

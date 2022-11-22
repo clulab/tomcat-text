@@ -11,7 +11,7 @@ rules:
     priority: ${ first_priority }
     label: Infrastructure
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ infrastructure_triggers })/ & outgoing=compound]) |
       [lemma=/(?i)^(${ infrastructure_triggers })/]+
@@ -31,7 +31,7 @@ rules:
     priority: ${ first_priority }
     label: North
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ north_triggers })$/]
 
@@ -39,7 +39,7 @@ rules:
     priority: ${ first_priority }
     label: NorthEast
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ north_triggers })(${ east_triggers })$/]
 
@@ -47,7 +47,7 @@ rules:
     priority: ${ first_priority }
     label: NorthWest
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ north_triggers })(${ west_triggers })$/]
 
@@ -55,7 +55,7 @@ rules:
     priority: ${ first_priority }
     label: South
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ south_triggers })$/]
 
@@ -63,7 +63,7 @@ rules:
     priority: ${ first_priority }
     label: SouthWest
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ south_triggers })(${ west_triggers })$/]
 
@@ -71,7 +71,7 @@ rules:
     priority: ${ first_priority }
     label: SouthEast
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ south_triggers })(${ east_triggers })$/]
 
@@ -79,7 +79,7 @@ rules:
     priority: ${ first_priority }
     label: East
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ east_triggers })$/]
 
@@ -87,7 +87,7 @@ rules:
     priority: ${ first_priority }
     label: West
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)^(${ west_triggers })$/]
 
@@ -95,13 +95,14 @@ rules:
     priority: ${ first_priority }
     label: Zone
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       (?<trigger> [lemma=/(?i)^(${ zone_triggers })$/]) @num:Number
 
   - name: zone_conj
     priority: ${ first_priority }
     label: Zone
+    keep: ${ keep_locations}
     pattern: |
       trigger = [lemma=/(?i)^(${ zone_triggers })$/]
       num: Number = >/(conj_(and|or)|nummod)/
@@ -126,7 +127,7 @@ rules:
     priority: ${ first_priority }
     label: Right
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       (?<= [word=/(?i)the/]) [word=/\b(right)\b/ & !outgoing=xcomp & !tag=VBD] |  [word=/\b(right)\b/ & !outgoing=xcomp & !tag=VBD] (?= [word=/(?i)of/])
 
@@ -134,7 +135,7 @@ rules:
     priority: ${ first_priority }
     label: Left
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       (?<= [word=/(?i)the/]) [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] |  [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] (?= [word=/(?i)of/])
 
@@ -142,6 +143,7 @@ rules:
   - name: relative_location
     priority: ${ second_priority }
     label: Location
+    keep: ${ keep_locations}
     pattern: |
       trigger = @Direction [lemma=/half|part|side|section/]?
       target: Concept = >/nmod_of/
@@ -150,6 +152,7 @@ rules:
     priority: ${ second_priority }
     label: Location
     type: token
+    keep: ${ keep_locations}
     pattern: |
       @Location [lemma=/(?i)area|section|surrounding|vicinity|space/]
 
@@ -157,6 +160,7 @@ rules:
     priority: ${ second_priority }
     label: Location
     type: token
+    keep: ${ keep_locations}
     pattern: |
       [mention=Location]{2,4}
 
@@ -164,6 +168,6 @@ rules:
     priority: ${ second_priority }
     label: ThreatRoom
     type: token
-    keep: true
+    keep: ${ keep_locations}
     pattern: |
       [word=/(?i)^threat$/] [word=/(?i)^room/] | [word=/(?i)^threatroom/]
