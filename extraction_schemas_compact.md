@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `5.1.2`
 
-Document generation timestamp (UTC): `2022-10-18 02:08:09.041423`
+Document generation timestamp (UTC): `2022-11-22 21:27:57.143176`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -67,40 +67,40 @@ Extractions
 - [Concept]
   - Direction
     - Cardinal
-      - East
-      - North
-      - NorthEast
-      - NorthWest
-      - South
-      - SouthEast
-      - SouthWest
-      - West
+      - [East]
+      - [North]
+      - [NorthEast]
+      - [NorthWest]
+      - [South]
+      - [SouthEast]
+      - [SouthWest]
+      - [West]
     - Relative
       - [Down]
-      - Left
-      - Right
+      - [Left]
+      - [Right]
       - [Up]
   - [Entity]
     - [DemPron]
     - [Other]
     - [Person]
     - Player
-      - Blue
-      - Green
-      - Red
+      - [Blue]
+      - [Green]
+      - [Red]
     - Role
-      - Engineer
-      - Medic
-      - Searcher
-      - Transporter
+      - [Engineer]
+      - [Medic]
+      - [Searcher]
+      - [Transporter]
     - [Self]
     - [Team]
-    - Victim
-      - CriticalVictim
-      - NoVictim
-      - RegularVictim
-        - VictimTypeA
-        - VictimTypeB
+    - [Victim]
+      - [CriticalVictim]
+      - [NoVictim]
+      - [RegularVictim]
+        - [VictimTypeA]
+        - [VictimTypeB]
       - [Type]
       - [Yellow]
     - [You]
@@ -142,7 +142,7 @@ Extractions
           - target (Rubble|Location) ()
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - Communicate
           - Agreement
@@ -162,7 +162,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (PuzzleConcept|EventLike|Item|Person|Victim) ()
+            - exists (PuzzleConcept|EventLike|Person|Victim|Item) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -213,7 +213,7 @@ Extractions
 
             - PlanLanguage
           - Question
-            - topic (Action|Concept) ()
+            - topic (Concept|Action) ()
             - [location] (Location) (?)
 
             - HowQuestion
@@ -229,7 +229,7 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Action|Need) ()
+              - topic (Need|Action) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
               - target (Entity) ()
@@ -255,7 +255,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatSign|ThreatRoomMarker|ThreatRoom) ()
+                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -267,22 +267,22 @@ Extractions
           - Enter
             - [target] (Location) (?)
             - [agent] (Entity) (?)
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
 
           - MoveEntity
             - target (Entity) ()
             - [agent] (Entity) (?)
 
           - MoveFrom
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Entity|Deictic|Location) ()
+            - target (Deictic|Location|Entity) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Entity|Location) (?)
+            - [target] (Location|Entity) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -317,7 +317,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Entity|Item) ()
+          - target (Item|EventLike|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
@@ -329,84 +329,84 @@ Extractions
           - [location] (Location) (?)
           - [map] (Map) (?)
 
-    - Location
+    - [Location]
       - target (Concept) ()
 
       - Inferred
         - [Deictic]
-      - Infrastructure
+      - [Infrastructure]
         - [Room]
-          - A1
-          - A2
-          - A3
-          - A4
-          - A4A
-          - B1
-          - B2
-          - B3
-          - B4
-          - B5
-          - B6
-          - B7
-          - B8
-          - B9
-          - C1
-          - C2
-          - C3
-          - C4
-          - C5
-          - C6
-          - C7
-          - C8
-          - D1
-          - D2
-          - D3
-          - D4
-          - E1
-          - E2
-          - E3
-          - E4
-          - E5
-          - F1
-          - F2
-          - F3
-          - F4
-          - F5
-          - G1
-          - G2
-          - G3
-          - H1
-          - H1A
-          - H2
-          - I1
+          - [A1]
+          - [A2]
+          - [A3]
+          - [A4]
+          - [A4A]
+          - [B1]
+          - [B2]
+          - [B3]
+          - [B4]
+          - [B5]
+          - [B6]
+          - [B7]
+          - [B8]
+          - [B9]
+          - [C1]
+          - [C2]
+          - [C3]
+          - [C4]
+          - [C5]
+          - [C6]
+          - [C7]
+          - [C8]
+          - [D1]
+          - [D2]
+          - [D3]
+          - [D4]
+          - [E1]
+          - [E2]
+          - [E3]
+          - [E4]
+          - [E5]
+          - [F1]
+          - [F2]
+          - [F3]
+          - [F4]
+          - [F5]
+          - [G1]
+          - [G2]
+          - [G3]
+          - [H1]
+          - [H1A]
+          - [H2]
+          - [I1]
           - I1A
-          - I2
+          - [I2]
           - I2A
-          - I3
+          - [I3]
           - I3A
-          - I4
+          - [I4]
           - I4A
-          - J1
-          - J2
-          - J3
-          - J4
-          - K1
-          - K2
-          - K3
-          - K4
-          - L1
-          - L2
-          - L3
-          - M1
-          - M2
-          - M3
-          - ThreatRoom
-        - Zone
+          - [J1]
+          - [J2]
+          - [J3]
+          - [J4]
+          - [K1]
+          - [K2]
+          - [K3]
+          - [K4]
+          - [L1]
+          - [L2]
+          - [L3]
+          - [M1]
+          - [M2]
+          - [M3]
+          - [ThreatRoom]
+        - [Zone]
           - num (Number) ()
 
     - Obstacle
-      - Fire
-      - Rubble
+      - [Fire]
+      - [Rubble]
     - [Time]
       - TimeUnit
   - Item
@@ -419,22 +419,22 @@ Extractions
       - RubbleMarker
       - SOSMarker
       - ThreatRoomMarker
-    - Tool
+    - [Tool]
       - [owner] (Entity) (?)
 
       - GPS
-      - Hammer
+      - [Hammer]
         - [owner] (Entity) (?)
 
-      - Map
+      - [Map]
         - [owner] (Entity) (?)
 
-        - ThreatSign
+        - [ThreatSign]
           - [Threat]
-      - MedKit
+      - [MedKit]
         - [owner] (Entity) (?)
 
-      - Stretcher
+      - [Stretcher]
         - [owner] (Entity) (?)
 
   - [Number]
@@ -454,7 +454,7 @@ Extractions
     - Positive
       - Encouragement
       - Gratitude
-  - Switch
+  - [Switch]
   - Tense
     - [FutureTense]
       - tense (Concept) ()

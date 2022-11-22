@@ -9,7 +9,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`A1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -25,7 +25,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`A2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -41,7 +41,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`A3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -57,7 +57,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`A4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -73,7 +73,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`A4A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -242,7 +242,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -258,7 +258,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -274,7 +274,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -290,7 +290,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -306,7 +306,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -322,7 +322,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B6`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -338,7 +338,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B7`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -354,7 +354,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B8`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -370,7 +370,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`B9`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -462,7 +462,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Blue`, `Player`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -478,7 +478,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -494,7 +494,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -510,7 +510,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -526,7 +526,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -542,7 +542,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -558,7 +558,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C6`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -574,7 +574,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C7`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -590,7 +590,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`C8`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -801,7 +801,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -817,7 +817,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -833,7 +833,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -849,7 +849,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -865,7 +865,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -881,7 +881,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -913,7 +913,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -929,7 +929,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`CriticalVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -945,7 +945,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`D1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -961,7 +961,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`D2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -977,7 +977,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`D3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -993,7 +993,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`D4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1183,7 +1183,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`E1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1199,7 +1199,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`E2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1215,7 +1215,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`E3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1231,7 +1231,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`E4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1247,7 +1247,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`E5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1263,7 +1263,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`East`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1295,7 +1295,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Engineer`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1311,7 +1311,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Engineer`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1416,7 +1416,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`F1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1432,7 +1432,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`F2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1448,7 +1448,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`F3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1464,7 +1464,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`F4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1480,7 +1480,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`F5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1496,7 +1496,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Fire`, `Obstacle`, `EventLike`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1548,7 +1548,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`G1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1564,7 +1564,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`G2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1580,7 +1580,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`G3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1646,7 +1646,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Green`, `Player`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1662,7 +1662,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`H1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1678,7 +1678,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`H1A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1694,7 +1694,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`H2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1710,7 +1710,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`Hammer`, `Tool`, `Item`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
@@ -1863,7 +1863,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1879,7 +1879,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I1A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1911,7 +1911,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1927,7 +1927,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I2A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1943,7 +1943,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I2A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1975,7 +1975,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1991,7 +1991,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I3A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2023,7 +2023,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2039,7 +2039,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`I4A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2071,7 +2071,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2180,7 +2180,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`J1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2196,7 +2196,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`J2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2212,7 +2212,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`J3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2228,7 +2228,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`J4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2244,7 +2244,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`K1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2260,7 +2260,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`K2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2276,7 +2276,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`K3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2292,7 +2292,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`K4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2563,7 +2563,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`L1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2579,7 +2579,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`L2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2595,7 +2595,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`L3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2611,7 +2611,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Left`, `Relative`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2627,7 +2627,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2643,7 +2643,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2659,7 +2659,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
@@ -2715,7 +2715,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`M1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2731,7 +2731,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`M2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2747,7 +2747,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`M3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2783,7 +2783,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`Map`, `Tool`, `Item`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
@@ -2817,7 +2817,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`MedKit`, `Tool`, `Item`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
@@ -2835,7 +2835,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Medic`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2851,7 +2851,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Medic`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -2867,7 +2867,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Medic`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3329,7 +3329,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`NoVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3361,7 +3361,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`North`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3377,7 +3377,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`NorthEast`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3393,7 +3393,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`NorthWest`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3943,7 +3943,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Red`, `Player`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3975,7 +3975,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4067,7 +4067,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Right`, `Relative`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4188,7 +4188,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Rubble`, `Obstacle`, `EventLike`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4395,7 +4395,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Searcher`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4411,7 +4411,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Searcher`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4671,7 +4671,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`South`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4687,7 +4687,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`SouthEast`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4703,7 +4703,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`SouthWest`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4759,7 +4759,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`Stretcher`, `Tool`, `Item`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
@@ -4793,7 +4793,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Switch`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4841,7 +4841,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`ThreatRoom`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `5`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4873,7 +4873,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`ThreatSign`, `Map`, `Tool`, `Item`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -4996,7 +4996,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`Tool`, `Item`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
@@ -5032,7 +5032,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Transporter`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5048,7 +5048,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Transporter`, `Role`, `Entity`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5144,7 +5144,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5160,7 +5160,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5176,7 +5176,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5192,7 +5192,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5208,7 +5208,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5224,7 +5224,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5256,7 +5256,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`]
 priority  | `3+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5328,7 +5328,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`West`, `Cardinal`, `Direction`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5507,7 +5507,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Zone`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5523,7 +5523,7 @@ attribute | value
 type |  GraphExtractor
 labels    | [`Zone`, `Infrastructure`, `Location`, `EventLike`, `Concept`]
 priority  | `4+`
-keep      | `true`
+keep      | `false`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**

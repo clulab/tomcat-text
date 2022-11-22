@@ -18,7 +18,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`East`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -29,7 +29,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`North`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -40,7 +40,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`NorthEast`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -51,7 +51,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`NorthWest`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -62,7 +62,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`South`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -73,7 +73,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`SouthEast`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -84,7 +84,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`SouthWest`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -95,7 +95,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`West`, `Cardinal`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -117,7 +117,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Left`, `Relative`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -128,7 +128,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Right`, `Relative`, `Direction`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -194,7 +194,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Blue`, `Player`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -205,7 +205,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Green`, `Player`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -216,7 +216,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Red`, `Player`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -227,7 +227,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Engineer`, `Role`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -238,7 +238,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Medic`, `Role`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -249,7 +249,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Searcher`, `Role`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -260,7 +260,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Transporter`, `Role`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -293,7 +293,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Victim`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -304,7 +304,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`CriticalVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | [`false`, `true`] 
+|keep             | `false` 
 
 _No arguments_
 
@@ -315,7 +315,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`NoVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -326,7 +326,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -337,7 +337,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -348,7 +348,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | [`false`, `true`] 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1210,7 +1210,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -1236,7 +1236,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1258,7 +1258,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`A1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1269,7 +1269,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`A2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1280,7 +1280,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`A3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1291,7 +1291,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`A4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1302,7 +1302,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`A4A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1313,7 +1313,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1324,7 +1324,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1335,7 +1335,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1346,7 +1346,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1357,7 +1357,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1368,7 +1368,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B6`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1379,7 +1379,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B7`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1390,7 +1390,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B8`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1401,7 +1401,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`B9`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1412,7 +1412,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1423,7 +1423,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1434,7 +1434,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1445,7 +1445,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1456,7 +1456,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1467,7 +1467,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C6`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1478,7 +1478,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C7`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1489,7 +1489,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`C8`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1500,7 +1500,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`D1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1511,7 +1511,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`D2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1522,7 +1522,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`D3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1533,7 +1533,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`D4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1544,7 +1544,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`E1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1555,7 +1555,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`E2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1566,7 +1566,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`E3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1577,7 +1577,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`E4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1588,7 +1588,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`E5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1599,7 +1599,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`F1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1610,7 +1610,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`F2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1621,7 +1621,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`F3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1632,7 +1632,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`F4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1643,7 +1643,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`F5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1654,7 +1654,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`G1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1665,7 +1665,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`G2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1676,7 +1676,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`G3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1687,7 +1687,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`H1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1698,7 +1698,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`H1A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1709,7 +1709,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`H2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1720,7 +1720,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1731,7 +1731,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I1A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -1742,7 +1742,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1753,7 +1753,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I2A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -1764,7 +1764,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1775,7 +1775,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I3A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -1786,7 +1786,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1797,7 +1797,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`I4A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -1808,7 +1808,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`J1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1819,7 +1819,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`J2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1830,7 +1830,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`J3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1841,7 +1841,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`J4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1852,7 +1852,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`K1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1863,7 +1863,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`K2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1874,7 +1874,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`K3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1885,7 +1885,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`K4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1896,7 +1896,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`L1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1907,7 +1907,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`L2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1918,7 +1918,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`L3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1929,7 +1929,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`M1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1940,7 +1940,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`M2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1951,7 +1951,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`M3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1962,7 +1962,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`ThreatRoom`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1973,7 +1973,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Zone`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -1988,7 +1988,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Fire`, `Obstacle`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -1999,7 +1999,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Rubble`, `Obstacle`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
+|keep             | `false` 
 
 _No arguments_
 
@@ -2131,7 +2131,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Tool`, `Item`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -2157,7 +2157,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Hammer`, `Tool`, `Item`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -2172,7 +2172,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Map`, `Tool`, `Item`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -2187,7 +2187,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`ThreatSign`, `Map`, `Tool`, `Item`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
@@ -2209,7 +2209,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`MedKit`, `Tool`, `Item`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -2224,7 +2224,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Stretcher`, `Tool`, `Item`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _Arguments_
 
@@ -2347,7 +2347,7 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Switch`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
 
