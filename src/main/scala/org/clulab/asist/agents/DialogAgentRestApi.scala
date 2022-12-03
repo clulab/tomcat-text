@@ -8,6 +8,8 @@ import akka.http.scaladsl.model._
 import scala.concurrent.ExecutionContext
 
 import buildinfo.BuildInfo
+import com.typesafe.config.Config
+import ai.lum.common.ConfigFactory
 import org.clulab.asist.extraction.TomcatRuleEngine
 
 // Process HTTP requests containing text spans
@@ -18,6 +20,11 @@ class DialogAgentRestApi (
   override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends DialogAgent(ruleEngine) {
 
+  private val config: Config = ConfigFactory.load()
+
+  val host = config.getString("DialotAgent.restApiServer.host")
+  val port = config.getInt("RollcallRequest.restApiServer.port")
+
   logger.info(s"DialogAgentRestApi version ${BuildInfo.version} starting...")
 
   // get rule engine lazy init out of the way
@@ -26,8 +33,6 @@ class DialogAgentRestApi (
   implicit val system = ActorSystem("DialogAgentRestApi")
   implicit val executionContext = ExecutionContext.global
 
-  val host = "localhost"
-  val port = 8080
 
     val requestHandler: HttpRequest => HttpResponse = {
 
