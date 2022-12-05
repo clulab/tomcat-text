@@ -1,58 +1,66 @@
 package org.clulab.asist.agents
 
+import ai.lum.common.ConfigFactory
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model._
-
-import scala.concurrent.ExecutionContext
-
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import buildinfo.BuildInfo
 import com.typesafe.config.Config
-import ai.lum.common.ConfigFactory
+import scala.concurrent.{ExecutionContext,Future}
+
 import org.clulab.asist.extraction.TomcatRuleEngine
+import org.clulab.asist.messages.DialogAgentMessageUtteranceExtraction
+
+// needed?  
+//import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+//import spray.json.DefaultJsonProtocol._
 
 // Process HTTP requests containing text spans
 // Generate HTTP responses with extractions
-
 
 class DialogAgentRestApi (
   override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends DialogAgent(ruleEngine) {
 
-  private val config: Config = ConfigFactory.load()
-
-  val host = config.getString("DialotAgent.restApiServer.host")
-  val port = config.getInt("RollcallRequest.restApiServer.port")
-
   logger.info(s"DialogAgentRestApi version ${BuildInfo.version} starting...")
 
-  // get rule engine lazy init out of the way
-//  startEngine()
-
+  private val config: Config = ConfigFactory.load()
+  val host = config.getString("DialogAgent.restApiServer.host")
+  val port = config.getInt("DialogAgent.restApiServer.port")
   implicit val system = ActorSystem("DialogAgentRestApi")
-  implicit val executionContext = ExecutionContext.global
 
+  def status: String = {
+    "Dialog Agent REST API is running"
+  }
 
-    val requestHandler: HttpRequest => HttpResponse = {
+  // keep a record of each extraction transaction.
+  var count = 1
 
-      // extraction request
-      case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
-        HttpResponse(entity = HttpEntity(
-          ContentTypes.`text/html(UTF-8)`,
-          "<html><body>Hello world!</body></html>"))
-
-      // status request
-      case HttpRequest(GET, Uri.Path("/status"), _, _, _) =>
-        HttpResponse(entity = "Dialog Agent REST API status")
-
-      // unhandled request
-      case r: HttpRequest =>
-        r.discardEntityBytes() 
-        HttpResponse(404, entity = "Request not found")
+  val route = concat (
+    get {
+      path("status") {
+        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, status))
+      }
+    },
+    post {
+      path("") {
+        entity(as[String]) { text =>
+          logger.info(s"Transaction ${count}:")
+          logger.info(s"input = ${text}")
+          val json: String = JsonUtils.writeJsonNoNulls(getExtractions(text))
+          logger.info(s"output = ${json}")
+          count += 1
+          complete(HttpEntity(ContentTypes.`application/json`, json))
+        }
+      }
     }
+  )
 
-    val bindingFuture = Http().newServerAt(host, port).bindSync(requestHandler)
+  val bindingFuture = Http().newServerAt(host, port).bind(route)
 
-    logger.info(s"DialogAgentRestApi running at http://${host}:${port}")
+  startEngine()
+  logger.info(s"DialogAgentRestApi running at http://${host}:${port}")
 }
