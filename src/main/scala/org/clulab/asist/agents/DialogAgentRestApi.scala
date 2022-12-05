@@ -14,10 +14,6 @@ import scala.concurrent.{ExecutionContext,Future}
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages.DialogAgentMessageUtteranceExtraction
 
-// needed?  
-//import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-//import spray.json.DefaultJsonProtocol._
-
 // Process HTTP requests containing text spans
 // Generate HTTP responses with extractions
 
