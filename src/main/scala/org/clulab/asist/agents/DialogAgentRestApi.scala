@@ -14,8 +14,8 @@ import scala.concurrent.{ExecutionContext,Future}
 import org.clulab.asist.extraction.TomcatRuleEngine
 import org.clulab.asist.messages.DialogAgentMessageUtteranceExtraction
 
-// Process HTTP requests containing text spans
-// Generate HTTP responses with extractions
+// Process HTTP requests containing plain text data
+// Generate HTTP responses with extractions as JSON
 
 class DialogAgentRestApi (
   override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
@@ -23,24 +23,31 @@ class DialogAgentRestApi (
 
   logger.info(s"DialogAgentRestApi version ${BuildInfo.version} starting...")
 
+  // read host and port from configuration file
   private val config: Config = ConfigFactory.load()
   val host = config.getString("DialogAgent.restApiServer.host")
   val port = config.getInt("DialogAgent.restApiServer.port")
+
+  // define concurrent actor system
   implicit val system = ActorSystem("DialogAgentRestApi")
 
+  // return a status message
   def status: String = {
-    "Dialog Agent REST API is running"
+    s"Dialog Agent REST API has been running for ${uptimeSeconds} seconds"
   }
 
   // keep a record of each extraction transaction.
   var count = 1
 
+  // define the REST API endpoints
   val route = concat (
+    // GET endpoints
     get {
       path("status") {
         complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, status))
       }
     },
+    // POST endpoints
     post {
       path("") {
         entity(as[String]) { text =>
@@ -55,8 +62,12 @@ class DialogAgentRestApi (
     }
   )
 
+  // start server on asynchronous thread
   val bindingFuture = Http().newServerAt(host, port).bind(route)
 
+  // get lazy init out of the way
   startEngine()
+
+  // Advise of successful startup
   logger.info(s"DialogAgentRestApi running at http://${host}:${port}")
 }
