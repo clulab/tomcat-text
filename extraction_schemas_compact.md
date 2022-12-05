@@ -3,9 +3,9 @@ ASIST Extraction Schemas
 
 Authors: Adarsh Pyarelal, Rebecca Sharp
 
-Agent version: `5.1.2`
+Agent version: `5.2.0`
 
-Document generation timestamp (UTC): `2022-11-22 21:27:57.143176`
+Document generation timestamp (UTC): `2022-12-05 18:47:21.677926`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -142,7 +142,7 @@ Extractions
           - target (Rubble|Location) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - Communicate
           - Agreement
@@ -162,7 +162,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (PuzzleConcept|EventLike|Person|Victim|Item) ()
+            - exists (EventLike|Person|PuzzleConcept|Item|Victim) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -229,7 +229,7 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Need|Action) ()
+              - topic (Action|Need) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
               - target (Entity) ()
@@ -267,14 +267,14 @@ Extractions
           - Enter
             - [target] (Location) (?)
             - [agent] (Entity) (?)
-            - target (Location|Deictic) ()
+            - target (Deictic|Location) ()
 
           - MoveEntity
             - target (Entity) ()
             - [agent] (Entity) (?)
 
           - MoveFrom
-            - target (Location|Deictic) ()
+            - target (Deictic|Location) ()
             - [agent] (Entity) (?)
 
           - MoveTo
@@ -297,7 +297,7 @@ Extractions
 
         - RescueInteractions
           - Save
-            - target (Person|Victim|Entity) ()
+            - target (Person|Entity|Victim) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -317,7 +317,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (Entity|Item|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
