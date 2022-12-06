@@ -41,7 +41,9 @@ The server URL is currently http://localhost:8080.  The host and port are set in
 ```tomcat-text/src/main/resources/application.conf```
 
 ### Starting the REST API Agent 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
+``` console
+sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
+```
 
 The base rule path can be specified with the '--rulepath' argument.  The default rule path is ```/org/clulab/asist/grammars/master.yml``` if this argument is not set.
 
@@ -64,27 +66,31 @@ Send an HTTP GET request to http://localhost:8080/status.   If the agent is runn
 #### Example
 input:
 
-    curl http://localhost:8080/status
+``` console
+curl http://localhost:8080/status
+```
 
 output:
 
     Dialog Agent REST API has been running for 123.456 seconds
 
-## Stdin Agent
+## Console Agent
 
-The Dialog Agent can run interactively from the command line.  
+The Dialog Agent can run interactively from a console 
 
-### Starting the Stdin Agent
+### Starting the Console Agent
 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent stdin"
+``` console
+sbt "runMain org.clulab.asist.apps.RunDialogAgent stdin"
+```
 
-### Using the Stdin Agent
+### Using the Console Agent
 
 Enter text at the prompt, and the extractions are returned as lines of JSON text.
 
 #### Example
 
-```
+```console
 
 Dialog Agent stdin extractor running.
 Enter plaintext for extraction, two blank lines to exit.
@@ -112,7 +118,9 @@ the MQTT agent with the exception that regular heartbeat messages are not genera
 
 ### Running the File Agent
 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
+```console
+sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
+```
 
 Supported input file types are plaintext (.txt), WebVtt (.vtt), and ToMCAT metadata (.metadata).
 A directory can be specified as input.  Directories are traversed one level
@@ -129,7 +137,10 @@ will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
 ### Running the Reprocessing Agent
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
+
+```console
+sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
+```
 
 
 # Run evaluation app

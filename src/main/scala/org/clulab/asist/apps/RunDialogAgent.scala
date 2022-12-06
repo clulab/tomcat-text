@@ -103,8 +103,8 @@ Existing TA3 version numbers are incremented by 1 if not set"""
           .action((x, c) => c.copy(rulepath = x))
           .text(rulepath_hint)
         )
-    cmd("stdin")
-      .action((_, c) => c.copy(agent = "stdin"))
+    cmd("console")
+      .action((_, c) => c.copy(agent = "console"))
       .children(
         opt[String]("rulepath")
           .valueName("<String>")
@@ -180,15 +180,15 @@ Existing TA3 version numbers are incremented by 1 if not set"""
           arguments.ta3_version,
           ruleEngine
         )
-      case "stdin" =>
-        logger.info("Starting Stdin agent...")
-        new DialogAgentStdin(ruleEngine)
+      case "console" =>
+        logger.info("Starting console agent...")
+        new DialogAgentConsole(ruleEngine)
       case "rest" =>
         logger.info("Starting REST API agent...")
         new DialogAgentRestApi(ruleEngine)
       case _ =>
         logger.error(f"Could not run agent '${arguments.agent}'")
-        logger.error("valid agent types are [file, mqtt, rest, reprocess, stdin]")
+        logger.error("valid agent types are [file, mqtt, rest, reprocess, console]")
     }
   }
 

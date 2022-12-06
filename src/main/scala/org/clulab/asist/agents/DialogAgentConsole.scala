@@ -13,7 +13,7 @@ import org.clulab.asist.extraction.TomcatRuleEngine
  *
  */
 
-class DialogAgentStdin (
+class DialogAgentConsole (
   override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
 ) extends DialogAgent(ruleEngine) { 
 
@@ -21,7 +21,7 @@ class DialogAgentStdin (
   startEngine()
 
   val v = BuildInfo.version
-  println(s"\nDialog Agent standard input text extractor version ${v}")
+  println(s"\nDialog Agent text extractor version ${v}")
   println("Enter plaintext for extraction, two blank lines to exit.")
 
   // Console input
