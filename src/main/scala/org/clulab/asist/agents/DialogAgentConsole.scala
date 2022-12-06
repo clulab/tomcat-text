@@ -21,7 +21,7 @@ class DialogAgentConsole (
   startEngine()
 
   val v = BuildInfo.version
-  println(s"\nDialog Agent text extractor version ${v}")
+  println(s"\nDialog Agent version ${v}")
   println("Enter plaintext for extraction, two blank lines to exit.")
 
   // Console input
