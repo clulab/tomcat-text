@@ -90,11 +90,18 @@ Enter text at the prompt, and the extractions are returned as lines of JSON text
 
 #### Example
 
+input:
+
 ```console
 Dialog Agent version 5.2.0
 Enter plaintext for extraction, two blank lines to exit.
 
 > I see you 
+```
+
+output:
+
+```json
 {"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"span":"see you","arguments":{"target":[{"labels":["You","Entity","Concept"],"span":"you","arguments":{},"attachments":[],"start_offset":6,"end_offset":9,"rule":"you_token_capture"}]},"attachments":[{"text":"I","agentType":"Self","labels":["Self","Entity","Concept"],"span":[0]}],"start_offset":2,"end_offset":9,"rule":"lemma_verb_dobj-sight_entity"}
 
 ```
@@ -149,7 +156,9 @@ To generate CSV files for evaluating the rules, set the
 appropriately in `src/main/resources/application.conf`, and then
 run the following invocation
 
-    sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
+```console
+sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
+```
 
 ## Metadata Input
 
@@ -161,7 +170,7 @@ JSON.
 
 #### Chat
 
-```
+```json
 {
   "topic": "minecraft/chat",
   "msg": {
@@ -179,7 +188,7 @@ JSON.
 
 #### UAZ ASR
 
-```
+```json
 {
   "topic": "agent/asr/final",
   "msg": {
@@ -197,8 +206,7 @@ JSON.
 ```
 
 
-When using the message bus, it is not necessary to include a `topic` JSON
-element.
+When using the message bus, it is not necessary to include a `topic` JSON field.
 
 
 ## Output
