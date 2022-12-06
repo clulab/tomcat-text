@@ -174,14 +174,14 @@ JSON.
 {
   "topic": "minecraft/chat",
   "msg": {
-    "experiment_id": string,
-    "trial_id": string,
-    "replay_root_id": string,
-    "replay_id": string
+    "experiment_id": "string",
+    "trial_id": "string",
+    "replay_root_id": "string",
+    "replay_id": "string"
   },
   "data": {
-    "sender": string,
-    "text": string
+    "sender": "string",
+    "text": "string"
   }
 }
 ```
@@ -192,15 +192,15 @@ JSON.
 {
   "topic": "agent/asr/final",
   "msg": {
-    "experiment_id": string,
-    "trial_id": string,
-    "replay_root_id": string,
-    "replay_id": string
+    "experiment_id": "string",
+    "trial_id": "string",
+    "replay_root_id": "string",
+    "replay_id": "string"
   },
   "data": {
-    "participant_id": string,
-    "id": string,
-    "text": string
+    "participant_id": "string",
+    "id": "string",
+    "text": "string"
   }
 }
 ```
