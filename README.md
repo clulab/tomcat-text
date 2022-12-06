@@ -81,7 +81,7 @@ The Dialog Agent can run interactively from a console
 ### Starting the Console Agent
 
 ``` console
-sbt "runMain org.clulab.asist.apps.RunDialogAgent stdin"
+sbt "runMain org.clulab.asist.apps.RunDialogAgent console"
 ```
 
 ### Using the Console Agent
@@ -92,7 +92,7 @@ Enter text at the prompt, and the extractions are returned as lines of JSON text
 
 ```console
 
-Dialog Agent stdin extractor running.
+Dialog Agent running. 
 Enter plaintext for extraction, two blank lines to exit.
 
 > I see a green victim!
