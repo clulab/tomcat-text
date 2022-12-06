@@ -164,8 +164,7 @@ sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
 
 Messages read by the Dialog Agent, either from `.metadata` files or the message
 bus, are expected to include the following JSON fields.  Extra structures and
-fields are ignored.  Missing data are replaced with null values in the output
-JSON.
+fields are ignored.
 
 
 #### Chat
@@ -235,7 +234,6 @@ message bus.
     "participant_id": "P00012",
     "asr_msg_id": "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
     "text": "I'm going to room 204.",
-    "dialog_act_label": null,
     "utterance_source": {
       "source_type": "message_bus",
       "source_name": "agent/asr/final"
