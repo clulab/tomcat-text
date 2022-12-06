@@ -50,9 +50,9 @@ Send an HTTP POST request to http://localhost:8080 with a plaintext string as th
 
 #### Example
 input:
-
-    curl -d 'I see you' -X POST http://localhost:8080
-
+``` console
+curl -d 'I see you' -X POST http://localhost:8080
+```
 output:
 ``` json
 [{"arguments":{"target":[{"attachments":[],"end_offset":9,"labels":["You","Entity","Concept"],"rule":"you_token_capture","span":"you","start_offset":6}]},"attachments":[{"agentType":"Self","labels":["Self","Entity","Concept"],"span":[0],"text":"I"}],"end_offset":9,"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"rule":"lemma_verb_dobj-sight_entity","span":"see you","start_offset":2}]
