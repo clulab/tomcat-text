@@ -1,20 +1,20 @@
 package org.clulab.asist.agents
 
 import ai.lum.common.ConfigFactory
-
-import buildinfo.BuildInfo
 import akka.actor.ActorSystem
-import java.time.Clock
+import buildinfo.BuildInfo
 import com.typesafe.scalalogging.LazyLogging
+import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.{MessageBusClient, MessageBusClientListener}
-import scala.collection.mutable.Queue
-import scala.collection.mutable.MutableList
+import org.clulab.asist.extraction.TomcatRuleEngine
 
+
+import scala.collection.mutable.MutableList
+import scala.collection.mutable.Queue
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
-
 
 /**
  * Authors:  Joseph Astier, Adarsh Pyarelal, Rebecca Sharp
@@ -31,8 +31,9 @@ import scala.language.postfixOps
 class DialogAgentMqtt(
   val host: String = "localhost",
   val port: Int = 1883,
-  val nochat: Boolean = false
-) extends DialogAgent
+  val nochat: Boolean = false,
+  override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
+) extends DialogAgent(ruleEngine)
     with LazyLogging
     with MessageBusClientListener { 
 
@@ -101,7 +102,7 @@ class DialogAgentMqtt(
     publishedTraffic += topic
   }
 
-  /** Write the message to the message bus topic
+  /** Write the message to the message bus topic.  Do not publish the topic
    * @param message:  Any of our published messages
    */
   def publish[A <: AnyRef](message: A): Unit = message match {
@@ -153,7 +154,7 @@ class DialogAgentMqtt(
     log.clear
   }
 
-  // report the counts at the end of a trial
+  // report the topic counts at the end of a trial
   private def reportTrafficLogs(): Unit= {
     logger.info("TRIAL STOPPED:")
     logger.info("Messages read:")
@@ -162,6 +163,7 @@ class DialogAgentMqtt(
     reportTrafficLog(publishedTraffic)
   }
 
+  // Process an incoming message by publishing a response.
   private def processMessage(
     message: BusMessage
   ): Unit = {
@@ -173,42 +175,39 @@ class DialogAgentMqtt(
     else
       logger.info(s"Read ${topic}")
 
+    subscribedTraffic += topic
     topic match {
-      case AsrMessage.topic =>
-        subscribedTraffic += topic
-        AsrMessage(text).foreach(asr =>
-          publish(DialogAgentMessage(source_type, topic, asr, this))
-        )
-      case ChatMessage.topic =>
-        subscribedTraffic += topic
-        ChatMessage(text).foreach(chat =>
-          publish(DialogAgentMessage(source_type, topic, chat, this))
-        )
-      case RollcallRequestMessage.topic =>
-        subscribedTraffic += topic
-        RollcallRequestMessage(text).foreach(request =>
-          publish(RollcallResponseMessage(uptimeSeconds, request))
-        ) 
       case TrialMessage.topic => 
         TrialMessage(text).foreach(trial => 
           if(TrialMessage.isStart(trial)) { // Trial Start
             subscribedTraffic.clear
             publishedTraffic.clear
-            subscribedTraffic += topic
+            subscribedTraffic += topic  // just cleared, need to add again
+            // heartbeats start producing the trial_id 
             heartbeatProducer.set_trial_info(trial)
             publish(VersionInfoMessage(trial))
           }
           else if(TrialMessage.isStop(trial)) { // Trial Stop
-            subscribedTraffic += topic
             // heartbeats stop producing the trial_id 
             val new_msg: CommonMsg = trial.msg.copy(trial_id = "N/A")
             heartbeatProducer.set_trial_info(trial.copy(msg = new_msg))
             reportTrafficLogs
           }
         )
+      case AsrMessage.topic =>
+        AsrMessage(text).foreach(asr =>
+          publish(DialogAgentMessage(source_type, topic, asr, this))
+        )
+      case ChatMessage.topic =>
+        ChatMessage(text).foreach(chat =>
+          publish(DialogAgentMessage(source_type, topic, chat, this))
+        )
+      case RollcallRequestMessage.topic =>
+        RollcallRequestMessage(text).foreach(request =>
+          publish(RollcallResponseMessage(uptimeSeconds, request))
+        ) 
       case _ => 
     }
-
     processNextMessage
   }
 

@@ -6,7 +6,7 @@ rules:
   - name: hammer
     priority: ${ rulepriority }
     label: Hammer
-    keep: true
+    keep: ${ keep_items }
     pattern: |
       trigger = [lemma=/${ hammer_triggers }/]
       owner: Entity? = >"nmod:poss"
@@ -14,7 +14,7 @@ rules:
   - name: medkit
     priority: ${ rulepriority }
     label: MedKit
-    keep: true
+    keep: ${ keep_items }
     pattern: |
       trigger = [lemma=/${ medkit_triggers }/]
       owner: Entity? = >"nmod:poss"
@@ -22,7 +22,7 @@ rules:
   - name: stretcher
     priority: ${ rulepriority }
     label: Stretcher
-    keep: true
+    keep: ${ keep_items }
     pattern: |
       trigger = [lemma=/${ stretcher_triggers }/]
       owner: Entity? = >"nmod:poss"
@@ -30,7 +30,7 @@ rules:
   - name: tool_generic
     priority: ${ rulepriority }
     label: Tool
-    keep: true
+    keep: ${ keep_items }
     pattern: |
       trigger = [lemma=/tool/]
       owner: Entity? = >"nmod:poss"
@@ -38,6 +38,7 @@ rules:
   - name: map_item
     priority: ${ rulepriority }
     label: Map
+    keep: ${ keep_items }
     pattern: |
       trigger = [lemma=/map/]
       owner: Entity? = >"nmod:poss"
@@ -51,7 +52,7 @@ rules:
     priority: ${ rulepriority }
     label: ThreatSign
     type: token
-    keep: true
+    keep: ${ keep_items }
     pattern: |
       [lemma=/(?i)^threat/] [lemma=/^sign|^indicator/] | [lemma=/(?i)threatsign/]
 

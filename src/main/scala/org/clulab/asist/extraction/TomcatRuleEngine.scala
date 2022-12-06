@@ -1,5 +1,7 @@
 package org.clulab.asist.extraction
 
+import com.typesafe.scalalogging.LazyLogging
+
 import com.typesafe.config.{Config, ConfigFactory}
 import org.clulab.odin.{ExtractorEngine, Mention, State}
 import org.clulab.processors.fastnlp.FastNLPProcessor
@@ -7,9 +9,16 @@ import org.clulab.processors.{Document, Processor}
 import org.clulab.utils.{Configured, FileUtils}
 import org.slf4j.{Logger, LoggerFactory}
 
-class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Configured {
+import scala.util.control.NonFatal
+import scala.sys
+
+class TomcatRuleEngine(
+  val config: Config = ConfigFactory.load(),
+  val rulepath: Option[String] = None
+) extends Configured with LazyLogging {
 
   val proc: Processor = new FastNLPProcessor() // TODO: Get from configuration file soon
+
 
   override def getConf: Config = config
 
@@ -25,14 +34,25 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
   class LoadableAttributes(val actions: TomcatActions, val engine: ExtractorEngine)
 
   object LoadableAttributes {
-    val masterRulesPath: String =
+    val masterRulesPath: String = rulepath.getOrElse(
       getPath("masterRulesPath", "/org/clulab/asist/grammars/master.yml")
+    )
     val taxonomyPath: String =
       getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
 
     def apply(): LoadableAttributes = {
-      // Reread these values from their files/resources each time based on paths in the config file.
-      val masterRules = FileUtils.getTextFromResource(masterRulesPath)
+      // Reread these values from their files/resources each time 
+      // based on paths in the config file.
+      val masterRules = try {
+        FileUtils.getTextFromResource(masterRulesPath)
+      } catch {
+        case NonFatal(t) =>
+          val exitCode: Int = 1  // error
+          logger.error(s"Could not read rule path file: ${masterRulesPath}")
+          logger.error(s"Agent is exiting the JVM with code ${exitCode}.")
+          sys.exit(exitCode)
+      }
+
       val actions = TomcatActions()
 
       new LoadableAttributes(
@@ -43,6 +63,7 @@ class TomcatRuleEngine(val config: Config = ConfigFactory.load()) extends Config
   }
 
   var loadableAttributes = LoadableAttributes()
+
 
   // These public variables are accessed directly by clients which
   // don't know they are loadable and which had better not keep copies.

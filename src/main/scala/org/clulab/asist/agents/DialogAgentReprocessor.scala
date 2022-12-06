@@ -6,6 +6,7 @@ import java.nio.file.Paths
 import java.time.Clock
 import org.clulab.asist.messages._
 import org.clulab.utils.LocalFileUtils
+import org.clulab.asist.extraction.TomcatRuleEngine
 import org.json4s.{Extraction,_}
 
 import scala.annotation.tailrec
@@ -48,7 +49,9 @@ class DialogAgentReprocessor (
   val inputDirName: String = "",
   val outputDirName: String = "",
   val ta3Version: Option[Int] = None,
-) extends DialogAgent with LazyLogging {
+  override val ruleEngine: TomcatRuleEngine = new TomcatRuleEngine
+
+) extends DialogAgent(ruleEngine) with LazyLogging {
 
   logger.info(s"DialogAgentReprocessor version ${BuildInfo.version} running")
 

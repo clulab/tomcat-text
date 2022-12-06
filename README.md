@@ -30,77 +30,109 @@ You can also run the Dockerized version of the webapp by running
 # Dialog Agent
 
 The repo also includes a Dialog Agent application that will ingest text and
-output extracted events of interest for a particular domain.  Sources of Dialog
-Agent input text are files, the MQTT message bus, and interactively from a
-terminal.
+output extracted events of interest for a particular domain.  The Dialog Agent is run
+in a variety of modes, each specific to a source of user input and expected output.
 
 
-### Stdin mode
+## REST API Agent
+The Dialog Agent can be run as a REST API server.  Extractions are generated from plaintext input via HTTP POST request, and are returned in JSON format.
 
-to start the DialogAgent in `stdin` mode, invoke the following:
+The server URL is currently http://localhost:8080.  The host and port are set in the **DialogAgent** structure defined in 
+```tomcat-text/src/main/resources/application.conf```
+
+### Starting the REST API Agent 
+    sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
+
+The base rule path can be specified with the '--rulepath' argument.  The default rule path is ```/org/clulab/asist/grammars/master.yml``` if this argument is not set.
+
+### Using the REST API Agent
+Send an HTTP POST request to http://localhost:8080 with a plaintext string as the data.  The agent will return the extractions as a single line of JSON formatted text.
+
+#### Example
+input:
+
+    curl -d 'I see you' -X POST http://localhost:8080
+
+output:
+``` json
+[{"arguments":{"target":[{"attachments":[],"end_offset":9,"labels":["You","Entity","Concept"],"rule":"you_token_capture","span":"you","start_offset":6}]},"attachments":[{"agentType":"Self","labels":["Self","Entity","Concept"],"span":[0],"text":"I"}],"end_offset":9,"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"rule":"lemma_verb_dobj-sight_entity","span":"see you","start_offset":2}]
+```
+
+### Checking the status of the REST API Agent
+Send an HTTP GET request to http://localhost:8080/status.   If the agent is running it will return a message with the uptime in seconds.
+
+#### Example
+input:
+
+    curl http://localhost:8080/status
+
+output:
+
+    Dialog Agent REST API has been running for 123.456 seconds
+
+## Stdin Agent
+
+The Dialog Agent can run interactively from the command line.  
+
+### Starting the Stdin Agent
 
     sbt "runMain org.clulab.asist.apps.RunDialogAgent stdin"
 
-In this mode, the Dialog Agent will prompt the user for text, and return the
-extractions directly.
+### Using the Stdin Agent
 
+Enter text at the prompt, and the extractions are returned as lines of JSON text.
+
+#### Example
 
 ```
 
 Dialog Agent stdin extractor running.
-Enter plaintext for extraction, [CTRL-D] to exit.
+Enter plaintext for extraction, two blank lines to exit.
 
 > I see a green victim!
 {"label":"Self","span":"I","arguments":{},"start_offset":0,"end_offset":1}
 {"label":"Victim","span":"victim","arguments":{},"start_offset":14,"end_offset":20}
 
-> There is rubble here.
-{"label":"Rubble","span":"rubble","arguments":{},"start_offset":9,"end_offset":15}
-{"label":"Deictic","span":"here","arguments":{},"start_offset":16,"end_offset":20}
-
 >
-
 ```
 
+## MQTT Agent
 
-To exit the program, press [CTRL+D].  It will take several seconds for sbt to
-gracefully shut down the agent.
+The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user must specify the hostname and port.
 
+### Starting the MQTT Agent
 
-### File mode
+    sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
+    
+    
+## File Agent
 
-To run the Dialog Agent with files, the user specifies the input and output
-filenames.
+The Dialog Agent can process text files.  The input and output are identical to that of
+the MQTT agent with the exception that regular heartbeat messages are not generated.  
+
+### Running the File Agent
 
     sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
 
-Supported input file types are WebVtt(.vtt), and ToMCAT metadata (.metadata).
+Supported input file types are plaintext (.txt), WebVtt (.vtt), and ToMCAT metadata (.metadata).
 A directory can be specified as input.  Directories are traversed one level
-deep, and only the `.vtt` and `.metadata` files are processed.  Input files are
+deep, and only the supported file types are processed.  Input files are
 processed in alphabetical order.
 
-The output from the file(s) written to a single output file in the order of
-processing.
+Output is written to a single file in the order of processing.
 
 
-### MQTT mode
-
-To run the Dialog Agent on an MQTT message bus, specify the `mqtt` run mode,
-then the host and port that the MQTT message broker is running on.
-
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
-
-
-### Reprocessing
+## Reprocessing Agent
 
 The Dialog Agent can reprocess metadata that it has already produced.  The new output
 will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
-
+### Running the Reprocessing Agent
     sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
 
-### Run evaluation app
+
+# Run evaluation app
 
 To generate CSV files for evaluating the rules, set the
 `export.ruleAnnotationDir`  and `DialogAgent.inputDir` properties
@@ -154,23 +186,6 @@ JSON.
 }
 ```
 
-#### Aptima ASR
-
-```
-{
-  "topic": "status/asistdataingester/userspeech",
-  "msg": {
-    "experiment_id": string,
-    "trial_id": string,
-    "replay_root_id": string,
-    "replay_id": string
-  },
-  "data": {
-    "playername": string,
-    "text": string
-  }
-}
-```
 
 When using the message bus, it is not necessary to include a `topic` JSON
 element.

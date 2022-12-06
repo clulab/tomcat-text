@@ -129,7 +129,7 @@
       }
     ],
     "source": [
-      "https://gitlab.asist.aptima.com:5050/asist/testbed/AC_UAZ_TA1_DialogAgent:4.1.6"
+      "https://gitlab.asist.aptima.com:5050/asist/testbed/AC_UAZ_TA1_DialogAgent:5.1.2"
     ],
     "subscribes": [
       {
@@ -158,7 +158,7 @@
         "topic": "trial"
       }
     ],
-    "version": "4.1.6"
+    "version": "5.1.2"
   },
   "header": {
     "message_type": "agent",
@@ -171,7 +171,7 @@
     "sub_type": "versioninfo",
     "timestamp": "2022-05-03T03:30:06.250Z",
     "trial_id": "c38b02c2-7061-49d3-9f6a-66c002943b3f",
-    "version": "4.1.6"
+    "version": "5.1.2"
   },
   "topic": "agent/tomcat_textAnalyzer/versioninfo"
 }

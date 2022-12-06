@@ -6,15 +6,15 @@ rules:
     priority: ${ rulepriority }
     label: Victim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
-      (?<! [lemma=/no|critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/] (?! [word=type])
+      (?<! [lemma=/^no$|^critical(ly)?/] injured?) [lemma=/(?i)(${ victim_triggers })/] (?! [word=type])
 
   - name: critical_victim
     priority: ${ rulepriority }
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)(${ victim_triggers })/]
 
@@ -22,7 +22,7 @@ rules:
     priority: ${ rulepriority }
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       (?<=a|an|the|some) [word=/(?i)critical/] (?! [word=marker]| [word=/(?i)^zone/])
 
@@ -30,7 +30,7 @@ rules:
     priority: ${ rulepriority }
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       critically injured [lemma=/(patient|victim|one)/]
 
@@ -38,7 +38,7 @@ rules:
     priority: ${ rulepriority }
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)critical/] [lemma=/(?i)^one$|^dude|^guy$/]
 
@@ -46,7 +46,7 @@ rules:
     priority: ${ rulepriority }
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)^c$/] [lemma=/(?i)^one$|^dude|^guy$/]
 
@@ -54,7 +54,7 @@ rules:
     priority: ${ rulepriority }
     label: RegularVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/regular|normal/] [lemma=/^one$|^dude|^guy$|victim/]
 
@@ -62,7 +62,7 @@ rules:
     priority: ${ rulepriority }
     label: NoVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/\bno\b/] [lemma=/\bone\b|victim/]
 
@@ -73,7 +73,7 @@ rules:
     priority: ${ rulepriority }
     label: VictimTypeB
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
      [word=/(?i)\b(b.?)|P\b/] [word=of]? [word=type] [lemma=/(?i)(${ victim_triggers })/]? | [lemma=type] [word=/(?i)\b(b.?)|P\b/] [lemma=/(?i)(${ victim_triggers })/]? |
       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [word=/(?i)\b(b.?)|P\b/] [word=type] |  [lemma=/(?i)(${ victim_triggers })/]? [lemma=type] [word=/(?i)\b(b.?)|P\b/]
@@ -82,7 +82,7 @@ rules:
     priority: ${ rulepriority }
     label: VictimTypeA
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\ba\b/] | [lemma=type] [lemma=/(?i)\ba\b/] [lemma=/(?i)(${ victim_triggers })/]? |
        [lemma=/(?i)(${ victim_triggers })/] [word=of]? [lemma=/(?i)\ba\b/] [word=type] |  [lemma=/(?i)\ba\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]
@@ -91,33 +91,52 @@ rules:
     priority: ${ rulepriority }
     label: VictimTypeA
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
-       [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+       [lemma=/(?i)\ba\b/] [word=type] (?! [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
 
   - name: victimA_an_a_type
     priority: ${ rulepriority }
     example: "an a victim"
     label: VictimTypeA
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
-      (?<= [word=an])  [lemma=/(?i)\ba\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+      (?<= [word=an])  [lemma=/(?i)\ba\b/] [word=victim] (?! [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
+  - name: victimA_an_a_type_keep_false
+    priority: ${ rulepriority }
+    example: "an a victim"
+    label: VictimTypeA
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      (?<= [word=an]|[word=the])  [lemma=/(?i)\ba\b/] (?! [word=victim]|[word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
 
   - name: victimA_a_b_type
     priority: ${ rulepriority }
     example: "a b victim"
     label: VictimTypeB
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
-      (?<= [word=a])  [lemma=/(?i)\bb\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+      (?<= [word=a])  [lemma=/(?i)\bb\b/] [word=victim] (?! [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
+  - name: victimA_a_b_type_keep_false
+    priority: ${ rulepriority }
+    example: "a b victim"
+    label: VictimTypeB
+    type: token
+    keep: false
+    pattern: |
+      (?<= [word=a]|[word=the])  [lemma=/(?i)\bb\b/] (?! [word=victim]|[word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
 
   - name: victimC
     priority: ${ rulepriority }
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=type] [lemma=/(?i)\b(c|see)\b/] | [lemma=type] [lemma=/(?i)\b(c|see)\b/] [lemma=/(?i)(${ victim_triggers })/]? |
        [lemma=/(?i)(${ victim_triggers })/]? [word=of]? [lemma=/(?i)\b(c|see)\b/] [word=type] |  [lemma=/(?i)\b(c|see)\b/] [word=type] [lemma=/(?i)(${ victim_triggers })/]?
@@ -127,9 +146,19 @@ rules:
     example: "a c victim"
     label: CriticalVictim
     type: token
-    keep: true
+    keep: ${ keep_entities }
     pattern: |
       (?<= [word=a])  [lemma=/(?i)\bc\b/] [word=victim] (?! [word=/(?i)b.?/]|[word=/(?i)a/]|[word=/(?i)c/]|[word=see])
+
+  - name: victimA_a_c_type_keep_false
+    priority: ${ rulepriority }
+    example: "a c"
+    label: CriticalVictim
+    type: token
+    keep: false
+    pattern: |
+      (?<= [word=a]|[word=the])  [lemma=/(?i)\bc\b/] (?! [word=victim]| [word=/(?i)\bb.?\b/]|[word=/(?i)\ba\b/]|[word=/(?i)\bc\b/]|[word=see])
+
 
   - name: victim_type_extraction
     priority: ${ rulepriority }
@@ -146,3 +175,12 @@ rules:
     keep: false
     pattern: |
       [lemma=kind] [lemma=of] [lemma=victim]?
+
+  - name: victim_critical_only
+    priority: ${ rulepriority }
+    example: "critical"
+    label: CriticalVictim
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=critical & tag=JJ] (?! [mention=CriticalVictim] )

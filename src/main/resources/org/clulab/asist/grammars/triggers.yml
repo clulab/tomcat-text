@@ -64,7 +64,7 @@ north_triggers: "north"
 
 open_triggers: "open"
 
-person_triggers: "person|guy|villager|dude"
+person_triggers: "person|guy|villager|dude|people"
 
 plan_switch_triggers: "start|begin|switch"
 

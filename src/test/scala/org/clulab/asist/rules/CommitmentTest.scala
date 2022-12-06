@@ -2,6 +2,8 @@ package org.clulab.asist.rules
 
 import org.clulab.asist.BaseTest
 
+//commented out non-extracted itmes
+
 class CommitmentTest extends BaseTest {
 
   passingTest should "Recognize commitment in" in {
@@ -37,7 +39,7 @@ class CommitmentTest extends BaseTest {
       Map("topic" -> Seq(save_mention)),
       Set(AGENT_SELF, FUTURE_TENSE)
     )
-    testMention(mentions, victim_mention)
+    //testMention(mentions, victim_mention)
     testMention(mentions, save_mention)
     testMention(mentions, commitment_mention)
   }

@@ -23,9 +23,9 @@ rules:
   - name: instruction_command_topic_let
     priority: ${ rulepriority }
     label: Instruction
-    example: "Help him save the victim! Don't enter D2."
+    example: "Let's go"
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & lemma=let] (?! me|(you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & lemma=let] (?! me|(you)|([]{4} I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction]
 
@@ -72,7 +72,7 @@ rules:
     pattern: |
       trigger = [lemma=/(need)/ & tag=/^V/]
       agent: Entity? = >/nsubj*/
-      action: Action = >xcomp
+      action: Action = >xcomp | >advcl_to
 
 
   - name: change_priority
@@ -109,7 +109,7 @@ rules:
     label: RoleDeclare
     example: "I am an engineer"
     pattern: |
-      trigger = (?<! @QuestionParticle) [lemma=/(?i)^be/ & tag=VBP]
+      trigger = [lemma=/(?i)^be/ & tag=VBP] [!mention=/You|Self/]
       target: Role = <cop
       agent: Entity = <cop >/(${agents})/
 
@@ -194,7 +194,7 @@ rules:
     example: "There is a victim here. There is a victim behind this rubble. There is a victim in the library."
     pattern: |
       trigger = [word=/(?i)^there/] [lemma=/(?i)^(${ exist_triggers })/]
-      exists: Victim = >/${agents}/
+      exists: Victim = >/${agents}/ >amod?
       location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
                >/${preps}/
@@ -257,6 +257,20 @@ rules:
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/
 
+  - name: existential_victim_only
+    priority: ${ rulepriority }
+    label: KnowledgeSharing
+    example: "That's a victim. This is a victim"
+    pattern: |
+      trigger = [word=/(?i)^(this|that)$/] [lemma=/(?i)^be$/]
+      exists: Victim = <cop
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
+               >/${agents}/
+               >/${preps}/
+      obstacle: Obstacle? = >/${agents}/
+                            >/${positional_preps}/
+      map: Map? = >/${positional_preps}/
+
   - name: found_victim
     priority: ${ rulepriority }
     label: KnowledgeSharing
@@ -295,7 +309,7 @@ rules:
   - name: found_victim_got
     priority: ${ rulepriority }
     label: KnowledgeSharing
-    example: "I have a victim here"
+    example: "I got a victim here"
     pattern: |
       trigger =[word=/(?i)got$/]
       exists: Victim = >/${objects}/
@@ -303,6 +317,14 @@ rules:
                >/${objects}/ >/${preps}/|
                >/${preps}/|
                >/advmod/
+
+  - name: got_victim_token
+    label: KnowledgeSharing
+    example: "got a victim here"
+    priority: ${ rulepriority }
+    type: token
+    pattern: |
+      (?<trigger>  [word=/(?i)^got$/])  []? @exists:Victim []? @location:Location
 
   - name: found_thing_have
     priority: ${ rulepriority }
@@ -339,10 +361,10 @@ rules:
 
   - name: i_am_stuck
     priority: ${ rulepriority }
-    label: Stuck
+    label: AmTrapped
     example: "I'm stuck. I am frozen"
     pattern: |
-      trigger = [word=/(?i)^immobilized|^frozen|^stuck/]
+      trigger = [word=/(?i)^immobilized|^frozen/]
       agent: Entity? = >/${agents}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
@@ -373,12 +395,24 @@ rules:
     example: "Can you help me?"
     priority: ${ rulepriority }
     pattern: |
-      trigger = (?<= [word=/(?i)can|could|will|would/] []) [lemma=/assist|help/]
+      trigger = (?<= [word=/(?i)can|could|will|would/] []) [lemma=/assist|help/] [!word=you]
       agent: Entity? = >dobj
       helper: Entity? = >nsubj
       location: Location? = >/${preps}/|
                >/advmod/
 
+  - name: "HelpRequests_Presence"
+    label: NeedPresence
+    example: "Engineer, We need you here."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|want/] (?! []? [word=to]) (?= [tag=/NN|PRP/])
+      helper: Entity? = >nmod:tmod|<acl:relcl|<dep|>dobj
+      agent: Self? = >/${agents}/
+      location: Location? = >/${preps}/|
+               >/advmod/ |
+              </^acl/ >advmod |
+              </^acl/ >/^nmod/
 
   - name: trapped_A
     label: AmTrapped
@@ -428,7 +462,7 @@ rules:
     example: "You should help him."
     priority: ${ rulepriority }
     pattern: |
-      trigger = [lemma=/assist|help|aid|support/]
+      trigger = (?<! [word=/(?i)can|could|will|would/] []) [lemma=/assist|help|aid|support/]
       agent: Entity = >nsubj [!mention=Self] |<xcomp >nsubj [!mention=Self]
       helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
       location: Location? = >/${preps}/|
