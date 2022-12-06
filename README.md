@@ -91,24 +91,23 @@ Enter text at the prompt, and the extractions are returned as lines of JSON text
 #### Example
 
 ```console
-
-Dialog Agent running. 
+Dialog Agent version 5.2.0
 Enter plaintext for extraction, two blank lines to exit.
 
-> I see a green victim!
-{"label":"Self","span":"I","arguments":{},"start_offset":0,"end_offset":1}
-{"label":"Victim","span":"victim","arguments":{},"start_offset":14,"end_offset":20}
+> I see you 
+{"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"span":"see you","arguments":{"target":[{"labels":["You","Entity","Concept"],"span":"you","arguments":{},"attachments":[],"start_offset":6,"end_offset":9,"rule":"you_token_capture"}]},"attachments":[{"text":"I","agentType":"Self","labels":["Self","Entity","Concept"],"span":[0]}],"start_offset":2,"end_offset":9,"rule":"lemma_verb_dobj-sight_entity"}
 
->
 ```
 
 ## MQTT Agent
 
-The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user must specify the hostname and port.
+The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user can specify the hostname and port.  If not set the default values are 'localhost' and '1883' by default.
 
 ### Starting the MQTT Agent
 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
+```console
+sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
+```
     
     
 ## File Agent
