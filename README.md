@@ -41,7 +41,7 @@ The server URL is currently http://localhost:8080.  The host and port are set in
 ```tomcat-text/src/main/resources/application.conf```
 
 ### Starting the REST API Agent 
-``` console
+```bash
 sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
 ```
 
@@ -52,11 +52,11 @@ Send an HTTP POST request to http://localhost:8080 with a plaintext string as th
 
 #### Example
 input:
-``` console
+```bash
 curl -d 'I see you' -X POST http://localhost:8080
 ```
 output:
-``` json
+```json
 [{"arguments":{"target":[{"attachments":[],"end_offset":9,"labels":["You","Entity","Concept"],"rule":"you_token_capture","span":"you","start_offset":6}]},"attachments":[{"agentType":"Self","labels":["Self","Entity","Concept"],"span":[0],"text":"I"}],"end_offset":9,"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"rule":"lemma_verb_dobj-sight_entity","span":"see you","start_offset":2}]
 ```
 
@@ -66,7 +66,7 @@ Send an HTTP GET request to http://localhost:8080/status.   If the agent is runn
 #### Example
 input:
 
-``` console
+```bash
 curl http://localhost:8080/status
 ```
 
@@ -80,7 +80,7 @@ The Dialog Agent can run interactively from a console
 
 ### Starting the Console Agent
 
-``` console
+```bash
 sbt "runMain org.clulab.asist.apps.RunDialogAgent console"
 ```
 
@@ -112,7 +112,7 @@ The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user can sp
 
 ### Starting the MQTT Agent
 
-```console
+```bash
 sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
 ```
     
@@ -124,7 +124,7 @@ the MQTT agent with the exception that regular heartbeat messages are not genera
 
 ### Running the File Agent
 
-```console
+```bash
 sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
 ```
 
@@ -144,7 +144,7 @@ replaced with extractions created with the latest Dialog Agent rules.
 
 ### Running the Reprocessing Agent
 
-```console
+```bash
 sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
 ```
 
@@ -156,7 +156,7 @@ To generate CSV files for evaluating the rules, set the
 appropriately in `src/main/resources/application.conf`, and then
 run the following invocation
 
-```console
+```bash
 sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
 ```
 
