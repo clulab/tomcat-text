@@ -38,7 +38,7 @@ rules:
   # Extract the items
   - import: org/clulab/asist/grammars/items.yml
     vars:
-      rulepriority: "3+"
+      rulepriority: "4+"
       second_priority: "5+"
 
   # Extract the sentiments
@@ -62,6 +62,7 @@ rules:
   - import: org/clulab/asist/grammars/base_concepts_study4.yml
     vars:
       rulepriority: "5+"
+      second_priority: "7"
 
   # Extract the puzzle concepts
   - import: org/clulab/asist/grammars/puzzle_concepts.yml
@@ -114,9 +115,15 @@ rules:
   - import: org/clulab/asist/grammars/study4_questions.yml
     vars:
       rulepriority: "6+"
+      second_priority: "9+"
 
   # Extract study 4 strategies
   - import: org/clulab/asist/grammars/study4_team_strategies.yml
+    vars:
+      rulepriority: "6+"
+
+  # Extract coordination
+  - import: org/clulab/asist/grammars/coordination.yml
     vars:
       rulepriority: "6+"
 

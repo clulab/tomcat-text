@@ -5,7 +5,7 @@ rules:
   - name: commit_to_something
     priority: ${ rulepriority }
     example: "I can save this guy"
-    label: MakeCommitment
+    label: Proposal
     action: preventSubjectVerbInversion
     pattern: |
       trigger = [tag=/^MD/ & lemma=/^can/] (?! [lemma=not])

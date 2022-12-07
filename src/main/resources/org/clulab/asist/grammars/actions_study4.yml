@@ -14,15 +14,92 @@ rules:
     priority: ${ rulepriority }
     label: Shop
     pattern: |
-      trigger = [lemma=/^buy$|^shop$|^purchase$/]
+      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [lemma=/^buy$|^shop$|^purchase$|^buying$/]
       agent: Entity? = >/${agents}/
       target: Product? = >dobj
+      for: Entity? = >nmod_for
+
 
   - name: shop_get
     example: "Let's get a scanner"
     priority: ${ rulepriority }
     label: Shop
     pattern: |
-      trigger = [word=get]
+      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=get]
       agent: Entity? = >/${agents}/
       target: Product = >dobj
+      for: Entity? = >nmod_for
+
+  - name: shop_afford_item
+    example: "I can afford a scanner"
+    priority: ${ rulepriority }
+    label: Afford
+    pattern: |
+      trigger = [lemma=/^afford$/]
+      agent: Entity? = >/${agents}/
+      target: Product? = >dobj
+
+  - name: shop_afford_buy
+    priority: ${ rulepriority }
+    label: Afford
+    pattern: |
+      trigger = [lemma=/^afford$/] [word=to]? [lemma=/^buy$|^shop$|^purchase$/ | word=get]
+      agent: Entity? = >/${agents}/
+      for: Entity? = >nmod_for
+      target: Product? = >dobj
+
+
+  - name: shop_rebuy
+    priority: ${ rulepriority }
+    label: ReBuy
+    pattern: |
+      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [lemma=/^rebuy$|^restock$|^repurchase$/]
+      agent: Entity? = >/${agents}/
+      target: Product? = >dobj
+      for: Entity? = >nmod_for
+
+  - name: give_coins
+    priority: ${ rulepriority }
+    label: Transfer
+    pattern: |
+      trigger = [lemma=/^give$|^transfer|^donate$/] [word=to]?
+      agent: Entity? = >/${agents}/
+      beneficiary: Color? = >iobj
+      target: Coin = >dobj
+
+  - name: give_Product
+    priority: ${ rulepriority }
+    label: Transfer
+    pattern: |
+      trigger = [lemma=/^give$|^transfer|^donate$/] [word=to]?
+      agent: Entity? = >/${agents}/
+      beneficiary: Color? = >iobj
+      target: Product = >dobj
+
+  - name: use_tool
+    priority: ${ rulepriority }
+    label: UseTool
+    pattern: |
+      trigger = [lemma=/^use$|^utilize/]
+      agent: Entity? = >/${agents}/
+      target: Product = >dobj [!mention=Coin]
+      for: Action? = >advcl_to | >advcl_for
+
+  - name: use_generic
+    priority: ${ rulepriority }
+    label: Use
+    pattern: |
+      trigger = [lemma=/^use$|^utilize/]
+      agent: Entity? = >/${agents}/
+      target: Item = >dobj [!mention=Product]
+      for: Action = >advcl_to| >advcl_for
+
+  - name: communicate_no_object
+    priority: ${ rulepriority }
+    comment: "Add one that has an object later"
+    label: Communicate
+    keep: false
+    pattern: |
+      trigger = [lemma=/^talk$|^discuss$|^communicate$/]
+      agent: Entity? = >/${agents}/
+      topic: Action? = >dobj

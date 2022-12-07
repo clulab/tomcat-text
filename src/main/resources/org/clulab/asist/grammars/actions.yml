@@ -253,14 +253,14 @@ rules:
       trigger = [lemma=in] [tag=/DT|PRP/] [lemma=/(?i)^way\b/]
       source: Concept? = >/${agents}/
       target: Concept? = >nmod_of
-
-  - name: genericAction
-    label: GenericAction
-    priority: ${ genericpriority }
-    keep: false
-    pattern: |
-      trigger = [tag=/^V/ & !lemma=be]
-      target: Entity? = <dobj
+# I have disabled this to value precision over coverage
+#  - name: genericAction
+#    label: GenericAction
+#    priority: ${ genericpriority }
+#    keep: false
+#    pattern: |
+#      trigger = [tag=/^V/ & !lemma=be]
+#      target: Entity? = <dobj
 
 # ---- marker block related actions
 

@@ -6,7 +6,7 @@ rules:
   - name: 4step_sequence
     example: "red blue green blue sequence"
     priority: ${ rulepriority }
-    label: DifficultSequence
+    label: FourStep
     type: token
     keep: true
     pattern: |
@@ -14,19 +14,28 @@ rules:
 
   - name: medium
     priority: ${ rulepriority }
-    label: MediumSequence
+    label: ThreeStep
     type: token
     keep: true
     pattern: |
       (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
 
-  - name: easy
+  - name: 2step
     priority: ${ rulepriority }
-    label: EasySequence
+    label: TwoStep
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []?)  (?<trigger> @Red|Blue|Green)  @sequence:Sequence?  []? (?! []?? [mention=Color])
+      (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+
+
+  - name: easy
+    priority: ${ rulepriority }
+    label: OneStep
+    type: token
+    keep: false
+    pattern: |
+      (?<! [mention=Color] []?| [word=/^am$|^are$|^r$/] | [mention=DeclareColor] | [tag=PRP])  (?<trigger> @Red|Blue|Green)  @sequence:Sequence??  (?! [mention=Color]| [word=tool])
 
   - name: sequence
     priority: ${ rulepriority }
@@ -36,50 +45,34 @@ rules:
     pattern: |
       (?<! [word=difficult]|[word=medium] []?? ) [word=/(?i)sequences?$/ & !mention=Sequence] (?! [word=detector])
 
-  - name: sequence_eas
+  - name: abbreviated_fourstep
     priority: ${ rulepriority }
-    label: EasySequence
+    label: FourStep
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []?? ) [word=easy] [word=/sequences?/ & !mention=Sequence] (?! []?? [mention=Sequence])
+      /(?i)^[brg]{4}$/
 
-  - name: sequence1
+  - name: threestep
     priority: ${ rulepriority }
-    label: MediumSequence
+    label: ThreeStep
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []?? ) [word=medium] [word=/sequences?/ & !mention=Sequence] (?! []?? [mention=Sequence])
+      /(?i)^[brg]{3}$/
 
-  - name: sequence2
+  - name: onestep
     priority: ${ rulepriority }
-    label: DifficultSequence
+    label: OneStep
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []?? ) [word=difficult & !mention=Sequence] [word=/sequences?/ & !mention=Sequence] (?! []?? [mention=Sequence])
+      /(?i)^[brg]{1}$/
 
-  - name: sequence_eas1
+  - name: twostep
     priority: ${ rulepriority }
-    label: EasySequence
+    label: TwoStep
     type: token
-    keep: false
+    keep: true
     pattern: |
-      [word=easy] [!word=/sequences?/]
-
-  - name: sequence12
-    priority: ${ rulepriority }
-    label: MediumSequence
-    type: token
-    keep: false
-    pattern: |
-     [word=medium] [!word=/sequences?/]
-
-  - name: sequence23
-    priority: ${ rulepriority }
-    label: DifficultSequence
-    type: token
-    keep: false
-    pattern: |
-      [word=difficult] [!word=/sequences?/]
+      /(?i)^[brg]{2}$/

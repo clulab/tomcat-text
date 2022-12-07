@@ -8,7 +8,23 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)bomb$|ied/ & tag=/^N/]
+      [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+
+  - name: direction
+    priority: ${ rulepriority }
+    label: Direction
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)direction$|^way$/ & tag=/^N/]
+
+  - name: single_use_tool
+    priority: ${ rulepriority }
+    label: OneUseTool
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(one|single)-(use|time)/] [word=use]? [lemma=tool]
 
   - name: sensor
     priority: ${ rulepriority }
@@ -64,4 +80,36 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@number:Number) (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+      (@owner:Entity)? []? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+
+  - name: product_number
+    priority: ${ rulepriority }
+    label: Product
+    type: token
+    keep: false
+    pattern: |
+      [entity=NUMBER] [word=of]? [tag=PRP & !mention=Product & !mention=Coin]?
+
+  - name: health
+    priority: ${ rulepriority }
+    label: Health
+    type: token
+    keep: false
+    pattern: |
+      [word=health]
+
+  - name: tool_generic
+    priority: ${ second_priority }
+    label: Tool
+    keep: ${ keep_items }
+    pattern: |
+      trigger = (?<! [mention=Tool] ) [!mention=Product] [lemma=/^tool$/]  (?!  [mention=Tool])
+      owner: Entity? = >"nmod:poss"
+
+  - name: map_sectors
+    priority: ${ rulepriority }
+    label: MapSector
+    type: token
+    keep: false
+    pattern: |
+      @Map [lemma=/^sector$|^quadrant$|^area$|^section$/]

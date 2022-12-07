@@ -53,7 +53,7 @@ rules:
 
   - name: found_bomb
     priority: ${ rulepriority }
-    label: ReportBomb
+    label: FindBomb
     example: "I found a bob."
     pattern: |
       trigger = [lemma=/(?i)^find$|^discover$/]
@@ -71,6 +71,15 @@ rules:
     label: ShouldPlan
     action: preventSubjectVerbInversion
     pattern: |
-      trigger = [tag=/^MD/ & lemma=/^should|^shall$/]
+      trigger = (?<! [mention=Question] ) [tag=/^MD/ & lemma=/^should|^shall$/]
       topic: Action = <aux >xcomp?
+      agent: Entity? = <aux >nsubj
+
+  - name: suggest_propose
+    priority: ${ rulepriority }
+    example: "I suggest we split up. I propose to buy a sensor"
+    label: Proposal
+    pattern: |
+      trigger = (?<! [mention=Question] ) [tag=/^V/ & lemma=/^suggest|^propose$/]
+      topic: Action = >xcomp| >ccomp
       agent: Entity? = <aux >nsubj

@@ -27,13 +27,6 @@ rules:
       trigger = [lemma=/${ stretcher_triggers }/]
       owner: Entity? = >"nmod:poss"
 
-  - name: tool_generic
-    priority: ${ rulepriority }
-    label: Tool
-    keep: ${ keep_items }
-    pattern: |
-      trigger = [lemma=/tool/]
-      owner: Entity? = >"nmod:poss"
 
   - name: map_item
     priority: ${ rulepriority }

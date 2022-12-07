@@ -84,7 +84,7 @@ search_triggers: "hunt|look|search|check"
 
 search_triggers_no_look: "search|check|investigate"
 
-self_triggers: "i|me|my"
+self_triggers: "i|me|my|myself"
 
 sight_triggers: "see|observe|glimpse"
 

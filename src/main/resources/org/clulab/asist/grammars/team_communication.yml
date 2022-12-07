@@ -5,10 +5,10 @@ rules:
 
   - name: instruction_command_topic_let
     priority: ${ rulepriority }
-    label: Instruction
+    label: Proposal
     example: "Let's go"
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & mention=Action & lemma=let] (?! me|(you)|([]{4} I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & lemma=let] (?! me|(you)|([]{4} I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction]
 
@@ -17,7 +17,7 @@ rules:
     label: Instruction
     example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh|[lemma=let]) []*) [tag=VB & mention=Action & !lemma=let & !lemma=be] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh|[lemma=let]) []*) [tag=VB & !lemma=let & !lemma=be] (?! (you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ | <aux
 

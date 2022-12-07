@@ -1,8 +1,4 @@
 - Concept:
-  - Sequence:
-      - DifficultSequence
-      - MediumSequence
-      - EasySequence
   - Tense:
       - PastTense
       - FutureTense
@@ -124,10 +120,17 @@
       - Rubble
       - Fire
     - Action:
+      - CoordinateAnd
       - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
+        - FindBomb
         - Defuse
-        - Shop
+        - Transfer
+        - Use:
+          - UseTool
+        - Shop:
+            - Afford
+            - ReBuy
         - Block # for things blocking environments: "There's some rubble blocking B2."
         - Move:
           - MoveTo
@@ -176,6 +179,7 @@
                 - NeedPresence # example: "Engineer, I need you here."
           - HelpOffer # examples: "I can help/assist/aid you"
           - Question:
+            - PriceQuestion
             - QuestionParticle # who/what/why/when/where
             - LocationQuestion
             - YesNoQuestion
@@ -185,9 +189,8 @@
               - ShouldPlan
               - ContingentPlan # planning dependent on a condition: "If we remove the rubble, we can save the victim"
               - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
-              - Commitment:
-                - MakeCommitment # players making or offering a commitment to an action: "I can clear the rooms on the right"
-                - DeliberatePlan # players stating their future move: "I will help you"
+              - Proposal # players making or offering a commitment to an action: "I can clear the rooms on the right"
+              - DeliberatePlan # players stating their future move: "I will help you"
           - Agreement
           - Disagreement
         - Clear # example: "I am clearing B2"
@@ -237,20 +240,29 @@
       - West
   - Item:
     - Bomb:
+        - Sequence:
+            - OneStep
+            - TwoStep
+            - ThreeStep
+            - FourStep
         - BombAttributes:
             - BombIsType
     - Coin
     - Product:
         - SensorTool
-        - Tool:
-          - RedTool
-          - GreenTool
-          - BlueTool
-        - BombPPE
-        - RallyBeacon
-        - BombBeacon
-        - HazardBeacon
+        - OneUseTool:
+          - Tool:
+            - RedTool
+            - GreenTool
+            - BlueTool
+          - BombPPE
+          - RallyBeacon
+          - BombBeacon
+          - HazardBeacon
+          - BombStabilizer
+          - BombDisposer
         - Bow
+        - Health
     - MarkerBlock:
         - RegularMarkerBlock:
             - TypeAMarker
@@ -266,6 +278,7 @@
       - Stretcher
       - GPS
       - Map:
+          - MapSector
           - ThreatSign: #this refers to the sign on the map!
               - Threat
   - Sentiment:
