@@ -3,7 +3,7 @@ vars: org/clulab/asist/grammars/vars.yml
 rules:
 
 
-  - name: difficult
+  - name: 4step_sequence
     example: "red blue green blue sequence"
     priority: ${ rulepriority }
     label: DifficultSequence

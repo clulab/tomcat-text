@@ -14,3 +14,63 @@ rules:
                       >/acl/
       location: Location? = >/${preps}/|
                >/advmod/
+
+  - name: "I_am_color"
+    label: DeclareColor
+    example: "I'm red"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/]
+      agent: Self = >/${agents}/ | <cop >nsubj
+      color: Color = >/${objects}/ | <cop
+
+  - name: "possess"
+    label: ReportPossession
+    example: "I have a tool"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger =  [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      object: Product = >/${objects}/
+
+  - name: "possess_coin"
+    label: ReportPossession
+    example: "I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      object: Coin = >/${objects}/
+
+  - name: "got_bomb"
+    label: ReportBomb
+    example: "I got a bomb"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      bomb: Bomb = >/${objects}/
+
+  - name: found_bomb
+    priority: ${ rulepriority }
+    label: ReportBomb
+    example: "I found a bob."
+    pattern: |
+      trigger = [lemma=/(?i)^find$|^discover$/]
+      bomb: Bomb = >/${objects}/
+      agent: Entity? = >/${agents}/
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
+               >/${agents}/
+               >/${preps}/
+      map: Map? = >/${positional_preps}/
+
+  ###################### Plans for study 4 live here for now
+  - name: shall_should_plan
+    priority: ${ rulepriority }
+    example: "I will save this guy. I'll start going there"
+    label: ShouldPlan
+    action: preventSubjectVerbInversion
+    pattern: |
+      trigger = [tag=/^MD/ & lemma=/^should|^shall$/]
+      topic: Action = <aux >xcomp?
+      agent: Entity? = <aux >nsubj

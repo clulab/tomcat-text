@@ -1,0 +1,37 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: stick_together
+    label: StickTogether
+    example: "I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^stick$|^stay$|^keep$/] [word=/^close|^together$/]
+      agent: Entity? = >/${agents}/
+
+  - name: spread_out
+    label: SpreadOut
+    example: "I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^spread|^stay$|^keep$/] [word=/^out|^apart$/]
+      agent: Entity? = >/${agents}/
+
+  - name: split_up
+    label: SpreadOut
+    example: "I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^split$/] [word=/^up|^apart$/]
+      agent: Entity? = >/${agents}/
+
+  - name: scout
+    label: Scout
+    example: "We could scout the map"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^scout$|^explore$/]
+      agent: Entity? = >/${agents}/
+      target: Location? = >/${objects}/
+      map: Map? = >/${objects}/

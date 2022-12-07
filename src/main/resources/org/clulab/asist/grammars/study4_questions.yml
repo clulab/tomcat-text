@@ -1,0 +1,11 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: what_buy
+    example: "What do we buy?| What should we buy?"
+    priority: ${ rulepriority }
+    type: token
+    label: Question
+    pattern: |
+        (?<trigger> [lemma=what]) ([])? ([])? (@topic:Shop)

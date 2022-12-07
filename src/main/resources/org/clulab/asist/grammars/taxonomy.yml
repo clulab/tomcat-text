@@ -7,7 +7,11 @@
       - PastTense
       - FutureTense
   - MarkerMeaning # not used in study 3
-  - Number
+  - Number:
+      - Some
+      - One
+      - Two
+      - Three
   - RoomTag
   - Switch
   - EventLike:
@@ -142,12 +146,18 @@
         - Sight
         - PlaceMarker # "I'm placing a marker here"
         - Communicate:
+          - TeamStrategies:
+              - StickTogether
+              - SpreadOut
+              - Scout
           - Instruction:
               - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
           - ReportStatus:
             - Stuck # for players stuck in a room (for whichever reason), has some overlap with AmTrapped
             - ReportLocation # players reporting on their, or other players locations: "I'm in B2"
             - RoleDeclare # players declaring their role to the team
+            - DeclareColor
+            - ReportPossession
             - RoomStatus:
                 - RoomClear # "A1 is clear"
                 - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"
@@ -155,6 +165,7 @@
               - ToolBroken
               - DoorOpen
               - DoorClosed
+          - ReportBomb
           - KnowledgeSharing # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
           - Need: # labels for players discussing the needs of the team or their own needs
             - NeedRole
@@ -171,6 +182,7 @@
             - HowQuestion
             - WhichVictimType # example: "What kind of victim is it?"
           - Plan:
+              - ShouldPlan
               - ContingentPlan # planning dependent on a condition: "If we remove the rubble, we can save the victim"
               - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
               - Commitment:
@@ -180,11 +192,10 @@
           - Disagreement
         - Clear # example: "I am clearing B2"
         - RoleSwitch # example: "I will switch to engineer"
-      - ComplexAction:
-          - Search         # Search(Location), example: "I'm searching the rooms here."
-          - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
-          - MoveVictim # example: "I'm moving the victim out of the room"
-          - Precedence # players talking about sequences of actions, example: "First we remove the rubble, THEN we save the victim", "after we do X, we can do Y"
+        - Search         # Search(Location), example: "I'm searching the rooms here."
+        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+        - MoveVictim # example: "I'm moving the victim out of the room"
+        - Precedence # players talking about sequences of actions, example: "First we remove the rubble, THEN we save the victim", "after we do X, we can do Y"
   - Entity: # victims, players, and other entities, DISCLAIMER: these will usually show up as ATTACHMENTS, not as labels
     - Person
     - Other # all third-person pronouns will match here, such as: "he/him, she/her, it"
@@ -205,10 +216,10 @@
             - VictimTypeA
             - VictimTypeB
         - NoVictim # example: "no victim here"
-    - Player:
-      - Red
-      - Blue
-      - Green
+  - Color:
+    - Red
+    - Blue
+    - Green
   - Direction:
     - Relative:
       - Up
@@ -228,15 +239,18 @@
     - Bomb:
         - BombAttributes:
             - BombIsType
+    - Coin
     - Product:
-        - SequenceDetector
-        - Speed
-        - Health
-        - Detector
-        - Durability
-        - Map:
-              - ThreatSign: #this refers to the sign on the map!
-                  - Threat
+        - SensorTool
+        - Tool:
+          - RedTool
+          - GreenTool
+          - BlueTool
+        - BombPPE
+        - RallyBeacon
+        - BombBeacon
+        - HazardBeacon
+        - Bow
     - MarkerBlock:
         - RegularMarkerBlock:
             - TypeAMarker
@@ -246,7 +260,7 @@
         - ThreatRoomMarker #this refers to the actual marker block
         - RubbleMarker
         - SOSMarker
-    - Tool:
+    - Tools:
       - Hammer
       - MedKit
       - Stretcher

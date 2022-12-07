@@ -93,7 +93,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP/]
+      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP|^FW$/]
 
   - name: you_token_capture
     label: You

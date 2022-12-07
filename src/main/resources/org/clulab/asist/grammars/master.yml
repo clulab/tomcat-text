@@ -110,6 +110,16 @@ rules:
     vars:
       rulepriority: "6+"
 
+  # Extract study 4 questions
+  - import: org/clulab/asist/grammars/study4_questions.yml
+    vars:
+      rulepriority: "6+"
+
+  # Extract study 4 strategies
+  - import: org/clulab/asist/grammars/study4_team_strategies.yml
+    vars:
+      rulepriority: "6+"
+
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
     vars:

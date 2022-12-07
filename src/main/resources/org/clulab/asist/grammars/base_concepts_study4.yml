@@ -10,58 +10,58 @@ rules:
     pattern: |
       [lemma=/(?i)bomb$|ied/ & tag=/^N/]
 
-  - name: sequencer1
+  - name: sensor
     priority: ${ rulepriority }
-    label: SequenceDetector
+    label: SensorTool
     type: token
     keep: true
     pattern: |
-      [word=/(?i)sequence/]? [lemma=/(?i)detector/]
+      [word=/(?i)sensor/] [lemma=/(?i)tool/]?
 
-  - name: product1
+  - name: sensor2
     priority: ${ rulepriority }
-    label: Speed
+    label: SensorTool
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)speed/ & tag=/^N/]
+      [lemma=/(?i)scanner/] [lemma=/(?i)tool/]?
 
-  - name: product2
+  - name: redtool
     priority: ${ rulepriority }
-    label: Health
+    label: RedTool
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ health_triggers })/ & tag=/^N/]
+      [lemma=red] [lemma=tool]
 
-  - name: product3
+  - name: bluetool
     priority: ${ rulepriority }
-    label: SequenceDetector
+    label: BlueTool
     type: token
     keep: true
     pattern: |
-      (?<! [lemma=sequence] ) [lemma=/(?i)^(${ detector_triggers })/ & tag=/^N/]
+      [lemma=blue] [lemma=tool]
 
-  - name: sequencer
+  - name: greentool
     priority: ${ rulepriority }
-    label: SequenceDetector
+    label: GreenTool
     type: token
     keep: true
     pattern: |
-     [word=/(?i)^sequencer$/ & tag=/^N/]
+      [lemma=green] [lemma=tool]
 
-  - name: product4
+  - name: few
     priority: ${ rulepriority }
-    label: Durability
+    label: Some
     type: token
-    keep: true
+    keep: false
     pattern: |
-      [lemma=/(?i)durability/ & tag=/^N/]
+      [word=/^few$|^some$/]
 
-  - name: color
+  - name: coin
     priority: ${ rulepriority }
-    label: Color
+    label: Coin
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)color/ & tag=/^N/]
+      (@number:Number) (?<trigger> [lemma=/^coin$|^cash$|^credit$/])

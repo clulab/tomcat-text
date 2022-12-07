@@ -122,7 +122,7 @@ zone_triggers: "zone|area|side|section"
 
 place_triggers: "place|put|drop"
 
-shop_triggers: "buy|purchase|get"
+shop_triggers: "buy|purchase"
 
 health_triggers: "health|point"
 

@@ -14,7 +14,15 @@ rules:
     priority: ${ rulepriority }
     label: Shop
     pattern: |
-      trigger = [lemma=/(?i)^(${ shop_triggers })/]
+      trigger = [lemma=/^buy$|^shop$|^purchase$/]
+      agent: Entity? = >/${agents}/
+      target: Product? = >dobj
+
+  - name: shop_get
+    example: "Let's get a scanner"
+    priority: ${ rulepriority }
+    label: Shop
+    pattern: |
+      trigger = [word=get]
       agent: Entity? = >/${agents}/
       target: Product = >dobj
-
