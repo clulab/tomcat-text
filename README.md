@@ -18,13 +18,17 @@ generated each mention.
 
 To open the webapp run the following command from the top level directory:
 
-    sbt webapp/run
+```
+sbt webapp/run
+```
 
 Then navigate to the specified port using your web browser.
 
 You can also run the Dockerized version of the webapp by running
 
-    docker-compose up -f docker-compose.webapp.yml
+```
+docker-compose up -f docker-compose.webapp.yml
+```
 
 
 # Dialog Agent
@@ -37,11 +41,12 @@ in a variety of modes, each specific to a source of user input and expected outp
 ## REST API Agent
 The Dialog Agent can be run as a REST API server.  Extractions are generated from plaintext input via HTTP POST request, and are returned in JSON format.
 
-The server URL is currently http://localhost:8080.  The host and port are set in the **DialogAgent** structure defined in 
-```tomcat-text/src/main/resources/application.conf```
+The server URL is currently http://localhost:8080.  
+The host and port are set in the **DialogAgent** structure defined in ```tomcat-text/src/main/resources/application.conf```
 
-### Starting the REST API Agent 
-```bash
+### Running the REST API Agent 
+
+```
 sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
 ```
 
@@ -52,10 +57,12 @@ Send an HTTP POST request to http://localhost:8080 with a plaintext string as th
 
 #### Example
 input:
-```bash
+
+```
 curl -d 'I see you' -X POST http://localhost:8080
 ```
 output:
+
 ```json
 [{"arguments":{"target":[{"attachments":[],"end_offset":9,"labels":["You","Entity","Concept"],"rule":"you_token_capture","span":"you","start_offset":6}]},"attachments":[{"agentType":"Self","labels":["Self","Entity","Concept"],"span":[0],"text":"I"}],"end_offset":9,"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"rule":"lemma_verb_dobj-sight_entity","span":"see you","start_offset":2}]
 ```
@@ -66,24 +73,34 @@ Send an HTTP GET request to http://localhost:8080/status.   If the agent is runn
 #### Example
 input:
 
-```bash
+```
 curl http://localhost:8080/status
 ```
 
 output:
 
-```bash
+```
 The Dialog Agent REST API version 5.3.0 has been running for 3246 seconds
 ```
+
 
 ## Console Agent
 
 The Dialog Agent can run interactively from a console 
 
-### Starting the Console Agent
+### Running the Console Agent
 
-```bash
+```
 sbt "runMain org.clulab.asist.apps.RunDialogAgent console"
+```
+
+The Agent will display startup information and then wait for input
+
+```
+Dialog Agent version 5.3.0
+Enter plaintext for extraction, two blank lines to exit.
+
+>  
 ```
 
 ### Using the Console Agent
@@ -94,10 +111,7 @@ Enter text at the prompt, and the extractions are returned as lines of JSON text
 
 input:
 
-```console
-Dialog Agent version 5.2.0
-Enter plaintext for extraction, two blank lines to exit.
-
+```
 > I see you 
 ```
 
@@ -105,20 +119,20 @@ output:
 
 ```json
 {"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"span":"see you","arguments":{"target":[{"labels":["You","Entity","Concept"],"span":"you","arguments":{},"attachments":[],"start_offset":6,"end_offset":9,"rule":"you_token_capture"}]},"attachments":[{"text":"I","agentType":"Self","labels":["Self","Entity","Concept"],"span":[0]}],"start_offset":2,"end_offset":9,"rule":"lemma_verb_dobj-sight_entity"}
-
 ```
+
 
 ## MQTT Agent
 
 The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user can specify the hostname and port.  If not set the default values are 'localhost' and '1883' by default.
 
-### Starting the MQTT Agent
+### Running the MQTT Agent
 
-```bash
+```
 sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
 ```
-    
-    
+
+
 ## File Agent
 
 The Dialog Agent can process text files.  The input and output are identical to that of
@@ -126,7 +140,7 @@ the MQTT agent with the exception that regular heartbeat messages are not genera
 
 ### Running the File Agent
 
-```bash
+```
 sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
 ```
 
@@ -146,10 +160,9 @@ replaced with extractions created with the latest Dialog Agent rules.
 
 ### Running the Reprocessing Agent
 
-```bash
+```
 sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
 ```
-
 
 # Run evaluation app
 
@@ -158,9 +171,10 @@ To generate CSV files for evaluating the rules, set the
 appropriately in `src/main/resources/application.conf`, and then
 run the following invocation
 
-```bash
+```
 sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
 ```
+
 
 ## Metadata Input
 
@@ -206,14 +220,12 @@ fields are ignored.
 }
 ```
 
-
 When using the message bus, it is not necessary to include a `topic` JSON field.
 
 
 ## Output
 
-Below is an example of an output JSON message that is published to the
-message bus.
+Below is an example of an output JSON message that is published to the message bus.
 
 ```json
 {
