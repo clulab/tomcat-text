@@ -3,9 +3,9 @@ ASIST Extraction Schemas
 
 Authors: Adarsh Pyarelal, Rebecca Sharp
 
-Agent version: `5.3.0`
+Agent version: `5.3.1`
 
-Document generation timestamp (UTC): `2022-12-09 00:30:52.146962`
+Document generation timestamp (UTC): `2022-12-09 23:52:52.073052`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -134,12 +134,12 @@ Extractions
 
       - SimpleAction
         - Block
-          - [source] (Obstacle|Concept) (?)
+          - [source] (Concept|Obstacle) (?)
           - [target] (Concept) (?)
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Location|Rubble) ()
+          - target (Rubble|Location) ()
 
         - Close
           - [target] (Infrastructure|DemPron) (?)
@@ -162,7 +162,7 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Person|EventLike|Victim|Item|PuzzleConcept) ()
+            - exists (EventLike|Victim|PuzzleConcept|Person|Item) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
@@ -213,7 +213,7 @@ Extractions
 
             - PlanLanguage
           - Question
-            - topic (Action|Concept) ()
+            - topic (Concept|Action) ()
             - [location] (Location) (?)
 
             - HowQuestion
@@ -229,7 +229,7 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Action|Need) ()
+              - topic (Need|Action) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
               - target (Entity) ()
@@ -255,7 +255,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoomMarker|ThreatRoom|ThreatSign) ()
+                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
                 - room (Room) ()
 
               - RoomClear
@@ -297,7 +297,7 @@ Extractions
 
         - RescueInteractions
           - Save
-            - target (Person|Entity|Victim) ()
+            - target (Person|Victim|Entity) ()
             - [location] (Location) (?)
             - [agent] (Entity) (?)
 
@@ -317,7 +317,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Item|Entity) ()
+          - target (Item|Entity|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
