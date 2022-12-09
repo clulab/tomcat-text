@@ -72,7 +72,9 @@ curl http://localhost:8080/status
 
 output:
 
-    Dialog Agent REST API has been running for 123.456 seconds
+```bash
+The Dialog Agent REST API version 5.3.0 has been running for 3246 seconds
+```
 
 ## Console Agent
 
@@ -210,7 +212,7 @@ When using the message bus, it is not necessary to include a `topic` JSON field.
 
 ## Output
 
-See below for an example of an output JSON message that is published to the
+Below is an example of an output JSON message that is published to the
 message bus.
 
 ```json
