@@ -15,8 +15,8 @@
 <body>
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
-<p>Agent version: <code>5.2.0</code></p>
-<p>Document generation timestamp (UTC): <code>2022-12-05 18:47:21.677926</code></p>
+<p>Agent version: <code>5.3.0</code></p>
+<p>Document generation timestamp (UTC): <code>2022-12-09 00:30:52.146962</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -112,10 +112,10 @@
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Rubble|Location) ()
+          - target (Location|Rubble) ()
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - Communicate
           - Agreement
@@ -135,14 +135,14 @@
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (EventLike|Person|PuzzleConcept|Item|Victim) ()
+            - exists (Person|EventLike|Victim|Item|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
 
           - Need
             - HelpRequest
-              - [agent] (Entity|Self) (?)
+              - [agent] (Self|Entity) (?)
               - [location] (Location) (?)
               - [helper] (Entity) (?)
 
@@ -186,7 +186,7 @@
 
             - PlanLanguage
           - Question
-            - topic (Concept|Action) ()
+            - topic (Action|Concept) ()
             - [location] (Location) (?)
 
             - HowQuestion
@@ -228,7 +228,7 @@
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
+                - threat (ThreatRoomMarker|ThreatRoom|ThreatSign) ()
                 - room (Room) ()
 
               - RoomClear
@@ -240,18 +240,18 @@
           - Enter
             - [target] (Location) (?)
             - [agent] (Entity) (?)
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
 
           - MoveEntity
             - target (Entity) ()
             - [agent] (Entity) (?)
 
           - MoveFrom
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Deictic|Location|Entity) ()
+            - target (Location|Entity|Deictic) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
@@ -290,7 +290,7 @@
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Entity|Item|EventLike) ()
+          - target (EventLike|Item|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()

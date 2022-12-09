@@ -41,7 +41,9 @@ The server URL is currently http://localhost:8080.  The host and port are set in
 ```tomcat-text/src/main/resources/application.conf```
 
 ### Starting the REST API Agent 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
+```bash
+sbt "runMain org.clulab.asist.apps.RunDialogAgent rest"
+```
 
 The base rule path can be specified with the '--rulepath' argument.  The default rule path is ```/org/clulab/asist/grammars/master.yml``` if this argument is not set.
 
@@ -50,11 +52,11 @@ Send an HTTP POST request to http://localhost:8080 with a plaintext string as th
 
 #### Example
 input:
-
-    curl -d 'I see you' -X POST http://localhost:8080
-
+```bash
+curl -d 'I see you' -X POST http://localhost:8080
+```
 output:
-``` json
+```json
 [{"arguments":{"target":[{"attachments":[],"end_offset":9,"labels":["You","Entity","Concept"],"rule":"you_token_capture","span":"you","start_offset":6}]},"attachments":[{"agentType":"Self","labels":["Self","Entity","Concept"],"span":[0],"text":"I"}],"end_offset":9,"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"rule":"lemma_verb_dobj-sight_entity","span":"see you","start_offset":2}]
 ```
 
@@ -64,45 +66,55 @@ Send an HTTP GET request to http://localhost:8080/status.   If the agent is runn
 #### Example
 input:
 
-    curl http://localhost:8080/status
+```bash
+curl http://localhost:8080/status
+```
 
 output:
 
     Dialog Agent REST API has been running for 123.456 seconds
 
-## Stdin Agent
+## Console Agent
 
-The Dialog Agent can run interactively from the command line.  
+The Dialog Agent can run interactively from a console 
 
-### Starting the Stdin Agent
+### Starting the Console Agent
 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent stdin"
+```bash
+sbt "runMain org.clulab.asist.apps.RunDialogAgent console"
+```
 
-### Using the Stdin Agent
+### Using the Console Agent
 
 Enter text at the prompt, and the extractions are returned as lines of JSON text.
 
 #### Example
 
-```
+input:
 
-Dialog Agent stdin extractor running.
+```console
+Dialog Agent version 5.2.0
 Enter plaintext for extraction, two blank lines to exit.
 
-> I see a green victim!
-{"label":"Self","span":"I","arguments":{},"start_offset":0,"end_offset":1}
-{"label":"Victim","span":"victim","arguments":{},"start_offset":14,"end_offset":20}
+> I see you 
+```
 
->
+output:
+
+```json
+{"labels":["Sight","SimpleAction","Action","EventLike","Concept"],"span":"see you","arguments":{"target":[{"labels":["You","Entity","Concept"],"span":"you","arguments":{},"attachments":[],"start_offset":6,"end_offset":9,"rule":"you_token_capture"}]},"attachments":[{"text":"I","agentType":"Self","labels":["Self","Entity","Concept"],"span":[0]}],"start_offset":2,"end_offset":9,"rule":"lemma_verb_dobj-sight_entity"}
+
 ```
 
 ## MQTT Agent
 
-The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user must specify the hostname and port.
+The Dialog Agent can be run on a Mosquitto Testbed Message Bus.  The user can specify the hostname and port.  If not set the default values are 'localhost' and '1883' by default.
 
 ### Starting the MQTT Agent
 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
+```bash
+sbt "runMain org.clulab.asist.apps.RunDialogAgent mqtt hostname port"
+```
     
     
 ## File Agent
@@ -112,7 +124,9 @@ the MQTT agent with the exception that regular heartbeat messages are not genera
 
 ### Running the File Agent
 
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
+```bash
+sbt "runMain org.clulab.asist.apps.RunDialogAgent file inputfile outputfile"
+```
 
 Supported input file types are plaintext (.txt), WebVtt (.vtt), and ToMCAT metadata (.metadata).
 A directory can be specified as input.  Directories are traversed one level
@@ -129,7 +143,10 @@ will be identical except for the data.extractions field, which will be
 replaced with extractions created with the latest Dialog Agent rules.
 
 ### Running the Reprocessing Agent
-    sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
+
+```bash
+sbt "runMain org.clulab.asist.apps.RunDialogAgent reprocess inputDirectory outputDirectory"
+```
 
 
 # Run evaluation app
@@ -139,56 +156,56 @@ To generate CSV files for evaluating the rules, set the
 appropriately in `src/main/resources/application.conf`, and then
 run the following invocation
 
-    sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
+```bash
+sbt "runMain org.clulab.asist.apps.RunExtractionEvaluation"
+```
 
 ## Metadata Input
 
 Messages read by the Dialog Agent, either from `.metadata` files or the message
 bus, are expected to include the following JSON fields.  Extra structures and
-fields are ignored.  Missing data are replaced with null values in the output
-JSON.
+fields are ignored.
 
 
 #### Chat
 
-```
+```json
 {
   "topic": "minecraft/chat",
   "msg": {
-    "experiment_id": string,
-    "trial_id": string,
-    "replay_root_id": string,
-    "replay_id": string
+    "experiment_id": "string",
+    "trial_id": "string",
+    "replay_root_id": "string",
+    "replay_id": "string"
   },
   "data": {
-    "sender": string,
-    "text": string
+    "sender": "string",
+    "text": "string"
   }
 }
 ```
 
 #### UAZ ASR
 
-```
+```json
 {
   "topic": "agent/asr/final",
   "msg": {
-    "experiment_id": string,
-    "trial_id": string,
-    "replay_root_id": string,
-    "replay_id": string
+    "experiment_id": "string",
+    "trial_id": "string",
+    "replay_root_id": "string",
+    "replay_id": "string"
   },
   "data": {
-    "participant_id": string,
-    "id": string,
-    "text": string
+    "participant_id": "string",
+    "id": "string",
+    "text": "string"
   }
 }
 ```
 
 
-When using the message bus, it is not necessary to include a `topic` JSON
-element.
+When using the message bus, it is not necessary to include a `topic` JSON field.
 
 
 ## Output
@@ -217,7 +234,6 @@ message bus.
     "participant_id": "P00012",
     "asr_msg_id": "bc36d1aa-25e6-11ec-ab58-7831c1b845fe",
     "text": "I'm going to room 204.",
-    "dialog_act_label": null,
     "utterance_source": {
       "source_type": "message_bus",
       "source_name": "agent/asr/final"

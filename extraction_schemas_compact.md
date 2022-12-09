@@ -3,9 +3,9 @@ ASIST Extraction Schemas
 
 Authors: Adarsh Pyarelal, Rebecca Sharp
 
-Agent version: `5.2.0`
+Agent version: `5.3.0`
 
-Document generation timestamp (UTC): `2022-12-05 18:47:21.677926`
+Document generation timestamp (UTC): `2022-12-09 00:30:52.146962`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -139,10 +139,10 @@ Extractions
 
         - Clear
           - [agent] (Entity) (?)
-          - target (Rubble|Location) ()
+          - target (Location|Rubble) ()
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - Communicate
           - Agreement
@@ -162,14 +162,14 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (EventLike|Person|PuzzleConcept|Item|Victim) ()
+            - exists (Person|EventLike|Victim|Item|PuzzleConcept) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
 
           - Need
             - HelpRequest
-              - [agent] (Entity|Self) (?)
+              - [agent] (Self|Entity) (?)
               - [location] (Location) (?)
               - [helper] (Entity) (?)
 
@@ -213,7 +213,7 @@ Extractions
 
             - PlanLanguage
           - Question
-            - topic (Concept|Action) ()
+            - topic (Action|Concept) ()
             - [location] (Location) (?)
 
             - HowQuestion
@@ -255,7 +255,7 @@ Extractions
 
             - RoomStatus
               - ReportThreatRoom
-                - threat (ThreatRoomMarker|ThreatSign|ThreatRoom) ()
+                - threat (ThreatRoomMarker|ThreatRoom|ThreatSign) ()
                 - room (Room) ()
 
               - RoomClear
@@ -267,18 +267,18 @@ Extractions
           - Enter
             - [target] (Location) (?)
             - [agent] (Entity) (?)
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
 
           - MoveEntity
             - target (Entity) ()
             - [agent] (Entity) (?)
 
           - MoveFrom
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Deictic|Location|Entity) ()
+            - target (Location|Entity|Deictic) ()
             - [agent] (Entity) (?)
 
           - OnMyWay
@@ -317,7 +317,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Entity|Item|EventLike) ()
+          - target (EventLike|Item|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
