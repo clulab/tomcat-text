@@ -33,7 +33,9 @@ class DialogAgentRestApi (
 
   // return a status message
   def status: String = {
-    s"Dialog Agent REST API has been running for ${uptimeSeconds} seconds"
+    val v: String = BuildInfo.version
+    val s: Int = uptimeSeconds.toInt
+    s"The Dialog Agent REST API version ${v} has been running for ${s} seconds\n"
   }
 
   // keep a record of each extraction transaction.
