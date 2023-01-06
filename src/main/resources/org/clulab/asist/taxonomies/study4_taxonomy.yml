@@ -1,0 +1,197 @@
+- Concept:
+  - Tense:
+      - PastTense
+      - FutureTense
+  - Number:
+      - Some
+      - One
+      - Two
+      - Three
+  - RoomTag
+  - Switch
+  - EventLike:
+    - Time:
+      - TimeUnit # example: "three minutes"
+    - Location:
+      - Inferred:
+        - Deictic
+      - Infrastructure:
+        - Room
+        - Zone
+      - MapSection
+    - Obstacle:
+      - Rubble
+      - Fire
+    - Action:
+      - CoordinateAnd
+      - GenericAction # this label is used if the DialogAgent does not know what the action is
+      - SimpleAction:
+        - FindBomb
+        - Defuse
+        - Transfer
+        - Use:
+          - UseTool
+        - Shop:
+            - Afford
+            - ReBuy
+        - Block # for things blocking environments: "There's some rubble blocking B2."
+        - Move:
+          - MoveTo
+          - MoveFrom
+          - MoveEntity
+          - Enter
+          - OnMyWay # for players stating that they are coming to other players: "I'm on my way to you"
+        - Open
+        - Close
+        - Push
+        - Save
+        - Sight
+        - PlaceMarker # "I'm placing a marker here"
+        - Communicate:
+          - TeamStrategies:
+              - StickTogether
+              - SpreadOut
+              - Scout
+          - Instruction:
+              - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
+          - ReportStatus:
+            - Stuck # for players stuck in a room (for whichever reason), has some overlap with AmTrapped
+            - ReportLocation # players reporting on their, or other players locations: "I'm in B2"
+            - RoleDeclare # players declaring their role to the team
+            - DeclareColor
+            - ReportPossession
+            - RoomStatus:
+                - RoomClear # "A1 is clear"
+                - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"
+            - ReportItemStatus:
+              - ToolBroken
+              - DoorOpen
+              - DoorClosed
+          - ReportBomb
+          - KnowledgeSharing # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
+          - Need: # labels for players discussing the needs of the team or their own needs
+            - NeedRole
+            - NeedItem
+            - NeedAction
+            - HelpRequest: # examples: "I need help in B4"
+                - AmTrapped # for players reporting that they are trapped in a location: "I'm trapped in B4"
+                - NeedPresence # example: "Engineer, I need you here."
+          - HelpOffer # examples: "I can help/assist/aid you"
+          - Question:
+            - PriceQuestion
+            - QuestionParticle # who/what/why/when/where
+            - LocationQuestion
+            - YesNoQuestion
+            - HowQuestion
+            - WhichVictimType # example: "What kind of victim is it?"
+          - Plan:
+              - ShouldPlan
+              - ContingentPlan # planning dependent on a condition: "If we remove the rubble, we can save the victim"
+              - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
+              - Proposal # players making or offering a commitment to an action: "I can clear the rooms on the right"
+              - DeliberatePlan # players stating their future move: "I will help you"
+          - Agreement
+          - Disagreement
+        - Clear # example: "I am clearing B2"
+        - RoleSwitch # example: "I will switch to engineer"
+        - Search         # Search(Location), example: "I'm searching the rooms here."
+        - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
+        - MoveVictim # example: "I'm moving the victim out of the room"
+        - Precedence # players talking about sequences of actions, example: "First we remove the rubble, THEN we save the victim", "after we do X, we can do Y"
+  - Entity: # victims, players, and other entities, DISCLAIMER: these will usually show up as ATTACHMENTS, not as labels
+    - Person
+    - Other # all third-person pronouns will match here, such as: "he/him, she/her, it"
+    - Self # "I/my"
+    - You
+    - Team # "we/us"
+    - DemPron # "this/those/that/these"
+    - Role:
+      - Transporter
+      - Medic
+      - Searcher
+      - Engineer
+    - Victim:
+        - Type # unspecified type of victim
+        - Yellow
+        - CriticalVictim # also matched "type C victim"
+        - RegularVictim:
+            - VictimTypeA
+            - VictimTypeB
+        - NoVictim # example: "no victim here"
+  - Color:
+    - Red
+    - Blue
+    - Green
+  - Direction:
+    - Relative:
+      - Up
+      - Down
+      - Left
+      - Right
+    - Cardinal:
+      - North
+      - NorthEast
+      - NorthWest
+      - East
+      - South
+      - SouthEast
+      - SouthWest
+      - West
+  - Item:
+    - Bomb:
+        - Sequence:
+            - OneStep
+            - TwoStep
+            - ThreeStep
+            - FourStep
+        - BombAttributes:
+            - BombIsType
+    - Coin
+    - Product:
+        - SensorTool
+        - OneUseTool:
+          - Tool:
+            - RedTool
+            - GreenTool
+            - BlueTool
+          - BombPPE
+          - RallyBeacon
+          - BombBeacon
+          - HazardBeacon
+          - BombStabilizer
+          - BombDisposer
+        - Bow
+        - Health
+    - MarkerBlock:
+        - RegularMarkerBlock:
+            - TypeAMarker
+            - TypeBMarker
+        - NoVictimMarkerBlock
+        - CriticalMarkerBlock
+        - ThreatRoomMarker #this refers to the actual marker block
+        - RubbleMarker
+        - SOSMarker
+    - Tools:
+      - Hammer
+      - MedKit
+      - Stretcher
+      - GPS
+      - Map:
+          - MapSector
+          - ThreatSign: #this refers to the sign on the map!
+              - Threat
+  - Sentiment:
+    #- Uncertainty  # include the agent
+    - Positive:
+      - Encouragement
+      #- Politeness
+      - Gratitude
+    - Negative
+      #- Anger
+      #- Worry
+  - PuzzleConcept:
+      - Meeting # this is for all occurences of lunch, training, meeting
+      - Damage:
+          - MildDamage
+          - ModerateDamage
+          - SevereDamage

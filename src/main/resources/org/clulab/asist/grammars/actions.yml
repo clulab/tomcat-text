@@ -15,13 +15,13 @@ rules:
       trigger = [lemma=/(?i)^(${ close_triggers })/ & tag=/^V/]
       target: DemPron? = >dobj
 
-  - import: org/clulab/asist/grammars/lvo_template.yml
-    vars:
-      name: toggle
-      template_priority: ${ rulepriority }
-      label: Toggle
-      trigger: ${ toggle_triggers }
-      object_type: Switch
+#  - import: org/clulab/asist/grammars/lvo_template.yml
+#    vars:
+#      name: toggle
+#      template_priority: ${ rulepriority }
+#      label: Toggle
+#      trigger: ${ toggle_triggers }
+#      object_type: Switch
 
   - import: org/clulab/asist/grammars/lvo_template.yml
     vars:
@@ -30,101 +30,6 @@ rules:
       label: Open
       trigger: ${ open_triggers }
       object_type: Infrastructure
-
-  - name: triage
-    priority: ${ rulepriority }
-    label: Save
-    example: "I will save the victim"
-    pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers })/]
-      target: Victim = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-
-  - name: triage_get
-    priority: ${ rulepriority }
-    label: Save
-    example: "I will save the victim"
-    pattern: |
-      trigger = [word=get]
-      target: Victim = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-
-  - name: triage2
-    priority: ${ rulepriority }
-    label: Save
-    example: "I will save this guy"
-    action: mkVictim
-    pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
-      target: Person = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-###need this because we split "person" from "victim"
-
-  - name: triage3
-    priority: ${ rulepriority }
-    label: Save
-    example: "I will save him"
-    action: mkVictim
-    pattern: |
-      trigger = [lemma=/(?i)^(${ triage_triggers_strict })/]
-      target: Entity = >dobj [tag=/PRP/]
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-## This one is not working right now, working on it -Remo
-
-  - name: stabilize_victim
-    priority: ${ rulepriority }
-    label: Stabilize
-    example: "I'm stabilizing this victim"
-    pattern: |
-      trigger = [lemma=/(?i)^stabilize/]
-      target: Victim = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-
-  - name: stabilize_person
-    priority: ${ rulepriority }
-    label: Stabilize
-    example: "I'm stabilizing this guy"
-    pattern: |
-      trigger = [lemma=/(?i)^stabilize/]
-      target: Person = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-
-
-  - name: wakeup
-    priority: ${ rulepriority }
-    label: WakeUp
-    example: "I'm waking this guy"
-    pattern: |
-      trigger = [lemma=/(?i)^wake/]
-      target: Person = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
-
-  - name: wakeup_token
-    priority: ${ rulepriority }
-    label: WakeUp
-    example: "wake up"
-    keep: false
-    type: token
-    pattern: |
-        [lemma=/(?i)^wake/] [lemma=up]
-
-
-  - name: wakeup_victim
-    priority: ${ rulepriority }
-    label: WakeUp
-    example: "I'm waking this victim"
-    pattern: |
-      trigger = [lemma=/(?i)^wake/]
-      target: Victim = >dobj
-      location: Location? = >/${ positional_preps_+advmod }/
-      agent: Entity? = >/${agents}/
 
   - import: org/clulab/asist/grammars/lvo_template_no_passive.yml
     vars:
@@ -195,31 +100,6 @@ rules:
       item: Item = >dobj
       map: Map = >dobj >nmod_on
 
-##----------------------------------------------------------------------------------------- clear
-
-  - name: clear_rubble
-    priority: ${ rulepriority }
-    label: Clear
-    pattern: |
-      trigger = [lemma=/(?i)^(${ clear_triggers })/]
-      agent: Entity? = >/${agents}/
-      target: Rubble = >dobj
-
-  - name: clear_rubble_token
-    priority: ${ rulepriority }
-    label: Clear
-    type: token
-    pattern: |
-      @agent:Entity? [lemma=/(?i)^(${ clear_triggers })/] [tag=/P?DT/]* @target:Rubble
-
-  - name: clear_location
-    priority: ${ rulepriority }
-    label: Clear
-    pattern: |
-      trigger = [lemma=/(?i)^(${ clear_triggers })/]
-      agent: Entity? = >/${agents}/
-      target: Location = >dobj | >nmod_out
-
   - name: obstructing
     priority: ${ rulepriority }
     label: Block
@@ -253,50 +133,3 @@ rules:
       trigger = [lemma=in] [tag=/DT|PRP/] [lemma=/(?i)^way\b/]
       source: Concept? = >/${agents}/
       target: Concept? = >nmod_of
-# I have disabled this to value precision over coverage
-#  - name: genericAction
-#    label: GenericAction
-#    priority: ${ genericpriority }
-#    keep: false
-#    pattern: |
-#      trigger = [tag=/^V/ & !lemma=be]
-#      target: Entity? = <dobj
-
-# ---- marker block related actions
-
-  - name: placeMarker1
-    label: PlaceMarker
-    example: "I'm placing a marker for critical victim in front of D2."
-    priority: ${ rulepriority }
-    keep: true
-    pattern: |
-      trigger = [lemma=/^${ place_triggers }/]
-      target: MarkerBlock = >dobj
-      location: Location? = >dobj >/${ positional_preps }/
-      marker_meaning: Concept? = >dobj >/nmod_for/
-
-  - name: placeMarker_leave
-    label: PlaceMarker
-    example: "I'm leaving a marker in front of D2."
-    priority: ${ rulepriority }
-    keep: true
-    pattern: |
-      trigger = [lemma=/leave/]
-      target: MarkerBlock = >dobj
-      location: Location? = >dobj >/${ positional_preps }/
-      marker_meaning: Concept? = >dobj >/nmod_for/
-
-  - name: placeMarker_throw
-    label: PlaceMarker
-    example: "I can throw down a marker here."
-    priority: ${ rulepriority }
-    keep: true
-    pattern: |
-      trigger = [lemma=/throw/]
-      target: MarkerBlock = >dobj
-      location: Location? = >dobj >/${ positional_preps }/
-      marker_meaning: Concept? = >dobj >/nmod_for/
-
-#\\ todo: #"put down marker block"
-#\\ todo: #review the instruction rule... "And going to go renew my hammer and then come back."
-#\\ todo: #mark rooms: "Oh, I should mark the rooms i'll mark them with a one if I get everything from." "All right, this is green, I will be putting a three if there's nobody in the room, so nobody accidentally goes in there."

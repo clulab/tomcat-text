@@ -1,0 +1,32 @@
+vars: org/clulab/asist/study3_study2/vars.yml
+
+rules:
+  - name: lemma_verb_dobj-${name}
+    priority: ${ template_priority }
+    label: ${ label }
+    pattern: |
+      trigger = [lemma=/(?i)^(${ trigger })/]
+      agent: Entity? = >/${agents}/
+      target: ${ object_type } = >dobj
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/
+      map: Map? = >dobj >nmod_on | >nmod_on
+
+  - name: passive-${name}
+    priority: ${ template_priority }
+    label: ${ label }
+    type: dependency
+    pattern: |
+      trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^VBN/]
+      agent: Entity? = >/${agents}/
+      target:  ${ object_type } = nsubjpass
+
+  - name: prepnom-${name}
+    priority: ${ template_priority }
+    label: ${ label }
+    type: dependency
+    pattern: |
+      trigger = [lemma=/(?i)^(${ trigger })/ & tag=/^N/]
+      agent: Entity? = >/${agents}/
+      target:  ${ object_type } = <conj_and*  nmod_of

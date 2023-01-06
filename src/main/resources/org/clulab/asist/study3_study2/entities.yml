@@ -1,4 +1,4 @@
-vars: org/clulab/asist/grammars/vars.yml
+vars: org/clulab/asist/study3_study2/vars.yml
 
 rules:
 
@@ -19,15 +19,26 @@ rules:
     pattern: |
       [word=/someone|anyone/]
 
-  - import: org/clulab/asist/grammars/ent_template.yml
+# ----- victim rules -----
+
+  - import:  org/clulab/asist/study3_study2/victims.yml
+
+  - import: org/clulab/asist/study3_study2/ent_template.yml
     vars:
       name: rubble
       priority: ${ rulepriority }
       label: Rubble
       trigger: ${ rubble_triggers }
 
+  - name: rubble_stuff
+    label: Rubble
+    priority: ${ rulepriority }
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^stuff$/]
 
-  - import: org/clulab/asist/grammars/ent_template.yml
+  - import: org/clulab/asist/study3_study2/ent_template.yml
     vars:
       name: fire
       priority: ${ rulepriority }

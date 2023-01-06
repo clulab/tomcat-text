@@ -1,4 +1,4 @@
-taxonomy: org/clulab/asist/grammars/taxonomy.yml
+taxonomy: org/clulab/asist/grammars/study3_taxonomy.yml
 
 vars: org/clulab/asist/grammars/triggers.yml
 

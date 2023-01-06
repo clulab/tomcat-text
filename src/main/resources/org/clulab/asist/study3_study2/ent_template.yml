@@ -1,0 +1,11 @@
+vars: org/clulab/asist/study3_study2/vars.yml
+
+rules:
+  - name: ${ name }_detection
+    priority: ${ priority }
+    label: ${ label }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      ([tag=/^NN/ & incoming=compound] [lemma=/(?i)^(${ trigger })\b/ & outgoing=compound]) |
+      [lemma=/(?i)^(${ trigger })\b/]+

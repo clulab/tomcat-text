@@ -1,0 +1,13 @@
+vars: org/clulab/asist/study3_study2/vars.yml
+
+rules:
+  - name: lemma_verb_dobj-${name}
+    priority: ${ template_priority }
+    label: ${ label }
+    pattern: |
+      trigger = [lemma=/(?i)^(${ trigger })/]
+      agent: Entity? = >/${agents}/
+      target: ${ object_type } = >dobj
+      location: Location? = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >/${preps}/

@@ -1,0 +1,15 @@
+vars: org/clulab/asist/study3_study2/vars.yml
+
+rules:
+
+  - name: "coordinate_AND"
+    label: CoordinateAnd
+    priority: ${ rulepriority }
+    example: "We should do X AND Y"
+    comment: "The reason for the [!Plan] is because of the weird behavior with this construction:
+    I suggest to split up and use our tools. Addendum: It's probably because the actions have a way later rulepriority
+    than the communication rules. I wont mess with that now because I'm not sure if it'll break anything"
+    pattern: |
+      trigger = [word=and & tag=CC]
+      action1: Action = <cc [!mention=Plan]
+      action2: Action = <cc >conj_and

@@ -1,7 +1,10 @@
-vars: org/clulab/asist/grammars/vars.yml
+vars: org/clulab/asist/study3_study2/vars.yml
 
 
 rules:
+# - import: org/clulab/asist/study3_study2/study_2_rooms.yml
+    #we're importing this here to keep the files clean and uncluttered
+  - import: org/clulab/asist/study3_study2/study_3_rooms.yml
 
 
   - name: infrastructure_detection
@@ -160,3 +163,11 @@ rules:
     keep: ${ keep_locations}
     pattern: |
       [mention=Location]{2,4}
+
+  - name: threat_room_toke
+    priority: ${ second_priority }
+    label: ThreatRoom
+    type: token
+    keep: ${ keep_locations}
+    pattern: |
+      [word=/(?i)^threat$/] [word=/(?i)^room/] | [word=/(?i)^threatroom/]

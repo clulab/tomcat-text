@@ -1,0 +1,51 @@
+agents: "nsubj|'nsubj:xsubj'|'nsubjpass:xsubj'|nsubjpass|csubj|csubjpass|<acl|nmod_along_with"  #Comment:  nsubjpass for cause should not be there in an ideal world; but it does show up in practice
+
+adverbial_clause: "advcl"
+
+conjunctions: "appos|conj|conj_|cc"
+
+complements: "xcomp|ccomp"
+
+objects_complements: "xcomp|ccomp|dobj"
+
+noun_modifiers: "amod|compound|name" #removed dep
+
+negTriggers: "not"
+
+objects: "dobj"
+
+preps: "nmod_of|nmod_in|nmod_to|nmod_over|nmod_for|nmod_than|acl_of"
+
+prep_dobjs: "nmod"
+
+quant_modifiers: "amod|advmod"
+
+passive_agents: "nmod_by|nmod_agent|agent"
+
+passive_mark_verbs: "marked|defined|indicated|characterized"
+
+transparent_nouns: "level|amount|quantit" # do we need these in general?
+
+reasons: "cause|factor|motivation|reason"
+
+report: "cite|give|mention|provide|report"
+
+search_relations: ">nmod_in|>nmod_within|>nmod_around|>nmod_beneath"
+
+positional_preps: "nmod_(behind|beneath|in|in_front_of|on|over|under|dep)"
+
+positional_preps_liberal+advmod: "nmod_(behind|beneath|in|in_front_of|on|over|under|[a-z]+)|dep|advmod"
+
+positional_preps_liberal: "nmod_(behind|beneath|in|in_front_of|on|over|under|[a-z]+)|dep"
+
+positional_preps_+advmod: "nmod_(behind|beneath|in|in_front_of|on|over|under)|advmod"
+
+################ change booleans below to enable extraction of the corresponding objects
+
+keep_entities: "false"
+
+keep_locations: "false"
+
+keep_items: "false"
+
+keep_markers: "true"

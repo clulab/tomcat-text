@@ -1,4 +1,4 @@
-taxonomy: org/clulab/asist/grammars/taxonomy.yml
+taxonomy: org/clulab/asist/taxonomies/study4_taxonomy.yml
 
 vars: org/clulab/asist/grammars/triggers.yml
 
@@ -63,11 +63,6 @@ rules:
     vars:
       rulepriority: "5+"
       second_priority: "7"
-
-  # Extract the puzzle concepts
-  - import: org/clulab/asist/grammars/puzzle_concepts.yml
-    vars:
-      rulepriority: "5+"
 
   # Extract the marker meanings//// We have this disabled for study 3master.yml
 #  - import: org/clulab/asist/grammars/marker_meanings.yml

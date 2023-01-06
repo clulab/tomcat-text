@@ -1,0 +1,35 @@
+vars: org/clulab/asist/study3_study2/vars.yml
+
+rules:
+
+  - name: past-simple
+    priority: ${ rulepriority }
+    label: PastTense
+    type: token
+    keep: false
+    pattern: |
+      [tag=VBD & !incoming=aux] # it's a past verb and not a helper verb
+
+  - name: past-aux
+    priority: ${ rulepriority }
+    label: PastTense
+    keep: false
+    pattern: |
+      trigger = [tag=/^VB/]
+      tense: Concept = >aux [tag=VBD]
+
+  - name: future-modal
+    priority: ${ rulepriority }
+    label: FutureTense
+    keep: false
+    pattern: |
+      trigger = [tag=/^VB/]
+      tense: Concept = <cop? >aux [tag=MD & lemma=will]
+
+  - name: future-going-to
+    priority: ${ rulepriority }
+    label: FutureTense
+    keep: false
+    pattern: |
+      trigger = [tag=/^VB/]
+      tense: Concept = <xcomp [word=going]
