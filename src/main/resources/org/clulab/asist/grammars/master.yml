@@ -31,12 +31,12 @@ rules:
       rulepriority: "3+"
 
   # Extract the sequences
-  - import: org/clulab/asist/grammars/study4_sequence.yml
+  - import: org/clulab/asist/grammars/study4/study4_sequence.yml
     vars:
       rulepriority: "5+"
 
   # Extract the bomb_rules
-  - import: org/clulab/asist/grammars/bomb_rules.yml
+  - import: org/clulab/asist/grammars/study4/bomb_rules.yml
     vars:
       rulepriority: "6+"
 
@@ -64,7 +64,7 @@ rules:
       rulepriority: "5+"
 
   # Extract the study 4 base_concepts
-  - import: org/clulab/asist/grammars/base_concepts_study4.yml
+  - import: org/clulab/asist/grammars/study4/base_concepts_study4.yml
     vars:
       rulepriority: "5+"
       second_priority: "7"
@@ -86,7 +86,7 @@ rules:
       genericpriority: "9"
 
   # Extract the simple events
-  - import: org/clulab/asist/grammars/actions_study4.yml
+  - import: org/clulab/asist/grammars/study4/actions_study4.yml
     vars:
       rulepriority: "8"
       genericpriority: "9"
@@ -112,13 +112,13 @@ rules:
       rulepriority: "6+"
 
   # Extract study 4 questions
-  - import: org/clulab/asist/grammars/study4_questions.yml
+  - import: org/clulab/asist/grammars/study4/study4_questions.yml
     vars:
       rulepriority: "6+"
       second_priority: "9+"
 
   # Extract study 4 strategies
-  - import: org/clulab/asist/grammars/study4_team_strategies.yml
+  - import: org/clulab/asist/grammars/study4/study4_team_strategies.yml
     vars:
       rulepriority: "6+"
 
@@ -134,7 +134,7 @@ rules:
       second_priority: "7+"
 
   # Extract study4_team_comms
-  - import: org/clulab/asist/grammars/study4_team_comm.yml
+  - import: org/clulab/asist/grammars/study4/study4_team_comm.yml
     vars:
       rulepriority: "6+"
       second_priority: "7+"
