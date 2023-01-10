@@ -1,8 +1,8 @@
 package org.clulab.asist.rules
 
-import org.clulab.asist.BaseTest
+import org.clulab.asist.BaseTestStudy3
 
-class TestActions extends BaseTest {
+class TestActionsStudy3 extends BaseTestStudy3 {
 
   val CLOSE = "Close"
 

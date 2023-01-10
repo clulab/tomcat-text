@@ -1,0 +1,54 @@
+vars: org/clulab/asist/study3_study2/vars.yml
+
+rules:
+
+  - name: meeting_token
+    example: "meeting in a2."
+    priority: ${ rulepriority }
+    label: Meeting
+    pattern: |
+      trigger= [lemma=/(?i)^meeting/] | [word=/(?i)^meeting/]
+      location: Location?= <nsubj >/.*/ | >nmod_in
+  - name: lunch_token
+    priority: ${ rulepriority }
+    label: Meeting
+    pattern: |
+      trigger= [lemma=/(?i)^lunch/]
+      location: Location?= <nsubj >/.*/ | >nmod_in
+  - name: training_token
+    priority: ${ rulepriority }
+    label: Meeting
+    pattern: |
+      trigger= [lemma=/(?i)^training/] | [word=/(?i)^training/]
+      location: Location?= <nsubj >/.*/ | >nmod_in
+  ## room damage
+
+  - name: mild_damage
+    priority: ${ rulepriority }
+    label: MildDamage
+    keep: false
+    type: token
+    pattern: |
+      [word=mild]
+  - name: moderate_damage
+    priority: ${ rulepriority }
+    label: ModerateDamage
+    keep: false
+    type: token
+    pattern: |
+      [word=moderate]
+  - name: severe_damage
+    priority: ${ rulepriority }
+    label: SevereDamage
+    keep: false
+    type: token
+    pattern: |
+      [word=severe]
+  - name: damage
+    example: "There is severe damage in A2."
+    priority: ${ rulepriority }
+    label: Damage
+    pattern: |
+      trigger= [lemma=/(?i)^damage/] | [word=/(?i)^famage/]
+      location: Location?= <nsubj >/.*/ | >nmod_in
+      type: Damage?= >/mod/ | <nsubj

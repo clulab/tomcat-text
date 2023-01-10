@@ -33,6 +33,15 @@ rules:
       agent: Entity? = >/${agents}/
       object: Product = >/${objects}/
 
+  - name: "possess_number"
+    label: ReportPossession
+    example: "I have a tool"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger =  [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      object: Number = >/${objects}/
+
   - name: "possess_coin"
     label: ReportPossession
     example: "I have 5 coins"
@@ -41,6 +50,24 @@ rules:
       trigger = [lemma=/^have$/] | [word=got]
       agent: Entity? = >/${agents}/
       object: Coin = >/${objects}/
+
+  - name: "out_of_product"
+    label: OutOfThing
+    example: "Welp, we are out of tools"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/] [word=out] | [lemma=/^we.?re$/] [word=out] | [lemma=/^im$/] [word=out]
+      agent: Entity? =  <cop >/${agents}/
+      object: Product = >nmod_out_of | <cop
+
+  - name: "out_of_coin"
+    label: OutOfThing
+    example: "Welp, we are out of coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/] [word=out] | [lemma=/^we.?re$/] [word=out] | [lemma=/^im$/] [word=out]
+      agent: Entity? =  <cop >/${agents}/
+      object: Coin = >nmod_out_of | <cop
 
   - name: "got_bomb"
     label: ReportBomb

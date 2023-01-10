@@ -152,7 +152,7 @@ rules:
     label: ToolBroken
     pattern: |
       trigger = [lemma=/(?i)broken|break/]
-      tool: Tool = >/nsubj|dobj/
+      tool: Tools = >/nsubj|dobj/
 
   - name: report_door_open
     priority: ${ rulepriority }

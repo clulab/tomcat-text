@@ -27,6 +27,25 @@ rules:
       trigger = [lemma=/^how$/] [lemma=much]
       topic: Product = <advmod <dep >nsubj
 
+  - name: number_question_produc
+    example: "How many tools should I buy?"
+    priority: ${ rulepriority }
+    label: NumberQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] [lemma=many]
+      item: Product = <amod | <advmod
+      topic: Action = <amod <dobj | <advmod <dobj
+
+  - name: what_left
+    example: "What do we have left"
+    priority: ${ rulepriority }
+    label: NumberQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] [lemma=many]
+      item: Product = <amod | <advmod
+      topic: Action = <amod <dobj | <advmod <dobj
+
+
 # disabled until I figure out how to deal with:
 #ok, so one color each?
 #Well, so should we buy a sensor tool?

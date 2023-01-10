@@ -6,7 +6,7 @@ rules:
     priority: ${ rulepriority }
     label: Defuse
     pattern: |
-      trigger = [lemma=/(?i)^defuse|^clear/ & tag=/^V/]
+      trigger = [lemma=/(?i)^d[ei]ff?use?|^clear$/ & tag=/^V/]
       agent: Entity? = >/${agents}/
       target: Bomb = >dobj
 

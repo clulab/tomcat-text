@@ -1,10 +1,10 @@
 package org.clulab.asist.rules
 
-import org.clulab.asist.BaseTest
+import org.clulab.asist.BaseTestStudy3
 
 //commented out non-extracted itmes
 
-class CommitmentTest extends BaseTest {
+class CommitmentTestStudy3 extends BaseTestStudy3 {
 
   passingTest should "Recognize commitment in" in {
     val doc = extractor.annotate("I can save this guy.")
@@ -15,7 +15,7 @@ class CommitmentTest extends BaseTest {
       Map("target" -> Seq(person_mention)),
       Set(AGENT_SELF)
     )
-    val commit1_mention = DesiredMention("MakeCommitment", "can save this guy",
+    val commit1_mention = DesiredMention("Proposal", "can save this guy",
       Map("topic" -> Seq(action_mention)),
       Set(AGENT_SELF)
     )

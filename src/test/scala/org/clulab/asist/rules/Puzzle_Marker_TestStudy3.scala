@@ -1,8 +1,8 @@
 package org.clulab.asist.rules
 
-import org.clulab.asist.BaseTest
+import org.clulab.asist.BaseTestStudy3
 
-class Puzzle_Marker_Test extends BaseTest {
+class Puzzle_Marker_TestStudy3 extends BaseTestStudy3 {
 
   passingTest should "recognize puzzle entities" in {
     val doc = extractor.annotate("meeting in a2. There is severe damage in D2.")

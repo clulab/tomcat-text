@@ -60,6 +60,7 @@
             - RoleDeclare # players declaring their role to the team
             - DeclareColor
             - ReportPossession
+            - OutOfThing
             - RoomStatus:
                 - RoomClear # "A1 is clear"
                 - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"
@@ -79,6 +80,7 @@
           - HelpOffer # examples: "I can help/assist/aid you"
           - Question:
             - PriceQuestion
+            - NumberQuestion
             - QuestionParticle # who/what/why/when/where
             - LocationQuestion
             - YesNoQuestion

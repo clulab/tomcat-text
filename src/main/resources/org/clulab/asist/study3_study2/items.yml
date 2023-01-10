@@ -8,7 +8,7 @@ rules:
     label: Hammer
     keep: ${ keep_items }
     pattern: |
-      trigger = [lemma=/${ hammer_triggers }/]
+      trigger = [lemma=/^${ hammer_triggers }$/]
       owner: Entity? = >"nmod:poss"
 
   - name: medkit
