@@ -96,7 +96,7 @@ stretcher_triggers: "stretcher|carrying bed"
 
 switch_triggers: "switch|toggle|lever"
 
-team_triggers: "we|us"
+team_triggers: "we|us|everyone"
 
 thanking_triggers: "thank|thanks"
 

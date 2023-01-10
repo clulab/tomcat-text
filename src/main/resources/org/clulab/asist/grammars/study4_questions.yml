@@ -36,14 +36,31 @@ rules:
       item: Product = <amod | <advmod
       topic: Action = <amod <dobj | <advmod <dobj
 
-  - name: what_left
-    example: "What do we have left"
+  - name: how_many_left
+    example: "How many tools do we have left"
     priority: ${ rulepriority }
     label: NumberQuestion
     pattern: |
       trigger = [lemma=/^how$/] [lemma=many]
       item: Product = <amod | <advmod
-      topic: Action = <amod <dobj | <advmod <dobj
+      topic: Remaining? = <amod </(dobj)|(nsubj)/ | <advmod <dobj
+
+  - name: what_remains
+    example: "What do we have left?"
+    priority: ${ rulepriority }
+    label: WhatRemaining
+    type: token
+    pattern: |
+        [lemma=/^what$/] [lemma=do]? []? []? [lemma=/^(have)|(got)|(be)$/] [word=left]
+
+  - name: what_remains_we_got
+    example: "What have we got left?"
+    priority: ${ rulepriority }
+    label: WhatRemaining
+    type: token
+    pattern: |
+      [lemma=/^what$/] [lemma=have] []? [word=got]? [word=left]
+
 
 
 # disabled until I figure out how to deal with:

@@ -4,6 +4,8 @@
       - FutureTense
   - Number:
       - Some
+      - More
+      - Less
       - One
       - Two
       - Three
@@ -60,6 +62,7 @@
             - RoleDeclare # players declaring their role to the team
             - DeclareColor
             - ReportPossession
+            - Remaining
             - OutOfThing
             - RoomStatus:
                 - RoomClear # "A1 is clear"
@@ -79,6 +82,7 @@
                 - NeedPresence # example: "Engineer, I need you here."
           - HelpOffer # examples: "I can help/assist/aid you"
           - Question:
+            - WhatRemaining
             - PriceQuestion
             - NumberQuestion
             - QuestionParticle # who/what/why/when/where
@@ -92,7 +96,8 @@
               - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
               - Proposal # players making or offering a commitment to an action: "I can clear the rooms on the right"
               - DeliberatePlan # players stating their future move: "I will help you"
-          - Agreement
+          - Agreement:
+              - AgreementToIdea
           - Disagreement
         - Clear # example: "I am clearing B2"
         - RoleSwitch # example: "I will switch to engineer"
@@ -107,6 +112,7 @@
     - You
     - Team # "we/us"
     - DemPron # "this/those/that/these"
+    - EachPlayer
     - Role:
       - Transporter
       - Medic
@@ -150,9 +156,11 @@
             - BombIsType
     - Coin
     - Product:
+        - UnknownProduct
+        - OfEachTool
         - SensorTool
-        - OneUseTool:
-          - Tool:
+        - Tool:
+          - OneUseTool:
             - RedTool
             - GreenTool
             - BlueTool
@@ -191,9 +199,4 @@
     - Negative
       #- Anger
       #- Worry
-  - PuzzleConcept:
-      - Meeting # this is for all occurences of lunch, training, meeting
-      - Damage:
-          - MildDamage
-          - ModerateDamage
-          - SevereDamage
+

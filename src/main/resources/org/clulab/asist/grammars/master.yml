@@ -20,6 +20,11 @@ rules:
     vars:
       rulepriority: "2"
 
+  # Extract numbers
+  - import: org/clulab/asist/grammars/numbers.yml
+    vars:
+      rulepriority: "3"
+
   # Extract the entities
   - import: org/clulab/asist/grammars/entities.yml
     vars:

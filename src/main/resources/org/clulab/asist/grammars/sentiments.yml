@@ -26,6 +26,14 @@ rules:
     pattern: |
       [word=/(?i)^all$/] [word=/(?i)^right$/]
 
+  - name: agreement_good_plan
+    label: AgreementToIdea
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^(good)|(excellent)|(great)$/] [word=/(?i)^(plan)|(idea)|(proposal)$/]
+
   - name: agree_token_match
     label: Agreement
     priority: ${ rulepriority }
@@ -41,6 +49,15 @@ rules:
     keep: true
     pattern: |
       (?<! [lemma=be] []? ) [lemma=/(?i)^(${ agree_adjectives })$/] (?! no|[tag=NN]|[tag=RB]  )
+
+  - name: thing_is_good
+    label: Agreement
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      (@target:Concept) (?<trigger>  [lemma=be] [lemma=/(?i)^(${ agree_adjectives })$/]
+      (?! no|[tag=NN]|[tag=RB]  ))
 
   - name: agree_token_sure
     label: Agreement

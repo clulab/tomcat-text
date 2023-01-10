@@ -35,12 +35,13 @@ rules:
 
   - name: "possess_number"
     label: ReportPossession
-    example: "I have a tool"
+    example: "I have a 5"
     priority: ${ rulepriority }
     pattern: |
       trigger =  [lemma=/^have$/] | [word=got]
       agent: Entity? = >/${agents}/
-      object: Number = >/${objects}/
+      number: Number = >/${objects}/
+      object: Item? = >/${objects}/ >nmod_of
 
   - name: "possess_coin"
     label: ReportPossession
@@ -110,3 +111,33 @@ rules:
       trigger = (?<! [mention=Question] ) [tag=/^V/ & lemma=/^suggest|^propose$/]
       topic: Action = >xcomp| >ccomp
       agent: Entity? = <aux >nsubj
+
+  - name: is_left2
+    example: "5 tools are left"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+        trigger = [word=/^(left)|(remaining)$/]
+        item: Item = >/nsubj/
+        agent: Entity? = <ccomp >nsubj
+  #      topic: Action = <amod <dobj | <advmod <dobj
+
+  - name: is_left_of
+    example: "I have 5 left of the red tool"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      item: Item = >/nmod_of/
+      agent: Entity? = <dobj >nsubj
+      number: Number = >nummod | >amod | >det
+
+  - name: is_left_obj
+    example: "How many tools do we have left?"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      item: Item = >dobj
+      agent: Entity? = <nsubj
+  #      topic: Action = <amod <dobj | <advmod <dobj

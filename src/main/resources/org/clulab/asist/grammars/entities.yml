@@ -42,13 +42,6 @@ rules:
     pattern: |
       [chunk=/B-NP/ & !tag=DT] [chunk=/I-NP/]*
 
-  - name: numbers
-    priority: ${ rulepriority }
-    label: Number
-    type: token
-    keep: false
-    pattern: |
-      (?<! other) [tag=CD]
 
   - name: room_tags #this is here to provide the storage rooms with their [A-Z] arguments
     example: "storage room *Q*"
@@ -106,7 +99,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^(${ team_triggers })/ & tag=/PRP/]
+      [lemma=/(?i)^(${ team_triggers }$)/ & tag=/PRP/]
 
   - name: them_token_capture
     label: Entity

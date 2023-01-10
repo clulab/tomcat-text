@@ -26,6 +26,7 @@ rules:
     label: PlanLanguage
     priority: ${ rulepriority }
     type: token
+    keep: false
     pattern: |
       [lemma=/(?i)\bplan\b|strategy/]
 

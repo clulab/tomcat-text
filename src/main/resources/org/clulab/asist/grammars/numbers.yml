@@ -1,0 +1,37 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: numbers
+    priority: ${ rulepriority }
+    label: Number
+    type: token
+    keep: false
+    pattern: |
+      (?<! other) [tag=CD]
+
+
+
+  - name: few
+    priority: ${ rulepriority }
+    label: Some
+    type: token
+    keep: false
+    pattern: |
+        [word=/^few$|^some$/]
+
+  - name: more
+    priority: ${ rulepriority }
+    label: More
+    type: token
+    keep: false
+    pattern: |
+        [word=/^(more)|(additional)|(extra)$/]
+
+  - name: less
+    priority: ${ rulepriority }
+    label: Less
+    type: token
+    keep: false
+    pattern: |
+      [word=/^(fewer)|(less)$/]

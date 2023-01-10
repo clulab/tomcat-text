@@ -43,8 +43,8 @@ class TestCommunications extends BaseTest {
   passingTest should "parse tool broken" in {
     val text = "The tool is broken."
     val mentions = extractor.extractFrom(text)
-    val toolBroken = DesiredMention("ToolBroken", "The tool is broken",
-      Map("tool" -> Seq(DesiredMention("Tool", "The tool"))))
+    val toolBroken = DesiredMention("ToolBroken", "tool is broken",
+      Map("tool" -> Seq(DesiredMention("Tool", "tool"))))
 
     testMention(mentions, toolBroken)
   }

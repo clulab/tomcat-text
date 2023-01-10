@@ -24,7 +24,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(one|single)-(use|time)/] [word=use]? [lemma=tool]
+      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
 
   - name: sensor
     priority: ${ rulepriority }
@@ -48,7 +48,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=red] [lemma=tool]
+      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
 
   - name: bluetool
     priority: ${ rulepriority }
@@ -56,7 +56,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=blue] [lemma=tool]
+      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
 
   - name: greentool
     priority: ${ rulepriority }
@@ -64,15 +64,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=green] [lemma=tool]
+      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
 
-  - name: few
-    priority: ${ rulepriority }
-    label: Some
-    type: token
-    keep: false
-    pattern: |
-      [word=/^few$|^some$/] [word=left]?
 
   - name: coin
     priority: ${ rulepriority }
@@ -80,7 +73,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? []? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
 
   - name: product_number
     priority: ${ rulepriority }
@@ -98,13 +91,40 @@ rules:
     pattern: |
       [word=health]
 
+  - name: tool_generic_number
+    priority: ${ second_priority }
+    label: Tool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)
+      (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
+
+  - name: tool_generic_owner
+    priority: ${ second_priority }
+    label: Tool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity) [!lemma=/have|got/]? (@number:Number)?
+      (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
+
   - name: tool_generic
     priority: ${ second_priority }
     label: Tool
-    keep: ${ keep_items }
+    type: token
+    keep: false
     pattern: |
-      trigger = (?<! [mention=Tool] ) [!mention=Product] [lemma=/^tool$/]  (?!  [mention=Tool])
-      owner: Entity? = >"nmod:poss"
+       (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool])
+
+  - name: unknown_prod_numbered
+    priority: ${ second_priority }
+    label: OfEachTool
+    example: "6 of each"
+    keep: true
+    pattern: |
+      trigger = (?<! [mention=Tool] ) [lemma=/^each/]  (?!  [mention=Tool])
+      number: Number = <"nmod_of" |>"compound"
 
   - name: tool_wire_snip
     priority: ${ second_priority }
@@ -121,3 +141,13 @@ rules:
     keep: false
     pattern: |
       @Map [lemma=/^sector$|^quadrant$|^area$|^section$/]
+
+
+  - name: for_each_player
+    priority: ${ second_priority }
+    label: EachPlayer
+    example: "a tool for each of us"
+    type: token
+    keep: true
+    pattern: |
+      for? [lemma=/^each/] of? [mention=Team] (?!  [mention=Tool])

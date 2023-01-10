@@ -284,7 +284,7 @@ rules:
     example: "I have some rubble here"
     pattern: |
       trigger =[lemma=/(?i)have/]
-      exists: EventLike = >/${objects}/
+      exists: EventLike = >/${objects}/ [!mention=Remaining]
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${preps}/|

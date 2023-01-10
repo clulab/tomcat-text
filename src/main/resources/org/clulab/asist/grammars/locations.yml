@@ -134,7 +134,8 @@ rules:
     type: token
     keep: ${ keep_locations}
     pattern: |
-      (?<= [word=/(?i)the/]) [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] |  [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] (?= [word=/(?i)of/])
+      (?<! [lemma=have]) (?<= [word=/(?i)the/]) [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] | (?<! [lemma=have] []?)
+      [word=/\b(left)\b/ & !outgoing=xcomp & !tag=VBD] (?= [word=/(?i)of/])
 
 
   - name: relative_location
