@@ -61,13 +61,29 @@ rules:
     pattern: |
       /(?i)^[brg]{3}$/
 
-  - name: onestep
+  - name: green_single
     priority: ${ rulepriority }
-    label: OneStep
+    label: Green
     type: token
     keep: true
     pattern: |
-      /(?i)^[brg]{1}$/
+      /(?i)^[g]{1}$/
+
+  - name: blue_single
+    priority: ${ rulepriority }
+    label: Blue
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[b]{1}$/
+
+  - name: red_single
+    priority: ${ rulepriority }
+    label: Red
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[r]{1}$/
 
   - name: twostep
     priority: ${ rulepriority }

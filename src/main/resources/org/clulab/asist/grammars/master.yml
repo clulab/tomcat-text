@@ -8,7 +8,7 @@ rules:
   # match all tokens to be able to use them later,
   # BUT don't keep unless found by some other rule
   - name: allTokens
-    label: Concept
+    label: Token
     priority: 1
     type: token
     keep: false

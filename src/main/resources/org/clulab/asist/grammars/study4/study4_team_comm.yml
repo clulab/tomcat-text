@@ -132,6 +132,16 @@ rules:
       agent: Entity? = <dobj >nsubj
       number: Number = >nummod | >amod | >det
 
+  - name: is_left_of_color
+    example: "I have 5 left of the red tool"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      item: Color = >/nmod_of/
+      agent: Entity? = <dobj >nsubj
+      number: Number = >nummod | >amod | >det
+
   - name: is_left_obj
     example: "How many tools do we have left?"
     priority: ${ rulepriority }
