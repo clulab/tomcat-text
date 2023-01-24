@@ -1,0 +1,94 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+
+  - name: 4step_sequence
+    example: "red blue green blue sequence"
+    priority: ${ rulepriority }
+    label: FourStep
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?? ) (?<trigger> @Color) []? @second:Color []? @third:Color []? @fourth:Color @sequence:Sequence?
+
+  - name: medium
+    priority: ${ rulepriority }
+    label: ThreeStep
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+
+  - name: 2step
+    priority: ${ rulepriority }
+    label: TwoStep
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+
+
+  - name: easy
+    priority: ${ rulepriority }
+    label: OneStep
+    type: token
+    keep: false
+    pattern: |
+      (?<! [mention=Color] []?| [word=/^am$|^are$|^r$/] | [mention=DeclareColor] | [tag=PRP])  (?<trigger> @Red|Blue|Green)  @sequence:Sequence??  (?! [mention=Color]| [word=tool])
+
+  - name: sequence
+    priority: ${ rulepriority }
+    label: Sequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [word=difficult]|[word=medium] []?? ) [word=/(?i)sequences?$/ & !mention=Sequence] (?! [word=detector])
+
+  - name: abbreviated_fourstep
+    priority: ${ rulepriority }
+    label: FourStep
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[brg]{4}$/
+
+  - name: threestep
+    priority: ${ rulepriority }
+    label: ThreeStep
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[brg]{3}$/
+
+  - name: green_single
+    priority: ${ rulepriority }
+    label: Green
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[g]{1}$/
+
+  - name: blue_single
+    priority: ${ rulepriority }
+    label: Blue
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[b]{1}$/
+
+  - name: red_single
+    priority: ${ rulepriority }
+    label: Red
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[r]{1}$/
+
+  - name: twostep
+    priority: ${ rulepriority }
+    label: TwoStep
+    type: token
+    keep: true
+    pattern: |
+      /(?i)^[brg]{2}$/

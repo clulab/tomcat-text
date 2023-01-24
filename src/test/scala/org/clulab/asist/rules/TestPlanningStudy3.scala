@@ -1,8 +1,8 @@
 package org.clulab.asist.rules
 
-import org.clulab.asist.BaseTest
+import org.clulab.asist.BaseTestStudy3
 
-class TestPlanning extends BaseTest {
+class TestPlanningStudy3 extends BaseTestStudy3 {
 
   behavior of "AsistEngine"
 
@@ -28,7 +28,7 @@ class TestPlanning extends BaseTest {
     val rubble_men = DesiredMention("Rubble", "rubble")
     val clear_men = DesiredMention("Clear", "remove the rubble", Map("target" -> Seq(rubble_men)), Set(AGENT_TEAM))
     val save_men = DesiredMention("Save", "save the victim", Map("target" -> Seq(victim_men)), Set(AGENT_TEAM))
-    val commitment_men = DesiredMention("MakeCommitment", "can save the victim",Map("topic" -> Seq(save_men)),Set(AGENT_TEAM)
+    val commitment_men = DesiredMention("Proposal", "can save the victim",Map("topic" -> Seq(save_men)),Set(AGENT_TEAM)
     )
     val plan_men = DesiredMention("ContingentPlan", "If we remove the rubble, we can save the victim",
       Map("condition" -> Seq(clear_men), "solution" -> Seq(commitment_men)))

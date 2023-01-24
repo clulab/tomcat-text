@@ -1,4 +1,4 @@
-vars: org/clulab/asist/grammars/vars.yml
+vars: org/clulab/asist/study3_study2/vars.yml
 
 rules:
 
@@ -105,6 +105,37 @@ rules:
       agent: Entity? = >/(${agents})/
       target: Role = >/nmod_to/
 
+  - name: threatroom_report1
+    priority: ${ rulepriority }
+    example: "B3 is a threat room"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [lemma=/(?i)^(${ exist_triggers })/]
+      threat: ThreatRoom = </cop/ [!outgoing=aux] # prevent things like "I will be" or "I could be"
+      room: Room =
+        </cop/
+        >/nsubj/
+
+  - name: threatroom_report2
+    priority: ${ rulepriority }
+    example: "B3 has a threat sign| C3 is marked as a threat"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatSign = >/dobj|nmod/
+      room: Room =
+        >/nsubj/
+
+  - name: threatroom_report3
+    priority: ${ rulepriority }
+    example: "B3 has a threat marker"
+    label: ReportThreatRoom
+    pattern: |
+      trigger = [tag=/^VB/]
+      threat: ThreatRoomMarker = >/dobj/
+      room: Room =
+        >/nsubj/
+
   - name: location_report
     priority: ${ rulepriority }
     example: "I'm in the library"
@@ -121,7 +152,7 @@ rules:
     label: ToolBroken
     pattern: |
       trigger = [lemma=/(?i)broken|break/]
-      tool: Tool = >/nsubj|dobj/
+      tool: Tools = >/nsubj|dobj/
 
   - name: report_door_open
     priority: ${ rulepriority }
@@ -284,7 +315,7 @@ rules:
     example: "I have some rubble here"
     pattern: |
       trigger =[lemma=/(?i)have/]
-      exists: EventLike = >/${objects}/ [!mention=Remaining]
+      exists: EventLike = >/${objects}/
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${preps}/|

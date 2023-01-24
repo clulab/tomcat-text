@@ -1,0 +1,76 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: what_plan
+    example: "What should we buy? What should we do?"
+    comment: "This is currently defunct, here as a placeholder in case we need it later, to activate remove negative lokbehind"
+    priority: ${ rulepriority }
+    type: token
+    label: Question
+    pattern: |
+      (?<! [mention=Question] ) (?<trigger> [lemma=what]) ([])? ([])? (@topic:Plan)
+
+  - name: what_buy
+    example: "What do we buy?"
+    priority: ${ rulepriority }
+    type: token
+    label: Question
+    pattern: |
+        (?<! [mention=Question] )(?<trigger> [lemma=what]) ([])? ([])? (@topic:Shop)
+
+  - name: price_question
+    example: "How much is a scanner tool"
+    priority: ${ rulepriority }
+    label: PriceQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] [lemma=much]
+      topic: Product = <advmod <dep >nsubj
+
+  - name: number_question_produc
+    example: "How many tools should I buy?"
+    priority: ${ rulepriority }
+    label: NumberQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] [lemma=many]
+      item: Product = <amod | <advmod
+      topic: Action = <amod <dobj | <advmod <dobj
+
+  - name: how_many_left
+    example: "How many tools do we have left"
+    priority: ${ rulepriority }
+    label: NumberQuestion
+    pattern: |
+      trigger = [lemma=/^how$/] [lemma=many]
+      item: Product = <amod | <advmod
+      topic: Remaining? = <amod </(dobj)|(nsubj)/ | <advmod <dobj
+
+  - name: what_remains
+    example: "What do we have left?"
+    priority: ${ rulepriority }
+    label: WhatRemaining
+    type: token
+    pattern: |
+        [lemma=/^what$/] [lemma=do]? []? []? [lemma=/^(have)|(got)|(be)$/] [word=left]
+
+  - name: what_remains_we_got
+    example: "What have we got left?"
+    priority: ${ rulepriority }
+    label: WhatRemaining
+    type: token
+    pattern: |
+      [lemma=/^what$/] [lemma=have] []? [word=got]? [word=left]
+
+
+
+# disabled until I figure out how to deal with:
+#ok, so one color each?
+#Well, so should we buy a sensor tool?
+#  - name: general_question
+#    example: "get a sensor?"
+#    priority: ${ second_priority }
+#    label: Question
+#    pattern: |
+#      trigger = (?<! ([mention=Question]|[mention=YesNoQuestion]) []* ) [lemma='?']
+#      topic: Action = <punct [!mention=Question]
+#      location: Location? = <punct >/${positional_preps_liberal+advmod}/

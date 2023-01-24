@@ -1,4 +1,4 @@
-vars: org/clulab/asist/grammars/vars.yml
+vars: org/clulab/asist/study3_study2/vars.yml
 
 rules:
 
@@ -9,24 +9,19 @@ rules:
     pattern: |
       trigger= [lemma=/(?i)^meeting/] | [word=/(?i)^meeting/]
       location: Location?= <nsubj >/.*/ | >nmod_in
-
   - name: lunch_token
     priority: ${ rulepriority }
     label: Meeting
     pattern: |
       trigger= [lemma=/(?i)^lunch/]
       location: Location?= <nsubj >/.*/ | >nmod_in
-
-
   - name: training_token
     priority: ${ rulepriority }
     label: Meeting
     pattern: |
       trigger= [lemma=/(?i)^training/] | [word=/(?i)^training/]
       location: Location?= <nsubj >/.*/ | >nmod_in
-
-
-## room damage
+  ## room damage
 
   - name: mild_damage
     priority: ${ rulepriority }
@@ -35,7 +30,6 @@ rules:
     type: token
     pattern: |
       [word=mild]
-
   - name: moderate_damage
     priority: ${ rulepriority }
     label: ModerateDamage
@@ -43,7 +37,6 @@ rules:
     type: token
     pattern: |
       [word=moderate]
-
   - name: severe_damage
     priority: ${ rulepriority }
     label: SevereDamage
@@ -51,7 +44,6 @@ rules:
     type: token
     pattern: |
       [word=severe]
-
   - name: damage
     example: "There is severe damage in A2."
     priority: ${ rulepriority }

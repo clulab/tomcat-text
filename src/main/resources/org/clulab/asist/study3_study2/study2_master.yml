@@ -1,6 +1,6 @@
-taxonomy: org/clulab/asist/grammars/taxonomy.yml
+taxonomy: org/clulab/asist/taxonomies/study3_taxonomy.yml
 
-vars: org/clulab/asist/grammars/triggers.yml
+vars: org/clulab/asist/study3_study2/triggers.yml
 
 # to activate this master file, go to src/main/resources/application.conf and change the master file there
 
@@ -17,90 +17,90 @@ rules:
       []
 
   # Extract past and future tense
-  - import: org/clulab/asist/grammars/tense.yml
+  - import: org/clulab/asist/study3_study2/tense.yml
     vars:
       rulepriority: "2"
 
   # Extract the entities
-  - import: org/clulab/asist/grammars/entities.yml
+  - import: org/clulab/asist/study3_study2/entities.yml
     vars:
       rulepriority: "3+"
 
   # Extract the items
-  - import: org/clulab/asist/grammars/items.yml
+  - import: org/clulab/asist/study3_study2/items.yml
     vars:
       rulepriority: "3+"
       second_priority: "4+"
 
   # Extract the sentiments
-  - import: org/clulab/asist/grammars/sentiments.yml
+  - import: org/clulab/asist/study3_study2/sentiments.yml
     vars:
       rulepriority: "4"
 
   # import study2 rooms
-  - import: org/clulab/asist/grammars/study_2_rooms.yml
+  - import: org/clulab/asist/study3_study2/study_2_rooms.yml
     vars:
       first_priority: "4+"
       second_priority: "5"
       third_priority: "6"
 
   # Extract the locations
-  - import: org/clulab/asist/grammars/locations.yml
+  - import: org/clulab/asist/study3_study2/locations.yml
     vars:
       first_priority: "4+"
       second_priority: "5"
       third_priority: "6"
 
   # Extract the base_concepts
-  - import: org/clulab/asist/grammars/base_concepts.yml
+  - import: org/clulab/asist/study3_study2/base_concepts.yml
     vars:
       rulepriority: "5+"
 
 #   Extract the marker meanings///
-  - import: org/clulab/asist/grammars/marker_meanings.yml
+  - import: org/clulab/asist/study3_study2/marker_meanings.yml
     vars:
       rulepriority: "5+"
       second_priority: "6+"
 
   # Extract time mentions, e.g., "30 seconds"
-  - import: org/clulab/asist/grammars/time.yml
+  - import: org/clulab/asist/study3_study2/time.yml
     vars:
       rulepriority: "3"
 
   # Extract the simple events
-  - import: org/clulab/asist/grammars/actions.yml
+  - import: org/clulab/asist/study3_study2/actions.yml
     vars:
       rulepriority: "8"
       genericpriority: "9"
 
   # Extract the planning terms, COMMENTED OUT WHILE FILE IS EMPTY
-  - import: org/clulab/asist/grammars/planning.yml
+  - import: org/clulab/asist/study3_study2/planning.yml
     vars:
       rulepriority: "10+"
 
   # Extract the complex events, COMMENTED OUT WHILE FILE IS EMPTY
-  #- import: org/clulab/asist/grammars/complex_actions.yml
+  #- import: org/clulab/asist/study3_study2/complex_actions.yml
   #  vars:
   #    rulepriority: "7+"
 
   # Extract commitments
-  - import: org/clulab/asist/grammars/commitment.yml
+  - import: org/clulab/asist/study3_study2/commitment.yml
     vars:
       rulepriority: "9+"
 
   # Extract questions
-  - import: org/clulab/asist/grammars/questions.yml
+  - import: org/clulab/asist/study3_study2/questions.yml
     vars:
       rulepriority: "6+"
 
   # Extract team_comms
-  - import: org/clulab/asist/grammars/team_communication.yml
+  - import: org/clulab/asist/study3_study2/team_communication.yml
     vars:
       rulepriority: "6+"
       second_priority: "7+"
 
   # Extract temporal extractions
-  - import: org/clulab/asist/grammars/temporal_extractions.yml
+  - import: org/clulab/asist/study3_study2/temporal_extractions.yml
     vars:
       rulepriority: "10+"
       earlypriority: "9+"

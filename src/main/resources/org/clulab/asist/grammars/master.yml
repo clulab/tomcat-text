@@ -1,4 +1,4 @@
-taxonomy: org/clulab/asist/grammars/taxonomy.yml
+taxonomy: org/clulab/asist/taxonomies/study4_taxonomy.yml
 
 vars: org/clulab/asist/grammars/triggers.yml
 
@@ -8,7 +8,7 @@ rules:
   # match all tokens to be able to use them later,
   # BUT don't keep unless found by some other rule
   - name: allTokens
-    label: Concept
+    label: Token
     priority: 1
     type: token
     keep: false
@@ -20,15 +20,30 @@ rules:
     vars:
       rulepriority: "2"
 
+  # Extract numbers
+  - import: org/clulab/asist/grammars/numbers.yml
+    vars:
+      rulepriority: "3"
+
   # Extract the entities
   - import: org/clulab/asist/grammars/entities.yml
     vars:
       rulepriority: "3+"
 
+  # Extract the sequences
+  - import: org/clulab/asist/grammars/study4/study4_sequence.yml
+    vars:
+      rulepriority: "5+"
+
+  # Extract the bomb_rules
+  - import: org/clulab/asist/grammars/study4/bomb_rules.yml
+    vars:
+      rulepriority: "6+"
+
   # Extract the items
   - import: org/clulab/asist/grammars/items.yml
     vars:
-      rulepriority: "3+"
+      rulepriority: "4+"
       second_priority: "5+"
 
   # Extract the sentiments
@@ -48,10 +63,11 @@ rules:
     vars:
       rulepriority: "5+"
 
-  # Extract the puzzle concepts
-  - import: org/clulab/asist/grammars/puzzle_concepts.yml
+  # Extract the study 4 base_concepts
+  - import: org/clulab/asist/grammars/study4/base_concepts_study4.yml
     vars:
       rulepriority: "5+"
+      second_priority: "7"
 
   # Extract the marker meanings//// We have this disabled for study 3master.yml
 #  - import: org/clulab/asist/grammars/marker_meanings.yml
@@ -65,6 +81,12 @@ rules:
 
   # Extract the simple events
   - import: org/clulab/asist/grammars/actions.yml
+    vars:
+      rulepriority: "8"
+      genericpriority: "9"
+
+  # Extract the simple events
+  - import: org/clulab/asist/grammars/study4/actions_study4.yml
     vars:
       rulepriority: "8"
       genericpriority: "9"
@@ -89,8 +111,30 @@ rules:
     vars:
       rulepriority: "6+"
 
+  # Extract study 4 questions
+  - import: org/clulab/asist/grammars/study4/study4_questions.yml
+    vars:
+      rulepriority: "6+"
+      second_priority: "9+"
+
+  # Extract study 4 strategies
+  - import: org/clulab/asist/grammars/study4/study4_team_strategies.yml
+    vars:
+      rulepriority: "6+"
+
+  # Extract coordination
+  - import: org/clulab/asist/grammars/coordination.yml
+    vars:
+      rulepriority: "6+"
+
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
+    vars:
+      rulepriority: "6+"
+      second_priority: "7+"
+
+  # Extract study4_team_comms
+  - import: org/clulab/asist/grammars/study4/study4_team_comm.yml
     vars:
       rulepriority: "6+"
       second_priority: "7+"

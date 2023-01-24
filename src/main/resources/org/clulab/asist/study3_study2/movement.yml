@@ -1,4 +1,4 @@
-vars: org/clulab/asist/grammars/vars.yml
+vars: org/clulab/asist/study3_study2/vars.yml
 
 
 rules:
@@ -53,6 +53,43 @@ rules:
       trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
       agent: Entity? = >/${agents}/
 
+  - name: move_victim
+    priority: ${ rulepriority }
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(${ move_victim_triggers })$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim_bring
+    priority: ${ rulepriority }
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^(bring|carry)$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      target: Location? =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >/${objects}/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim_take
+    priority: ${ rulepriority }
+    example: "taking the victim to a2"
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^take$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      target: Location =  >/nmod_(through|to|toward|by|over|in_front_of|next_to)/
+      agent: Entity? = >/${agents}/
+
+  - name: move_victim_take_keep_false
+    priority: ${ rulepriority }
+    keep: false
+    label: MoveVictim
+    pattern: |
+      trigger = [lemma=/(?i)^take$/ & tag=/^V/]
+      victim: Victim = >/dobj/
+      agent: Entity? = >/${agents}/
+
   - name: move_deixis_action
     priority: ${ rulepriority }
     label: MoveTo
@@ -88,9 +125,8 @@ rules:
   - name: leave_no_location
     priority: ${ rulepriority }
     label: MoveFrom
-    keep: false
     pattern: |
-      trigger = (?<! have ) [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|dobj|nmod|ccomp)/] | [lemma=go] away
+      trigger = [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|dobj|nmod|ccomp)/] | [lemma=go] away
       agent: Entity? = >/${agents}/
 
   - name: enter_action

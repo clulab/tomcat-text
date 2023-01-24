@@ -1,4 +1,4 @@
-vars: org/clulab/asist/grammars/vars.yml
+vars: org/clulab/asist/study3_study2/vars.yml
 
 rules:
 
@@ -8,7 +8,7 @@ rules:
     label: Hammer
     keep: ${ keep_items }
     pattern: |
-      trigger = [lemma=/${ hammer_triggers }/]
+      trigger = [lemma=/^${ hammer_triggers }$/]
       owner: Entity? = >"nmod:poss"
 
   - name: medkit
@@ -35,3 +35,24 @@ rules:
     pattern: |
       trigger = [lemma=/map/]
       owner: Entity? = >"nmod:poss"
+
+# -------- marker blocks ----------
+  - import: org/clulab/asist/study3_study2/marker_blocks.yml
+  # -------- map objects ----------
+
+  - name: threat_sign_token
+    example: "I have a threatsign on my map"
+    priority: ${ rulepriority }
+    label: ThreatSign
+    type: token
+    keep: ${ keep_items }
+    pattern: |
+      [lemma=/(?i)^threat/] [lemma=/^sign|^indicator/] | [lemma=/(?i)threatsign/]
+
+  - name: threat_sign_token_unspecified
+    priority: ${ rulepriority }
+    label: Threat
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)^threat/]

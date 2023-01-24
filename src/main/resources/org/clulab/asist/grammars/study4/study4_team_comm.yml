@@ -1,0 +1,153 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+
+  - name: "HelpRequests_simple_action"
+    label: HelpRequest
+    example: "I need help with defusing the bomb."
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [word=/(?i)need|require/] []? [word=/(?i)help|assistance/ & tag=/NN|^VB$/]
+      agent: Self? = >/${agents}/
+      action: Action = >/advcl/|
+                      >/acl/
+      location: Location? = >/${preps}/|
+               >/advmod/
+
+  - name: "I_am_color"
+    label: DeclareColor
+    example: "I'm red"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/]
+      agent: Self = >/${agents}/ | <cop >nsubj
+      color: Color = >/${objects}/ | <cop
+
+  - name: "possess"
+    label: ReportPossession
+    example: "I have a tool"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger =  [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      object: Product = >/${objects}/
+
+  - name: "possess_number"
+    label: ReportPossession
+    example: "I have a 5"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger =  [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      number: Number = >/${objects}/
+      object: Item? = >/${objects}/ >nmod_of
+
+  - name: "possess_coin"
+    label: ReportPossession
+    example: "I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      object: Coin = >/${objects}/
+
+  - name: "out_of_product"
+    label: OutOfThing
+    example: "Welp, we are out of tools"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/] [word=out] | [lemma=/^we.?re$/] [word=out] | [lemma=/^im$/] [word=out]
+      agent: Entity? =  <cop >/${agents}/
+      object: Product = >nmod_out_of | <cop
+
+  - name: "out_of_coin"
+    label: OutOfThing
+    example: "Welp, we are out of coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/] [word=out] | [lemma=/^we.?re$/] [word=out] | [lemma=/^im$/] [word=out]
+      agent: Entity? =  <cop >/${agents}/
+      object: Coin = >nmod_out_of | <cop
+
+  - name: "got_bomb"
+    label: ReportBomb
+    example: "I got a bomb"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^have$/] | [word=got]
+      agent: Entity? = >/${agents}/
+      bomb: Bomb = >/${objects}/
+
+  - name: found_bomb
+    priority: ${ rulepriority }
+    label: FindBomb
+    example: "I found a bob."
+    pattern: |
+      trigger = [lemma=/(?i)^find$|^discover$/]
+      bomb: Bomb = >/${objects}/
+      agent: Entity? = >/${agents}/
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
+               >/${agents}/
+               >/${preps}/
+      map: Map? = >/${positional_preps}/
+
+  ###################### Plans for study 4 live here for now
+  - name: shall_should_plan
+    priority: ${ rulepriority }
+    example: "I will save this guy. I'll start going there"
+    label: ShouldPlan
+    action: preventSubjectVerbInversion
+    pattern: |
+      trigger = (?<! [mention=Question] ) [tag=/^MD/ & lemma=/^should|^shall$/]
+      topic: Action = <aux >xcomp?
+      agent: Entity? = <aux >nsubj
+
+  - name: suggest_propose
+    priority: ${ rulepriority }
+    example: "I suggest we split up. I propose to buy a sensor"
+    label: Proposal
+    pattern: |
+      trigger = (?<! [mention=Question] ) [tag=/^V/ & lemma=/^suggest|^propose$/]
+      topic: Action = >xcomp| >ccomp
+      agent: Entity? = <aux >nsubj
+
+  - name: is_left2
+    example: "5 tools are left"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+        trigger = [word=/^(left)|(remaining)$/]
+        item: Item = >/nsubj/
+        agent: Entity? = <ccomp >nsubj
+  #      topic: Action = <amod <dobj | <advmod <dobj
+
+  - name: is_left_of
+    example: "I have 5 left of the red tool"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      item: Item = >/nmod_of/
+      agent: Entity? = <dobj >nsubj
+      number: Number = >nummod | >amod | >det
+
+  - name: is_left_of_color
+    example: "I have 5 left of the red tool"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      item: Color = >/nmod_of/
+      agent: Entity? = <dobj >nsubj
+      number: Number = >nummod | >amod | >det
+
+  - name: is_left_obj
+    example: "How many tools do we have left?"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      item: Item = >dobj
+      agent: Entity? = <nsubj
+  #      topic: Action = <amod <dobj | <advmod <dobj

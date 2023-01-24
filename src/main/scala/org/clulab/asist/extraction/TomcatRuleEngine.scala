@@ -38,7 +38,7 @@ class TomcatRuleEngine(
       getPath("masterRulesPath", "/org/clulab/asist/grammars/master.yml")
     )
     val taxonomyPath: String =
-      getPath("taxonomyPath", "/org/clulab/asist/grammars/taxonomy.yml")
+      getPath("taxonomyPath", "/org/clulab/asist/taxonomies/study4_taxonomy.yml")
 
     def apply(): LoadableAttributes = {
       // Reread these values from their files/resources each time 

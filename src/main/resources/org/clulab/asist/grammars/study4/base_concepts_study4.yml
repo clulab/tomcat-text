@@ -1,0 +1,153 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: bomb1
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+
+  - name: direction
+    priority: ${ rulepriority }
+    label: Direction
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)direction$|^way$/ & tag=/^N/]
+
+  - name: single_use_tool
+    priority: ${ rulepriority }
+    label: OneUseTool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
+
+  - name: sensor
+    priority: ${ rulepriority }
+    label: SensorTool
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)sensor/] [lemma=/(?i)tool/]?
+
+  - name: sensor2
+    priority: ${ rulepriority }
+    label: SensorTool
+    type: token
+    keep: true
+    pattern: |
+      [lemma=/(?i)scanner/] [lemma=/(?i)tool/]?
+
+  - name: redtool
+    priority: ${ rulepriority }
+    label: RedTool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
+
+  - name: bluetool
+    priority: ${ rulepriority }
+    label: BlueTool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
+
+  - name: greentool
+    priority: ${ rulepriority }
+    label: GreenTool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
+
+
+  - name: coin
+    priority: ${ rulepriority }
+    label: Coin
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+
+  - name: product_number
+    priority: ${ rulepriority }
+    label: Product
+    type: token
+    keep: false
+    pattern: |
+      [entity=NUMBER] [word=of]? [tag=PRP & !mention=Product & !mention=Coin]?
+
+  - name: health
+    priority: ${ rulepriority }
+    label: Health
+    type: token
+    keep: false
+    pattern: |
+      [word=health]
+
+  - name: tool_generic_number
+    priority: ${ second_priority }
+    label: Tool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)
+      (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
+
+  - name: tool_generic_owner
+    priority: ${ second_priority }
+    label: Tool
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity) [!lemma=/have|got/]? (@number:Number)?
+      (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
+
+  - name: tool_generic
+    priority: ${ second_priority }
+    label: Tool
+    type: token
+    keep: false
+    pattern: |
+       (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool])
+
+  - name: unknown_prod_numbered
+    priority: ${ second_priority }
+    label: OfEachTool
+    example: "6 of each"
+    keep: true
+    pattern: |
+      trigger = (?<! [mention=Tool] ) [lemma=/^each/]  (?!  [mention=Tool])
+      number: Number = <"nmod_of" |>"compound"
+
+  - name: tool_wire_snip
+    priority: ${ second_priority }
+    label: Tool
+    keep: ${ keep_items }
+    pattern: |
+      trigger = [word=wire] [word=/^(cutters?)|(snips?)$/]
+      owner: Entity? = >"nmod:poss"
+# TODO: figure out what they mean by wire snips
+  - name: map_sectors
+    priority: ${ rulepriority }
+    label: MapSector
+    type: token
+    keep: false
+    pattern: |
+      @Map [lemma=/^sector$|^quadrant$|^area$|^section$/]
+
+
+  - name: for_each_player
+    priority: ${ second_priority }
+    label: EachPlayer
+    example: "a tool for each of us"
+    type: token
+    keep: true
+    pattern: |
+      for? [lemma=/^each/] of? [mention=Team] (?!  [mention=Tool])
