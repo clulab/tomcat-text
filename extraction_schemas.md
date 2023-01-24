@@ -13,6 +13,50 @@ _No arguments_
 
 ----------------------------------
 
+###  Blue
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Blue`, `Color`, `Concept`] 
+|keep             | [`false`, `true`] 
+
+_No arguments_
+
+----------------------------------
+
+###  Green
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Green`, `Color`, `Concept`] 
+|keep             | [`false`, `true`] 
+
+_No arguments_
+
+----------------------------------
+
+###  Red
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Red`, `Color`, `Concept`] 
+|keep             | [`false`, `true`] 
+
+_No arguments_
+
+----------------------------------
+
+###  Direction
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Direction`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
 ###  East
 
 |Attribute        |  Value | 
@@ -167,6 +211,17 @@ _No arguments_
 
 ----------------------------------
 
+###  EachPlayer
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`EachPlayer`, `Entity`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
 ###  Other
 
 |Attribute        |  Value | 
@@ -189,77 +244,11 @@ _No arguments_
 
 ----------------------------------
 
-###  Blue
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Blue`, `Player`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Green
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Green`, `Player`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Red
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Red`, `Player`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Engineer
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Engineer`, `Role`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Medic
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Medic`, `Role`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
 ###  Searcher
 
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Searcher`, `Role`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Transporter
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Transporter`, `Role`, `Entity`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
@@ -288,83 +277,6 @@ _No arguments_
 
 ----------------------------------
 
-###  Victim
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  CriticalVictim
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`CriticalVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  NoVictim
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`NoVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  RegularVictim
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  VictimTypeA
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`VictimTypeA`, `RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  VictimTypeB
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`VictimTypeB`, `RegularVictim`, `Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Type
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Type`, `Victim`, `Entity`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
 ###  Yellow
 
 |Attribute        |  Value | 
@@ -387,85 +299,19 @@ _No arguments_
 
 ----------------------------------
 
-###  ChangePriority
+###  CoordinateAnd
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`ChangePriority`, `ComplexAction`, `Action`, `EventLike`, `Concept`] 
+|label hierarchy  | [`CoordinateAnd`, `Action`, `EventLike`, `Concept`] 
 |keep             | `true` 
 
 _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Victim`, `Person`] | _none_ | `true`
-
-----------------------------------
-
-###  MoveVictim
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`MoveVictim`, `ComplexAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Location`] | [_none_, `?`] | [`false`, `true`]
-| _victim_ | [`Victim`] | _none_ | `true`
-
-----------------------------------
-
-###  Precedence
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Precedence`, `ComplexAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _second_ | [`EventLike`] | `?` | `false`
-| _first_ | [`EventLike`] | `?` | `false`
-
-----------------------------------
-
-###  Search
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Search`, `ComplexAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | [_none_, `?`] | [`false`, `true`]
-| _location_ | [`Location`] | `?` | `false`
-| _target_ | [`Location`, `Concept`] | [_none_, `?`] | [`false`, `true`]
-| _area_ | [`Location`] | _none_ | [`false`, `true`]
-
-----------------------------------
-
-###  GenericAction
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`GenericAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _target_ | [`Entity`] | `?` | `false`
+| _action1_ | [`Action`] | _none_ | `true`
+| _action2_ | [`Action`] | _none_ | `true`
 
 ----------------------------------
 
@@ -485,11 +331,11 @@ _Arguments_
 
 ----------------------------------
 
-###  Clear
+###  ChangePriority
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|label hierarchy  | [`ChangePriority`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
 |keep             | `true` 
 
 _Arguments_
@@ -497,7 +343,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Rubble`, `Location`] | _none_ | `true`
+| _target_ | [`Victim`, `Person`] | _none_ | `true`
 
 ----------------------------------
 
@@ -516,11 +362,38 @@ _Arguments_
 
 ----------------------------------
 
+###  Communicate
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _topic_ | [`Action`] | `?` | `false`
+
+----------------------------------
+
 ###  Agreement
 
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  AgreementToIdea
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`AgreementToIdea`, `Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
@@ -567,7 +440,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _topic_ | [`Action`] | _none_ | [`false`, `true`]
+| _topic_ | [`Action`] | _none_ | `true`
 
 ----------------------------------
 
@@ -617,6 +490,7 @@ _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
+| _action_ | [`Action`] | _none_ | [`false`, `true`]
 | _agent_ | [`Self`, `Entity`] | `?` | `false`
 | _location_ | [`Location`] | `?` | `false`
 | _helper_ | [`Entity`] | `?` | `false`
@@ -704,39 +578,6 @@ _Arguments_
 
 ----------------------------------
 
-###  DeliberatePlan
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`DeliberatePlan`, `Commitment`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | [_none_, `?`] | [`false`, `true`]
-| _target_ | [`Action`] | _none_ | [`false`, `true`]
-| _topic_ | [`Action`] | _none_ | [`false`, `true`]
-
-----------------------------------
-
-###  MakeCommitment
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`MakeCommitment`, `Commitment`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _topic_ | [`Action`] | _none_ | `true`
-
-----------------------------------
-
 ###  ContingentPlan
 
 |Attribute        |  Value | 
@@ -753,14 +594,63 @@ _Arguments_
 
 ----------------------------------
 
+###  DeliberatePlan
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`DeliberatePlan`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | [_none_, `?`] | [`false`, `true`]
+| _target_ | [`Action`] | _none_ | [`false`, `true`]
+| _topic_ | [`Action`] | _none_ | [`false`, `true`]
+
+----------------------------------
+
 ###  PlanLanguage
 
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`PlanLanguage`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | `false` 
 
 _No arguments_
+
+----------------------------------
+
+###  Proposal
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Proposal`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _topic_ | [`Action`] | _none_ | `true`
+
+----------------------------------
+
+###  ShouldPlan
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`ShouldPlan`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _topic_ | [`Action`] | _none_ | `true`
 
 ----------------------------------
 
@@ -811,12 +701,54 @@ _Arguments_
 
 ----------------------------------
 
+###  NumberQuestion
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`NumberQuestion`, `Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _topic_ | [`Action`, `Remaining`] | [_none_, `?`] | [`false`, `true`]
+| _item_ | [`Product`] | _none_ | `true`
+
+----------------------------------
+
+###  PriceQuestion
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`PriceQuestion`, `Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _topic_ | [`Product`] | _none_ | `true`
+
+----------------------------------
+
 ###  QuestionParticle
 
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`QuestionParticle`, `Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
 |keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  WhatRemaining
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`WhatRemaining`, `Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
 
 _No arguments_
 
@@ -853,6 +785,71 @@ _Arguments_
 | _location_ | [`Location`] | `?` | `false`
 | _target_ | [`Entity`] | _none_ | [`false`, `true`]
 | _topic_ | [`Action`, `Need`] | _none_ | [`false`, `true`]
+
+----------------------------------
+
+###  ReportBomb
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`ReportBomb`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _bomb_ | [`Bomb`] | _none_ | `true`
+
+----------------------------------
+
+###  DeclareColor
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`DeclareColor`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Self`] | _none_ | `true`
+| _color_ | [`Color`] | _none_ | `true`
+
+----------------------------------
+
+###  OutOfThing
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`OutOfThing`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _object_ | [`Product`, `Coin`] | _none_ | `true`
+
+----------------------------------
+
+###  Remaining
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Remaining`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _number_ | [`Number`] | _none_ | [`false`, `true`]
+| _item_ | [`Item`, `Color`] | _none_ | `true`
 
 ----------------------------------
 
@@ -917,6 +914,23 @@ _Arguments_
 
 ----------------------------------
 
+###  ReportPossession
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`ReportPossession`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _object_ | [`Product`, `Item`, `Coin`] | [_none_, `?`] | [`false`, `true`]
+| _number_ | [`Number`] | _none_ | [`false`, `true`]
+
+----------------------------------
+
 ###  RoleDeclare
 
 |Attribute        |  Value | 
@@ -930,22 +944,6 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | _none_ | `true`
 | _target_ | [`Role`] | _none_ | `true`
-
-----------------------------------
-
-###  ReportThreatRoom
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`ReportThreatRoom`, `RoomStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _room_ | [`Room`] | _none_ | `true`
-| _threat_ | [`ThreatRoom`, `ThreatSign`, `ThreatRoomMarker`] | _none_ | `true`
 
 ----------------------------------
 
@@ -968,6 +966,87 @@ _No arguments_
 |keep             | `true` 
 
 _No arguments_
+
+----------------------------------
+
+###  Scout
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Scout`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Location`] | `?` | `false`
+| _map_ | [`Map`] | `?` | `false`
+
+----------------------------------
+
+###  SpreadOut
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`SpreadOut`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
+###  StickTogether
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`StickTogether`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
+###  Defuse
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Defuse`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Bomb`] | _none_ | `true`
+
+----------------------------------
+
+###  FindBomb
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`FindBomb`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _location_ | [`Location`] | `?` | `false`
+| _bomb_ | [`Bomb`] | _none_ | `true`
+| _map_ | [`Map`] | `?` | `false`
 
 ----------------------------------
 
@@ -1024,7 +1103,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`MoveFrom`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
+|keep             | [`false`, `true`] 
 
 _Arguments_
 
@@ -1084,71 +1163,19 @@ _Arguments_
 
 ----------------------------------
 
-###  PlaceMarker
+###  Precedence
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`PlaceMarker`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|label hierarchy  | [`Precedence`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
 |keep             | `true` 
 
 _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
-| _location_ | [`Location`] | `?` | `false`
-| _target_ | [`MarkerBlock`] | _none_ | `true`
-| _marker_meaning_ | [`Concept`] | `?` | `false`
-
-----------------------------------
-
-###  Save
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Save`, `RescueInteractions`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _location_ | [`Location`] | `?` | `false`
-| _target_ | [`Victim`, `Person`, `Entity`] | _none_ | `true`
-
-----------------------------------
-
-###  Stabilize
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Stabilize`, `RescueInteractions`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _location_ | [`Location`] | `?` | `false`
-| _target_ | [`Victim`, `Person`] | _none_ | `true`
-
-----------------------------------
-
-###  WakeUp
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`WakeUp`, `RescueInteractions`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _location_ | [`Location`] | `?` | `false`
-| _target_ | [`Person`, `Victim`] | _none_ | `true`
+| _second_ | [`EventLike`] | `?` | `false`
+| _first_ | [`EventLike`] | `?` | `false`
 
 ----------------------------------
 
@@ -1165,6 +1192,75 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _target_ | [`Role`] | _none_ | `true`
+
+----------------------------------
+
+###  Search
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Search`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | [_none_, `?`] | [`false`, `true`]
+| _location_ | [`Location`] | `?` | `false`
+| _target_ | [`Location`, `Concept`] | [_none_, `?`] | [`false`, `true`]
+| _area_ | [`Location`] | _none_ | [`false`, `true`]
+
+----------------------------------
+
+###  Shop
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Shop`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Product`] | [_none_, `?`] | [`false`, `true`]
+| _for_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
+###  Afford
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Afford`, `Shop`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Product`] | `?` | `false`
+| _for_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
+###  ReBuy
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`ReBuy`, `Shop`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Product`] | `?` | `false`
+| _for_ | [`Entity`] | `?` | `false`
 
 ----------------------------------
 
@@ -1187,11 +1283,11 @@ _Arguments_
 
 ----------------------------------
 
-###  Toggle
+###  Transfer
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Toggle`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|label hierarchy  | [`Transfer`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
 |keep             | `true` 
 
 _Arguments_
@@ -1199,9 +1295,42 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _location_ | [`Location`] | `?` | `false`
-| _target_ | [`Switch`] | _none_ | `true`
-| _map_ | [`Map`] | `?` | `false`
+| _beneficiary_ | [`Color`] | `?` | `false`
+| _target_ | [`Coin`, `Product`] | _none_ | `true`
+
+----------------------------------
+
+###  Use
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Use`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Item`] | _none_ | `true`
+| _for_ | [`Action`] | _none_ | `true`
+
+----------------------------------
+
+###  UseTool
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`UseTool`, `Use`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Product`] | _none_ | `true`
+| _for_ | [`Action`] | `?` | `false`
 
 ----------------------------------
 
@@ -1247,721 +1376,6 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  A1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`A1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  A2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`A2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  A3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`A3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  A4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`A4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  A4A
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`A4A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B5
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B6
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B6`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B7
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B7`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B8
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B8`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  B9
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`B9`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C5
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C6
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C6`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C7
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C7`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  C8
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`C8`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  D1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`D1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  D2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`D2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  D3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`D3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  D4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`D4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  E1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`E1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  E2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`E2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  E3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`E3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  E4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`E4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  E5
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`E5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  F1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`F1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  F2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`F2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  F3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`F3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  F4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`F4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  F5
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`F5`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  G1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`G1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  G2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`G2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  G3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`G3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  H1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`H1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  H1A
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`H1A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  H2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`H2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  I1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  I1A
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I1A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
-
-_No arguments_
-
-----------------------------------
-
-###  I2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  I2A
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I2A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
-
-_No arguments_
-
-----------------------------------
-
-###  I3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  I3A
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I3A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
-
-_No arguments_
-
-----------------------------------
-
-###  I4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  I4A
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`I4A`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | [`false`, `true`] 
-
-_No arguments_
-
-----------------------------------
-
-###  J1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`J1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  J2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`J2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  J3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`J3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  J4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`J4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  K1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`K1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  K2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`K2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  K3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`K3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  K4
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`K4`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  L1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`L1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  L2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`L2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  L3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`L3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  M1
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`M1`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  M2
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`M2`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  M3
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`M3`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  ThreatRoom
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`ThreatRoom`, `Room`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
@@ -2027,99 +1441,140 @@ _No arguments_
 
 ----------------------------------
 
-###  MarkerBlock
+###  Bomb
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`Bomb`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
 
 ----------------------------------
 
-###  CriticalMarkerBlock
+###  BombIsType
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`CriticalMarkerBlock`, `MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`BombIsType`, `BombAttributes`, `Bomb`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _type_ | [`Sequence`] | _none_ | `true`
+
+----------------------------------
+
+###  Sequence
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Sequence`, `Bomb`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
 
 ----------------------------------
 
-###  NoVictimMarkerBlock
+###  FourStep
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`NoVictimMarkerBlock`, `MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`FourStep`, `Sequence`, `Bomb`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
 
 ----------------------------------
 
-###  RegularMarkerBlock
+###  OneStep
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`RegularMarkerBlock`, `MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`OneStep`, `Sequence`, `Bomb`, `Item`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  ThreeStep
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`ThreeStep`, `Sequence`, `Bomb`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
 
 ----------------------------------
 
-###  TypeAMarker
+###  TwoStep
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`TypeAMarker`, `RegularMarkerBlock`, `MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`TwoStep`, `Sequence`, `Bomb`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
 
 ----------------------------------
 
-###  TypeBMarker
+###  Coin
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`TypeBMarker`, `RegularMarkerBlock`, `MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`Coin`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
 
 ----------------------------------
 
-###  RubbleMarker
+###  Product
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`RubbleMarker`, `MarkerBlock`, `Item`, `Concept`] 
-|keep             | `true` 
+|label hierarchy  | [`Product`, `Item`, `Concept`] 
+|keep             | `false` 
 
 _No arguments_
 
 ----------------------------------
 
-###  SOSMarker
+###  Health
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`SOSMarker`, `MarkerBlock`, `Item`, `Concept`] 
-|keep             | `true` 
+|label hierarchy  | [`Health`, `Product`, `Item`, `Concept`] 
+|keep             | `false` 
 
 _No arguments_
 
 ----------------------------------
 
-###  ThreatRoomMarker
+###  OfEachTool
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`ThreatRoomMarker`, `MarkerBlock`, `Item`, `Concept`] 
+|label hierarchy  | [`OfEachTool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _number_ | [`Number`] | _none_ | `true`
+
+----------------------------------
+
+###  SensorTool
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`SensorTool`, `Product`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
@@ -2130,8 +1585,8 @@ _No arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Tool`, `Item`, `Concept`] 
-|keep             | `false` 
+|label hierarchy  | [`Tool`, `Product`, `Item`, `Concept`] 
+|keep             | [`false`, `true`] 
 
 _Arguments_
 
@@ -2141,11 +1596,55 @@ _Arguments_
 
 ----------------------------------
 
+###  OneUseTool
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  BlueTool
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`BlueTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  GreenTool
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`GreenTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  RedTool
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`RedTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
 ###  GPS
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`GPS`, `Tool`, `Item`, `Concept`] 
+|label hierarchy  | [`GPS`, `Tools`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
@@ -2156,7 +1655,7 @@ _No arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Hammer`, `Tool`, `Item`, `Concept`] 
+|label hierarchy  | [`Hammer`, `Tools`, `Item`, `Concept`] 
 |keep             | `false` 
 
 _Arguments_
@@ -2171,7 +1670,7 @@ _Arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Map`, `Tool`, `Item`, `Concept`] 
+|label hierarchy  | [`Map`, `Tools`, `Item`, `Concept`] 
 |keep             | `false` 
 
 _Arguments_
@@ -2182,22 +1681,11 @@ _Arguments_
 
 ----------------------------------
 
-###  ThreatSign
+###  MapSector
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`ThreatSign`, `Map`, `Tool`, `Item`, `Concept`] 
-|keep             | `false` 
-
-_No arguments_
-
-----------------------------------
-
-###  Threat
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Threat`, `ThreatSign`, `Map`, `Tool`, `Item`, `Concept`] 
+|label hierarchy  | [`MapSector`, `Map`, `Tools`, `Item`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
@@ -2208,7 +1696,7 @@ _No arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`MedKit`, `Tool`, `Item`, `Concept`] 
+|label hierarchy  | [`MedKit`, `Tools`, `Item`, `Concept`] 
 |keep             | `false` 
 
 _Arguments_
@@ -2223,7 +1711,7 @@ _Arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Stretcher`, `Tool`, `Item`, `Concept`] 
+|label hierarchy  | [`Stretcher`, `Tools`, `Item`, `Concept`] 
 |keep             | `false` 
 
 _Arguments_
@@ -2245,67 +1733,36 @@ _No arguments_
 
 ----------------------------------
 
-###  Damage
+###  Less
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Damage`, `PuzzleConcept`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _location_ | [`Location`] | `?` | `false`
-| _type_ | [`Damage`] | `?` | `false`
-
-----------------------------------
-
-###  MildDamage
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`MildDamage`, `Damage`, `PuzzleConcept`, `Concept`] 
+|label hierarchy  | [`Less`, `Number`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
 
 ----------------------------------
 
-###  ModerateDamage
+###  More
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`ModerateDamage`, `Damage`, `PuzzleConcept`, `Concept`] 
+|label hierarchy  | [`More`, `Number`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
 
 ----------------------------------
 
-###  SevereDamage
+###  Some
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`SevereDamage`, `Damage`, `PuzzleConcept`, `Concept`] 
+|label hierarchy  | [`Some`, `Number`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
-
-----------------------------------
-
-###  Meeting
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Meeting`, `PuzzleConcept`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _location_ | [`Location`] | `?` | `false`
 
 ----------------------------------
 
@@ -2380,4 +1837,15 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _tense_ | [`Concept`] | _none_ | `true`
+
+----------------------------------
+
+###  Token
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Token`] 
+|keep             | `false` 
+
+_No arguments_
 
