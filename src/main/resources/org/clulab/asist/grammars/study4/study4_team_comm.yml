@@ -24,6 +24,14 @@ rules:
       agent: Self = >/${agents}/ | <cop >nsubj
       color: Color = >/${objects}/ | <cop
 
+  - name: "This_is_color"
+    label: DeclareColor
+    example: "This is red"
+    priority: ${ rulepriority }
+    type: token
+    pattern: |
+      (?<trigger> [lemma=this] [lemma=be]) (@color:Color)
+
   - name: "possess"
     label: ReportPossession
     example: "I have a tool"

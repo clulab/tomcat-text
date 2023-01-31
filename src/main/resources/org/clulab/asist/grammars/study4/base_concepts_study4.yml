@@ -8,7 +8,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (@number:Number)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/])
 
   - name: direction
     priority: ${ rulepriority }
@@ -81,7 +81,15 @@ rules:
     type: token
     keep: false
     pattern: |
-      [entity=NUMBER] [word=of]? [tag=PRP & !mention=Product & !mention=Coin]?
+      [entity=NUMBER] [word=of]? [tag=PRP & !mention=Product & !mention=Coin] (?! []? [word=each])
+
+  - name: product_number_x_of_each
+    priority: ${ rulepriority }
+    label: OfEachTool
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number) (?<trigger> [word=of]? [word=each & !mention=OfEachTool])
 
   - name: health
     priority: ${ rulepriority }
@@ -124,7 +132,16 @@ rules:
     keep: true
     pattern: |
       trigger = (?<! [mention=Tool] ) [lemma=/^each/]  (?!  [mention=Tool])
-      number: Number = <"nmod_of" |>"compound"
+      number: Number = <"nmod_of" |>"compound" | >nummod
+
+  - name: unknown_prod_numbered_token
+    priority: ${ second_priority }
+    label: OfEachTool
+    example: "6 of each"
+    type: token
+    pattern: |
+      (@number:Number) (?<! [mention=Product] []? ) (?<trigger>  [lemma=/^each/]) (?!  [mention=Product])
+
 
   - name: tool_wire_snip
     priority: ${ second_priority }

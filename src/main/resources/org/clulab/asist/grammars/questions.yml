@@ -70,7 +70,9 @@ rules:
     type: token
     label: Question
     pattern: |
-      (?<trigger> [lemma=what]) (@topic:Location | @topic:Item| @topic:Entity)
+      (?<trigger> [lemma=what]) (?! ([mention=Team]|[mention=Self]|[mention=You]))
+      (@topic:Location | @topic:Item| @topic:Entity) []?
+      @entity:Entity?
 
   - name: which_question
     example: "Which room are you in?"
@@ -113,7 +115,7 @@ rules:
     label: YesNoQuestion
     example: "Is there a victim？| Is he an engineer?"
     pattern: |
-      trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be$/ & tag=/VBP|VBZ|VBD/]  [tag=/PRP|EX/ | word=there]
+      trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be$/ & tag=/VBP|VBZ|VBD/ & !word=are]  [tag=/PRP|EX/ | word=there]
       target: Entity = <cop | >nsubj
       location: Location? = >advmod | <cop? (${ search_relations })
 

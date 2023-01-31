@@ -56,7 +56,7 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = (?<! [word=it] ) [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
+      trigger = (?<! [word=it] ) [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/] (?! [word=out])
       agent: Entity = >/${agents}/
       target: Concept? = >nmod_for
 

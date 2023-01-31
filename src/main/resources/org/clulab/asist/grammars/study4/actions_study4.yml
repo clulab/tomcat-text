@@ -16,7 +16,7 @@ rules:
     pattern: |
       trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [lemma=/^buy$|^shop$|^purchase$|^buying$/]
       agent: Entity? = >/${agents}/
-      target: Product? = >dobj
+      target: Product = >dobj
       for: Entity? = >nmod_for
 
 

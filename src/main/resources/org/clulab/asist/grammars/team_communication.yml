@@ -17,7 +17,8 @@ rules:
     label: Instruction
     example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh|[lemma=let]) []*) [tag=VB & !lemma=let & !lemma=be] (?! (you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh|[lemma=let]) []*)
+      [tag=VB & !lemma=let & !lemma=be] (?! (we) i_am_searching|(you)|([]* I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ | <aux
 
@@ -284,7 +285,7 @@ rules:
     example: "I have some rubble here"
     pattern: |
       trigger =[lemma=/(?i)have/]
-      exists: EventLike = >/${objects}/ [!mention=Remaining]
+      exists: EventLike = >/${objects}/ [!mention=Remaining] [!mention=Question]
       location: Location? = >/${objects}/ >/advmod/|
                >/${objects}/ >/${preps}/|
                >/${preps}/|
