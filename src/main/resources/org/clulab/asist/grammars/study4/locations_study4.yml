@@ -1,0 +1,38 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: area_with_argument_flag
+    priority: ${ first_priority }
+    label: Zone
+    example: "area next to my flag"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@flag:Flag)
+
+  - name: area_with_argument_beacon
+    priority: ${ first_priority }
+    label: Zone
+    example: "area next to my flag"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@beacon:Beacon)
+
+  - name: area_no_argument
+    priority: ${ first_priority }
+    label: Zone
+    type: token
+    keep: false
+    pattern: |
+        [lemma=/^(area)$/]
+
+  - name: zone_with_direction
+    priority: ${ first_priority }
+    label: Zone
+    example: "northern zone"
+    type: token
+    keep: true
+    pattern: |
+       (@direction:Direction) (?<trigger>  [lemma=/^(area|zone|corner)$/])

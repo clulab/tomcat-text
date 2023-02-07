@@ -10,6 +10,22 @@ rules:
       agent: Entity? = >/${agents}/
       target: Bomb = >dobj
 
+  - name: defuse2
+    priority: ${ rulepriority }
+    label: Defuse
+    pattern: |
+      trigger = [lemma=/(?i)^get$/ & tag=/^V/] [lemma=rid] [lemma=/of/]
+      agent: Entity? = >/${agents}/
+      target: Bomb = >dobj | >nmod_of
+
+  - name: defuse3
+    priority: ${ rulepriority }
+    label: Defuse
+    pattern: |
+      trigger = [lemma=/(?i)^remove/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Bomb = >dobj
+
   - name: shop1
     priority: ${ rulepriority }
     label: Shop
@@ -26,6 +42,16 @@ rules:
     label: Shop
     pattern: |
       trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=get]
+      agent: Entity? = >/${agents}/
+      target: Product = >dobj
+      for: Entity? = >nmod_for
+
+  - name: shop_getting
+    example: "Let's start by getting a scanner"
+    priority: ${ rulepriority }
+    label: Shop
+    pattern: |
+      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=getting]
       agent: Entity? = >/${agents}/
       target: Product = >dobj
       for: Entity? = >nmod_for
@@ -82,8 +108,8 @@ rules:
     pattern: |
       trigger = [lemma=/^use$|^utilize/]
       agent: Entity? = >/${agents}/
-      target: Product = >dobj [!mention=Coin]
-      for: Action? = >advcl_to | >advcl_for
+      tool: Product = >dobj [!mention=Coin]
+      for: Action? = >advcl_to | >advcl_for |  >advcl_on
 
   - name: use_generic
     priority: ${ rulepriority }

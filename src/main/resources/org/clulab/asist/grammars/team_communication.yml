@@ -360,7 +360,7 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [word=/(?i)need|want/] (?! []? [word=to]) (?= [tag=/NN|PRP/])
-      helper: Entity? = >nmod:tmod|<acl:relcl|<dep|>dobj
+      helper: Entity = >nmod:tmod|<acl:relcl|<dep|>dobj
       agent: Self? = >/${agents}/
       location: Location? = >/${preps}/|
                >/advmod/ |

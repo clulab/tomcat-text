@@ -24,6 +24,15 @@ rules:
       agent: Self = >/${agents}/ | <cop >nsubj
       color: Color = >/${objects}/ | <cop
 
+  - name: "I_am_color player"
+    label: DeclareColor
+    example: "I'm red player"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/]
+      agent: Self = >/${agents}/ | <cop >nsubj
+      color: Color = <cop >amod
+
   - name: "This_is_color"
     label: DeclareColor
     example: "This is red"
@@ -159,3 +168,12 @@ rules:
       item: Item = >dobj
       agent: Entity? = <nsubj
   #      topic: Action = <amod <dobj | <advmod <dobj
+
+  - name: take_area
+    example: "I will take that area"
+    priority: ${ rulepriority }
+    label: TakeZone
+    pattern: |
+      trigger = [lemma=/^(take)$|^(do)$/]
+      zone: Zone = >/dobj/
+      agent: Entity? =  >nsubj

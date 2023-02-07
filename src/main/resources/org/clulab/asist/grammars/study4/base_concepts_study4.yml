@@ -66,6 +66,14 @@ rules:
     pattern: |
       (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
 
+  - name: greentool_just_number
+    priority: ${ rulepriority }
+    label: GreenTool
+    example: "I got 5 green"
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
 
   - name: coin
     priority: ${ rulepriority }
@@ -168,3 +176,47 @@ rules:
     keep: true
     pattern: |
       for? [lemma=/^each/] of? [mention=Team] (?!  [mention=Tool])
+
+
+  - name: flag_no_and
+    priority: ${ rulepriority }
+    label: Flag
+    example: "flag 3"
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? (?<trigger> [lemma=flag] ) []? (@number:Number  [!word=and])
+
+  - name: flag_and
+    priority: ${ rulepriority }
+    label: Flag
+    example: "flag 3 and 4"
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)? (?<trigger> [lemma=flag] )  ([tag=CD] @number:Number )
+
+  - name: flag_no_keep
+    priority: ${ rulepriority }
+    label: Flag
+    example: "flag 3 and 4"
+    type: token
+    keep: false
+    pattern: |
+          [lemma=flag] []? [!tag=CD]
+
+  - name: beacon_generic
+    priority: ${ rulepriority }
+    label: Beacon
+    type: token
+    keep: true
+    pattern: |
+      (@owner:Entity)?  (?<trigger> [lemma=beacon])
+
+  - name: beacon_comm_tool
+    priority: ${ rulepriority }
+    label: Beacon
+    type: token
+    keep: true
+    pattern: |
+          [lemma=communication] [lemma=tool]

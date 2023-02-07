@@ -20,7 +20,7 @@
         - Deictic
       - Infrastructure:
         - Room
-        - Zone
+      - Zone
       - MapSection
     - Obstacle:
       - Rubble
@@ -55,6 +55,7 @@
               - StickTogether
               - SpreadOut
               - Scout
+              - TakeZone
           - Instruction:
               - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
           - ReportStatus:
@@ -147,6 +148,7 @@
       - SouthWest
       - West
   - Item:
+    - Flag
     - Bomb:
         - Sequence:
             - OneStep
@@ -166,9 +168,10 @@
             - GreenTool
             - BlueTool
           - BombPPE
-          - RallyBeacon
-          - BombBeacon
-          - HazardBeacon
+          - Beacon:
+            - RallyBeacon
+            - BombBeacon
+            - HazardBeacon
           - BombStabilizer
           - BombDisposer
         - Bow
