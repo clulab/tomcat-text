@@ -72,6 +72,7 @@
             - ReportPossession
             - Remaining
             - OutOfThing
+            - AmReady
             - RoomStatus:
                 - RoomClear # "A1 is clear"
                 - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"

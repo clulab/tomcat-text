@@ -217,3 +217,11 @@ rules:
     keep: true
     pattern: |
       (?<trigger> [lemma=vote & !mention=Vote]) [word=on] (@on:Phase)
+
+  - name: ready
+    priority: ${ rulepriority }
+    label: AmReady
+    keep: true
+    pattern: |
+      trigger = [lemma=ready]
+      agent: Entity = >nsubj

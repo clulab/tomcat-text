@@ -11,6 +11,15 @@ rules:
       condition: Action = <mark
       solution: Action = <mark <advcl_if
 
+  - name: "when condition"
+    label: ContingentPlan
+    priority: ${ rulepriority }
+    example: "When I am out, I'll vote for store"
+    pattern: |
+      trigger = [word=When & tag=WRB]|[word=when & tag=WRB]
+      condition: Action = <advmod
+      solution: Action = <advmod <advcl
+
   - name: "DeliberateFutGALLUP"
     label: DeliberatePlan
     example: "I am going to save this guy."

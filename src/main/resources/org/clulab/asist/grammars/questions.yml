@@ -106,7 +106,7 @@ rules:
     action: requireSubjectVerbInversion
     pattern: |
       trigger = (?<! [mention=QuestionParticle]|How|[mention=Question]) [lemma=/(?i)^(do|can|will|should|have|could|be)$/] (?= [mention=Entity])
-      topic: Action = <aux [!mention=Question]
+      topic: Action = <aux [!mention=Question] | <cop [!mention=Question]
       location: Location? = <aux >/${positional_preps_+advmod}/
       agent: Entity? = <aux >/(${agents})/
 

@@ -24,7 +24,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
+      (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
 
   - name: sensor
     priority: ${ rulepriority }
@@ -48,7 +48,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
+      (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
 
   - name: bluetool
     priority: ${ rulepriority }
@@ -56,7 +56,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
+      (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
 
   - name: greentool
     priority: ${ rulepriority }
@@ -64,7 +64,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
+      (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
 
   - name: greentool_just_number
     priority: ${ rulepriority }
@@ -73,7 +73,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
+      (@agent:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
 
   - name: coin
     priority: ${ rulepriority }
@@ -81,7 +81,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+      (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
 
   - name: product_number
     priority: ${ rulepriority }
@@ -113,7 +113,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)
+      (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)
       (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
 
   - name: tool_generic_owner
@@ -122,7 +122,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity) [!lemma=/have|got/]? (@number:Number)?
+      (@agent:Entity) [!lemma=/have|got/]? (@number:Number)?
       (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
 
   - name: tool_generic
@@ -185,7 +185,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (?<trigger> [lemma=flag] ) []? (@number:Number  [!word=and])
+      (@agent:Entity)? (?<trigger> [lemma=flag] ) []? (@number:Number  [!word=and])
 
   - name: flag_and
     priority: ${ rulepriority }
@@ -194,7 +194,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (?<trigger> [lemma=flag] )  ([tag=CD] @number:Number )
+      (@agent:Entity)? (?<trigger> [lemma=flag] )  ([tag=CD] @number:Number )
 
   - name: flag_no_keep
     priority: ${ rulepriority }
@@ -211,7 +211,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)?  (?<trigger> [lemma=beacon])
+      (@agent:Entity)?  (?<trigger> [lemma=beacon])
 
   - name: beacon_comm_tool
     priority: ${ rulepriority }
