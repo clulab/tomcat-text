@@ -129,3 +129,52 @@ rules:
       trigger = [lemma=/^talk$|^discuss$|^communicate$/]
       agent: Entity? = >/${agents}/
       topic: Action? = >dobj
+
+
+  - name: move_to_store_phase
+    priority: ${ rulepriority }
+    label: MoveToStore
+    pattern: |
+      trigger = [lemma=/(?i)^(move|go|transition)$/] [word=/^(to|into)$/]
+      target: Store = >/nmod_(to|into)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: enter_store
+    priority: ${ rulepriority }
+    label: MoveToStore
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: Store = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: move_to_field_phase
+    priority: ${ rulepriority }
+    label: MoveToField
+    pattern: |
+      trigger = [lemma=/(?i)^(move|go|transition)$/] [word=/^(to|into)$/]
+      target: Field = >/nmod_(to|into)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: enter_field
+    priority: ${ rulepriority }
+    label: MoveToField
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: Field = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: move_to_planning_phase
+    priority: ${ rulepriority }
+    label: MoveToPlan
+    pattern: |
+      trigger = [lemma=/(?i)^(move|go|transition)$/] [word=/^(to|into)$/]
+      target: PlanningPhase = >/nmod_(to|into)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: enter_plan
+    priority: ${ rulepriority }
+    label: MoveToPlan
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: PlanningPhase = >dobj
+      agent: Entity? = >/${agents}/

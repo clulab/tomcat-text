@@ -87,6 +87,14 @@ rules:
       agent: Entity? =  <cop >/${agents}/
       object: Coin = >nmod_out_of | <cop
 
+  - name: Im_out
+    priority: ${ second_priority }
+    label: OutOfThing
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger> [word=am] [lemma=out & !mention=OutOfThing]) [!mention=Location]
+
   - name: "got_bomb"
     label: ReportBomb
     example: "I got a bomb"
@@ -177,3 +185,35 @@ rules:
       trigger = [lemma=/^(take)$|^(do)$/]
       zone: Zone = >/dobj/
       agent: Entity? =  >nsubj
+
+  - name: vote_for
+    priority: ${ rulepriority }
+    label: VoteFor
+    pattern: |
+      trigger = [lemma=/(?i)^(vote)$/ & tag=/^V/] [word=/^(for)$/]
+      for: Phase = >nmod_for
+      agent: Entity? = >/${agents}/
+
+  - name: vote_on
+    priority: ${ rulepriority }
+    label: Vote
+    pattern: |
+      trigger = [lemma=/(?i)^(vote)$/ & tag=/^V/] [word=/^(on)$/]
+      for: Phase = >nmod_on
+      agent: Entity? = >/${agents}/
+
+  - name: vote_token_for
+    priority: ${ second_priority }
+    label: VoteFor
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger> [lemma=vote & !mention=Vote]) [word=for] (@for:Phase)
+
+  - name: vote_token_on
+    priority: ${ second_priority }
+    label: VoteFor
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger> [lemma=vote & !mention=Vote]) [word=on] (@on:Phase)

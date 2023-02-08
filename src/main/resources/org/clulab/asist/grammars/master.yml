@@ -50,6 +50,7 @@ rules:
   - import: org/clulab/asist/grammars/sentiments.yml
     vars:
       rulepriority: "4"
+      secondpriority: "5-6"
 
   # Extract the locations
   - import: org/clulab/asist/grammars/locations.yml

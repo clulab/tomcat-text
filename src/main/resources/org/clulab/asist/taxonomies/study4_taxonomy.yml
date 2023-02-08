@@ -39,6 +39,10 @@
             - ReBuy
         - Block # for things blocking environments: "There's some rubble blocking B2."
         - Move:
+          - MoveToPhase:
+            - MoveToStore
+            - MoveToPlan
+            - MoveToField
           - MoveTo
           - MoveFrom
           - MoveEntity
@@ -51,6 +55,8 @@
         - Sight
         - PlaceMarker # "I'm placing a marker here"
         - Communicate:
+          - Vote:
+              - VoteFor
           - TeamStrategies:
               - StickTogether
               - SpreadOut
@@ -100,6 +106,7 @@
               - DeliberatePlan # players stating their future move: "I will help you"
           - Agreement:
               - AgreementToIdea
+              - AgreeToAction
           - Disagreement
         - Clear # example: "I am clearing B2"
         - RoleSwitch # example: "I will switch to engineer"
@@ -147,6 +154,10 @@
       - SouthEast
       - SouthWest
       - West
+  - Phase:
+    - Store
+    - Field
+    - PlanningPhase
   - Item:
     - Flag
     - Bomb:
@@ -176,15 +187,6 @@
           - BombDisposer
         - Bow
         - Health
-    - MarkerBlock:
-        - RegularMarkerBlock:
-            - TypeAMarker
-            - TypeBMarker
-        - NoVictimMarkerBlock
-        - CriticalMarkerBlock
-        - ThreatRoomMarker #this refers to the actual marker block
-        - RubbleMarker
-        - SOSMarker
     - Tools:
       - Hammer
       - MedKit
@@ -192,8 +194,6 @@
       - GPS
       - Map:
           - MapSector
-          - ThreatSign: #this refers to the sign on the map!
-              - Threat
   - Sentiment:
     #- Uncertainty  # include the agent
     - Positive:

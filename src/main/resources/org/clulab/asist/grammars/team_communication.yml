@@ -430,3 +430,12 @@ rules:
       helpee: Entity = >ccomp >nsubj [!mention=You] | >ccomp [!mention=You] | >dep [!mention=You] | >dobj [!mention=You]
       location: Location? = >/${preps}/|
                >/advmod/
+
+  - name: agree_to_action
+    priority: ${ rulepriority }
+    label: AgreeToAction
+    pattern: |
+      trigger = [lemma=/(?i)^(agree)$/ & tag=/^V/] [word=/^(to|on)$/]
+      action: Action = >xcomp | >nmod_on | >advcl_on |advcl_to
+      agent: Entity? = >/${agents}/
+

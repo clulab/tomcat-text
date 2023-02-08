@@ -220,3 +220,28 @@ rules:
     keep: true
     pattern: |
           [lemma=communication] [lemma=tool]
+
+
+  - name: store
+    priority: ${ rulepriority }
+    label: Store
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(store|shop|market)$/ & tag=/^N/]
+
+  - name: field
+    priority: ${ rulepriority }
+    label: Field
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(field)$/ & tag=/^N/] [word=phase]?
+
+  - name: panning_phase
+    priority: ${ rulepriority }
+    label: PlanningPhase
+    type: token
+    keep: false
+    pattern: |
+      [word=/^(planning)$/ & tag=/^N/] [word=phase]?

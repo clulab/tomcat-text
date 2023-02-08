@@ -106,7 +106,7 @@ rules:
     label: Enter
     pattern: |
       trigger = [lemma=/enter/ & tag=/^V/]
-      target: Location? = >dobj
+      target: Location = >dobj
       agent: Entity? = >/${agents}/
 
   - name: enter_into_action
