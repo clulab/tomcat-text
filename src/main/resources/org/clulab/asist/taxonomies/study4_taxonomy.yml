@@ -16,6 +16,10 @@
     - Time:
       - TimeUnit # example: "three minutes"
     - Location:
+      - Desert
+      - Village
+      - Forest
+      - Swamp
       - Inferred:
         - Deictic
       - Infrastructure:
@@ -110,6 +114,7 @@
               - AgreeToAction
           - Disagreement
         - Clear # example: "I am clearing B2"
+        - Remove
         - RoleSwitch # example: "I will switch to engineer"
         - Search         # Search(Location), example: "I'm searching the rooms here."
         - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -202,6 +207,7 @@
       #- Politeness
       - Gratitude
     - Negative
+    - Unsure
       #- Anger
       #- Worry
 

@@ -185,7 +185,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@agent:Entity)? (?<trigger> [lemma=flag] ) []? (@number:Number  [!word=and])
+      (@agent:Entity)? (?<trigger> [lemma=flag] ) []? (@number:Number ) (?!  [word=and])
 
   - name: flag_and
     priority: ${ rulepriority }
@@ -203,7 +203,7 @@ rules:
     type: token
     keep: false
     pattern: |
-          [lemma=flag] []? [!tag=CD]
+          [lemma=flag] (?!  []? [tag=CD])
 
   - name: beacon_generic
     priority: ${ rulepriority }

@@ -43,7 +43,7 @@ rules:
     pattern: |
       trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=get]
       agent: Entity? = >/${agents}/
-      target: Product = >dobj
+      target: Product = >dobj | >/nmod_.s/
       for: Entity? = >nmod_for
 
   - name: shop_getting
@@ -178,3 +178,22 @@ rules:
       trigger = [lemma=/enter/ & tag=/^V/]
       target: PlanningPhase = >dobj
       agent: Entity? = >/${agents}/
+
+  - name: clear
+    priority: ${ rulepriority }
+    example: "I've cleared the village"
+    label: Clear
+    pattern: |
+      trigger = [lemma=/(?i)^(clear|finish)$/]
+      target: Location = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: remove
+    priority: ${ rulepriority }
+    example: "Let's remove our flags from the desert"
+    label: Remove
+    pattern: |
+      trigger = [lemma=/(?i)^(remove)$/]
+      target: Item = >dobj
+      agent: Entity? = >/${agents}/
+      location: Location? = >/nmod_(in|from)/

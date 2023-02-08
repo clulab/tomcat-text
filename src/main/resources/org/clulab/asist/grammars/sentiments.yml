@@ -1,5 +1,5 @@
 vars: org/clulab/asist/grammars/vars.yml
-
+# TODO: figure out if we want stuff like "I don't agree" to be exported as agreement with "negation" attachment, or not
 rules:
 
   - name: encouragement1
@@ -34,6 +34,22 @@ rules:
     pattern: |
       [word=/(?i)^(good)|(excellent)|(great)$/] [word=/(?i)^(plan)|(idea)|(proposal)$/]
 
+  - name: agreement_good_plan_like
+    label: AgreementToIdea
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^(like)|(agree)$/] []? [word=/(?i)^(plan)|(idea)|(proposal)$/]
+
+  - name: agreement_good_plan_agree
+    label: AgreementToIdea
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)^(agree)$/] [word=/^(with|to)$/] [word=/(?i)^((plan)|(idea)|(proposal)|(that)|(this))$/]
+
   - name: agree_token_match
     label: Agreement
     priority: ${ rulepriority }
@@ -65,7 +81,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^sure$/] (?! [][])
+      (?<! [word=not] ) [lemma=/(?i)^sure$/] (?! [][])
 
   - name: agree_token_sure2
     example: "Sure, I can help"
@@ -74,7 +90,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^sure$/] (?= /\.|,|\!/)
+      (?<! [word=not] ) [lemma=/(?i)^sure$/] (?= /\.|,|\!/)
 
   - name: disagree_token_match
     label: Disagreement
@@ -99,3 +115,19 @@ rules:
     keep: true
     pattern: |
       [lemma=/(?i)^(${ thanking_triggers })$/ & !tag=TO]
+
+  - name: not_sure
+    label: Unsure
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+       [lemma=be] [word=not] [lemma=/(?i)^sure$/]
+
+  - name: dont_know
+    label: Unsure
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [lemma=do] [word=not] [lemma=/(?i)^know$/]
