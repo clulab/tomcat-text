@@ -347,6 +347,22 @@ _Arguments_
 
 ----------------------------------
 
+###  Clear
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Location`] | _none_ | `true`
+
+----------------------------------
+
 ###  Close
 
 |Attribute        |  Value | 
@@ -386,6 +402,22 @@ _Arguments_
 |keep             | `true` 
 
 _No arguments_
+
+----------------------------------
+
+###  AgreeToAction
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`AgreeToAction`, `Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _action_ | [`Action`] | _none_ | `true`
 
 ----------------------------------
 
@@ -526,7 +558,7 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Self`] | `?` | `false`
 | _location_ | [`Location`] | `?` | `false`
-| _helper_ | [`Entity`] | `?` | `false`
+| _helper_ | [`Entity`] | _none_ | `true`
 
 ----------------------------------
 
@@ -804,6 +836,21 @@ _Arguments_
 
 ----------------------------------
 
+###  AmReady
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`AmReady`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | _none_ | `true`
+
+----------------------------------
+
 ###  DeclareColor
 
 |Attribute        |  Value | 
@@ -1016,6 +1063,54 @@ _Arguments_
 
 ----------------------------------
 
+###  TakeZone
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`TakeZone`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _zone_ | [`Zone`] | _none_ | `true`
+
+----------------------------------
+
+###  Vote
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _for_ | [`Phase`] | _none_ | `true`
+
+----------------------------------
+
+###  VoteFor
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`VoteFor`, `Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _for_ | [`Phase`] | _none_ | `true`
+
+----------------------------------
+
 ###  Defuse
 
 |Attribute        |  Value | 
@@ -1062,6 +1157,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Item`] | _none_ | [`false`, `true`]
 | _direction_ | [`Direction`] | _none_ | [`false`, `true`]
 
 ----------------------------------
@@ -1078,7 +1174,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Location`, `Deictic`] | [_none_, `?`] | [`false`, `true`]
+| _target_ | [`Location`, `Deictic`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1127,6 +1223,54 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _target_ | [`Location`, `Entity`, `Deictic`] | _none_ | `true`
+
+----------------------------------
+
+###  MoveToField
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`MoveToField`, `MoveToPhase`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Field`] | _none_ | `true`
+
+----------------------------------
+
+###  MoveToPlan
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`MoveToPlan`, `MoveToPhase`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`PlanningPhase`] | _none_ | `true`
+
+----------------------------------
+
+###  MoveToStore
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`MoveToStore`, `MoveToPhase`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Store`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1179,6 +1323,23 @@ _Arguments_
 
 ----------------------------------
 
+###  Remove
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Remove`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _location_ | [`Location`] | `?` | `false`
+| _target_ | [`Item`] | _none_ | `true`
+
+----------------------------------
+
 ###  RoleSwitch
 
 |Attribute        |  Value | 
@@ -1208,7 +1369,7 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | [_none_, `?`] | [`false`, `true`]
 | _location_ | [`Location`] | `?` | `false`
-| _target_ | [`Location`, `Concept`] | [_none_, `?`] | [`false`, `true`]
+| _target_ | [`Location`, `Concept`, `Direction`] | [_none_, `?`] | [`false`, `true`]
 | _area_ | [`Location`] | _none_ | [`false`, `true`]
 
 ----------------------------------
@@ -1225,7 +1386,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Product`] | [_none_, `?`] | [`false`, `true`]
+| _target_ | [`Product`] | _none_ | `true`
 | _for_ | [`Entity`] | `?` | `false`
 
 ----------------------------------
@@ -1329,8 +1490,8 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Product`] | _none_ | `true`
 | _for_ | [`Action`] | `?` | `false`
+| _tool_ | [`Product`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1346,6 +1507,28 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _target_ | [`Concept`] | _none_ | `true`
+
+----------------------------------
+
+###  Desert
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Desert`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  Forest
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Forest`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
 
 ----------------------------------
 
@@ -1382,12 +1565,34 @@ _No arguments_
 
 ----------------------------------
 
+###  Swamp
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Swamp`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  Village
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Village`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
 ###  Zone
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Zone`, `Infrastructure`, `Location`, `EventLike`, `Concept`] 
-|keep             | `false` 
+|label hierarchy  | [`Zone`, `Location`, `EventLike`, `Concept`] 
+|keep             | [`false`, `true`] 
 
 _Arguments_
 
@@ -1533,6 +1738,17 @@ _No arguments_
 
 ----------------------------------
 
+###  Flag
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Flag`, `Item`, `Concept`] 
+|keep             | [`false`, `true`] 
+
+_No arguments_
+
+----------------------------------
+
 ###  Product
 
 |Attribute        |  Value | 
@@ -1593,6 +1809,17 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _owner_ | [`Entity`] | `?` | `false`
+
+----------------------------------
+
+###  Beacon
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Beacon`, `Tool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
 
 ----------------------------------
 
@@ -1727,7 +1954,7 @@ _Arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Number`, `Concept`] 
-|keep             | `false` 
+|keep             | [`false`, `true`] 
 
 _No arguments_
 
@@ -1766,6 +1993,39 @@ _No arguments_
 
 ----------------------------------
 
+###  Field
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Field`, `Phase`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  PlanningPhase
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`PlanningPhase`, `Phase`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  Store
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Store`, `Phase`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
 ###  RoomTag
 
 |Attribute        |  Value | 
@@ -1793,6 +2053,17 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Gratitude`, `Positive`, `Sentiment`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  Unsure
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Unsure`, `Sentiment`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
