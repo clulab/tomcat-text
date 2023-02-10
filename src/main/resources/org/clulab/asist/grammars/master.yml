@@ -23,7 +23,7 @@ rules:
   # Extract numbers
   - import: org/clulab/asist/grammars/numbers.yml
     vars:
-      rulepriority: "3"
+      rulepriority: "3-4"
 
   # Extract the entities
   - import: org/clulab/asist/grammars/entities.yml
@@ -50,9 +50,17 @@ rules:
   - import: org/clulab/asist/grammars/sentiments.yml
     vars:
       rulepriority: "4"
+      secondpriority: "5-6"
 
   # Extract the locations
   - import: org/clulab/asist/grammars/locations.yml
+    vars:
+      first_priority: "4+"
+      second_priority: "5"
+      third_priority: "6"
+
+  # Extract the study 4locations
+  - import: org/clulab/asist/grammars/study4/locations_study4.yml
     vars:
       first_priority: "4+"
       second_priority: "5"
@@ -88,7 +96,7 @@ rules:
   # Extract the simple events
   - import: org/clulab/asist/grammars/study4/actions_study4.yml
     vars:
-      rulepriority: "8"
+      rulepriority: "8-9"
       genericpriority: "9"
 
   # Extract the planning terms, COMMENTED OUT WHILE FILE IS EMPTY

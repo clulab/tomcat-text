@@ -1,0 +1,79 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: area_with_argument_flag
+    priority: ${ first_priority }
+    label: Zone
+    example: "area next to my flag"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@flag:Flag)
+
+  - name: area_with_argument_beacon
+    priority: ${ first_priority }
+    label: Zone
+    example: "area next to my flag"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@beacon:Beacon)
+
+  - name: area_no_argument
+    priority: ${ first_priority }
+    label: Zone
+    type: token
+    keep: false
+    pattern: |
+        [lemma=/^(area)$/]
+
+  - name: area_with_owner
+    priority: ${ first_priority }
+    label: Zone
+    example: "my area |blue's area"
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity) [tag=POS]? (?<trigger>  [lemma=/^(area|zone)/])
+
+  - name: zone_with_direction
+    priority: ${ first_priority }
+    label: Zone
+    example: "northern zone"
+    type: token
+    keep: true
+    pattern: |
+       (@direction:Direction) (?<trigger>  [lemma=/^(area|zone|corner)$/])
+
+  - name: deseert
+    priority: ${ first_priority }
+    label: Desert
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(desert)$/]
+
+  - name: forest
+    priority: ${ first_priority }
+    label: Forest
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(forest)$/]
+
+  - name: swamp
+    priority: ${ first_priority }
+    label: Swamp
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(swamp)$/]
+
+  - name: village
+    priority: ${ first_priority }
+    label: Village
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(village)$/]

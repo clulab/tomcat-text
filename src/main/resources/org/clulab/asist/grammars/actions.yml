@@ -56,9 +56,41 @@ rules:
     label: Search
     action: mkVictim
     pattern: |
-      trigger = (?<! [word=it] ) [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/]
+      trigger = (?<! [word=it] ) [lemma=/(?i)^(${ search_triggers })/ & tag=/^V/] (?! [word=out])
       agent: Entity = >/${agents}/
       target: Concept? = >nmod_for
+
+  - name: take_a_look
+    priority: ${ rulepriority }
+    label: Search
+    pattern: |
+      trigger = (?<! [word=it] ) [lemma=take] [word=a]? [word=look]
+      agent: Entity = >/${agents}/
+      target: Location? = >/nmod/
+
+  - name: sweep
+    priority: ${ rulepriority }
+    label: Search
+    pattern: |
+      trigger = (?<! [word=it] ) [lemma=sweep]
+      agent: Entity = >/${agents}/
+      target: Location = >/nmod/
+
+  - name: sweep_direction
+    priority: ${ rulepriority }
+    label: Search
+    pattern: |
+      trigger = (?<! [word=it] ) [lemma=sweep]
+      agent: Entity = >/${agents}/
+      target: Direction = >/nmod/
+
+  - name: sweep_token
+    priority: ${ genericpriority }
+    label: Search
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)?  (?<trigger> [lemma=sweep &!mention=Search]) (@direction:Direction)? (@location:Location)?
 
   # ------------------------------------------------------------------- move
   - import: org/clulab/asist/grammars/movement.yml

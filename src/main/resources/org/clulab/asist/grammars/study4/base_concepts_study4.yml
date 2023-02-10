@@ -8,7 +8,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (@number:Number)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/])
 
   - name: direction
     priority: ${ rulepriority }
@@ -24,7 +24,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
+      (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
 
   - name: sensor
     priority: ${ rulepriority }
@@ -48,7 +48,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
+      (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
 
   - name: bluetool
     priority: ${ rulepriority }
@@ -56,7 +56,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
+      (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
 
   - name: greentool
     priority: ${ rulepriority }
@@ -64,8 +64,16 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
+      (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
 
+  - name: greentool_just_number
+    priority: ${ rulepriority }
+    label: GreenTool
+    example: "I got 5 green"
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
 
   - name: coin
     priority: ${ rulepriority }
@@ -73,7 +81,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+      (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
 
   - name: product_number
     priority: ${ rulepriority }
@@ -81,7 +89,15 @@ rules:
     type: token
     keep: false
     pattern: |
-      [entity=NUMBER] [word=of]? [tag=PRP & !mention=Product & !mention=Coin]?
+      [entity=NUMBER] [word=of]? [tag=PRP & !mention=Product & !mention=Coin] (?! []? [word=each])
+
+  - name: product_number_x_of_each
+    priority: ${ rulepriority }
+    label: OfEachTool
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number) (?<trigger> [word=of]? [word=each & !mention=OfEachTool])
 
   - name: health
     priority: ${ rulepriority }
@@ -97,7 +113,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity)? [!lemma=/have|got/]? (@number:Number)
+      (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)
       (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
 
   - name: tool_generic_owner
@@ -106,7 +122,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@owner:Entity) [!lemma=/have|got/]? (@number:Number)?
+      (@agent:Entity) [!lemma=/have|got/]? (@number:Number)?
       (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
 
   - name: tool_generic
@@ -124,7 +140,16 @@ rules:
     keep: true
     pattern: |
       trigger = (?<! [mention=Tool] ) [lemma=/^each/]  (?!  [mention=Tool])
-      number: Number = <"nmod_of" |>"compound"
+      number: Number = <"nmod_of" |>"compound" | >nummod
+
+  - name: unknown_prod_numbered_token
+    priority: ${ second_priority }
+    label: OfEachTool
+    example: "6 of each"
+    type: token
+    pattern: |
+      (@number:Number) (?<! [mention=Product] []? ) (?<trigger>  [lemma=/^each/]) (?!  [mention=Product])
+
 
   - name: tool_wire_snip
     priority: ${ second_priority }
@@ -151,3 +176,72 @@ rules:
     keep: true
     pattern: |
       for? [lemma=/^each/] of? [mention=Team] (?!  [mention=Tool])
+
+
+  - name: flag_no_and
+    priority: ${ rulepriority }
+    label: Flag
+    example: "flag 3"
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)? (?<trigger> [lemma=flag] ) []? (@number:Number ) (?!  [word=and])
+
+  - name: flag_and
+    priority: ${ rulepriority }
+    label: Flag
+    example: "flag 3 and 4"
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)? (?<trigger> [lemma=flag] )  ([tag=CD] @number:Number )
+
+  - name: flag_no_keep
+    priority: ${ rulepriority }
+    label: Flag
+    example: "flag 3 and 4"
+    type: token
+    keep: false
+    pattern: |
+          [lemma=flag] (?!  []? [tag=CD])
+
+  - name: beacon_generic
+    priority: ${ rulepriority }
+    label: Beacon
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)?  (?<trigger> [lemma=beacon])
+
+  - name: beacon_comm_tool
+    priority: ${ rulepriority }
+    label: Beacon
+    type: token
+    keep: true
+    pattern: |
+          [lemma=communication] [lemma=tool]
+
+
+  - name: store
+    priority: ${ rulepriority }
+    label: Store
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(store|shop|market)$/ & tag=/^N/]
+
+  - name: field
+    priority: ${ rulepriority }
+    label: Field
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(field)$/ & tag=/^N/] [word=phase]?
+
+  - name: panning_phase
+    priority: ${ rulepriority }
+    label: PlanningPhase
+    type: token
+    keep: false
+    pattern: |
+      [word=/^(planning)$/ & tag=/^N/] [word=phase]?

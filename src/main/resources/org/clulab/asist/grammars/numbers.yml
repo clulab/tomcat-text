@@ -35,3 +35,11 @@ rules:
     keep: false
     pattern: |
       [word=/^(fewer)|(less)$/]
+
+  - name: number_coordination
+    priority: ${ rulepriority }
+    label: Number
+    type: token
+    keep: true
+    pattern: |
+      (@number0:Number)? []? (@number1:Number) (?<trigger> [lemma=and]) (@number2:Number)

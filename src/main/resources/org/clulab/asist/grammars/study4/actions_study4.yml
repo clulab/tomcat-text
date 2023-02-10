@@ -10,13 +10,29 @@ rules:
       agent: Entity? = >/${agents}/
       target: Bomb = >dobj
 
+  - name: defuse2
+    priority: ${ rulepriority }
+    label: Defuse
+    pattern: |
+      trigger = [lemma=/(?i)^get$/ & tag=/^V/] [lemma=rid] [lemma=/of/]
+      agent: Entity? = >/${agents}/
+      target: Bomb = >dobj | >nmod_of
+
+  - name: defuse3
+    priority: ${ rulepriority }
+    label: Defuse
+    pattern: |
+      trigger = [lemma=/(?i)^remove/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Bomb = >dobj
+
   - name: shop1
     priority: ${ rulepriority }
     label: Shop
     pattern: |
       trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [lemma=/^buy$|^shop$|^purchase$|^buying$/]
       agent: Entity? = >/${agents}/
-      target: Product? = >dobj
+      target: Product = >dobj
       for: Entity? = >nmod_for
 
 
@@ -26,6 +42,16 @@ rules:
     label: Shop
     pattern: |
       trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=get]
+      agent: Entity? = >/${agents}/
+      target: Product = >dobj | >/nmod_.s/
+      for: Entity? = >nmod_for
+
+  - name: shop_getting
+    example: "Let's start by getting a scanner"
+    priority: ${ rulepriority }
+    label: Shop
+    pattern: |
+      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=getting]
       agent: Entity? = >/${agents}/
       target: Product = >dobj
       for: Entity? = >nmod_for
@@ -82,8 +108,8 @@ rules:
     pattern: |
       trigger = [lemma=/^use$|^utilize/]
       agent: Entity? = >/${agents}/
-      target: Product = >dobj [!mention=Coin]
-      for: Action? = >advcl_to | >advcl_for
+      tool: Product = >dobj [!mention=Coin]
+      for: Action? = >advcl_to | >advcl_for |  >advcl_on
 
   - name: use_generic
     priority: ${ rulepriority }
@@ -103,3 +129,71 @@ rules:
       trigger = [lemma=/^talk$|^discuss$|^communicate$/]
       agent: Entity? = >/${agents}/
       topic: Action? = >dobj
+
+
+  - name: move_to_store_phase
+    priority: ${ rulepriority }
+    label: MoveToStore
+    pattern: |
+      trigger = [lemma=/(?i)^(move|go|transition)$/] [word=/^(to|into)$/]
+      target: Store = >/nmod_(to|into)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: enter_store
+    priority: ${ rulepriority }
+    label: MoveToStore
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: Store = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: move_to_field_phase
+    priority: ${ rulepriority }
+    label: MoveToField
+    pattern: |
+      trigger = [lemma=/(?i)^(move|go|transition)$/] [word=/^(to|into)$/]
+      target: Field = >/nmod_(to|into)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: enter_field
+    priority: ${ rulepriority }
+    label: MoveToField
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: Field = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: move_to_planning_phase
+    priority: ${ rulepriority }
+    label: MoveToPlan
+    pattern: |
+      trigger = [lemma=/(?i)^(move|go|transition)$/] [word=/^(to|into)$/]
+      target: PlanningPhase = >/nmod_(to|into)/ | >advmod
+      agent: Entity? = >/${agents}/
+
+  - name: enter_plan
+    priority: ${ rulepriority }
+    label: MoveToPlan
+    pattern: |
+      trigger = [lemma=/enter/ & tag=/^V/]
+      target: PlanningPhase = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: clear
+    priority: ${ rulepriority }
+    example: "I've cleared the village"
+    label: Clear
+    pattern: |
+      trigger = [lemma=/(?i)^(clear|finish)$/]
+      target: Location = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: remove
+    priority: ${ rulepriority }
+    example: "Let's remove our flags from the desert"
+    label: Remove
+    pattern: |
+      trigger = [lemma=/(?i)^(remove)$/]
+      target: Item = >dobj
+      agent: Entity? = >/${agents}/
+      location: Location? = >/nmod_(in|from)/

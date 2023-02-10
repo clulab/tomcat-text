@@ -33,5 +33,5 @@ rules:
     pattern: |
       trigger = [lemma=/^scout$|^explore$/]
       agent: Entity? = >/${agents}/
-      target: Location? = >/${objects}/
+      target: Location? = >/${objects}/ | >nmod_in
       map: Map? = >/${objects}/

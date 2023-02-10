@@ -16,11 +16,15 @@
     - Time:
       - TimeUnit # example: "three minutes"
     - Location:
+      - Desert
+      - Village
+      - Forest
+      - Swamp
       - Inferred:
         - Deictic
       - Infrastructure:
         - Room
-        - Zone
+      - Zone
       - MapSection
     - Obstacle:
       - Rubble
@@ -39,6 +43,10 @@
             - ReBuy
         - Block # for things blocking environments: "There's some rubble blocking B2."
         - Move:
+          - MoveToPhase:
+            - MoveToStore
+            - MoveToPlan
+            - MoveToField
           - MoveTo
           - MoveFrom
           - MoveEntity
@@ -51,10 +59,13 @@
         - Sight
         - PlaceMarker # "I'm placing a marker here"
         - Communicate:
+          - Vote:
+              - VoteFor
           - TeamStrategies:
               - StickTogether
               - SpreadOut
               - Scout
+              - TakeZone
           - Instruction:
               - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
           - ReportStatus:
@@ -65,6 +76,7 @@
             - ReportPossession
             - Remaining
             - OutOfThing
+            - AmReady
             - RoomStatus:
                 - RoomClear # "A1 is clear"
                 - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"
@@ -99,8 +111,10 @@
               - DeliberatePlan # players stating their future move: "I will help you"
           - Agreement:
               - AgreementToIdea
+              - AgreeToAction
           - Disagreement
         - Clear # example: "I am clearing B2"
+        - Remove
         - RoleSwitch # example: "I will switch to engineer"
         - Search         # Search(Location), example: "I'm searching the rooms here."
         - ChangePriority # e.g., delay action --> ChangePriority(Action, direction)
@@ -146,7 +160,12 @@
       - SouthEast
       - SouthWest
       - West
+  - Phase:
+    - Store
+    - Field
+    - PlanningPhase
   - Item:
+    - Flag
     - Bomb:
         - Sequence:
             - OneStep
@@ -166,22 +185,14 @@
             - GreenTool
             - BlueTool
           - BombPPE
-          - RallyBeacon
-          - BombBeacon
-          - HazardBeacon
+          - Beacon:
+            - RallyBeacon
+            - BombBeacon
+            - HazardBeacon
           - BombStabilizer
           - BombDisposer
         - Bow
         - Health
-    - MarkerBlock:
-        - RegularMarkerBlock:
-            - TypeAMarker
-            - TypeBMarker
-        - NoVictimMarkerBlock
-        - CriticalMarkerBlock
-        - ThreatRoomMarker #this refers to the actual marker block
-        - RubbleMarker
-        - SOSMarker
     - Tools:
       - Hammer
       - MedKit
@@ -189,8 +200,6 @@
       - GPS
       - Map:
           - MapSector
-          - ThreatSign: #this refers to the sign on the map!
-              - Threat
   - Sentiment:
     #- Uncertainty  # include the agent
     - Positive:
@@ -198,6 +207,7 @@
       #- Politeness
       - Gratitude
     - Negative
+    - Unsure
       #- Anger
       #- Worry
 

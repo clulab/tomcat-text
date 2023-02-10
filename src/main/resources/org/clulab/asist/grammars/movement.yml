@@ -33,7 +33,7 @@ rules:
     example: "I'll move this"
     label: MoveEntity
     pattern: |
-      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]) | ([]? far))
       target: Entity =  >/${objects}/ [!mention=Victim]
       agent: Entity? = >/${agents}/
 
@@ -45,12 +45,20 @@ rules:
       direction: Direction = >/advmod/
       agent: Entity? = >/${agents}/
 
-  - name: move_keep_false
+  - name: move_nmod_direction_towards_item
     priority: ${ rulepriority }
+    label: Move
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Item = >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ | >dobj >/nmod_(through|to|toward|by|over|in_front_of|next_to)/
+      agent: Entity? = >/${agents}/
+
+  - name: move_keep_false
+    priority: ${ genericpriority }
     label: Move
     keep: false
     pattern: |
-      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/ & !mention=Move] (?! ([]? away) | (to [tag=/^VB/]))
       agent: Entity? = >/${agents}/
 
   - name: move_deixis_action
@@ -98,7 +106,7 @@ rules:
     label: Enter
     pattern: |
       trigger = [lemma=/enter/ & tag=/^V/]
-      target: Location? = >dobj
+      target: Location = >dobj
       agent: Entity? = >/${agents}/
 
   - name: enter_into_action
