@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `5.3.1`
 
-Document generation timestamp (UTC): `2023-02-10 17:02:28.593995`
+Document generation timestamp (UTC): `2023-02-19 19:44:07.508010`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -104,11 +104,11 @@ Extractions
 
       - SimpleAction
         - Block
-          - [source] (Concept|Obstacle) (?)
+          - [source] (Obstacle|Concept) (?)
           - [target] (Concept) (?)
 
         - ChangePriority
-          - target (Victim|Person) ()
+          - target (Person|Victim) ()
           - [agent] (Entity) (?)
 
         - Clear
@@ -116,7 +116,7 @@ Extractions
           - [agent] (Entity) (?)
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - [Communicate]
           - [agent] (Entity) (?)
@@ -144,14 +144,14 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Victim|PuzzleConcept|EventLike|Item|Person) ()
+            - exists (Item|EventLike|Person|PuzzleConcept|Victim) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
 
           - Need
             - HelpRequest
-              - [agent] (Entity|Self) (?)
+              - [agent] (Self|Entity) (?)
               - [location] (Location) (?)
               - [helper] (Entity) (?)
               - action (Action) ()
@@ -199,14 +199,14 @@ Extractions
               - [agent] (Entity) (?)
 
           - Question
-            - topic (Concept|Action) ()
+            - topic (Action|Concept) ()
             - [location] (Location) (?)
 
             - HowQuestion
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Entity|Move) ()
+              - topic (Move|Entity) ()
               - [location] (Location) (?)
 
             - NumberQuestion
@@ -317,7 +317,7 @@ Extractions
           - target (Item) ()
 
           - Enter
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveEntity
@@ -325,11 +325,11 @@ Extractions
             - [agent] (Entity) (?)
 
           - MoveFrom
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Entity|Deictic|Location) ()
+            - target (Location|Deictic|Entity) ()
             - [agent] (Entity) (?)
 
           - MoveToPhase
@@ -346,7 +346,7 @@ Extractions
               - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Entity|Location) (?)
+            - [target] (Location|Entity) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -369,10 +369,10 @@ Extractions
 
         - Search
           - [agent] (Entity) (?)
-          - target (Direction|Location) ()
+          - target (Location|Direction) ()
           - [location] (Location) (?)
           - area (Location) ()
-          - [target] (Concept|Location) (?)
+          - [target] (Location|Concept) (?)
           - agent (Entity) ()
 
         - Shop
@@ -392,7 +392,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Entity|Item) ()
+          - target (Item|EventLike|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()

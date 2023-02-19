@@ -16,7 +16,7 @@
 <h1 id="asist-extraction-schemas">ASIST Extraction Schemas</h1>
 <p>Authors: Adarsh Pyarelal, Rebecca Sharp</p>
 <p>Agent version: <code>5.3.1</code></p>
-<p>Document generation timestamp (UTC): <code>2023-02-10 17:02:28.593995</code></p>
+<p>Document generation timestamp (UTC): <code>2023-02-19 19:44:07.508010</code></p>
 <p>This is automatically generated documentation of the different entities and events being extracted by the University of Arizona <a href="https://github.com/clulab/tomcat-text">Dialog Agent</a>.</p>
 <h2 id="format">Format</h2>
 <p>The extractions are listed below.</p>
@@ -77,11 +77,11 @@
 
       - SimpleAction
         - Block
-          - [source] (Concept|Obstacle) (?)
+          - [source] (Obstacle|Concept) (?)
           - [target] (Concept) (?)
 
         - ChangePriority
-          - target (Victim|Person) ()
+          - target (Person|Victim) ()
           - [agent] (Entity) (?)
 
         - Clear
@@ -89,7 +89,7 @@
           - [agent] (Entity) (?)
 
         - Close
-          - [target] (DemPron|Infrastructure) (?)
+          - [target] (Infrastructure|DemPron) (?)
 
         - [Communicate]
           - [agent] (Entity) (?)
@@ -117,14 +117,14 @@
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (Victim|PuzzleConcept|EventLike|Item|Person) ()
+            - exists (Item|EventLike|Person|PuzzleConcept|Victim) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
 
           - Need
             - HelpRequest
-              - [agent] (Entity|Self) (?)
+              - [agent] (Self|Entity) (?)
               - [location] (Location) (?)
               - [helper] (Entity) (?)
               - action (Action) ()
@@ -172,14 +172,14 @@
               - [agent] (Entity) (?)
 
           - Question
-            - topic (Concept|Action) ()
+            - topic (Action|Concept) ()
             - [location] (Location) (?)
 
             - HowQuestion
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Entity|Move) ()
+              - topic (Move|Entity) ()
               - [location] (Location) (?)
 
             - NumberQuestion
@@ -290,7 +290,7 @@
           - target (Item) ()
 
           - Enter
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveEntity
@@ -298,11 +298,11 @@
             - [agent] (Entity) (?)
 
           - MoveFrom
-            - target (Deictic|Location) ()
+            - target (Location|Deictic) ()
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Entity|Deictic|Location) ()
+            - target (Location|Deictic|Entity) ()
             - [agent] (Entity) (?)
 
           - MoveToPhase
@@ -319,7 +319,7 @@
               - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Entity|Location) (?)
+            - [target] (Location|Entity) (?)
 
         - Open
           - [agent] (Entity) (?)
@@ -342,10 +342,10 @@
 
         - Search
           - [agent] (Entity) (?)
-          - target (Direction|Location) ()
+          - target (Location|Direction) ()
           - [location] (Location) (?)
           - area (Location) ()
-          - [target] (Concept|Location) (?)
+          - [target] (Location|Concept) (?)
           - agent (Entity) ()
 
         - Shop
@@ -365,7 +365,7 @@
 
         - Sight
           - [agent] (Entity) (?)
-          - target (EventLike|Entity|Item) ()
+          - target (Item|EventLike|Entity) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
