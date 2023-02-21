@@ -176,6 +176,7 @@ rules:
       trigger = [word=wire] [word=/^(cutters?)|(snips?)$/]
       owner: Entity? = >"nmod:poss"
 # TODO: figure out what they mean by wire snips
+
   - name: map_sectors
     priority: ${ rulepriority }
     label: MapSector
@@ -271,3 +272,4 @@ rules:
     keep: false
     pattern: |
       [word=/^(planning)$/ & tag=/^N/] [word=phase]?
+

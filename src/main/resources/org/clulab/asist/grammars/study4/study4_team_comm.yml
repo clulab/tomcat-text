@@ -191,6 +191,7 @@ rules:
 #      zone: Zone = >/dobj/
 #      agent: Entity? =  >nsubj
 
+
   - name: vote_for
     priority: ${ rulepriority }
     label: VoteFor
@@ -206,6 +207,7 @@ rules:
       trigger = [lemma=/(?i)^(vote)$/ & tag=/^V/] [word=/^(on)$/]
       for: Phase = >nmod_on
       agent: Entity? = >/${agents}/
+
 
   - name: vote
     priority: ${ rulepriority }
@@ -265,3 +267,4 @@ rules:
       trigger = [lemma=/^(believe|think|assume)$/]
       agent: Entity? = >/${agents}/
       target: Action = >ccomp
+

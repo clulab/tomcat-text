@@ -99,6 +99,7 @@ rules:
     keep: true
     pattern: |
       (@agent:Entity)?  (?<trigger> [lemma=sweep &!mention=Search]) (@direction:Direction) (@location:Location)?
+
   # ------------------------------------------------------------------- move
   - import: org/clulab/asist/grammars/movement.yml
 

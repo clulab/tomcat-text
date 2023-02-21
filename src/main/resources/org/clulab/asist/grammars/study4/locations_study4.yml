@@ -11,6 +11,7 @@ rules:
     pattern: |
       (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@flag:Flag)
 
+
   - name: area_with_argument_beacon
     priority: ${ first_priority }
     label: Zone

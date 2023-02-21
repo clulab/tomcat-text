@@ -132,7 +132,6 @@ rules:
     pattern: |
       [lemma=do] [word=not] [lemma=/(?i)^know$/]
 
-
   - name: got_it_copy
     label: Acknowledge
     priority: ${ rulepriority }
@@ -148,3 +147,4 @@ rules:
     keep: true
     pattern: |
       [word=/(?i)understood/]
+
