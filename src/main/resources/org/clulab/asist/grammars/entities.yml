@@ -116,7 +116,7 @@ rules:
     type: token
     keep: ${ keep_entities }
     pattern: |
-      [lemma=/(?i)^(green)/]
+      [lemma=/(?i)^(green)/] (?! [word=/tool/])
 
   - name: red
     label: Red
@@ -124,7 +124,7 @@ rules:
     type: token
     keep: ${ keep_entities }
     pattern: |
-      [lemma=/(?i)^(red)/] | /RAD/
+      [lemma=/(?i)^(red)/] (?! [word=/tool/]) | /RAD/ (?! [word=/tool/])
 
   - name: blue
     label: Blue
@@ -132,7 +132,7 @@ rules:
     type: token
     keep: ${ keep_entities }
     pattern: |
-      [lemma=/(?i)^(blue)/]
+      [lemma=/(?i)^(blue)/] (?! [word=/tool/])
 
   - name: yellow
     label: Yellow
@@ -140,7 +140,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^(yellow)/]
+      [lemma=/(?i)^(yellow)/] (?! [word=/tool/])
 
   - name: question_particle
     label: QuestionParticle

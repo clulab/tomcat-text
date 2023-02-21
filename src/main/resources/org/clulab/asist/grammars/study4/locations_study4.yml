@@ -9,7 +9,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@flag:Flag)
+      (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@flag:Flag)
 
   - name: area_with_argument_beacon
     priority: ${ first_priority }
@@ -18,15 +18,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@beacon:Beacon)
+      (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@beacon:Beacon)
 
-  - name: area_no_argument
-    priority: ${ first_priority }
-    label: Zone
-    type: token
-    keep: false
-    pattern: |
-        [lemma=/^(area)$/]
 
   - name: area_with_owner
     priority: ${ first_priority }
@@ -36,6 +29,14 @@ rules:
     keep: true
     pattern: |
       (@agent:Entity) [tag=POS]? (?<trigger>  [lemma=/^(area|zone)/])
+
+  - name: area_no_argument
+    priority: ${ first_priority }
+    label: Zone
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(area)$/]
 
   - name: zone_with_direction
     priority: ${ first_priority }
@@ -77,3 +78,19 @@ rules:
     keep: false
     pattern: |
       [lemma=/^(village)$/]
+
+  - name: church
+    priority: ${ first_priority }
+    label: Church
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(church)$/]
+
+  - name: tree
+    priority: ${ first_priority }
+    label: Tree
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(tree)$/]

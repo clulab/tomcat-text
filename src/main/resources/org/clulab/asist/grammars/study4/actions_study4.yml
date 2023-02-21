@@ -43,7 +43,7 @@ rules:
     pattern: |
       trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [word=get]
       agent: Entity? = >/${agents}/
-      target: Product = >dobj | >/nmod_.s/
+      target: Product = >dobj | >/nmod_/
       for: Entity? = >nmod_for
 
   - name: shop_getting
@@ -83,6 +83,16 @@ rules:
       agent: Entity? = >/${agents}/
       target: Product? = >dobj
       for: Entity? = >nmod_for
+
+
+  - name: shop_buy_number
+    example: "Let's buy more"
+    priority: ${ genericpriority }
+    label: Shop
+    pattern: |
+      trigger = (?<! [mention=Shop]) [lemma=/^buy$|^shop$|^purchase$|^buying$|^get$/] (?! [mention=Shop])
+      agent: Entity? = >/${agents}/
+      target: Number = >dobj
 
   - name: give_coins
     priority: ${ rulepriority }
@@ -188,6 +198,37 @@ rules:
       target: Location = >dobj
       agent: Entity? = >/${agents}/
 
+  - name: clear_dir
+    priority: ${ rulepriority }
+    example: "I've cleared the village"
+    label: Clear
+    pattern: |
+      trigger = [lemma=/(?i)^(clear|finish)$/]
+      target: Direction = >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: clear_take_care
+    priority: ${ rulepriority }
+    example: "I'm taking care of the village"
+    label: Clear
+    pattern: |
+      trigger = [word=/(?i)(take|taking)$/] [word=/(?i)care$/]
+      agent: Entity? = >nsubj
+      location: Location = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >dobj >nmod_of?
+
+  - name: clear_take_care_dir
+    priority: ${ rulepriority }
+    example: "I'm taking care of the village"
+    label: Clear
+    pattern: |
+      trigger = [word=/(?i)(take|taking)$/] [word=/(?i)care$/]
+      agent: Entity? = >nsubj
+      location: Direction = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >dobj >nmod_of?
+
   - name: remove
     priority: ${ rulepriority }
     example: "Let's remove our flags from the desert"
@@ -197,3 +238,46 @@ rules:
       target: Item = >dobj
       agent: Entity? = >/${agents}/
       location: Location? = >/nmod_(in|from)/
+
+  - name: do
+    priority: ${ rulepriority }
+    example: "I'm doing the forest"
+    label: Clear
+    pattern: |
+      trigger = [word=/(?i)(do|doing)$/]
+      agent: Entity? = >nsubj
+      location: Location = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >dobj >nmod_of?
+
+  - name: do_dir
+    priority: ${ rulepriority }
+    example: "I'm doing the North"
+    label: Clear
+    pattern: |
+      trigger = [word=/(?i)(do|doing)$/]
+      agent: Entity? = >nsubj
+      location: Direction = >/${objects}/ >/advmod/|
+               >/${objects}/ >/${preps}/|
+               >dobj >nmod_of?
+
+  - name: clear_take_loc
+    priority: ${ rulepriority }
+    example: "I'm taking care of the village"
+    label: Clear
+    pattern: |
+      trigger = [word=/(?i)(take|taking)$/]
+      agent: Entity? = >nsubj
+      location: Location = >/${objects}/ >/${preps}/|
+               >dobj
+
+
+  - name: clear_take_dir
+    priority: ${ rulepriority }
+    example: "I'm taking care of the village"
+    label: Clear
+    pattern: |
+      trigger = [word=/(?i)(take|taking)$/]
+      agent: Entity? = >nsubj
+      location: Direction = >/${objects}/ >/${preps}/|
+               >dobj

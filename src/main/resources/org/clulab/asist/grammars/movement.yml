@@ -58,7 +58,9 @@ rules:
     label: Move
     keep: false
     pattern: |
-      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/ & !mention=Move] (?! ([]? away) | (to [tag=/^VB/]))
+      trigger = (?<! [lemma=let] [] )[lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/ & !mention=Move] (?! ([]? away) |
+      (to [tag=/^VB/]| [tag=/^V/])
+      |ahead|on)
       agent: Entity? = >/${agents}/
 
   - name: move_deixis_action
@@ -98,7 +100,8 @@ rules:
     label: MoveFrom
     keep: false
     pattern: |
-      trigger = (?<! have ) [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|dobj|nmod|ccomp)/] | [lemma=go] away
+      trigger = (?<! have ) [lemma=/(?i)^(${ movefrom_triggers })$/ & tag=/^V/ & !outgoing=/^(xcomp|dobj|nmod|ccomp)/
+      & !tag=VBD] | [lemma=go] away
       agent: Entity? = >/${agents}/
 
   - name: enter_action

@@ -36,10 +36,26 @@ rules:
     pattern: |
       [word=/^(fewer)|(less)$/]
 
+  - name: any
+    priority: ${ rulepriority }
+    label: Some
+    type: token
+    keep: false
+    pattern: |
+      [word=/^(any)$/]
+
+  - name: all
+    priority: ${ rulepriority }
+    label: All
+    type: token
+    keep: false
+    pattern: |
+      [word=/^(all)$/]
+
   - name: number_coordination
     priority: ${ rulepriority }
     label: Number
     type: token
     keep: true
     pattern: |
-      (@number0:Number)? []? (@number1:Number) (?<trigger> [lemma=and]) (@number2:Number)
+      (@number0:Number)? []? (@number1:Number) (?<trigger> [lemma=and]) [word=/\#/]? (@number2:Number)

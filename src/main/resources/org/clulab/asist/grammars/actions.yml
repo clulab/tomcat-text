@@ -73,7 +73,7 @@ rules:
     label: Search
     pattern: |
       trigger = (?<! [word=it] ) [lemma=sweep]
-      agent: Entity = >/${agents}/
+      agent: Entity? = >/${agents}/
       target: Location = >/nmod/
 
   - name: sweep_direction
@@ -81,17 +81,24 @@ rules:
     label: Search
     pattern: |
       trigger = (?<! [word=it] ) [lemma=sweep]
-      agent: Entity = >/${agents}/
+      agent: Entity? = >/${agents}/
       target: Direction = >/nmod/
 
-  - name: sweep_token
+  - name: sweep_token_loc
     priority: ${ genericpriority }
     label: Search
     type: token
     keep: true
     pattern: |
-      (@agent:Entity)?  (?<trigger> [lemma=sweep &!mention=Search]) (@direction:Direction)? (@location:Location)?
+      (@agent:Entity)?  (?<trigger> [lemma=sweep &!mention=Search]) (@direction:Direction)? (@location:Location)
 
+  - name: sweep_token_dir
+    priority: ${ genericpriority }
+    label: Search
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)?  (?<trigger> [lemma=sweep &!mention=Search]) (@direction:Direction) (@location:Location)?
   # ------------------------------------------------------------------- move
   - import: org/clulab/asist/grammars/movement.yml
 
