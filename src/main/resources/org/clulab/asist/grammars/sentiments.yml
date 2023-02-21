@@ -139,7 +139,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [word=got] [word=it] | [word=/(?i)^(roger|acknowledge|ok|okay|agree|alright|copy)$/]
+      [word=got] [word=it] | [word=/(?i)^(roger|acknowledge|ok|okay|alright|copy)$/]
 
   - name: understood
     label: Acknowledge
