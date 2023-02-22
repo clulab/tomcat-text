@@ -40,13 +40,6 @@ rules:
     pattern: |
       [lemma=/(?i)(${ north_triggers })\-?(${ east_triggers })$/]
 
-  - name: north_east1
-    priority: ${ first_priority }
-    label: NorthEast
-    type: token
-    keep: ${ keep_locations}
-    pattern: |
-       [word=NE]
 
   - name: north_east1
     priority: ${ first_priority }
@@ -63,14 +56,6 @@ rules:
     keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)(${ north_triggers })\-?(${ west_triggers })$/]
-
-  - name: north_west1
-    priority: ${ first_priority }
-    label: NorthWest
-    type: token
-    keep: ${ keep_locations}
-    pattern: |
-         [word=NW]
 
   - name: north_west1
     priority: ${ first_priority }
@@ -104,14 +89,6 @@ rules:
     pattern: |
         [word=SW]
 
-  - name: south_west1
-    priority: ${ first_priority }
-    label: SouthWest
-    type: token
-    keep: ${ keep_locations}
-    pattern: |
-        [word=SW]
-
   - name: south_east
     priority: ${ first_priority }
     label: SouthEast
@@ -119,14 +96,6 @@ rules:
     keep: ${ keep_locations}
     pattern: |
       [lemma=/(?i)(${ south_triggers })\-?(${ east_triggers })$/]
-
-  - name: south_east1
-    priority: ${ first_priority }
-    label: SouthEast
-    type: token
-    keep: ${ keep_locations}
-    pattern: |
-        [word=SE]
 
   - name: south_east1
     priority: ${ first_priority }
