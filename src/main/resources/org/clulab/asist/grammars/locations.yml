@@ -38,7 +38,8 @@ rules:
     type: token
     keep: ${ keep_locations}
     pattern: |
-      [lemma=/(?i)^(${ north_triggers })(${ east_triggers })$/]
+      [lemma=/(?i)(${ north_triggers })\-?(${ east_triggers })$/]
+
 
   - name: north_east1
     priority: ${ first_priority }
@@ -54,7 +55,7 @@ rules:
     type: token
     keep: ${ keep_locations}
     pattern: |
-      [lemma=/(?i)^(${ north_triggers })(${ west_triggers })$/]
+      [lemma=/(?i)(${ north_triggers })\-?(${ west_triggers })$/]
 
   - name: north_west1
     priority: ${ first_priority }
@@ -78,7 +79,7 @@ rules:
     type: token
     keep: ${ keep_locations}
     pattern: |
-      [lemma=/(?i)^(${ south_triggers })(${ west_triggers })$/]
+      [lemma=/(?i)(south\-?west)$/]
 
   - name: south_west1
     priority: ${ first_priority }
@@ -94,7 +95,7 @@ rules:
     type: token
     keep: ${ keep_locations}
     pattern: |
-      [lemma=/(?i)^(${ south_triggers })(${ east_triggers })$/]
+      [lemma=/(?i)(${ south_triggers })\-?(${ east_triggers })$/]
 
   - name: south_east1
     priority: ${ first_priority }

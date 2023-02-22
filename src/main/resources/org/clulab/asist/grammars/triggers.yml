@@ -1,6 +1,6 @@
 after_precedence_triggers: "after"
 
-agree_triggers: "yes|yeah|roger|acknowledge|ok|okay|agree|alright|copy"
+agree_triggers: "yes|yeah|agree|alright"
 
 agree_adjectives: "good|excellent|great|terrific"
 

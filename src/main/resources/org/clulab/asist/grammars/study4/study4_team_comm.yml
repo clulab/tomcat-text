@@ -103,6 +103,9 @@ rules:
       trigger = [lemma=/^have$/] | [word=got]
       agent: Entity? = >/${agents}/
       bomb: Bomb = >/${objects}/
+      location: Location? = >/${preps}|advmod|${positional_preps}/|
+               >/${agents}/
+               >/${preps}/
 
   - name: found_bomb
     priority: ${ rulepriority }
@@ -114,7 +117,8 @@ rules:
       agent: Entity? = >/${agents}/
       location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
-               >/${preps}/
+               >/${preps}/|
+              >dobj >/nmod/ >compound?
       map: Map? = >/${positional_preps}/
 
   ###################### Plans for study 4 live here for now
@@ -133,7 +137,7 @@ rules:
     example: "I suggest we split up. I propose to buy a sensor"
     label: Proposal
     pattern: |
-      trigger = (?<! [mention=Question] ) [tag=/^V/ & lemma=/^suggest|^propose$/]
+      trigger = (?<! [mention=Question] ) [tag=/^V/ & lemma=/^suggest|^propose$|^advocate$/]
       topic: Action = >xcomp| >ccomp
       agent: Entity? = <aux >nsubj
 
@@ -177,14 +181,16 @@ rules:
       agent: Entity? = <nsubj
   #      topic: Action = <amod <dobj | <advmod <dobj
 
-  - name: take_area
-    example: "I will take that area"
-    priority: ${ rulepriority }
-    label: TakeZone
-    pattern: |
-      trigger = [lemma=/^(take)$|^(do)$/]
-      zone: Zone = >/dobj/
-      agent: Entity? =  >nsubj
+# this is handled by Clear now
+#  - name: take_area
+#    example: "I will take that area"
+#    priority: ${ rulepriority }
+#    label: TakeZone
+#    pattern: |
+#     trigger = [lemma=/^(take)$|^(do)$/]
+#      zone: Zone = >/dobj/
+#      agent: Entity? =  >nsubj
+
 
   - name: vote_for
     priority: ${ rulepriority }
@@ -200,6 +206,15 @@ rules:
     pattern: |
       trigger = [lemma=/(?i)^(vote)$/ & tag=/^V/] [word=/^(on)$/]
       for: Phase = >nmod_on
+      agent: Entity? = >/${agents}/
+
+
+  - name: vote
+    priority: ${ rulepriority }
+    label: Vote
+    pattern: |
+      trigger = [lemma=/(?i)^(vote)$/ & tag=/^V/]
+      for: Phase = >dobj
       agent: Entity? = >/${agents}/
 
   - name: vote_token_for
@@ -225,3 +240,31 @@ rules:
     pattern: |
       trigger = [lemma=ready]
       agent: Entity = >nsubj
+
+  - name: "finish_task"
+    label: Completed
+    example: "I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(finish|do|complete)$/ & tag=/VBD|VBN/]
+      agent: Entity? = >/${agents}/
+      target: Action = >dobj |>nmod_with
+
+  - name: "flag_clear"
+    label: FlagAreaClear
+    example: "Flag 5 is clear"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^be$/] [word=clear]
+      target: Flag = >nsubj
+
+
+  - name: "unsure_of_event"
+    label: Unsure
+    example: "I believe I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(believe|think|assume)$/]
+      agent: Entity? = >/${agents}/
+      target: Action = >ccomp
+

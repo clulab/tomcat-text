@@ -7,6 +7,7 @@
       - Some
       - More
       - Less
+      - All
       - One
       - Two
       - Three
@@ -17,8 +18,10 @@
       - TimeUnit # example: "three minutes"
     - Location:
       - Desert
-      - Village
-      - Forest
+      - Village:
+          - Church
+      - Forest:
+          - Tree
       - Swamp
       - Inferred:
         - Deictic
@@ -43,6 +46,7 @@
             - ReBuy
         - Block # for things blocking environments: "There's some rubble blocking B2."
         - Move:
+          - Meet
           - MoveToPhase:
             - MoveToStore
             - MoveToPlan
@@ -77,9 +81,9 @@
             - Remaining
             - OutOfThing
             - AmReady
-            - RoomStatus:
-                - RoomClear # "A1 is clear"
-                - ReportThreatRoom # players declaring rooms as threatrooms: "A1 is a threat room"
+            - Completed
+            - LocationClear: # "A1 is clear"
+              - FlagAreaClear
             - ReportItemStatus:
               - ToolBroken
               - DoorOpen
@@ -113,6 +117,7 @@
               - AgreementToIdea
               - AgreeToAction
           - Disagreement
+          - Acknowledge
         - Clear # example: "I am clearing B2"
         - Remove
         - RoleSwitch # example: "I will switch to engineer"
@@ -207,6 +212,7 @@
       #- Politeness
       - Gratitude
     - Negative
+  - Belief:
     - Unsure
       #- Anger
       #- Worry

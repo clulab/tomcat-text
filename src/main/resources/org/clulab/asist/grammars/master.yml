@@ -93,6 +93,12 @@ rules:
       rulepriority: "8"
       genericpriority: "9"
 
+  # Extract study 4 movement
+  - import: org/clulab/asist/grammars/study4/study4_movement.yml
+    vars:
+      rulepriority: "8"
+      genericpriority: "9"
+
   # Extract the simple events
   - import: org/clulab/asist/grammars/study4/actions_study4.yml
     vars:

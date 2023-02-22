@@ -8,7 +8,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@number:Number)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/])
+      (@number:Number)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/] (?! [word=/(?i)(indicator|finder|scanner)s?/]))
+      [word=/^(in|on|next)$/]? []? []? (@Location:Location)?
 
   - name: direction
     priority: ${ rulepriority }
@@ -16,7 +17,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)direction$|^way$/ & tag=/^N/]
+      [lemma=/(?i)direction$/ & tag=/^N/]
 
   - name: single_use_tool
     priority: ${ rulepriority }
@@ -32,7 +33,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [word=/(?i)sensor/] [lemma=/(?i)tool/]?
+      (@number:Number)? (?<trigger> [word=/(?i)sensor/] [lemma=/(?i)tool/]?)
 
   - name: sensor2
     priority: ${ rulepriority }
@@ -40,7 +41,15 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)scanner/] [lemma=/(?i)tool/]?
+      (@number:Number)? (?<trigger> [lemma=/(?i)scanner/] [lemma=/(?i)tool/]?)
+
+  - name: sensor_indicator
+    priority: ${ rulepriority }
+    label: SensorTool
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number)? (?<trigger> [lemma=/(?i)bomb/] [word=/(?i)(indicator|finder|scanner)s?/])
 
   - name: redtool
     priority: ${ rulepriority }
@@ -82,6 +91,14 @@ rules:
     keep: true
     pattern: |
       (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+
+  - name: coin_no_owner
+    priority: ${ rulepriority }
+    label: Coin
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/]) (?! [mention=Coin])
 
   - name: product_number
     priority: ${ rulepriority }
@@ -159,6 +176,7 @@ rules:
       trigger = [word=wire] [word=/^(cutters?)|(snips?)$/]
       owner: Entity? = >"nmod:poss"
 # TODO: figure out what they mean by wire snips
+
   - name: map_sectors
     priority: ${ rulepriority }
     label: MapSector
@@ -194,7 +212,16 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@agent:Entity)? (?<trigger> [lemma=flag] )  ([tag=CD] @number:Number )
+      (@agent:Entity)? (?<trigger> [lemma=flag] )  []? ([tag=CD] @number:Number )
+
+  - name: flag_number_preceding
+    priority: ${ rulepriority }
+    label: Flag
+    example: "all flags "
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number ) (?<trigger> [lemma=flag] )   (?! @Number )
 
   - name: flag_no_keep
     priority: ${ rulepriority }
@@ -245,3 +272,4 @@ rules:
     keep: false
     pattern: |
       [word=/^(planning)$/ & tag=/^N/] [word=phase]?
+

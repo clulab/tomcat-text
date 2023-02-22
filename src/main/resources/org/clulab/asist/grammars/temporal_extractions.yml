@@ -8,7 +8,7 @@ rules:
     label: Precedence
     pattern: |
       trigger = [lemma=/(?i)^(${ after_precedence_triggers })/]
-      second: EventLike? =
+      second: EventLike =
         # get to the second action, which is linked to the first
         </mark/
         # traverse the link between the actions
@@ -19,6 +19,21 @@ rules:
         [tag=/^V/]
       first: EventLike? = </mark/
 
+  - name: precedence2_after_firs
+    priority: ${ earlypriority }
+    label: Precedence
+    pattern: |
+      trigger = [lemma=/(?i)^(${ after_precedence_triggers })/]
+      second: EventLike? =
+        # get to the second action, which is linked to the first
+        </mark/
+        # traverse the link between the actions
+        </advcl_after/
+        # optionally go to an embedded clause
+        >/xcomp/?
+        # land on a verb
+        [tag=/^V/]
+      first: EventLike = </mark/
 
   - name: precedence3_token_after
     priority: ${ earlypriority }
@@ -37,7 +52,7 @@ rules:
     label: Precedence
     pattern: |
       trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after))
-      first: EventLike? =
+      first: EventLike =
         # get to the second action, which is linked to the first
         <advmod
         # traverse the link -- depending on the phrasing, can be any of these
@@ -48,12 +63,28 @@ rules:
         [tag=/^V/]
       second: EventLike? = <advmod
 
+  - name: precedence1_second
+    priority: ${ rulepriority }
+    label: Precedence
+    pattern: |
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! [word=/\,/]|([]? after))
+      first: EventLike? =
+        # get to the second action, which is linked to the first
+        <advmod
+        # traverse the link -- depending on the phrasing, can be any of these
+        </ccomp|conj_and|dep/
+        # optionally go to an embedded clause
+        >/xcomp/?
+        # land on a verb
+        [tag=/^V/]
+      second: EventLike = <advmod
+
   - name: precedence2
     priority: ${ rulepriority }
     label: Precedence
     pattern: |
       trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after))
-      first: EventLike? =
+      first: EventLike =
         # get to the second action, which is linked to the first
         </mark/
         # traverse the link between the actions
@@ -64,6 +95,22 @@ rules:
         [tag=/^V/]
       second: EventLike? = </mark/
     ##still need 1st action for before
+
+  - name: precedence2_second
+    priority: ${ rulepriority }
+    label: Precedence
+    pattern: |
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! [word=/\,/]|([]? after))
+      first: EventLike? =
+        # get to the second action, which is linked to the first
+        </mark/
+        # traverse the link between the actions
+        </advcl_before/
+        # optionally go to an embedded clause
+        >/xcomp/?
+        # land on a verb
+        [tag=/^V/]
+      second: EventLike = </mark/
 
   - name: precedence3_token_before
     priority: ${ rulepriority }

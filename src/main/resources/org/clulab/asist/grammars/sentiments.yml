@@ -106,7 +106,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [word=/(?i)^no$/ & !tag=TO] (?! [lemma=victim]|[word=worries]|[word=more]|[tag=JJ]|[tag=NN])
+      (?<! [word=oh] )[word=/(?i)^no$/ & !tag=TO] (?! [lemma=victim]|[word=worries]|[word=more]|[tag=JJ]|[tag=NN])
 
   - name: thank_you
     label: Gratitude
@@ -131,3 +131,20 @@ rules:
     keep: true
     pattern: |
       [lemma=do] [word=not] [lemma=/(?i)^know$/]
+
+  - name: got_it_copy
+    label: Acknowledge
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=got] [word=it] | [word=/(?i)^(roger|acknowledge|ok|okay|alright|copy)$/]
+
+  - name: understood
+    label: Acknowledge
+    priority: ${ rulepriority }
+    type: token
+    keep: true
+    pattern: |
+      [word=/(?i)understood/]
+

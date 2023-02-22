@@ -2,6 +2,14 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
+  - name: time_gen
+    priority: ${ rulepriority }
+    label: Time
+    type: token
+    keep: false
+    pattern: |
+      [word=/(?i)^(time)$/] [word=left]?
+
   - name: time
     label: TimeUnit
     priority: 1

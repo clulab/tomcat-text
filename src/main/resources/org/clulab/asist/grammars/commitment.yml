@@ -4,12 +4,12 @@ rules:
 
   - name: commit_to_something
     priority: ${ rulepriority }
-    example: "I can save this guy"
+    example: "I can save this guy. I can go save this guy."
     label: Proposal
     action: preventSubjectVerbInversion
     pattern: |
       trigger = [tag=/^MD/ & lemma=/^can/] (?! [lemma=not])
-      topic: Action = <aux
+      topic: Action = <aux >xcomp?
       agent: Entity? = <aux >nsubj
 
   - name: commit_to_something_plan-type

@@ -1,0 +1,46 @@
+vars: org/clulab/asist/grammars/vars.yml
+
+rules:
+
+  - name: move_nmod_direction_towards_flag
+    priority: ${ rulepriority }
+    label: Move
+    pattern: |
+      trigger = [lemma=/(?i)^(${ moveto_triggers })$/ & tag=/^V/] (?! ([]? away) | (to [tag=/^VB/]))
+      target: Flag = >/nmod_(through|to|toward|by|over|in_front_of|next_to)/ |
+              >dobj >/nmod_(through|to|toward|by|over|in_front_of|next_to)/|
+              >dobj
+      agent: Entity? = >/${agents}/
+
+  - name: meet_location
+    priority: ${ rulepriority }
+    label: Meet
+    pattern: |
+      trigger = [lemma=/(?i)^meet$/ & tag=/^V/]
+      location: Location = >/nmod/ |
+              >dobj >/nmod_(through|to|toward|by|over|in_front_of|next_to|in)/|
+              >dobj
+      agent: Entity? = >/${agents}/
+      target: Entity? = >dobj
+
+  - name: meet_flag
+    priority: ${ rulepriority }
+    label: Meet
+    pattern: |
+      trigger = [lemma=/(?i)^meet$/ & tag=/^V/]
+      location: Flag = >/nmod/ |
+              >dobj >/nmod_(through|to|toward|by|over|in_front_of|next_to|in)/|
+              >dobj
+      agent: Entity? = >/${agents}/
+      target: Entity? = >dobj
+
+  - name: meet_beacon
+    priority: ${ rulepriority }
+    label: Meet
+    pattern: |
+      trigger = [lemma=/(?i)^meet$/ & tag=/^V/]
+      location: Beacon = >/nmod/ |
+              >dobj >/nmod_(through|to|toward|by|over|in_front_of|next_to|in)/|
+              >dobj
+      agent: Entity? = >/${agents}/
+      target: Entity? = >dobj
