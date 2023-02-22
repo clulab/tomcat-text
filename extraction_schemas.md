@@ -13,6 +13,22 @@ _No arguments_
 
 ----------------------------------
 
+###  Unsure
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Unsure`, `Belief`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Action`] | _none_ | `true`
+
+----------------------------------
+
 ###  Blue
 
 |Attribute        |  Value | 
@@ -359,7 +375,8 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Location`] | _none_ | `true`
+| _location_ | [`Location`, `Direction`] | _none_ | [`false`, `true`]
+| _target_ | [`Location`, `Direction`] | _none_ | [`false`, `true`]
 
 ----------------------------------
 
@@ -391,6 +408,17 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _topic_ | [`Action`] | `?` | `false`
+
+----------------------------------
+
+###  Acknowledge
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Acknowledge`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
 
 ----------------------------------
 
@@ -832,6 +860,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
+| _location_ | [`Location`] | `?` | `false`
 | _bomb_ | [`Bomb`] | _none_ | `true`
 
 ----------------------------------
@@ -851,6 +880,22 @@ _Arguments_
 
 ----------------------------------
 
+###  Completed
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Completed`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Action`] | _none_ | `true`
+
+----------------------------------
+
 ###  DeclareColor
 
 |Attribute        |  Value | 
@@ -864,6 +909,37 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Self`] | _none_ | `true`
 | _color_ | [`Color`] | _none_ | `true`
+
+----------------------------------
+
+###  LocationClear
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _location_ | [`Location`, `Direction`] | _none_ | `true`
+
+----------------------------------
+
+###  FlagAreaClear
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`FlagAreaClear`, `LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _target_ | [`Flag`] | _none_ | `true`
 
 ----------------------------------
 
@@ -994,17 +1070,6 @@ _Arguments_
 
 ----------------------------------
 
-###  RoomClear
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`RoomClear`, `RoomStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_No arguments_
-
-----------------------------------
-
 ###  Stuck
 
 |Attribute        |  Value | 
@@ -1060,22 +1125,6 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-
-----------------------------------
-
-###  TakeZone
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`TakeZone`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
-|keep             | `true` 
-
-_Arguments_
-
-|name        | **label(s)**  | **quantifier(s)** | **required?**|
-| :--------  | :----         | :----             | :---- 
-| _agent_ | [`Entity`] | `?` | `false`
-| _zone_ | [`Zone`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1157,7 +1206,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Item`] | _none_ | [`false`, `true`]
+| _target_ | [`Item`, `Flag`] | _none_ | [`false`, `true`]
 | _direction_ | [`Direction`] | _none_ | [`false`, `true`]
 
 ----------------------------------
@@ -1175,6 +1224,23 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _target_ | [`Location`, `Deictic`] | _none_ | `true`
+
+----------------------------------
+
+###  Meet
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Meet`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _location_ | [`Location`, `Flag`, `Beacon`] | _none_ | `true`
+| _target_ | [`Entity`] | `?` | `false`
 
 ----------------------------------
 
@@ -1318,8 +1384,8 @@ _Arguments_
 
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
-| _second_ | [`EventLike`] | `?` | `false`
-| _first_ | [`EventLike`] | `?` | `false`
+| _second_ | [`EventLike`] | [_none_, `?`] | [`false`, `true`]
+| _first_ | [`EventLike`] | [_none_, `?`] | [`false`, `true`]
 
 ----------------------------------
 
@@ -1386,7 +1452,7 @@ _Arguments_
 |name        | **label(s)**  | **quantifier(s)** | **required?**|
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
-| _target_ | [`Product`] | _none_ | `true`
+| _target_ | [`Product`, `Number`] | _none_ | `true`
 | _for_ | [`Entity`] | `?` | `false`
 
 ----------------------------------
@@ -1532,6 +1598,17 @@ _No arguments_
 
 ----------------------------------
 
+###  Tree
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Tree`, `Forest`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
 ###  Deictic
 
 |Attribute        |  Value | 
@@ -1581,6 +1658,17 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Village`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  Church
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Church`, `Village`, `Location`, `EventLike`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
@@ -1960,6 +2048,17 @@ _No arguments_
 
 ----------------------------------
 
+###  All
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`All`, `Number`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
 ###  Less
 
 |Attribute        |  Value | 
@@ -2053,17 +2152,6 @@ _No arguments_
 |Attribute        |  Value | 
 | :--------       | :---- |
 |label hierarchy  | [`Gratitude`, `Positive`, `Sentiment`, `Concept`] 
-|keep             | `true` 
-
-_No arguments_
-
-----------------------------------
-
-###  Unsure
-
-|Attribute        |  Value | 
-| :--------       | :---- |
-|label hierarchy  | [`Unsure`, `Sentiment`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_

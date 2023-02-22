@@ -2,6 +2,38 @@
 
 --------
 
+#### rule: _got_it_copy_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Acknowledge`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `4`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _understood_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Acknowledge`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `4`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _shop_afford_buy_
 
 attribute | value
@@ -212,6 +244,22 @@ type |  TokenExtractor
 labels    | [`AgreementToIdea`, `Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
 priority  | `4`
 keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _all_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`All`, `Number`, `Concept`]
+priority  | `(3-4)`
+keep      | `false`
 
 
 _No arguments_
@@ -541,6 +589,22 @@ keep      | `true`
 
 --------
 
+#### rule: _church_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Church`, `Village`, `Location`, `EventLike`, `Concept`]
+priority  | `4+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _clear_
 
 attribute | value
@@ -555,6 +619,139 @@ keep      | `true`
 :---- | :---- | :---- | :----
  target | `Location` | _none_ | `true` 
  agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _clear_dir_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Direction` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _clear_take_care_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _clear_take_care_dir_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Direction` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _clear_take_dir_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Direction` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _clear_take_loc_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _do_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _do_dir_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Clear`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Direction` | _none_ | `true` 
 
 &nbsp;
 
@@ -612,6 +809,22 @@ _No arguments_
 
 --------
 
+#### rule: _coin_no_owner_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Coin`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _communicate_no_object_
 
 attribute | value
@@ -626,6 +839,25 @@ keep      | `false`
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
  topic | `Action` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _finish_task_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Completed`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Action` | _none_ | `true` 
 
 &nbsp;
 
@@ -1235,6 +1467,40 @@ keep      | `false`
 
 
 _No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _flag_number_preceding_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Flag`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _flag_clear_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`FlagAreaClear`, `LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Flag` | _none_ | `true` 
 
 &nbsp;
 
@@ -2000,6 +2266,76 @@ keep      | `false`
 
 --------
 
+#### rule: _dir_clear_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _loc_clear_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _loc_clear_take_care_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _loc_clear_take_care_direction_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Direction` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
 #### rule: _location_moving_question_
 
 attribute | value
@@ -2090,6 +2426,66 @@ keep      | `false`
 
 --------
 
+#### rule: _meet_beacon_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Meet`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ location | `Beacon` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+ target | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _meet_flag_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Meet`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ location | `Flag` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+ target | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _meet_location_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Meet`, `Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ location | `Location` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+ target | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _more_
 
 attribute | value
@@ -2137,6 +2533,25 @@ keep      | `true`
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  direction | `Direction` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _move_nmod_direction_towards_flag_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Move`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Flag` | _none_ | `true` 
  agent | `Entity` | `?` | `false` 
 
 &nbsp;
@@ -3059,8 +3474,27 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- first | `EventLike` | `?` | `false` 
+ first | `EventLike` | _none_ | `true` 
  second | `EventLike` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _precedence1_second_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Precedence`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `10+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ first | `EventLike` | `?` | `false` 
+ second | `EventLike` | _none_ | `true` 
 
 &nbsp;
 
@@ -3078,7 +3512,7 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- first | `EventLike` | `?` | `false` 
+ first | `EventLike` | _none_ | `true` 
  second | `EventLike` | `?` | `false` 
 
 &nbsp;
@@ -3097,8 +3531,46 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- second | `EventLike` | `?` | `false` 
+ second | `EventLike` | _none_ | `true` 
  first | `EventLike` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _precedence2_after_firs_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Precedence`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `9+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ second | `EventLike` | `?` | `false` 
+ first | `EventLike` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _precedence2_second_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Precedence`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `10+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ first | `EventLike` | `?` | `false` 
+ second | `EventLike` | _none_ | `true` 
 
 &nbsp;
 
@@ -3600,6 +4072,7 @@ keep      | `true`
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
  bomb | `Bomb` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
 
 &nbsp;
 
@@ -3771,22 +4244,6 @@ _No arguments_
 
 --------
 
-#### rule: _room_clear_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`RoomClear`, `RoomStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
-keep      | `true`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
 #### rule: _room_tags_
 
 attribute | value
@@ -3912,7 +4369,7 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- agent | `Entity` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
  target | `Location` | _none_ | `true` 
 
 &nbsp;
@@ -3931,14 +4388,30 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- agent | `Entity` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
  target | `Direction` | _none_ | `true` 
 
 &nbsp;
 
 --------
 
-#### rule: _sweep_token_
+#### rule: _sweep_token_dir_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Search`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `9`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _sweep_token_loc_
 
 attribute | value
 -----  |   ---- 
@@ -4069,6 +4542,22 @@ _No arguments_
 
 --------
 
+#### rule: _sensor_indicator_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`SensorTool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _sequence_
 
 attribute | value
@@ -4100,6 +4589,25 @@ keep      | `true`
  agent | `Entity` | `?` | `false` 
  target | `Product` | _none_ | `true` 
  for | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _shop_buy_number_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Shop`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `9`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Number` | _none_ | `true` 
 
 &nbsp;
 
@@ -4361,6 +4869,22 @@ keep      | `true`
 
 --------
 
+#### rule: _any_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Some`, `Number`, `Concept`]
+priority  | `(3-4)`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _few_
 
 attribute | value
@@ -4593,25 +5117,6 @@ _No arguments_
 
 --------
 
-#### rule: _take_area_
-
-attribute | value
------  |   ---- 
-type |  GraphExtractor
-labels    | [`TakeZone`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
-keep      | `true`
-
-
-**argument name** | **label(s)** | **quantifier** | **required?**
-:---- | :---- | :---- | :----
- zone | `Zone` | _none_ | `true` 
- agent | `Entity` | `?` | `false` 
-
-&nbsp;
-
---------
-
 #### rule: _we_token_capture_
 
 attribute | value
@@ -4652,6 +5157,22 @@ type |  TokenExtractor
 labels    | [`ThreeStep`, `Sequence`, `Bomb`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _time_gen_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Time`, `EventLike`, `Concept`]
+priority  | `3`
+keep      | `false`
 
 
 _No arguments_
@@ -4848,6 +5369,22 @@ keep      | `true`
 
 --------
 
+#### rule: _tree_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Tree`, `Forest`, `Location`, `EventLike`, `Concept`]
+priority  | `4+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _2step_
 
 attribute | value
@@ -4885,7 +5422,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`Unsure`, `Sentiment`, `Concept`]
+labels    | [`Unsure`, `Belief`, `Concept`]
 priority  | `4`
 keep      | `true`
 
@@ -4901,12 +5438,31 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`Unsure`, `Sentiment`, `Concept`]
+labels    | [`Unsure`, `Belief`, `Concept`]
 priority  | `4`
 keep      | `true`
 
 
 _No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _unsure_of_event_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Unsure`, `Belief`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Action` | _none_ | `true` 
 
 &nbsp;
 
@@ -4979,6 +5535,25 @@ keep      | `false`
 
 
 _No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _vote_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ for | `Phase` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
 
 &nbsp;
 
