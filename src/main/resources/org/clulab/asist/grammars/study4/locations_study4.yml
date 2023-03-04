@@ -99,7 +99,6 @@ rules:
     pattern: |
       [lemma=/^(tree)$/]
 
-
   - name: "coordinate_AND_location"
     label: CoordinatedLocation
     priority: ${ third_priority }
@@ -127,3 +126,4 @@ rules:
     keep: true
     pattern: |
       (@location:Location) (and []? @location:Location)
+

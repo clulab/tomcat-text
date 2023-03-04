@@ -5,6 +5,7 @@ rules:
   ### map quadrants ###
   - import: org/clulab/asist/grammars/study4/products.yml
   ###
+
   - name: direction
     priority: ${ rulepriority }
     label: Direction
@@ -13,7 +14,6 @@ rules:
     pattern: |
       [lemma=/(?i)direction$/ & tag=/^N/]
 
-
   - name: coin
     priority: ${ rulepriority }
     label: Coin
@@ -21,6 +21,14 @@ rules:
     keep: true
     pattern: |
       (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
+
+  - name: coin_no_owner
+    priority: ${ rulepriority }
+    label: Coin
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/]) (?! [mention=Coin])
 
   - name: coin_no_owner
     priority: ${ rulepriority }
