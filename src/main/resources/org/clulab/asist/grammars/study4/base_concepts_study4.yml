@@ -2,7 +2,7 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
-  ### map quadrants ###
+  ### products ###
   - import: org/clulab/asist/grammars/study4/products.yml
   ###
 
@@ -21,14 +21,6 @@ rules:
     keep: true
     pattern: |
       (@agent:Entity)? [!lemma=/have|got/]? (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/])
-
-  - name: coin_no_owner
-    priority: ${ rulepriority }
-    label: Coin
-    type: token
-    keep: true
-    pattern: |
-      (@number:Number)? (?<trigger> [lemma=/^coin$|^cash$|^credit$/]) (?! [mention=Coin])
 
   - name: coin_no_owner
     priority: ${ rulepriority }
