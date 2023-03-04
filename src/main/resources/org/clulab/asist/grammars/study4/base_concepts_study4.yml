@@ -2,15 +2,9 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
-  - name: bomb1
-    priority: ${ rulepriority }
-    label: Bomb
-    type: token
-    keep: true
-    pattern: |
-      (@number:Number)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/] (?! [word=/(?i)(indicator|finder|scanner)s?/]))
-      [word=/^(in|on|next)$/]? []? []? (@Location:Location)?
-
+  ### map quadrants ###
+  - import: org/clulab/asist/grammars/study4/products.yml
+  ###
   - name: direction
     priority: ${ rulepriority }
     label: Direction
@@ -19,70 +13,6 @@ rules:
     pattern: |
       [lemma=/(?i)direction$/ & tag=/^N/]
 
-  - name: single_use_tool
-    priority: ${ rulepriority }
-    label: OneUseTool
-    type: token
-    keep: true
-    pattern: |
-      (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=/(one|single)-?(use|time)?/] [word=use]? [lemma=tool])
-
-  - name: sensor
-    priority: ${ rulepriority }
-    label: SensorTool
-    type: token
-    keep: true
-    pattern: |
-      (@number:Number)? (?<trigger> [word=/(?i)sensor/] [lemma=/(?i)tool/]?)
-
-  - name: sensor2
-    priority: ${ rulepriority }
-    label: SensorTool
-    type: token
-    keep: true
-    pattern: |
-      (@number:Number)? (?<trigger> [lemma=/(?i)scanner/] [lemma=/(?i)tool/]?)
-
-  - name: sensor_indicator
-    priority: ${ rulepriority }
-    label: SensorTool
-    type: token
-    keep: true
-    pattern: |
-      (@number:Number)? (?<trigger> [lemma=/(?i)bomb/] [word=/(?i)(indicator|finder|scanner)s?/])
-
-  - name: redtool
-    priority: ${ rulepriority }
-    label: RedTool
-    type: token
-    keep: true
-    pattern: |
-      (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
-
-  - name: bluetool
-    priority: ${ rulepriority }
-    label: BlueTool
-    type: token
-    keep: true
-    pattern: |
-      (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
-
-  - name: greentool
-    priority: ${ rulepriority }
-    label: GreenTool
-    type: token
-    keep: true
-    pattern: |
-      (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
-
-  - name: greentool_just_number
-    priority: ${ rulepriority }
-    label: GreenTool
-    example: "I got 5 green"
-    type: token
-    keep: true
-    pattern: |
-      (@agent:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
 
   - name: coin
     priority: ${ rulepriority }
@@ -231,22 +161,6 @@ rules:
     keep: false
     pattern: |
           [lemma=flag] (?!  []? [tag=CD])
-
-  - name: beacon_generic
-    priority: ${ rulepriority }
-    label: Beacon
-    type: token
-    keep: true
-    pattern: |
-      (@agent:Entity)?  (?<trigger> [lemma=beacon])
-
-  - name: beacon_comm_tool
-    priority: ${ rulepriority }
-    label: Beacon
-    type: token
-    keep: true
-    pattern: |
-          [lemma=communication] [lemma=tool]
 
 
   - name: store

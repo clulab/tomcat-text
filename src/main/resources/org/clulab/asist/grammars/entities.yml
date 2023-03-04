@@ -134,14 +134,6 @@ rules:
     pattern: |
       [lemma=/(?i)^(blue)/] (?! [word=/tool/])
 
-  - name: yellow
-    label: Yellow
-    priority: ${ rulepriority }
-    type: token
-    keep: false
-    pattern: |
-      [lemma=/(?i)^(yellow)/] (?! [word=/tool/])
-
   - name: question_particle
     label: QuestionParticle
     priority: ${ rulepriority }

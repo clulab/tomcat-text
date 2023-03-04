@@ -17,6 +17,7 @@
     - Time:
       - TimeUnit # example: "three minutes"
     - Location:
+      - CoordinatedLocation
       - Desert
       - Village:
           - Church
@@ -28,7 +29,79 @@
       - Infrastructure:
         - Room
       - Zone
-      - MapSection
+      - MapSection:
+          - A:
+              - A1
+              - A2
+              - A3
+              - A4
+              - A5
+              - A6
+              - A7
+          - B:
+              - B1
+              - B2
+              - B3
+              - B4
+              - B5
+              - B6
+              - B7
+          - C:
+              - C1
+              - C2
+              - C3
+              - C4
+              - C5
+              - C6
+              - C7
+          - D:
+              - D1
+              - D2
+              - D3
+              - D4
+              - D5
+              - D6
+              - D7
+          - E:
+              - E1
+              - E2
+              - E3
+              - E4
+              - E5
+              - E6
+              - E7
+          - F:
+              - F1
+              - F2
+              - F3
+              - F4
+              - F5
+              - F6
+              - F7
+          - G:
+              - G1
+              - G2
+              - G3
+              - G4
+              - G5
+              - G6
+              - G7
+          - H:
+              - H1
+              - H2
+              - H3
+              - H4
+              - H5
+              - H6
+              - H7
+          - I:
+              - I1
+              - I2
+              - I3
+              - I4
+              - I5
+              - I6
+              - I7
     - Obstacle:
       - Rubble
       - Fire
@@ -133,19 +206,7 @@
     - Team # "we/us"
     - DemPron # "this/those/that/these"
     - EachPlayer
-    - Role:
-      - Transporter
-      - Medic
-      - Searcher
-      - Engineer
-    - Victim:
-        - Type # unspecified type of victim
-        - Yellow
-        - CriticalVictim # also matched "type C victim"
-        - RegularVictim:
-            - VictimTypeA
-            - VictimTypeB
-        - NoVictim # example: "no victim here"
+    - Role
   - Color:
     - Red
     - Blue
@@ -172,6 +233,9 @@
   - Item:
     - Flag
     - Bomb:
+        - Type:
+            - ChainBomb
+            - VolatileBomb
         - Sequence:
             - OneStep
             - TwoStep
@@ -181,6 +245,7 @@
             - BombIsType
     - Coin
     - Product:
+        - CoordinatedProduct
         - UnknownProduct
         - OfEachTool
         - SensorTool

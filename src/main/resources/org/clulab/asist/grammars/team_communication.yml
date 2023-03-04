@@ -191,7 +191,8 @@ rules:
       location: Location? = >/advmod/|
                >/${agents}/
                >/${preps}/|
-      >/${agents}/ >/nmod/ >/nmod/
+      >/${agents}/ >/nmod/ >/nmod/|
+      >/${positional_preps}/ >cc?
       obstacle: Obstacle? = >/${agents}/
                             >/${positional_preps}/
       map: Map? = >/${positional_preps}/

@@ -131,13 +131,20 @@ class TomcatActions() extends Actions with LazyLogging {
       val argMentions = args.values.flatten.toSeq
       // 0.1 * number of args
       val numArgsBonus = argMentions.length * 0.1
-      // 0.01 * number of labels for each
-      val argSpecificityBonus = argMentions.flatMap(_.labels).size * 0.05
+      // 0.05 * number of labels for each, except when we are looking at a CoordinatedLocation, or a coordinatedProduct
+      // then we give prefer-
+      // ential treatment in order to make sure that the argument becomes the coordination, and not a subcomponent
+      val argSpecificityBonus =
+      if (argMentions.flatMap(_.labels).contains("CoordinatedLocation")|argMentions.flatMap(_.labels)
+        .contains("CoordinatedProduct")) argMentions.flatMap(_.labels).size * 0.5
+      else argMentions.flatMap(_.labels).size * 0.05
+
       numArgsBonus + argSpecificityBonus
     }
     val mns: Iterable[Mention] = for {
     // find mentions of the same label and sentence overlap
-      (k, v) <- mentions.groupBy(m => (m.sentence, m.label, m.tags.get.contains("CC")))
+      // m.tags.get.contains("CC")) is disabled because it would only give us this in constructions with an AND
+      (k, v) <- mentions.groupBy(m => (m.sentence, m.label))//, m.tags.get.contains("CC")))
       m <- v
       // for overlapping mentions starting at the same token, keep only the longest
       longest = v.filter(vm => vm.tokenInterval.overlaps(m.tokenInterval))

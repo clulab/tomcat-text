@@ -18,7 +18,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+      (?<! [mention=Color] []? )  (?<trigger> @Color) [!mention=Color]? @second:Color [!mention=Color]? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
 
   - name: 2step
     priority: ${ rulepriority }
@@ -26,7 +26,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []? )  (?<trigger> @Color) []? @second:Color []? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+      (?<! [mention=Color] []? )  (?<trigger> @Color) [!mention=Color]? @second:Color ([!mention=Color] @sequence:Sequence?)  (?! []?? [mention=Color])
 
 
   - name: easy
@@ -49,7 +49,7 @@ rules:
     priority: ${ rulepriority }
     label: FourStep
     type: token
-    keep: true
+    keep: false
     pattern: |
       /(?i)^[brg]{4}$/
 
@@ -57,7 +57,7 @@ rules:
     priority: ${ rulepriority }
     label: ThreeStep
     type: token
-    keep: true
+    keep: false
     pattern: |
       /(?i)^[brg]{3}$/
 
@@ -65,7 +65,7 @@ rules:
     priority: ${ rulepriority }
     label: Green
     type: token
-    keep: true
+    keep: false
     pattern: |
       /(?i)^[g]{1}$/
 
@@ -73,7 +73,7 @@ rules:
     priority: ${ rulepriority }
     label: Blue
     type: token
-    keep: true
+    keep: false
     pattern: |
       /(?i)^[b]{1}$/
 
@@ -81,7 +81,7 @@ rules:
     priority: ${ rulepriority }
     label: Red
     type: token
-    keep: true
+    keep: false
     pattern: |
       /(?i)^[r]{1}$/
 
@@ -89,6 +89,6 @@ rules:
     priority: ${ rulepriority }
     label: TwoStep
     type: token
-    keep: true
+    keep: false
     pattern: |
       /(?i)^[brg]{2}$/
