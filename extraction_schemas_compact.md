@@ -5,7 +5,7 @@ Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `5.3.1`
 
-Document generation timestamp (UTC): `2023-02-22 05:01:03.551403`
+Document generation timestamp (UTC): `2023-03-16 22:08:10.386731`
 
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
@@ -65,15 +65,10 @@ Extractions
 ```
 
 - [Concept]
-  - Belief
-    - Unsure
-      - [agent] (Entity) (?)
-      - target (Action) ()
-
   - Color
-    - Blue
-    - Green
-    - Red
+    - [Blue]
+    - [Green]
+    - [Red]
   - [Direction]
     - Cardinal
       - [East]
@@ -95,25 +90,25 @@ Extractions
     - [Other]
     - [Person]
     - Role
-      - [Searcher]
+      - [Alpha]
+      - [Bravo]
+      - [Charlie]
     - [Self]
     - [Team]
-    - Victim
-      - [Yellow]
     - [You]
   - EventLike
     - Action
-      - CoordinateAnd
+      - CoordinatedAction
         - action1 (Action) ()
         - action2 (Action) ()
 
       - SimpleAction
         - Block
-          - [source] (Concept|Obstacle) (?)
+          - [source] (Obstacle|Concept) (?)
           - [target] (Concept) (?)
 
         - ChangePriority
-          - target (Victim|Person) ()
+          - target (Person|Victim) ()
           - [agent] (Entity) (?)
 
         - Clear
@@ -122,7 +117,7 @@ Extractions
           - location (Direction|Location) ()
 
         - Close
-          - [target] (Infrastructure|DemPron) (?)
+          - [target] (DemPron|Infrastructure) (?)
 
         - [Communicate]
           - [agent] (Entity) (?)
@@ -135,6 +130,11 @@ Extractions
               - [agent] (Entity) (?)
 
             - AgreementToIdea
+          - Belief
+            - Unsure
+              - [agent] (Entity) (?)
+              - topic (Action) ()
+
           - Disagreement
           - HelpOffer
             - agent (Self) ()
@@ -151,14 +151,25 @@ Extractions
               - [location] (Location) (?)
 
           - KnowledgeSharing
-            - exists (PuzzleConcept|Victim|Person|EventLike|Item) ()
+            - exists (PuzzleConcept|Person|Victim|EventLike|Item) ()
             - [location] (Location) (?)
             - [obstacle] (Obstacle) (?)
             - [map] (Map) (?)
 
+            - ReportBomb
+              - [agent] (Entity) (?)
+              - exists (Bomb) ()
+              - [location] (Location) (?)
+
+              - FindBomb
+                - exists (Bomb) ()
+                - [agent] (Entity) (?)
+                - [location] (Location) (?)
+                - [map] (Map) (?)
+
           - Need
             - HelpRequest
-              - [agent] (Self|Entity) (?)
+              - [agent] (Entity|Self) (?)
               - [location] (Location) (?)
               - [helper] (Entity) (?)
               - action (Action) ()
@@ -192,7 +203,6 @@ Extractions
 
             - DeliberatePlan
               - agent (Entity) ()
-              - target (Action) ()
               - topic (Action) ()
               - [agent] (Entity) (?)
 
@@ -206,14 +216,14 @@ Extractions
               - [agent] (Entity) (?)
 
           - Question
-            - topic (Concept|Action) ()
+            - topic (Action|Concept) ()
             - [location] (Location) (?)
 
             - HowQuestion
               - topic (Action) ()
 
             - LocationQuestion
-              - topic (Move|Entity) ()
+              - topic (Entity|Move) ()
               - [location] (Location) (?)
 
             - NumberQuestion
@@ -231,15 +241,9 @@ Extractions
               - [location] (Location) (?)
 
             - YesNoQuestion
-              - topic (Action|Need) ()
+              - topic (Action|Entity|Need) ()
               - [location] (Location) (?)
               - [agent] (Entity) (?)
-              - target (Entity) ()
-
-          - ReportBomb
-            - [agent] (Entity) (?)
-            - bomb (Bomb) ()
-            - [location] (Location) (?)
 
           - ReportStatus
             - AmReady
@@ -258,11 +262,11 @@ Extractions
               - location (Direction|Location) ()
 
               - FlagAreaClear
-                - target (Flag) ()
+                - location (Flag) ()
 
             - OutOfThing
               - [agent] (Entity) (?)
-              - object (Coin|Product) ()
+              - item (Product|Coin) ()
 
             - Remaining
               - item (Item|Color) ()
@@ -285,7 +289,7 @@ Extractions
 
             - ReportPossession
               - [agent] (Entity) (?)
-              - object (Coin|Product) ()
+              - object (Product|Coin) ()
               - number (Number) ()
               - [object] (Item) (?)
 
@@ -294,12 +298,11 @@ Extractions
               - agent (Entity) ()
 
             - Stuck
+          - Sentiment
+            - Positive
+              - Encouragement
+              - Gratitude
           - TeamStrategies
-            - Scout
-              - [agent] (Entity) (?)
-              - [target] (Location) (?)
-              - [map] (Map) (?)
-
             - SpreadOut
               - [agent] (Entity) (?)
 
@@ -318,23 +321,17 @@ Extractions
           - [agent] (Entity) (?)
           - target (Bomb) ()
 
-        - FindBomb
-          - bomb (Bomb) ()
-          - [agent] (Entity) (?)
-          - [location] (Location) (?)
-          - [map] (Map) (?)
-
         - Move
           - direction (Direction) ()
           - [agent] (Entity) (?)
-          - target (Flag|Item) ()
+          - target (Item|Flag) ()
 
           - Enter
-            - target (Location|Deictic) ()
+            - target (Deictic|Location) ()
             - [agent] (Entity) (?)
 
           - Meet
-            - location (Flag|Location|Beacon) ()
+            - location (Flag|Beacon|Location) ()
             - [agent] (Entity) (?)
             - [target] (Entity) (?)
 
@@ -347,7 +344,7 @@ Extractions
             - [agent] (Entity) (?)
 
           - MoveTo
-            - target (Location|Deictic|Entity) ()
+            - target (Deictic|Entity|Location) ()
             - [agent] (Entity) (?)
 
           - MoveToPhase
@@ -364,13 +361,18 @@ Extractions
               - [agent] (Entity) (?)
 
           - OnMyWay
-            - [target] (Location|Entity) (?)
+            - [target] (Entity|Location) (?)
 
         - Open
           - [agent] (Entity) (?)
           - target (Infrastructure) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
+
+        - PlaceFlag
+          - target (Flag) ()
+          - [location] (Location) (?)
+          - [flag_meaning] (Concept) (?)
 
         - Precedence
           - second (EventLike) ()
@@ -392,12 +394,13 @@ Extractions
           - target (Direction|Location) ()
           - [location] (Location) (?)
           - area (Location) ()
-          - [target] (Concept|Location) (?)
+          - [target] (Location|Concept) (?)
           - agent (Entity) ()
+          - [map] (Map) (?)
 
         - Shop
           - [agent] (Entity) (?)
-          - target (Product|Number) ()
+          - target (Number|Product) ()
           - [for] (Entity) (?)
 
           - Afford
@@ -412,7 +415,7 @@ Extractions
 
         - Sight
           - [agent] (Entity) (?)
-          - target (Item|EventLike|Entity) ()
+          - target (Item|Entity|EventLike) ()
           - [location] (Location) (?)
           - [map] (Map) (?)
           - item (Item) ()
@@ -421,7 +424,7 @@ Extractions
         - Transfer
           - [agent] (Entity) (?)
           - [beneficiary] (Color) (?)
-          - target (Coin|Product) ()
+          - target (Product|Coin) ()
 
         - Use
           - [agent] (Entity) (?)
@@ -436,6 +439,10 @@ Extractions
     - [Location]
       - target (Concept) ()
 
+      - CoordinatedLocation
+        - location1 (Location) ()
+        - location2 (Location) ()
+
       - [Desert]
       - [Forest]
         - [Tree]
@@ -443,6 +450,79 @@ Extractions
         - [Deictic]
       - [Infrastructure]
         - [Room]
+      - MapSection
+        - A
+          - [A1]
+          - [A2]
+          - [A3]
+          - [A4]
+          - [A5]
+          - [A6]
+          - [A7]
+        - B
+          - [B1]
+          - [B2]
+          - [B3]
+          - [B4]
+          - [B5]
+          - [B6]
+          - [B7]
+        - C
+          - [C1]
+          - [C2]
+          - [C3]
+          - [C4]
+          - [C5]
+          - [C6]
+          - [C7]
+        - D
+          - [D1]
+          - [D2]
+          - [D3]
+          - [D4]
+          - [D5]
+          - [D6]
+          - [D7]
+        - E
+          - [E1]
+          - [E2]
+          - [E3]
+          - [E4]
+          - [E5]
+          - [E6]
+          - [E7]
+        - F
+          - [F1]
+          - [F2]
+          - [F3]
+          - [F4]
+          - [F5]
+          - [F6]
+          - [F7]
+        - G
+          - [G1]
+          - [G2]
+          - [G3]
+          - [G4]
+          - [G5]
+          - [G6]
+          - [G7]
+        - H
+          - [H1]
+          - [H2]
+          - [H3]
+          - [H4]
+          - [H5]
+          - [H6]
+          - [H7]
+        - I
+          - [I1]
+          - [I2]
+          - [I3]
+          - [I4]
+          - [I5]
+          - [I6]
+          - [I7]
       - [Swamp]
       - [Village]
         - [Church]
@@ -465,18 +545,29 @@ Extractions
         - [OneStep]
         - ThreeStep
         - TwoStep
+      - Type
+        - [ChainBomb]
+        - [VolatileBomb]
     - Coin
     - Flag
     - [Product]
+      - CoordinatedProduct
+        - product1 (Product) ()
+        - product2 (Product) ()
+
       - [Health]
       - OfEachTool
         - number (Number) ()
 
-      - SensorTool
       - Tool
         - [owner] (Entity) (?)
 
         - Beacon
+          - BombBeacon
+          - HazardBeacon
+        - BombDisposer
+        - BombPPE
+        - BombSensor
         - OneUseTool
           - BlueTool
           - GreenTool
@@ -506,10 +597,6 @@ Extractions
     - [PlanningPhase]
     - [Store]
   - [RoomTag]
-  - Sentiment
-    - Positive
-      - Encouragement
-      - Gratitude
   - [Switch]
   - Tense
     - [FutureTense]

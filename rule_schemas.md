@@ -2,6 +2,118 @@
 
 --------
 
+#### rule: _quadranta1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A1`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranta2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A2`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranta3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A3`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranta4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A4`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranta5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A5`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranta6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A6`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranta7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`A7`, `A`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _got_it_copy_
 
 attribute | value
@@ -79,7 +191,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`AgreeToAction`, `Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -268,13 +380,29 @@ _No arguments_
 
 --------
 
+#### rule: _alpha_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Alpha`, `Role`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _ready_
 
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`AmReady`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -292,7 +420,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`AmTrapped`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -311,7 +439,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`AmTrapped`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -330,7 +458,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`AmTrapped`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -338,6 +466,118 @@ keep      | `true`
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B1`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B2`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B3`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B4`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B5`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B6`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantb7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`B7`, `B`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -366,7 +606,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Beacon`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -474,7 +714,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Blue`, `Color`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -499,12 +739,92 @@ _No arguments_
 
 --------
 
-#### rule: _bomb1_
+#### rule: _bluetool_cutter_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BlueTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bomb_n_location_
 
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Bomb`, `Item`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bomb_nude_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Bomb`, `Item`, `Concept`]
+priority  | `6+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bomb_w_location_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Bomb`, `Item`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _beacon_bomb_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombBeacon`, `Beacon`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bomb_dispose_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombDisposer`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -521,7 +841,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`BombIsType`, `BombAttributes`, `Bomb`, `Item`, `Concept`]
-priority  | `6+`
+priority  | `7+`
 keep      | `true`
 
 
@@ -539,7 +859,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`BombIsType`, `BombAttributes`, `Bomb`, `Item`, `Concept`]
-priority  | `6+`
+priority  | `7+`
 keep      | `true`
 
 
@@ -551,13 +871,237 @@ keep      | `true`
 
 --------
 
+#### rule: _ppe_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombPPE`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _ppe2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombPPE`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _sensor_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombSensor`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _sensor2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombSensor`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _sensor_indicator_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombSensor`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bravo_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Bravo`, `Role`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C1`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C2`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C3`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C4`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C5`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C6`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantc7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`C7`, `C`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _chain_type_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`ChainBomb`, `Type`, `Bomb`, `Item`, `Concept`]
+priority  | `5`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _change_priority_
 
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ChangePriority`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -576,7 +1120,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ChangePriority`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -589,13 +1133,29 @@ keep      | `true`
 
 --------
 
+#### rule: _charlie_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Charlie`, `Role`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _church_
 
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Church`, `Village`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `false`
 
 
@@ -850,7 +1410,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Completed`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -922,7 +1482,7 @@ keep      | `true`
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
-labels    | [`CoordinateAnd`, `Action`, `EventLike`, `Concept`]
+labels    | [`CoordinatedAction`, `Action`, `EventLike`, `Concept`]
 priority  | `6+`
 keep      | `true`
 
@@ -936,13 +1496,227 @@ keep      | `true`
 
 --------
 
+#### rule: _comma_sep_loc_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`CoordinatedLocation`, `Location`, `EventLike`, `Concept`]
+priority  | `3`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _coordinate_AND_location_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`CoordinatedLocation`, `Location`, `EventLike`, `Concept`]
+priority  | `4`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ location1 | `Location` | _none_ | `true` 
+ location2 | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _prep_sep_loc_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`CoordinatedLocation`, `Location`, `EventLike`, `Concept`]
+priority  | `3`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _comma_sep_prod_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`CoordinatedProduct`, `Product`, `Item`, `Concept`]
+priority  | `7`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _coordinate_AND_product_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`CoordinatedProduct`, `Product`, `Item`, `Concept`]
+priority  | `8`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ product1 | `Product` | _none_ | `true` 
+ product2 | `Product` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _prep_sep_prod_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`CoordinatedProduct`, `Product`, `Item`, `Concept`]
+priority  | `7`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D1`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D2`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D3`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D4`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D5`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D6`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantd7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`D7`, `D`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _I_am_color_
 
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`DeclareColor`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -961,7 +1735,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`DeclareColor`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -980,7 +1754,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`DeclareColor`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1076,7 +1850,7 @@ keep      | `true`
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  agent | `Entity` | _none_ | `true` 
- target | `Action` | _none_ | `true` 
+ topic | `Action` | _none_ | `true` 
 
 &nbsp;
 
@@ -1124,7 +1898,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Desert`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `false`
 
 
@@ -1188,7 +1962,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`DoorClosed`, `ReportItemStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1206,7 +1980,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`DoorOpen`, `ReportItemStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1225,6 +1999,118 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Down`, `Relative`, `Direction`, `Concept`]
 priority  | `4+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E1`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E2`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E3`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E4`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E5`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E6`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrante7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`E7`, `E`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
 keep      | `false`
 
 
@@ -1271,7 +2157,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`Encouragement`, `Positive`, `Sentiment`, `Concept`]
+labels    | [`Encouragement`, `Positive`, `Sentiment`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
 priority  | `4`
 keep      | `true`
 
@@ -1371,6 +2257,118 @@ _No arguments_
 
 --------
 
+#### rule: _quadrantf1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F1`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantf2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F2`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantf3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F3`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantf4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F4`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantf5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F5`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantf6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F6`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantf7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`F7`, `F`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _field_
 
 attribute | value
@@ -1392,14 +2390,14 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
-labels    | [`FindBomb`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+labels    | [`FindBomb`, `ReportBomb`, `KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
 keep      | `true`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- bomb | `Bomb` | _none_ | `true` 
+ exists | `Bomb` | _none_ | `true` 
  agent | `Entity` | `?` | `false` 
  location | `Location` | `?` | `false` 
  map | `Map` | `?` | `false` 
@@ -1494,13 +2492,13 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`FlagAreaClear`, `LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- target | `Flag` | _none_ | `true` 
+ location | `Flag` | _none_ | `true` 
 
 &nbsp;
 
@@ -1512,7 +2510,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Forest`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `false`
 
 
@@ -1545,7 +2543,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`FourStep`, `Sequence`, `Bomb`, `Item`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1590,6 +2588,118 @@ keep      | `false`
 
 --------
 
+#### rule: _quadrantg1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G1`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantg2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G2`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantg3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G3`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantg4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G4`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantg5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G5`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantg6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G6`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadrantg7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`G7`, `G`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _GPS_token_
 
 attribute | value
@@ -1611,7 +2721,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`Gratitude`, `Positive`, `Sentiment`, `Concept`]
+labels    | [`Gratitude`, `Positive`, `Sentiment`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
 priority  | `4`
 keep      | `true`
 
@@ -1645,7 +2755,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Green`, `Color`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -1655,6 +2765,22 @@ _No arguments_
 --------
 
 #### rule: _greentool_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`GreenTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _greentool_cutter_
 
 attribute | value
 -----  |   ---- 
@@ -1686,6 +2812,118 @@ _No arguments_
 
 --------
 
+#### rule: _quadranth1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H1`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranth2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H2`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranth3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H3`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranth4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H4`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranth5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H5`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranth6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H6`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranth7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`H7`, `H`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _hammer_
 
 attribute | value
@@ -1699,6 +2937,22 @@ keep      | `false`
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  owner | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _beacon_hazard_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`HazardBeacon`, `Beacon`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -1726,7 +2980,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpCommand`, `Instruction`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1746,7 +3000,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpCommand`, `Instruction`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `7+`
+priority  | `9+`
 keep      | `true`
 
 
@@ -1765,7 +3019,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpOffer`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1785,7 +3039,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpOffer`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `7+`
+priority  | `9+`
 keep      | `true`
 
 
@@ -1804,7 +3058,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1824,7 +3078,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1843,7 +3097,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1875,6 +3129,118 @@ keep      | `true`
 
 --------
 
+#### rule: _quadranti1_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I1`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranti2_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I2`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranti3_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I3`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranti4_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I4`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranti5_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I5`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranti6_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I6`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _quadranti7_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`I7`, `I`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _infrastructure_detection_
 
 attribute | value
@@ -1897,7 +3263,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Instruction`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1916,7 +3282,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Instruction`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1935,7 +3301,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1956,7 +3322,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1977,7 +3343,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -1997,7 +3363,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2018,7 +3384,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2039,7 +3405,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2060,7 +3426,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2079,7 +3445,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2098,7 +3464,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2117,7 +3483,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2136,7 +3502,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2155,7 +3521,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2174,7 +3540,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2272,7 +3638,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2288,7 +3654,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2304,7 +3670,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2323,7 +3689,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`LocationClear`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2864,7 +4230,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`NeedAction`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2883,7 +4249,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`NeedItem`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2902,7 +4268,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`NeedPresence`, `HelpRequest`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -2922,7 +4288,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`NeedRole`, `Need`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -3316,7 +4682,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`OutOfThing`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `7+`
+priority  | `9+`
 keep      | `true`
 
 
@@ -3332,14 +4698,14 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`OutOfThing`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
- object | `Coin` | _none_ | `true` 
+ item | `Coin` | _none_ | `true` 
 
 &nbsp;
 
@@ -3351,14 +4717,14 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`OutOfThing`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
- object | `Product` | _none_ | `true` 
+ item | `Product` | _none_ | `true` 
 
 &nbsp;
 
@@ -3425,6 +4791,66 @@ keep      | `false`
 
 
 _No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _placeFlag_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`PlaceFlag`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Flag` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+ flag_meaning | `Concept` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _placeFlag_leave_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`PlaceFlag`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Flag` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+ flag_meaning | `Concept` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _placeFlag_throw_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`PlaceFlag`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ target | `Flag` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+ flag_meaning | `Concept` | `?` | `false` 
 
 &nbsp;
 
@@ -3608,6 +5034,25 @@ _No arguments_
 
 --------
 
+#### rule: _precedence_para_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Precedence`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `10+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ first | `EventLike` | _none_ | `true` 
+ second | `EventLike` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _price_question_
 
 attribute | value
@@ -3668,7 +5113,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Proposal`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -3687,7 +5132,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Proposal`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -3935,7 +5380,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`Red`, `Color`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -3960,13 +5405,29 @@ _No arguments_
 
 --------
 
+#### rule: _redtool_cutter_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`RedTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _is_left2_
 
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Remaining`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -3985,7 +5446,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Remaining`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4004,7 +5465,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Remaining`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4024,7 +5485,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Remaining`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4063,15 +5524,15 @@ keep      | `true`
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
-labels    | [`ReportBomb`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+labels    | [`ReportBomb`, `KnowledgeSharing`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
 keep      | `true`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
- bomb | `Bomb` | _none_ | `true` 
+ exists | `Bomb` | _none_ | `true` 
  location | `Location` | `?` | `false` 
 
 &nbsp;
@@ -4084,7 +5545,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ReportLocation`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4103,7 +5564,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ReportPossession`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4122,7 +5583,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ReportPossession`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4141,7 +5602,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ReportPossession`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4177,7 +5638,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`RoleDeclare`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4196,7 +5657,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`RoleSwitch`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4215,7 +5676,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`RoleSwitch`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -4276,26 +5737,6 @@ _No arguments_
 
 --------
 
-#### rule: _scout_
-
-attribute | value
------  |   ---- 
-type |  GraphExtractor
-labels    | [`Scout`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
-keep      | `true`
-
-
-**argument name** | **label(s)** | **quantifier** | **required?**
-:---- | :---- | :---- | :----
- agent | `Entity` | `?` | `false` 
- target | `Location` | `?` | `false` 
- map | `Map` | `?` | `false` 
-
-&nbsp;
-
---------
-
 #### rule: _i_am_searching_
 
 attribute | value
@@ -4331,6 +5772,26 @@ keep      | `true`
  agent | `Entity` | `?` | `false` 
  target | `Location` | _none_ | `true` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _scout_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Search`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Location` | `?` | `false` 
+ map | `Map` | `?` | `false` 
 
 &nbsp;
 
@@ -4446,38 +5907,6 @@ keep      | `true`
 
 --------
 
-#### rule: _evacuator_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`Searcher`, `Role`, `Entity`, `Concept`]
-priority  | `5+`
-keep      | `false`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
-#### rule: _searcher_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`Searcher`, `Role`, `Entity`, `Concept`]
-priority  | `5+`
-keep      | `false`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
 #### rule: _possesive_pronoun_my_
 
 attribute | value
@@ -4502,54 +5931,6 @@ type |  TokenExtractor
 labels    | [`Self`, `Entity`, `Concept`]
 priority  | `3+`
 keep      | `false`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
-#### rule: _sensor_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`SensorTool`, `Product`, `Item`, `Concept`]
-priority  | `5+`
-keep      | `true`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
-#### rule: _sensor2_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`SensorTool`, `Product`, `Item`, `Concept`]
-priority  | `5+`
-keep      | `true`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
-#### rule: _sensor_indicator_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`SensorTool`, `Product`, `Item`, `Concept`]
-priority  | `5+`
-keep      | `true`
 
 
 _No arguments_
@@ -4659,7 +6040,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ShouldPlan`, `Plan`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 action | `Action` | `Some(preventSubjectVerbInversion)` 
 
@@ -5075,7 +6456,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Stuck`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -5091,7 +6472,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Swamp`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `false`
 
 
@@ -5156,7 +6537,7 @@ attribute | value
 type |  TokenExtractor
 labels    | [`ThreeStep`, `Sequence`, `Bomb`, `Item`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
@@ -5317,7 +6698,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`ToolBroken`, `ReportItemStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -5375,7 +6756,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Tree`, `Forest`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `false`
 
 
@@ -5408,10 +6789,29 @@ attribute | value
 type |  TokenExtractor
 labels    | [`TwoStep`, `Sequence`, `Bomb`, `Item`, `Concept`]
 priority  | `5+`
-keep      | `true`
+keep      | `false`
 
 
 _No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _dont know of event_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Unsure`, `Belief`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ topic | `Action` | _none_ | `true` 
 
 &nbsp;
 
@@ -5422,7 +6822,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`Unsure`, `Belief`, `Concept`]
+labels    | [`Unsure`, `Belief`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
 priority  | `4`
 keep      | `true`
 
@@ -5438,7 +6838,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`Unsure`, `Belief`, `Concept`]
+labels    | [`Unsure`, `Belief`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
 priority  | `4`
 keep      | `true`
 
@@ -5454,15 +6854,15 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  GraphExtractor
-labels    | [`Unsure`, `Belief`, `Concept`]
-priority  | `6+`
+labels    | [`Unsure`, `Belief`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
 keep      | `true`
 
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  agent | `Entity` | `?` | `false` 
- target | `Action` | _none_ | `true` 
+ topic | `Action` | _none_ | `true` 
 
 &nbsp;
 
@@ -5530,7 +6930,23 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Village`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _volatile_type_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`VolatileBomb`, `Type`, `Bomb`, `Item`, `Concept`]
+priority  | `5`
 keep      | `false`
 
 
@@ -5546,7 +6962,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -5565,7 +6981,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -5584,7 +7000,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`VoteFor`, `Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `8+`
 keep      | `true`
 
 
@@ -5603,7 +7019,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`VoteFor`, `Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `7+`
+priority  | `9+`
 keep      | `true`
 
 
@@ -5619,7 +7035,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`VoteFor`, `Vote`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `7+`
+priority  | `9+`
 keep      | `true`
 
 
@@ -5715,22 +7131,6 @@ keep      | `true`
 
 --------
 
-#### rule: _yellow_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`Yellow`, `Victim`, `Entity`, `Concept`]
-priority  | `3+`
-keep      | `false`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
 #### rule: _binary_question_
 
 attribute | value
@@ -5764,7 +7164,7 @@ keep      | `true`
 
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
- target | `Entity` | _none_ | `true` 
+ topic | `Entity` | _none_ | `true` 
  location | `Location` | `?` | `false` 
 
 &nbsp;
@@ -5846,7 +7246,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Zone`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `false`
 
 
@@ -5862,7 +7262,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Zone`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `true`
 
 
@@ -5878,7 +7278,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Zone`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `true`
 
 
@@ -5894,7 +7294,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Zone`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `true`
 
 
@@ -5944,7 +7344,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Zone`, `Location`, `EventLike`, `Concept`]
-priority  | `4+`
+priority  | `2+`
 keep      | `true`
 
 
