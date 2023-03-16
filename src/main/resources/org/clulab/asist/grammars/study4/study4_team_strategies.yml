@@ -27,7 +27,7 @@ rules:
       agent: Entity? = >/${agents}/
 
   - name: scout
-    label: Scout
+    label: Search
     example: "We could scout the map"
     priority: ${ rulepriority }
     pattern: |

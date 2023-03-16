@@ -27,7 +27,7 @@ rules:
     pattern: |
       (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
       (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]))
-      [word=/^(in|on|next|at)$/]? []? (@Location:Location)
+      [word=/^(in|on|next|at)$/]? []? (@location:Location)
 
   - name: bomb_n_location
     priority: ${ rulepriority }

@@ -106,10 +106,9 @@
       - Rubble
       - Fire
     - Action:
-      - CoordinateAnd
+      - CoordinatedAction
       - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
-        - FindBomb
         - Defuse
         - Transfer
         - Use:
@@ -134,15 +133,25 @@
         - Push
         - Save
         - Sight
-        - PlaceMarker # "I'm placing a marker here"
+        - PlaceFlag # "I'm placing a marker here"
         - Communicate:
+          - Sentiment:
+            - Positive:
+              - Encouragement
+              - Gratitude
+            - Negative
+          - Belief:
+            - Unsure
+          - Agreement:
+            - AgreementToIdea
+            - AgreeToAction
+          - Disagreement
+          - Acknowledge
           - Vote:
-              - VoteFor
+            - VoteFor
           - TeamStrategies:
               - StickTogether
               - SpreadOut
-              - Scout
-              - TakeZone
           - Instruction:
               - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
           - ReportStatus:
@@ -161,8 +170,9 @@
               - ToolBroken
               - DoorOpen
               - DoorClosed
-          - ReportBomb
-          - KnowledgeSharing # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
+          - KnowledgeSharing:
+              - ReportBomb:
+                  - FindBomb # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
           - Need: # labels for players discussing the needs of the team or their own needs
             - NeedRole
             - NeedItem
@@ -186,11 +196,6 @@
               - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
               - Proposal # players making or offering a commitment to an action: "I can clear the rooms on the right"
               - DeliberatePlan # players stating their future move: "I will help you"
-          - Agreement:
-              - AgreementToIdea
-              - AgreeToAction
-          - Disagreement
-          - Acknowledge
         - Clear # example: "I am clearing B2"
         - Remove
         - RoleSwitch # example: "I will switch to engineer"
@@ -206,7 +211,10 @@
     - Team # "we/us"
     - DemPron # "this/those/that/these"
     - EachPlayer
-    - Role
+    - Role:
+        - Alpha
+        - Bravo
+        - Charlie
   - Color:
     - Red
     - Blue
@@ -248,7 +256,6 @@
         - CoordinatedProduct
         - UnknownProduct
         - OfEachTool
-        - SensorTool
         - Tool:
           - OneUseTool:
             - RedTool
@@ -256,12 +263,10 @@
             - BlueTool
           - BombPPE
           - Beacon:
-            - RallyBeacon
             - BombBeacon
             - HazardBeacon
-          - BombStabilizer
           - BombDisposer
-        - Bow
+          - BombSensor
         - Health
     - Tools:
       - Hammer
@@ -270,15 +275,4 @@
       - GPS
       - Map:
           - MapSector
-  - Sentiment:
-    #- Uncertainty  # include the agent
-    - Positive:
-      - Encouragement
-      #- Politeness
-      - Gratitude
-    - Negative
-  - Belief:
-    - Unsure
-      #- Anger
-      #- Worry
 

@@ -190,3 +190,28 @@ rules:
     keep: false
     pattern: |
       [tag=/PRP/ & word=ya]
+
+
+  - name: alpha
+    label: Alpha
+    priority: ${ rulepriority }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/(?i)^(alpha)/]
+
+  - name: bravo
+    label: Bravo
+    priority: ${ rulepriority }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/(?i)^(bravo)/]
+
+  - name: charlie
+    label: Charlie
+    priority: ${ rulepriority }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/(?i)^(charlie)/]

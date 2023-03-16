@@ -8,7 +8,7 @@
 
 - name: sensor
   priority: ${ rulepriority }
-  label: SensorTool
+  label: BombSensor
   type: token
   keep: true
   pattern: |
@@ -16,7 +16,7 @@
 
 - name: sensor2
   priority: ${ rulepriority }
-  label: SensorTool
+  label: BombSensor
   type: token
   keep: true
   pattern: |
@@ -24,7 +24,7 @@
 
 - name: sensor_indicator
   priority: ${ rulepriority }
-  label: SensorTool
+  label: BombSensor
   type: token
   keep: true
   pattern: |
@@ -38,6 +38,14 @@
   pattern: |
     (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=red] [lemma=tool])
 
+- name: redtool_cutter
+  priority: ${ rulepriority }
+  label: RedTool
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)?  (@number:Number)? (?<trigger> ([lemma=red] [lemma=wirecutter]) | ([lemma=red] []? [lemma=cutter]))
+
 - name: bluetool
   priority: ${ rulepriority }
   label: BlueTool
@@ -46,6 +54,15 @@
   pattern: |
     (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=blue] [lemma=tool])
 
+
+- name: bluetool_cutter
+  priority: ${ rulepriority }
+  label: BlueTool
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)?  (@number:Number)? (?<trigger> ([lemma=blue] [lemma=wirecutter]) | ([lemma=blue] []? [lemma=cutter]))
+
 - name: greentool
   priority: ${ rulepriority }
   label: GreenTool
@@ -53,6 +70,15 @@
   keep: true
   pattern: |
     (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=green] [lemma=tool])
+
+
+- name: greentool_cutter
+  priority: ${ rulepriority }
+  label: GreenTool
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)?  (@number:Number)? (?<trigger> ([lemma=green] [lemma=wirecutter]) | ([lemma=green] []? [lemma=cutter]))
 
 - name: greentool_just_number
   priority: ${ rulepriority }
@@ -69,7 +95,7 @@
   type: token
   keep: true
   pattern: |
-    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb]? [word=/(i?)ppe$/])
+    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb]? [word=/(i?)(ppe|protection|armor|kevlar)$/])
 
 - name: ppe2
   priority: ${ rulepriority }
@@ -83,7 +109,7 @@
   priority: ${ rulepriority }
   label: Beacon
   type: token
-  keep: true
+  keep: false
   pattern: |
     (@agent:Entity)?  (?<trigger> [lemma=beacon])
 
@@ -95,7 +121,30 @@
   pattern: |
     [lemma=communication] [lemma=tool]
 
-## TODO: Implement the other beacons
+- name: beacon_bomb
+  priority: ${ rulepriority }
+  label: BombBeacon
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)? (@number:Number)?  (?<trigger> [lemma=bomb] [lemma=beacon])
+
+- name: bomb_dispose
+  priority: ${ rulepriority }
+  label: BombDisposer
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb] [lemma=/(disposer|dispose|defuser|diffuser)/])
+
+- name: beacon_hazard
+  priority: ${ rulepriority }
+  label: HazardBeacon
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=/^(hazard|danger)/] [lemma=beacon])
+
 
 ############## coordination
 - name: "coordinate_AND_product"

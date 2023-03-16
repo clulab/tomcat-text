@@ -310,7 +310,7 @@ rules:
     type: token
     example: "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
     pattern: |
-      @target:Location [lemma=be] (?<trigger> clear)
+      @location:Location [lemma=be] (?<trigger> clear)
 
   - name: dir_clear
     priority: ${ rulepriority }
@@ -318,7 +318,7 @@ rules:
     type: token
     example: "leave this is why I believe this room is clear our remember to put aside the outside of the room to show that they're cleared"
     pattern: |
-      @target:Direction [lemma=be] (?<trigger> clear)
+      @location:Direction [lemma=be] (?<trigger> clear)
 
   - name: loc_clear_take_care
     priority: ${ rulepriority }

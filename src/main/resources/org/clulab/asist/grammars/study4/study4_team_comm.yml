@@ -76,7 +76,7 @@ rules:
     pattern: |
       trigger = [lemma=/^be$/] [word=out] | [lemma=/^we.?re$/] [word=out] | [lemma=/^im$/] [word=out]
       agent: Entity? =  <cop >/${agents}/
-      object: Product = >nmod_out_of | <cop
+      item: Product = >nmod_out_of | <cop
 
   - name: "out_of_coin"
     label: OutOfThing
@@ -85,7 +85,7 @@ rules:
     pattern: |
       trigger = [lemma=/^be$/] [word=out] | [lemma=/^we.?re$/] [word=out] | [lemma=/^im$/] [word=out]
       agent: Entity? =  <cop >/${agents}/
-      object: Coin = >nmod_out_of | <cop
+      item: Coin = >nmod_out_of | <cop
 
   - name: Im_out
     priority: ${ second_priority }
@@ -102,7 +102,7 @@ rules:
     pattern: |
       trigger = [lemma=/^have$/] | [word=got]
       agent: Entity? = >/${agents}/
-      bomb: Bomb = >/${objects}/
+      exists: Bomb = >/${objects}/
       location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
                >/${preps}/
@@ -113,7 +113,7 @@ rules:
     example: "I found a bob."
     pattern: |
       trigger = [lemma=/(?i)^find$|^discover$/]
-      bomb: Bomb = >/${objects}/
+      exists: Bomb = >/${objects}/
       agent: Entity? = >/${agents}/
       location: Location? = >/${preps}|advmod|${positional_preps}/|
                >/${agents}/
@@ -243,7 +243,7 @@ rules:
 
   - name: "finish_task"
     label: Completed
-    example: "I have 5 coins"
+    example: "I finished defusing the bomb."
     priority: ${ rulepriority }
     pattern: |
       trigger = [lemma=/^(finish|do|complete)$/ & tag=/VBD|VBN/]
@@ -256,7 +256,7 @@ rules:
     priority: ${ rulepriority }
     pattern: |
       trigger = [lemma=/^be$/] [word=clear]
-      target: Flag = >nsubj
+      location: Flag = >nsubj
 
 
   - name: "unsure_of_event"
@@ -266,5 +266,13 @@ rules:
     pattern: |
       trigger = [lemma=/^(believe|think|assume)$/]
       agent: Entity? = >/${agents}/
-      target: Action = >ccomp
+      topic: Action = >ccomp
 
+  - name: "dont know of event"
+    label: Unsure
+    example: "I believe I have 5 coins"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^do$/] [lemma=/^not$/] [lemma=/^(know)$/]
+      agent: Entity? = >/${agents}/
+      topic: Action = >/advcl/

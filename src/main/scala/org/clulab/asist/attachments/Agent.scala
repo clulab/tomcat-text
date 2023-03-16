@@ -24,4 +24,7 @@ object Agent{
   val YOU = "You"
   val TEAM = "Team"
   val OTHER = "Other"
+  val ALPHA = "Alpha"
+  val BRAVO = "Bravo"
+  val CHARLIE = "Charlie"
 }

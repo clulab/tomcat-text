@@ -2,10 +2,9 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
-  ### products ###
+  ### map quadrants ###
   - import: org/clulab/asist/grammars/study4/products.yml
   ###
-
   - name: direction
     priority: ${ rulepriority }
     label: Direction
@@ -13,6 +12,7 @@ rules:
     keep: false
     pattern: |
       [lemma=/(?i)direction$/ & tag=/^N/]
+
 
   - name: coin
     priority: ${ rulepriority }
