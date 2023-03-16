@@ -282,3 +282,37 @@ rules:
       agent: Entity? = >nsubj
       location: Direction = >/${objects}/ >/${preps}/|
                >dobj
+
+
+  - name: placeFlag
+    label: PlaceFlag
+    example: "I'm placing a marker for critical victim in front of D2."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/^${ place_triggers }/]
+      target: Flag = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      flag_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: placeFlag_leave
+    label: PlaceFlag
+    example: "I'm leaving a marker in front of D2."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/leave/]
+      target: Flag = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      flag_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: placeFlag_throw
+    label: PlaceFlag
+    example: "I can throw down a marker here."
+    priority: ${ rulepriority }
+    keep: true
+    pattern: |
+      trigger = [lemma=/throw/]
+      target: Flag = >dobj
+      location: Location? = >dobj >/${ positional_preps }/
+      flag_meaning: Concept? = >dobj >/nmod_for/

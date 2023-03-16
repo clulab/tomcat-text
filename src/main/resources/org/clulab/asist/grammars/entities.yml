@@ -134,14 +134,6 @@ rules:
     pattern: |
       [lemma=/(?i)^(blue)/] (?! [word=/tool/])
 
-  - name: yellow
-    label: Yellow
-    priority: ${ rulepriority }
-    type: token
-    keep: false
-    pattern: |
-      [lemma=/(?i)^(yellow)/] (?! [word=/tool/])
-
   - name: question_particle
     label: QuestionParticle
     priority: ${ rulepriority }
@@ -198,3 +190,28 @@ rules:
     keep: false
     pattern: |
       [tag=/PRP/ & word=ya]
+
+
+  - name: alpha
+    label: Alpha
+    priority: ${ rulepriority }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/(?i)^(alpha)/]
+
+  - name: bravo
+    label: Bravo
+    priority: ${ rulepriority }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/(?i)^(bravo)/]
+
+  - name: charlie
+    label: Charlie
+    priority: ${ rulepriority }
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/(?i)^(charlie)/]

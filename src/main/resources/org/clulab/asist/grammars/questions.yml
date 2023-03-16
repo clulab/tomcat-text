@@ -116,7 +116,7 @@ rules:
     example: "Is there a victim？| Is he an engineer?"
     pattern: |
       trigger = (?<! @QuestionParticle|How) [lemma=/(?i)^be$/ & tag=/VBP|VBZ|VBD/ & !word=are]  [tag=/PRP|EX/ | word=there]
-      target: Entity = <cop | >nsubj
+      topic: Entity = <cop | >nsubj
       location: Location? = >advmod | <cop? (${ search_relations })
 
   - name: binary_question_help

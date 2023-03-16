@@ -4,23 +4,6 @@ rules:
 
   # ------------- ROLES --------------------------
 
-  - name: searcher
-    priority: ${ rulepriority }
-    label: Searcher
-    type: token
-    keep: ${ keep_entities }
-    pattern: |
-      [word=/(?i)(${ search_spec_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
-
-  - name: evacuator
-    priority: ${ rulepriority }
-    label: Searcher
-    type: token
-    keep: ${ keep_entities }
-    pattern: |
-      [word=/(?i)(${ evacuator_triggers })/ & tag=/^NN/] [word=/(?i)(${ specialist_triggers })/]?
-
-
 
   - name: plan_base
     label: PlanLanguage

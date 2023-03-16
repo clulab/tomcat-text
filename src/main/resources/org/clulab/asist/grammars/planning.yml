@@ -8,8 +8,8 @@ rules:
     example: "If we remove the rubble, we can save the victim."
     pattern: |
       trigger = [word=if]|[word=If]
-      condition: Action = <mark
-      solution: Action = <mark <advcl_if
+      condition: Action = <mark [!mention=Belief]
+      solution: Action = <mark <advcl_if [!mention=Belief]
 
   - name: "when condition"
     label: ContingentPlan
@@ -27,4 +27,4 @@ rules:
     pattern: |
       trigger = (?<= [tag=VBP & lemma=be]) [tag=VBG] (?! to @Location)
       agent: Entity = >/${agents}/
-      target: Action = >/${objects_complements}/
+      topic: Action = >/${objects_complements}/
