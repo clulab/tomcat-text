@@ -63,6 +63,14 @@ rules:
         [tag=/^V/]
       second: EventLike? = <advmod
 
+  - name: precedence_para
+    priority: ${ rulepriority }
+    label: Precedence
+    pattern: |
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after))
+      first: EventLike =  <advmod </parataxis/ [tag=/^V/]
+      second: EventLike? = <advmod
+
   - name: precedence1_second
     priority: ${ rulepriority }
     label: Precedence

@@ -38,7 +38,9 @@ rules:
   # Extract the bomb_rules
   - import: org/clulab/asist/grammars/study4/bomb_rules.yml
     vars:
+      first_priority: "5"
       rulepriority: "6+"
+      second_priority: "7+"
 
   # Extract the items
   - import: org/clulab/asist/grammars/items.yml
@@ -62,9 +64,9 @@ rules:
   # Extract the study 4locations
   - import: org/clulab/asist/grammars/study4/locations_study4.yml
     vars:
-      first_priority: "4+"
-      second_priority: "5"
-      third_priority: "6"
+      first_priority: "2+"
+      second_priority: "3"
+      third_priority: "4"
 
   # Extract the base_concepts
   - import: org/clulab/asist/grammars/base_concepts.yml
@@ -76,6 +78,7 @@ rules:
     vars:
       rulepriority: "5+"
       second_priority: "7"
+      third_priority: "8"
 
   # Extract the marker meanings//// We have this disabled for study 3master.yml
 #  - import: org/clulab/asist/grammars/marker_meanings.yml
@@ -144,14 +147,14 @@ rules:
   # Extract team_comms
   - import: org/clulab/asist/grammars/team_communication.yml
     vars:
-      rulepriority: "6+"
-      second_priority: "7+"
+      rulepriority: "8+"
+      second_priority: "9+"
 
   # Extract study4_team_comms
   - import: org/clulab/asist/grammars/study4/study4_team_comm.yml
     vars:
-      rulepriority: "6+"
-      second_priority: "7+"
+      rulepriority: "8+"
+      second_priority: "9+"
 
   # Extract temporal extractions
   - import: org/clulab/asist/grammars/temporal_extractions.yml

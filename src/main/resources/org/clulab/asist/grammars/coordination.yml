@@ -3,7 +3,7 @@ vars: org/clulab/asist/grammars/vars.yml
 rules:
 
   - name: "coordinate_AND"
-    label: CoordinateAnd
+    label: CoordinatedAction
     priority: ${ rulepriority }
     example: "We should do X AND Y"
     comment: "The reason for the [!Plan] is because of the weird behavior with this construction:

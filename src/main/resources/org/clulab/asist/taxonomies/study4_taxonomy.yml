@@ -17,6 +17,7 @@
     - Time:
       - TimeUnit # example: "three minutes"
     - Location:
+      - CoordinatedLocation
       - Desert
       - Village:
           - Church
@@ -28,15 +29,86 @@
       - Infrastructure:
         - Room
       - Zone
-      - MapSection
+      - MapSection:
+          - A:
+              - A1
+              - A2
+              - A3
+              - A4
+              - A5
+              - A6
+              - A7
+          - B:
+              - B1
+              - B2
+              - B3
+              - B4
+              - B5
+              - B6
+              - B7
+          - C:
+              - C1
+              - C2
+              - C3
+              - C4
+              - C5
+              - C6
+              - C7
+          - D:
+              - D1
+              - D2
+              - D3
+              - D4
+              - D5
+              - D6
+              - D7
+          - E:
+              - E1
+              - E2
+              - E3
+              - E4
+              - E5
+              - E6
+              - E7
+          - F:
+              - F1
+              - F2
+              - F3
+              - F4
+              - F5
+              - F6
+              - F7
+          - G:
+              - G1
+              - G2
+              - G3
+              - G4
+              - G5
+              - G6
+              - G7
+          - H:
+              - H1
+              - H2
+              - H3
+              - H4
+              - H5
+              - H6
+              - H7
+          - I:
+              - I1
+              - I2
+              - I3
+              - I4
+              - I5
+              - I6
+              - I7
     - Obstacle:
       - Rubble
       - Fire
     - Action:
-      - CoordinateAnd
+      - CoordinatedAction
       - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
-        - FindBomb
         - Defuse
         - Transfer
         - Use:
@@ -61,15 +133,25 @@
         - Push
         - Save
         - Sight
-        - PlaceMarker # "I'm placing a marker here"
+        - PlaceFlag # "I'm placing a marker here"
         - Communicate:
+          - Sentiment:
+            - Positive:
+              - Encouragement
+              - Gratitude
+            - Negative
+          - Belief:
+            - Unsure
+          - Agreement:
+            - AgreementToIdea
+            - AgreeToAction
+          - Disagreement
+          - Acknowledge
           - Vote:
-              - VoteFor
+            - VoteFor
           - TeamStrategies:
               - StickTogether
               - SpreadOut
-              - Scout
-              - TakeZone
           - Instruction:
               - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
           - ReportStatus:
@@ -88,8 +170,9 @@
               - ToolBroken
               - DoorOpen
               - DoorClosed
-          - ReportBomb
-          - KnowledgeSharing # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
+          - KnowledgeSharing:
+              - ReportBomb:
+                  - FindBomb # players reporting that something exists: "There is a critical victim here" or "I have some rubble in B2"
           - Need: # labels for players discussing the needs of the team or their own needs
             - NeedRole
             - NeedItem
@@ -113,11 +196,6 @@
               - PlanLanguage # This label is for general language around planning, such as "strategy" "plan", etc
               - Proposal # players making or offering a commitment to an action: "I can clear the rooms on the right"
               - DeliberatePlan # players stating their future move: "I will help you"
-          - Agreement:
-              - AgreementToIdea
-              - AgreeToAction
-          - Disagreement
-          - Acknowledge
         - Clear # example: "I am clearing B2"
         - Remove
         - RoleSwitch # example: "I will switch to engineer"
@@ -134,18 +212,9 @@
     - DemPron # "this/those/that/these"
     - EachPlayer
     - Role:
-      - Transporter
-      - Medic
-      - Searcher
-      - Engineer
-    - Victim:
-        - Type # unspecified type of victim
-        - Yellow
-        - CriticalVictim # also matched "type C victim"
-        - RegularVictim:
-            - VictimTypeA
-            - VictimTypeB
-        - NoVictim # example: "no victim here"
+        - Alpha
+        - Bravo
+        - Charlie
   - Color:
     - Red
     - Blue
@@ -172,6 +241,9 @@
   - Item:
     - Flag
     - Bomb:
+        - Type:
+            - ChainBomb
+            - VolatileBomb
         - Sequence:
             - OneStep
             - TwoStep
@@ -181,9 +253,9 @@
             - BombIsType
     - Coin
     - Product:
+        - CoordinatedProduct
         - UnknownProduct
         - OfEachTool
-        - SensorTool
         - Tool:
           - OneUseTool:
             - RedTool
@@ -191,12 +263,10 @@
             - BlueTool
           - BombPPE
           - Beacon:
-            - RallyBeacon
             - BombBeacon
             - HazardBeacon
-          - BombStabilizer
           - BombDisposer
-        - Bow
+          - BombSensor
         - Health
     - Tools:
       - Hammer
@@ -205,15 +275,4 @@
       - GPS
       - Map:
           - MapSector
-  - Sentiment:
-    #- Uncertainty  # include the agent
-    - Positive:
-      - Encouragement
-      #- Politeness
-      - Gratitude
-    - Negative
-  - Belief:
-    - Unsure
-      #- Anger
-      #- Worry
 

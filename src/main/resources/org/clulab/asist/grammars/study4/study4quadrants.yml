@@ -1,0 +1,506 @@
+#These are procedurally generated rules for the study 4 map quadrants
+
+- name: quadranta1
+  priority: ${ first_priority }
+  label: A1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?1$/]| [lemma=/(?i)^1[-\s]?a$/]
+
+- name: quadranta2
+  priority: ${ first_priority }
+  label: A2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?2$/]| [lemma=/(?i)^2[-\s]?a$/]
+
+- name: quadranta3
+  priority: ${ first_priority }
+  label: A3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?3$/]| [lemma=/(?i)^3[-\s]?a$/]
+
+- name: quadranta4
+  priority: ${ first_priority }
+  label: A4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?4$/]| [lemma=/(?i)^4[-\s]?a$/]
+
+- name: quadranta5
+  priority: ${ first_priority }
+  label: A5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?5$/]| [lemma=/(?i)^5[-\s]?a$/]
+
+- name: quadranta6
+  priority: ${ first_priority }
+  label: A6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?6$/]| [lemma=/(?i)^6[-\s]?a$/]
+
+- name: quadranta7
+  priority: ${ first_priority }
+  label: A7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^a[-\s]?7$/]| [lemma=/(?i)^7[-\s]?a$/]
+
+- name: quadrantb1
+  priority: ${ first_priority }
+  label: B1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?1$/]| [lemma=/(?i)^1[-\s]?b$/]
+
+- name: quadrantb2
+  priority: ${ first_priority }
+  label: B2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?2$/]| [lemma=/(?i)^2[-\s]?b$/]
+
+- name: quadrantb3
+  priority: ${ first_priority }
+  label: B3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?3$/]| [lemma=/(?i)^3[-\s]?b$/]
+
+- name: quadrantb4
+  priority: ${ first_priority }
+  label: B4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?4$/]| [lemma=/(?i)^4[-\s]?b$/]
+
+- name: quadrantb5
+  priority: ${ first_priority }
+  label: B5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?5$/]| [lemma=/(?i)^5[-\s]?b$/]
+
+- name: quadrantb6
+  priority: ${ first_priority }
+  label: B6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?6$/]| [lemma=/(?i)^6[-\s]?b$/]
+
+- name: quadrantb7
+  priority: ${ first_priority }
+  label: B7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^b[-\s]?7$/]| [lemma=/(?i)^7[-\s]?b$/]
+
+- name: quadrantc1
+  priority: ${ first_priority }
+  label: C1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?1$/]| [lemma=/(?i)^1[-\s]?c$/]
+
+- name: quadrantc2
+  priority: ${ first_priority }
+  label: C2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?2$/]| [lemma=/(?i)^2[-\s]?c$/]
+
+- name: quadrantc3
+  priority: ${ first_priority }
+  label: C3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?3$/]| [lemma=/(?i)^3[-\s]?c$/]
+
+- name: quadrantc4
+  priority: ${ first_priority }
+  label: C4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?4$/]| [lemma=/(?i)^4[-\s]?c$/]
+
+- name: quadrantc5
+  priority: ${ first_priority }
+  label: C5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?5$/]| [lemma=/(?i)^5[-\s]?c$/]
+
+- name: quadrantc6
+  priority: ${ first_priority }
+  label: C6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?6$/]| [lemma=/(?i)^6[-\s]?c$/]
+
+- name: quadrantc7
+  priority: ${ first_priority }
+  label: C7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^c[-\s]?7$/]| [lemma=/(?i)^7[-\s]?c$/]
+
+- name: quadrantd1
+  priority: ${ first_priority }
+  label: D1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?1$/]| [lemma=/(?i)^1[-\s]?d$/]
+
+- name: quadrantd2
+  priority: ${ first_priority }
+  label: D2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?2$/]| [lemma=/(?i)^2[-\s]?d$/]
+
+- name: quadrantd3
+  priority: ${ first_priority }
+  label: D3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?3$/]| [lemma=/(?i)^3[-\s]?d$/]
+
+- name: quadrantd4
+  priority: ${ first_priority }
+  label: D4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?4$/]| [lemma=/(?i)^4[-\s]?d$/]
+
+- name: quadrantd5
+  priority: ${ first_priority }
+  label: D5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?5$/]| [lemma=/(?i)^5[-\s]?d$/]
+
+- name: quadrantd6
+  priority: ${ first_priority }
+  label: D6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?6$/]| [lemma=/(?i)^6[-\s]?d$/]
+
+- name: quadrantd7
+  priority: ${ first_priority }
+  label: D7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^d[-\s]?7$/]| [lemma=/(?i)^7[-\s]?d$/]
+
+- name: quadrante1
+  priority: ${ first_priority }
+  label: E1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?1$/]| [lemma=/(?i)^1[-\s]?e$/]
+
+- name: quadrante2
+  priority: ${ first_priority }
+  label: E2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?2$/]| [lemma=/(?i)^2[-\s]?e$/]
+
+- name: quadrante3
+  priority: ${ first_priority }
+  label: E3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?3$/]| [lemma=/(?i)^3[-\s]?e$/]
+
+- name: quadrante4
+  priority: ${ first_priority }
+  label: E4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?4$/]| [lemma=/(?i)^4[-\s]?e$/]
+
+- name: quadrante5
+  priority: ${ first_priority }
+  label: E5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?5$/]| [lemma=/(?i)^5[-\s]?e$/]
+
+- name: quadrante6
+  priority: ${ first_priority }
+  label: E6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?6$/]| [lemma=/(?i)^6[-\s]?e$/]
+
+- name: quadrante7
+  priority: ${ first_priority }
+  label: E7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^e[-\s]?7$/]| [lemma=/(?i)^7[-\s]?e$/]
+
+- name: quadrantf1
+  priority: ${ first_priority }
+  label: F1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?1$/]| [lemma=/(?i)^1[-\s]?f$/]
+
+- name: quadrantf2
+  priority: ${ first_priority }
+  label: F2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?2$/]| [lemma=/(?i)^2[-\s]?f$/]
+
+- name: quadrantf3
+  priority: ${ first_priority }
+  label: F3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?3$/]| [lemma=/(?i)^3[-\s]?f$/]
+
+- name: quadrantf4
+  priority: ${ first_priority }
+  label: F4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?4$/]| [lemma=/(?i)^4[-\s]?f$/]
+
+- name: quadrantf5
+  priority: ${ first_priority }
+  label: F5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?5$/]| [lemma=/(?i)^5[-\s]?f$/]
+
+- name: quadrantf6
+  priority: ${ first_priority }
+  label: F6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?6$/]| [lemma=/(?i)^6[-\s]?f$/]
+
+- name: quadrantf7
+  priority: ${ first_priority }
+  label: F7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^f[-\s]?7$/]| [lemma=/(?i)^7[-\s]?f$/]
+
+- name: quadrantg1
+  priority: ${ first_priority }
+  label: G1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?1$/]| [lemma=/(?i)^1[-\s]?g$/]
+
+- name: quadrantg2
+  priority: ${ first_priority }
+  label: G2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?2$/]| [lemma=/(?i)^2[-\s]?g$/]
+
+- name: quadrantg3
+  priority: ${ first_priority }
+  label: G3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?3$/]| [lemma=/(?i)^3[-\s]?g$/]
+
+- name: quadrantg4
+  priority: ${ first_priority }
+  label: G4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?4$/]| [lemma=/(?i)^4[-\s]?g$/]
+
+- name: quadrantg5
+  priority: ${ first_priority }
+  label: G5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?5$/]| [lemma=/(?i)^5[-\s]?g$/]
+
+- name: quadrantg6
+  priority: ${ first_priority }
+  label: G6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?6$/]| [lemma=/(?i)^6[-\s]?g$/]
+
+- name: quadrantg7
+  priority: ${ first_priority }
+  label: G7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^g[-\s]?7$/]| [lemma=/(?i)^7[-\s]?g$/]
+
+- name: quadranth1
+  priority: ${ first_priority }
+  label: H1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?1$/]| [lemma=/(?i)^1[-\s]?h$/]
+
+- name: quadranth2
+  priority: ${ first_priority }
+  label: H2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?2$/]| [lemma=/(?i)^2[-\s]?h$/]
+
+- name: quadranth3
+  priority: ${ first_priority }
+  label: H3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?3$/]| [lemma=/(?i)^3[-\s]?h$/]
+
+- name: quadranth4
+  priority: ${ first_priority }
+  label: H4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?4$/]| [lemma=/(?i)^4[-\s]?h$/]
+
+- name: quadranth5
+  priority: ${ first_priority }
+  label: H5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?5$/]| [lemma=/(?i)^5[-\s]?h$/]
+
+- name: quadranth6
+  priority: ${ first_priority }
+  label: H6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?6$/]| [lemma=/(?i)^6[-\s]?h$/]
+
+- name: quadranth7
+  priority: ${ first_priority }
+  label: H7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^h[-\s]?7$/]| [lemma=/(?i)^7[-\s]?h$/]
+
+- name: quadranti1
+  priority: ${ first_priority }
+  label: I1
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?1$/]| [lemma=/(?i)^1[-\s]?i$/]
+
+- name: quadranti2
+  priority: ${ first_priority }
+  label: I2
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?2$/]| [lemma=/(?i)^2[-\s]?i$/]
+
+- name: quadranti3
+  priority: ${ first_priority }
+  label: I3
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?3$/]| [lemma=/(?i)^3[-\s]?i$/]
+
+- name: quadranti4
+  priority: ${ first_priority }
+  label: I4
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?4$/]| [lemma=/(?i)^4[-\s]?i$/]
+
+- name: quadranti5
+  priority: ${ first_priority }
+  label: I5
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?5$/]| [lemma=/(?i)^5[-\s]?i$/]
+
+- name: quadranti6
+  priority: ${ first_priority }
+  label: I6
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?6$/]| [lemma=/(?i)^6[-\s]?i$/]
+
+- name: quadranti7
+  priority: ${ first_priority }
+  label: I7
+  type: token
+  keep: ${ keep_locations}
+  pattern: |
+          [lemma=/(?i)^i[-\s]?7$/]| [lemma=/(?i)^7[-\s]?i$/]
+

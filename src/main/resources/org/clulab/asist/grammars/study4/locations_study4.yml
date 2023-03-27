@@ -1,6 +1,9 @@
 vars: org/clulab/asist/grammars/vars.yml
 
 rules:
+  ### map quadrants ###
+  - import: org/clulab/asist/grammars/study4/study4quadrants.yml
+  ###
 
   - name: area_with_argument_flag
     priority: ${ first_priority }
@@ -95,3 +98,32 @@ rules:
     keep: false
     pattern: |
       [lemma=/^(tree)$/]
+
+
+  - name: "coordinate_AND_location"
+    label: CoordinatedLocation
+    priority: ${ third_priority }
+    example: "There's bombs in A2 and A3"
+    pattern: |
+      trigger = [word=and & tag=CC & !mention=CoordinatedLocation]
+      location1: Location = <cc
+      location2: Location = <cc >conj_and
+
+
+  - name: comma_sep_loc
+    priority: ${ second_priority }
+    label: CoordinatedLocation
+    example: "There's bombs in c2,d4,A2 and A3"
+    type: token
+    keep: true
+    pattern: |
+      (@location:Location) ("," @location:Location)+ (and @location:Location)?
+
+  - name: prep_sep_loc
+    priority: ${ second_priority }
+    label: CoordinatedLocation
+    example: "There's bombs in A2 and in A3"
+    type: token
+    keep: true
+    pattern: |
+      (@location:Location) (and []? @location:Location)

@@ -2,10 +2,53 @@ vars: org/clulab/asist/grammars/vars.yml
 
 rules:
 
+  - name: chain_type
+    priority: ${ first_priority }
+    label: ChainBomb
+    type: token
+    keep: false
+    pattern: |
+        [word=/(i?)^chain/]
+
+  - name: volatile_type
+    priority: ${ first_priority }
+    label: VolatileBomb
+    type: token
+    keep: false
+    pattern: |
+      [word=/(i?)^volatile|^explosive|^unstable/]
+
+
+  - name: bomb_w_location
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]))
+      [word=/^(in|on|next|at)$/]? []? (@location:Location)
+
+  - name: bomb_n_location
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]|[]?[]? @Location))
+
+  - name: bomb_nude
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
 
   - name: bomb_with
     example: "There's a bomb with a difficult sequence"
-    priority: ${ rulepriority }
+    priority: ${ second_priority }
     label: BombIsType
     pattern: |
       trigger = [mention=Bomb]
@@ -13,7 +56,7 @@ rules:
 
   - name: bomb_is
     example: "This bomb is difficult"
-    priority: ${ rulepriority }
+    priority: ${ second_priority }
     label: BombIsType
     pattern: |
       trigger = [mention=Bomb]
