@@ -1,0 +1,74 @@
+
+            <html>
+                <head>
+                    <body>
+                        <h1>ASIST Extraction Schemas</h1>
+                        <p>
+                            Authors: Adarsh Pyarelal, Rebecca Sharp
+
+                            Agent version: {agent_version}
+
+                            Document generation timestamp (UTC): {date}
+
+                            This is automatically generated documentation of the different entities and
+                            events being extracted by the University of Arizona [Dialog
+                            Agent](https://github.com/clulab/tomcat-text).
+                        </p>
+                        <h2> Format </h2>
+                        <p>
+                            The extractions are listed below.
+
+                            The full path to the leaf node in the taxonomy is represented in a hierarchical
+                            structure, with each level indented from a new line. If the extraction is only
+                            output as an argument of another extraction, rather than as a standalone
+                            extraction, the name of the extraction is wrapped in square brackets ([]).
+
+                            The argument of an extraction, if any, is listed below the extraction.  If the
+                            the argument is optional, the name is enclosed in square brackets, it is an
+                            optional argument. The possible labels that can be assigned to the argument
+                            come next, enclosed in parentheses and separated by the | character.
+                            Finally, the third component of the argument line is a list of quantifiers,
+                            separated by commas, and enclosed in
+                            parentheses.
+
+                            [Odin](https://github.com/clulab/processors) arguments can be quantified in
+                            several ways. First, they may be optional (`?`), meaning that if they can be
+                            added, given a particular sentence, they will be, but if not the Mention can
+                            still be found. Further, they can be allowed to match multiple arguments. For
+                            example, in the sentence Ferdinand ate ice cream and pop tarts., if you made a
+                            rule to extract eating events and used a `+` quantifier with the food argument
+                            `(food: Food+ = ...)`, then the Mention would have two separate arguments (ice
+                            cream and pop tarts). The quantifiers you may see are:
+                        </p>
+                        <p>
+                            <ul style="list-style-type: none;">
+                                <li>- ? (arg is optional)</li>
+                                <li>- + (you need at least one, can have as many as are there)</li>
+                                <li>- (_min_, _max_) (you need at least min and can have up to max, where min can be 0).</li>
+                            </ul>
+                        </p>
+                        <p>
+                            Take for example the following block:
+                            <ul style="list-style-type: none;">
+                                <li>- Concept</li>
+                                <li>- LeafNode
+                                    <li> - arg1 (LeafNode1|LeafNode2) () </li>
+                                    <li> - [arg2] (LeafNode3) (?) </li>
+                                </li>
+                            </ul>
+                            <p>
+                                The full path to the leaf node in the taxonomy is `Concept/LeafNode`. The
+                                extraction has two arguments, `arg1` and `arg2`, with `arg2` being optional.
+                                The 'arg1' argument can be labeled as either `LeafNode1` or `LeafNode2` (we
+                                elide the full taxonomy paths here for clarity). Additionally, `arg2` has an
+                                optional quantifier.
+
+                                The extractions are documented in the following section.
+                            </p>
+                        </p>
+                        <h2>Extractions</h2>
+
+                    </body>
+                </head>
+            </html>
+        aaaa

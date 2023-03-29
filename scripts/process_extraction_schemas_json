@@ -9,8 +9,6 @@ from datetime import datetime
 input_file = sys.argv[1]
 version_file = sys.argv[2]
 
-
-
 def update_tree(tree_dict, names, arguments, keep):
     """
     Parse the extracted labels into a tree-like structure, labels are stored as key in tree_dict
@@ -24,14 +22,14 @@ def update_tree(tree_dict, names, arguments, keep):
     """
     if not names:
         tree_dict['Bool_for_bracket'] = keep
-        if arguments: 
+        if arguments:
             tree_dict["arguments"] = arguments
-        return  
+        return
     if names[0] not in tree_dict:
         tree_dict[names[0]] = {}
-            
+
     update_tree(tree_dict[names[0]], names[1:], arguments, keep)
-        
+
 def print_tree_dict(tree_dict, level):
     """
     Print tree_dict in yml format
@@ -41,9 +39,9 @@ def print_tree_dict(tree_dict, level):
     Return:
         None
     """
-    
+
     for key in tree_dict:
-        if key == "Bool_for_bracket": 
+        if key == "Bool_for_bracket":
             continue
         elif key == "arguments":
             arguments = tree_dict['arguments']
@@ -56,6 +54,7 @@ def print_tree_dict(tree_dict, level):
                     ).replace("_none_", ""),
                 )
             print("")
+
         elif 'Bool_for_bracket' in tree_dict[key]:
             if tree_dict[key]['Bool_for_bracket'] == True:
                 print('  ' * level + '- ' + key)
@@ -71,16 +70,100 @@ def print_tree_dict(tree_dict, level):
 # Version of the dialog agent for which this documentation is being
 # generated.
 
+
 with open(version_file) as f:
     agent_version = f.read().split()[-1].replace('"', "")
 
+# Write to HTML file
+with open(input_file) as f:
+    with open("extraction_schema_html.html", "w") as html_file:
+        data = json.load(f)
+        html_code_part1 = """
+            <html>
+                <head>
+                    <body>
+                        <h1>ASIST Extraction Schemas</h1>
+                        <p>
+                            Authors: Adarsh Pyarelal, Rebecca Sharp
+
+                            Agent version: {agent_version}
+
+                            Document generation timestamp (UTC): {date}
+
+                            This is automatically generated documentation of the different entities and
+                            events being extracted by the University of Arizona [Dialog
+                            Agent](https://github.com/clulab/tomcat-text).
+                        </p>
+                        <h2> Format </h2>
+                        <p>
+                            The extractions are listed below.
+
+                            The full path to the leaf node in the taxonomy is represented in a hierarchical
+                            structure, with each level indented from a new line. If the extraction is only
+                            output as an argument of another extraction, rather than as a standalone
+                            extraction, the name of the extraction is wrapped in square brackets ([]).
+
+                            The argument of an extraction, if any, is listed below the extraction.  If the
+                            the argument is optional, the name is enclosed in square brackets, it is an
+                            optional argument. The possible labels that can be assigned to the argument
+                            come next, enclosed in parentheses and separated by the | character.
+                            Finally, the third component of the argument line is a list of quantifiers,
+                            separated by commas, and enclosed in
+                            parentheses.
+
+                            [Odin](https://github.com/clulab/processors) arguments can be quantified in
+                            several ways. First, they may be optional (`?`), meaning that if they can be
+                            added, given a particular sentence, they will be, but if not the Mention can
+                            still be found. Further, they can be allowed to match multiple arguments. For
+                            example, in the sentence Ferdinand ate ice cream and pop tarts., if you made a
+                            rule to extract eating events and used a `+` quantifier with the food argument
+                            `(food: Food+ = ...)`, then the Mention would have two separate arguments (ice
+                            cream and pop tarts). The quantifiers you may see are:
+                        </p>
+                        <p>
+                            <ul style="list-style-type: none;">
+                                <li>- ? (arg is optional)</li>
+                                <li>- + (you need at least one, can have as many as are there)</li>
+                                <li>- (_min_, _max_) (you need at least min and can have up to max, where min can be 0).</li>
+                            </ul>
+                        </p>
+                        <p>
+                            Take for example the following block:
+                            <ul style="list-style-type: none;">
+                                <li>- Concept</li>
+                                <li>- LeafNode
+                                    <li> - arg1 (LeafNode1|LeafNode2) () </li>
+                                    <li> - [arg2] (LeafNode3) (?) </li>
+                                </li>
+                            </ul>
+                            <p>
+                                The full path to the leaf node in the taxonomy is `Concept/LeafNode`. The
+                                extraction has two arguments, `arg1` and `arg2`, with `arg2` being optional.
+                                The 'arg1' argument can be labeled as either `LeafNode1` or `LeafNode2` (we
+                                elide the full taxonomy paths here for clarity). Additionally, `arg2` has an
+                                optional quantifier.
+
+                                The extractions are documented in the following section.
+                            </p>
+                        </p>
+                        <h2>Extractions</h2>
+
+                    </body>
+                </head>
+            </html>
+        """
+        html_code_part2 = """aaaa"""
+        html_file.write(html_code_part1 + html_code_part2)
+
+
+# To markdown file
 with open(input_file) as f:
     data = json.load(f)
+
     print(
         """\
 ASIST Extraction Schemas
 ========================
-
 Authors: Adarsh Pyarelal, Rebecca Sharp
 
 Agent version: `{agent_version}`
@@ -90,21 +173,20 @@ Document generation timestamp (UTC): `{date}`
 This is automatically generated documentation of the different entities and
 events being extracted by the University of Arizona [Dialog
 Agent](https://github.com/clulab/tomcat-text).
-
 Format
 ------
 
 The extractions are listed below.
 
-The full path to the leaf node in the taxonomy is represented in a hierarchical 
-structure, with each level indented from a new line. If the extraction is only 
-output as an argument of another extraction, rather than as a standalone 
+The full path to the leaf node in the taxonomy is represented in a hierarchical
+structure, with each level indented from a new line. If the extraction is only
+output as an argument of another extraction, rather than as a standalone
 extraction, the name of the extraction is wrapped in square brackets (`[]`).
 
 The argument of an extraction, if any, is listed below the extraction.  If the
-the argument is optional, the name is enclosed in square brackets, it is an 
-optional argument. The possible labels that can be assigned to the argument 
-come next, enclosed in parentheses and separated by the `|` character. 
+the argument is optional, the name is enclosed in square brackets, it is an
+optional argument. The possible labels that can be assigned to the argument
+come next, enclosed in parentheses and separated by the `|` character.
 Finally, the third component of the argument line is a list of quantifiers,
 separated by commas, and enclosed in
 parentheses.
@@ -123,7 +205,6 @@ cream and pop tarts). The quantifiers you may see are:
 - `(_min_, _max_)` (you need at least min and can have up to max, where min can be 0).
 
 Take for example the following block:
-
 ```
 - Concept
   - LeafNode
@@ -141,7 +222,6 @@ The extractions are documented in the following section.
 
 Extractions
 -----------
-
 ```
 """.format(
             agent_version=agent_version, date=datetime.utcnow()
@@ -149,7 +229,7 @@ Extractions
     )
 
     tree_dict = {}
-    
+
     for extraction in data:
         names = extraction["labels"][::-1]
         keep = any(set(extraction["keep"]))
@@ -168,9 +248,9 @@ Extractions
                         arguments[arg_str]["label(s)"].add(arg["label"])
         else: arguments = []
         update_tree(tree_dict, names, arguments, keep)
-        
+
     print_tree_dict(tree_dict, 0)
-            
+
 
     # Close markdown code block
     print("```")
