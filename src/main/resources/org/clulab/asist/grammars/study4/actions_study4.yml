@@ -14,7 +14,7 @@ rules:
     priority: ${ rulepriority }
     label: Defuse
     pattern: |
-      trigger = [lemma=/(?i)^get$/ & tag=/^V/] [lemma=rid] [lemma=/of/]
+      trigger = [lemma=/(?i)^get$|^take$/ & tag=/^V/] [lemma=/^(rid|care)$/] [lemma=/of/]
       agent: Entity? = >/${agents}/
       target: Bomb = >dobj | >nmod_of
 
@@ -30,7 +30,7 @@ rules:
     priority: ${ rulepriority }
     label: Shop
     pattern: |
-      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [lemma=/^buy$|^shop$|^purchase$|^buying$/]
+      trigger = (?<! [lemma=/^afford$/] [word=to]?  ) [lemma=/^buy$|^shop$|^purchase$|^buying$|^grab$/]
       agent: Entity? = >/${agents}/
       target: Product = >dobj
       for: Entity? = >nmod_for
@@ -316,3 +316,76 @@ rules:
       target: Flag = >dobj
       location: Location? = >dobj >/${ positional_preps }/
       flag_meaning: Concept? = >dobj >/nmod_for/
+
+  - name: extinguish
+    priority: ${ rulepriority }
+    label: Extinguish
+    pattern: |
+      trigger = [lemma=/(?i)^(extinguish|clear|remove)$/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Fire = >dobj
+
+  - name: extinguish_take_care
+    priority: ${ rulepriority }
+    label: Extinguish
+    pattern: |
+      trigger = [lemma=/(?i)^(take)$/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Fire = >dobj >/nmod/
+
+  - name: scout
+    label: Search
+    example: "We could scout the map"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^scout$|^explore$|^recon$/]
+      agent: Entity? = >/${agents}/
+      target: Location? = >/${objects}/ | >nmod_in
+      map: Map? = >/${objects}/
+
+
+  - name: markBomb
+    priority: ${ rulepriority }
+    label: Mark
+    pattern: |
+      trigger = [lemma=/(?i)^mark/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Bomb = >dobj
+      location: Location? = >/${objects}/ >/nmod/
+
+  - name: markobstacle
+    priority: ${ rulepriority }
+    label: Mark
+    pattern: |
+      trigger = [lemma=/(?i)^mark/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Obstacle = >dobj
+      location: Location? = >/${objects}/ >/nmod/
+
+  - name: markLocation
+    priority: ${ rulepriority }
+    label: Mark
+    pattern: |
+      trigger = [lemma=/(?i)^mark/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      location: Location = >/${objects}/
+      target: Obstacle = >/${objects}/ >/nmod/
+      target: Bomb = >/${objects}/ >/nmod/
+
+  - name: mark_pattern_bomb
+    priority: ${ genericpriority }
+    label: Mark
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)? []? (?<trigger>  [lemma=/(?i)^mark/] [!mention=Mark]) (@location:Location)? []? (@target:Bomb)
+      []? (@location:Location)?
+
+  - name: mark_pattern_fire
+    priority: ${ genericpriority }
+    label: Mark
+    type: token
+    keep: true
+    pattern: |
+      (@agent:Entity)? []? (?<trigger>  [lemma=/(?i)^mark/] [!mention=Mark]) (@location:Location)? []? (@target:Fire)
+      []? (@location:Location)?

@@ -18,6 +18,13 @@ rules:
     pattern: |
       [word=/(i?)^volatile|^explosive|^unstable/]
 
+  - name: marked_type
+    priority: ${ first_priority }
+    label: MarkedBomb
+    type: token
+    keep: false
+    pattern: |
+      [word=/(i?)^marked|^labeled|^labelled/]
 
   - name: bomb_w_location
     priority: ${ rulepriority }

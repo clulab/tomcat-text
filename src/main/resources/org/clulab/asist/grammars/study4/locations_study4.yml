@@ -12,7 +12,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@flag:Flag)
+      (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone|region)/]) []? []? (@flag:Flag)
 
 
   - name: area_with_argument_beacon
@@ -22,7 +22,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone)/]) []? []? (@beacon:Beacon)
+      (@agent:Entity?) (?<trigger>  [lemma=/^(area|zone|region)/]) []? []? (@beacon:Beacon)
 
 
   - name: area_with_owner
@@ -32,7 +32,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@agent:Entity) [tag=POS]? (?<trigger>  [lemma=/^(area|zone)/])
+      (@agent:Entity) [tag=POS]? (?<trigger>  [lemma=/^(area|zone|region)/])
 
   - name: area_no_argument
     priority: ${ first_priority }
@@ -40,7 +40,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/^(area)$/]
+      [lemma=/^(area|region|zone)$/]
 
   - name: zone_with_direction
     priority: ${ first_priority }
@@ -49,7 +49,7 @@ rules:
     type: token
     keep: true
     pattern: |
-       (@direction:Direction) (?<trigger>  [lemma=/^(area|zone|corner)$/])
+       (@direction:Direction) (?<trigger>  [lemma=/^(area|zone|corner|region)$/])
 
   - name: deseert
     priority: ${ first_priority }
@@ -91,6 +91,14 @@ rules:
     pattern: |
       [lemma=/^(church)$/]
 
+  - name: region_generic
+    priority: ${ first_priority }
+    label: RegionGeneric
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(church)$/]
+
   - name: tree
     priority: ${ first_priority }
     label: Tree
@@ -99,6 +107,50 @@ rules:
     pattern: |
       [lemma=/^(tree)$/]
 
+  - name: bottom_map
+    priority: ${ first_priority }
+    label: BottomSection
+    example: "bottom of the map"
+    type: token
+    keep: true
+    pattern: |
+       (?<trigger>  [lemma=/^(bottom|lower)/]) []{1,3} (@map:Map)
+
+  - name: top_map
+    priority: ${ first_priority }
+    label: TopSection
+    example: "top of the map"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(top|upper)/]) []{1,3} (@map:Map)
+
+  - name: left_map
+    priority: ${ first_priority }
+    label: LeftSection
+    example: "left of the map"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(left)/]) []{1,3} (@map:Map)
+
+  - name: right_map
+    priority: ${ first_priority }
+    label: RightSection
+    example: "right of the map"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(right)/]) []{1,3} (@map:Map)
+
+  - name: center_map
+    priority: ${ first_priority }
+    label: MiddleSection
+    example: "right of the map"
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [lemma=/^(middle|center)/]) []{1,3} (@map:Map)
 
   - name: "coordinate_AND_location"
     label: CoordinatedLocation

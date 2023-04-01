@@ -1,6 +1,6 @@
 - name: single_use_tool
   priority: ${ rulepriority }
-  label: OneUseTool
+  label: WireCutter
   type: token
   keep: true
   pattern: |
@@ -29,6 +29,22 @@
   keep: true
   pattern: |
     (@number:Number)? (?<trigger> [lemma=/(?i)bomb/] [word=/(?i)(indicator|finder|scanner)s?/])
+
+- name: sensor_compass
+  priority: ${ rulepriority }
+  label: BombSensor
+  type: token
+  keep: true
+  pattern: |
+    (@number:Number)? (?<trigger> [lemma=/(?i)bomb/]? [lemma=/(?i)compass/] )
+
+- name: cutter_generic
+  priority: ${ rulepriority }
+  label: WireCutter
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)?  (@number:Number)? [!mention=Color] (?<trigger> ([lemma=wirecutter] | [lemma=cutter]) )
 
 - name: redtool
   priority: ${ rulepriority }
@@ -137,13 +153,21 @@
   pattern: |
     (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb] [lemma=/(disposer|dispose|defuser|diffuser)/])
 
+- name: fire_extinguishier
+  priority: ${ rulepriority }
+  label: FireExtinguisher
+  type: token
+  keep: true
+  pattern: |
+    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=fire] [lemma=/(extinguisher|extinguish|exting|extiguisher)/])
+
 - name: beacon_hazard
   priority: ${ rulepriority }
   label: HazardBeacon
   type: token
   keep: true
   pattern: |
-    (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=/^(hazard|danger)/] [lemma=beacon])
+    (@agent:Entity)? (@number:Number)? (?<trigger> [lemma=/^(hazard|danger|help)/] [lemma=beacon])
 
 
 ############## coordination

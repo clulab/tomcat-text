@@ -41,6 +41,12 @@ object RunDialogAgent extends App with LazyLogging {
     // Mosquitto broker port for mqtt agent
     port: Int = 1883,
 
+    // REST API Host
+    rest_api_host: String = "localhost",
+
+    // REST API port
+    rest_api_port: Int = 8080,
+
     // input location for file and reprocessor agents
     src: String = "",
 
@@ -114,6 +120,14 @@ Existing TA3 version numbers are incremented by 1 if not set"""
     cmd("rest")
       .action((_, c) => c.copy(agent = "rest"))
       .children(
+        opt[String]("rest_api_host")
+          .valueName("<String>")
+          .action((x, c) => c.copy(rest_api_host = x))
+          .text("Optional REST API host machine. Defaults to localhost."),
+        opt[Int]("rest_api_port")
+          .valueName("<Int>")
+          .action((x, c) => c.copy(rest_api_port = x))
+          .text("Optional REST API port. Defaults to 8080."),
         opt[String]("rulepath")
           .valueName("<String>")
           .action((x, c) => c.copy(rulepath = x))
@@ -185,7 +199,7 @@ Existing TA3 version numbers are incremented by 1 if not set"""
         new DialogAgentConsole(ruleEngine)
       case "rest" =>
         logger.info("Starting REST API agent...")
-        new DialogAgentRestApi(ruleEngine)
+        new DialogAgentRestApi(arguments.rest_api_host, arguments.rest_api_port, ruleEngine)
       case _ =>
         logger.error(f"Could not run agent '${arguments.agent}'")
         logger.error("valid agent types are [file, mqtt, rest, reprocess, console]")
