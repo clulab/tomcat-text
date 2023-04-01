@@ -71,7 +71,7 @@ def write_tree_dict_html(tree_dict, level):
                 html_code += '</div>\n'
         else:
             if len(tree_dict[key]) == 1:
-                html_code += '<li>{key}</li>\n'
+                html_code += f"<li>{key}</li>\n"
             #if a parent
             else:
                 html_code += '<button type="button" class="parent label">' + key + '</button>\n'
