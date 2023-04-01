@@ -21,7 +21,7 @@ jobs:
       run: |
         sudo apt-get install -y pandoc
         make htmldoc
-        mv extraction_schema_html.html index.html
+        mv extraction_schemas.html index.html
 
     - name: Deploy docs to clulab.github.io/tomcat-text
       uses: peaceiris/actions-gh-pages@v3
