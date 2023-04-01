@@ -197,6 +197,10 @@ def generate_html(tree_dict, agent_version):
                                 /* Unicode character for "minus" sign (-) */
                             }
 
+                            button {
+                                color: #29404F;
+                            }
+
                             li {
                                 list-style-type: none;
                             }
@@ -208,7 +212,7 @@ def generate_html(tree_dict, agent_version):
                             }
 
                             .special-character {
-                                font-family: ui-rounded;
+                                font-family: monospace;
                             }
                         </style>
                         <body>
@@ -291,6 +295,7 @@ def generate_html(tree_dict, agent_version):
                                     </p>
                                 </p>
                                 <h2>Extractions</h2>
+                                <p style="margin-bottom: 40px">Note: '+' denotes the presence of child nodes; '-' indicates that the node is a leaf node with no child nodes.</p>
 
             """
             html_code_part2 = write_tree_dict_html(tree_dict, level=0)
