@@ -27,13 +27,6 @@ rules:
       trigger: ${ rubble_triggers }
 
 
-  - import: org/clulab/asist/grammars/ent_template.yml
-    vars:
-      name: fire
-      priority: ${ rulepriority }
-      label: Fire
-      trigger: fire
-
   - name: all_nps
     priority: ${ rulepriority }
     label: Concept
@@ -208,10 +201,19 @@ rules:
     pattern: |
       [lemma=/(?i)^(bravo)/]
 
-  - name: charlie
-    label: Charlie
+  - name: delta
+    label: Delta
     priority: ${ rulepriority }
     type: token
     keep: ${ keep_entities }
     pattern: |
-      [lemma=/(?i)^(charlie)/]
+      [lemma=/(?i)^(delta)/]
+
+
+  - name: fire
+    priority: ${ rulepriority }
+    label: Fire
+    type: token
+    keep:  ${ keep_entities }
+    pattern: |
+      [lemma=/^(fire)$/ & tag=/^N/] (?! [lemma=extinguisher])

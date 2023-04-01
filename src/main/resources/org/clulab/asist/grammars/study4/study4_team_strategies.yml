@@ -26,12 +26,38 @@ rules:
       trigger = [lemma=/^split$/] [word=/^up|^apart$/]
       agent: Entity? = >/${agents}/
 
-  - name: scout
-    label: Search
-    example: "We could scout the map"
+  - name: stick_to_location
+    label: StickToLocation
+    example: "We could stick to the left side of the map"
     priority: ${ rulepriority }
     pattern: |
-      trigger = [lemma=/^scout$|^explore$/]
+      trigger = [lemma=/^stick$/] to?
       agent: Entity? = >/${agents}/
-      target: Location? = >/${objects}/ | >nmod_in
-      map: Map? = >/${objects}/
+      target: Location = >/${objects}/ | >nmod_to
+
+  - name: stick_to_location_stay
+    label: StickToLocation
+    example: "We could stay in this area"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(stay|remain)/] in?
+      agent: Entity? = >/${agents}/
+      target: Location = >/${objects}/ | >nmod_in
+
+  - name: stick_to_strat
+    label: StickToStrategy
+    example: "We could stick to the left side of the map"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^stick$/]
+      agent: Entity? = >/${agents}/
+      target: Action = >/${objects}/ | >nmod_to | >advcl_to
+
+  - name: stick_to_strat_continue
+    label: StickToStrategy
+    example: "We could continue buying X"
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^continue/]
+      agent: Entity? = >/${agents}/
+      target: Action = >/${objects}/ | >xcomp | >advcl_to

@@ -26,5 +26,5 @@ object Agent{
   val OTHER = "Other"
   val ALPHA = "Alpha"
   val BRAVO = "Bravo"
-  val CHARLIE = "Charlie"
+  val DELTA = "Delta"
 }

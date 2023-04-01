@@ -10,7 +10,8 @@ rules:
     pattern: |
       trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & lemma=let] (?! me|(you)|([]{4} I))
       agent: Entity? = >/^nsubj/ [!mention=Self]
-      topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction]
+      topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction] |
+      >/dobj|ccomp/  [!mention=Instruction & lemma=/^(do|go)$/] >/dobj|ccomp/?
 
   - name: instruction_command_topic
     priority: ${ rulepriority }
@@ -472,3 +473,10 @@ rules:
       action: Action = >xcomp | >nmod_on | >advcl_on |advcl_to
       agent: Entity? = >/${agents}/
 
+  - name: agree_with_entity
+    priority: ${ rulepriority }
+    label: AgreeWithEntity
+    pattern: |
+      trigger = [lemma=/(?i)^(agree)$/ & tag=/^V/] [word=/^(to|on|with)$/]
+      entity: Entity = >/nmod/
+      agent: Entity? = >/${agents}/

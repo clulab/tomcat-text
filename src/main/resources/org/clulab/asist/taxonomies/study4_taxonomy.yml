@@ -30,6 +30,12 @@
         - Room
       - Zone
       - MapSection:
+          - BottomSection
+          - TopSection
+          - LeftSection
+          - RightSection
+          - MiddleSection
+          - RegionGeneric
           - A:
               - A1
               - A2
@@ -109,8 +115,10 @@
       - CoordinatedAction
       - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
+        - Extinguish
         - Defuse
         - Transfer
+        - Mark
         - Use:
           - UseTool
         - Shop:
@@ -144,6 +152,7 @@
             - Unsure
           - Agreement:
             - AgreementToIdea
+            - AgreeWithEntity
             - AgreeToAction
           - Disagreement
           - Acknowledge
@@ -151,6 +160,8 @@
             - VoteFor
           - TeamStrategies:
               - StickTogether
+              - StickToLocation
+              - StickToStrategy
               - SpreadOut
           - Instruction:
               - HelpCommand # for players instructing others to help, f.e.: "Help the engineer!"
@@ -214,7 +225,7 @@
     - Role:
         - Alpha
         - Bravo
-        - Charlie
+        - Delta
   - Color:
     - Red
     - Blue
@@ -244,6 +255,7 @@
         - Type:
             - ChainBomb
             - VolatileBomb
+            - MarkedBomb
         - Sequence:
             - OneStep
             - TwoStep
@@ -257,7 +269,7 @@
         - UnknownProduct
         - OfEachTool
         - Tool:
-          - OneUseTool:
+          - WireCutter:
             - RedTool
             - GreenTool
             - BlueTool
@@ -267,6 +279,7 @@
             - HazardBeacon
           - BombDisposer
           - BombSensor
+          - FireExtinguisher
         - Health
     - Tools:
       - Hammer
