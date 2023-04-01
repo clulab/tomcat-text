@@ -133,7 +133,7 @@
                                 <div class='basic-info-container'>
                                     <div>Authors: Adarsh Pyarelal, Rebecca Sharp</div>
                                     <div>Agent version: 5.3.1</div>
-                                    <div>Document generation timestamp (UTC): 2023-04-01 16:58:45.287637</div>
+                                    <div>Document generation timestamp (UTC): 2023-04-01 17:14:03.754832</div>
                                     <div>This is automatically generated documentation of the different entities and
                                     events being extracted by the University of Arizona <a href='https://github.com/clulab/tomcat-text'>Dialog Agent</a></div>
                                 </div>
@@ -245,7 +245,7 @@
 <div class="content">
 <li><span class="label">[Alpha]</span></li>
 <li><span class="label">[Bravo]</span></li>
-<li><span class="label">[Charlie]</span></li>
+<li><span class="label">[Delta]</span></li>
 </div>
 <li><span class="label">[Self]</span></li>
 <li><span class="label">[Team]</span></li>
@@ -268,14 +268,14 @@
                 <button type="button" class="parent label">Block</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">[source]</span> (<span class="label">Obstacle</span>|<span class="label">Concept</span>) (?)</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">[source]</span> (<span class="label">Concept</span>|<span class="label">Obstacle</span>) (?)</li>
 <li> <span class="argument-name">[target]</span> (<span class="label">Concept</span>) (?)</li>
 </ul></div>
 
                 <button type="button" class="parent label">ChangePriority</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">target</span> (<span class="label">Victim</span>|<span class="label">Person</span>) ()</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">target</span> (<span class="label">Person</span>|<span class="label">Victim</span>) ()</li>
 <li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
 </ul></div>
 
@@ -290,7 +290,7 @@
                 <button type="button" class="parent label">Close</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">[target]</span> (<span class="label">Infrastructure</span>|<span class="label">DemPron</span>) (?)</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">[target]</span> (<span class="label">DemPron</span>|<span class="label">Infrastructure</span>) (?)</li>
 </ul></div>
 
                 <button type="button" class="parent label">[Communicate]</button>
@@ -308,6 +308,13 @@
                 <div class="content">
 
                 <ul style="list-style-type:disc;"><li> <span class="argument-name">action</span> (<span class="label">Action</span>) ()</li>
+<li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
+</ul></div>
+
+                <button type="button" class="parent label">AgreeWithEntity</button>
+                <div class="content">
+
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">entity</span> (<span class="label">Entity</span>) ()</li>
 <li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
 </ul></div>
 <li><span class="label">AgreementToIdea</span></li>
@@ -341,7 +348,7 @@
                 <button type="button" class="parent label">KnowledgeSharing</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">exists</span> (<span class="label">EventLike</span>|<span class="label">Item</span>|<span class="label">Person</span>|<span class="label">PuzzleConcept</span>|<span class="label">Victim</span>) ()</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">exists</span> (<span class="label">PuzzleConcept</span>|<span class="label">Victim</span>|<span class="label">EventLike</span>|<span class="label">Person</span>|<span class="label">Item</span>) ()</li>
 <li> <span class="argument-name">[location]</span> (<span class="label">Location</span>) (?)</li>
 <li> <span class="argument-name">[obstacle]</span> (<span class="label">Obstacle</span>) (?)</li>
 <li> <span class="argument-name">[map]</span> (<span class="label">Map</span>) (?)</li>
@@ -449,7 +456,7 @@
                 <button type="button" class="parent label">Question</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">topic</span> (<span class="label">Action</span>|<span class="label">Concept</span>) ()</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">topic</span> (<span class="label">Concept</span>|<span class="label">Action</span>) ()</li>
 <li> <span class="argument-name">[location]</span> (<span class="label">Location</span>) (?)</li>
 </ul>
                 <button type="button" class="parent label">HowQuestion</button>
@@ -461,7 +468,7 @@
                 <button type="button" class="parent label">LocationQuestion</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">topic</span> (<span class="label">Entity</span>|<span class="label">Move</span>) ()</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">topic</span> (<span class="label">Move</span>|<span class="label">Entity</span>) ()</li>
 <li> <span class="argument-name">[location]</span> (<span class="label">Location</span>) (?)</li>
 </ul></div>
 
@@ -602,6 +609,20 @@
                 <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
 </ul></div>
 
+                <button type="button" class="parent label">StickToLocation</button>
+                <div class="content">
+
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
+<li> <span class="argument-name">target</span> (<span class="label">Location</span>) ()</li>
+</ul></div>
+
+                <button type="button" class="parent label">StickToStrategy</button>
+                <div class="content">
+
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
+<li> <span class="argument-name">target</span> (<span class="label">Action</span>) ()</li>
+</ul></div>
+
                 <button type="button" class="parent label">StickTogether</button>
                 <div class="content">
 
@@ -631,12 +652,28 @@
 <li> <span class="argument-name">target</span> (<span class="label">Bomb</span>) ()</li>
 </ul></div>
 
+                <button type="button" class="parent label">Extinguish</button>
+                <div class="content">
+
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
+<li> <span class="argument-name">target</span> (<span class="label">Fire</span>) ()</li>
+</ul></div>
+
+                <button type="button" class="parent label">Mark</button>
+                <div class="content">
+
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
+<li> <span class="argument-name">target</span> (<span class="label">Bomb</span>|<span class="label">Obstacle</span>) ()</li>
+<li> <span class="argument-name">[location]</span> (<span class="label">Location</span>) (?)</li>
+<li> <span class="argument-name">location</span> (<span class="label">Location</span>) ()</li>
+</ul></div>
+
                 <button type="button" class="parent label">Move</button>
                 <div class="content">
 
                 <ul style="list-style-type:disc;"><li> <span class="argument-name">direction</span> (<span class="label">Direction</span>) ()</li>
 <li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
-<li> <span class="argument-name">target</span> (<span class="label">Flag</span>|<span class="label">Item</span>) ()</li>
+<li> <span class="argument-name">target</span> (<span class="label">Item</span>|<span class="label">Flag</span>) ()</li>
 </ul>
                 <button type="button" class="parent label">Enter</button>
                 <div class="content">
@@ -648,7 +685,7 @@
                 <button type="button" class="parent label">Meet</button>
                 <div class="content">
 
-                <ul style="list-style-type:disc;"><li> <span class="argument-name">location</span> (<span class="label">Location</span>|<span class="label">Flag</span>|<span class="label">Beacon</span>) ()</li>
+                <ul style="list-style-type:disc;"><li> <span class="argument-name">location</span> (<span class="label">Location</span>|<span class="label">Beacon</span>|<span class="label">Flag</span>) ()</li>
 <li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
 <li> <span class="argument-name">[target]</span> (<span class="label">Entity</span>) (?)</li>
 </ul></div>
@@ -762,7 +799,7 @@
                 <div class="content">
 
                 <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
-<li> <span class="argument-name">target</span> (<span class="label">Number</span>|<span class="label">Product</span>) ()</li>
+<li> <span class="argument-name">target</span> (<span class="label">Product</span>|<span class="label">Number</span>) ()</li>
 <li> <span class="argument-name">[for]</span> (<span class="label">Entity</span>) (?)</li>
 </ul>
                 <button type="button" class="parent label">Afford</button>
@@ -786,7 +823,7 @@
                 <div class="content">
 
                 <ul style="list-style-type:disc;"><li> <span class="argument-name">[agent]</span> (<span class="label">Entity</span>) (?)</li>
-<li> <span class="argument-name">target</span> (<span class="label">EventLike</span>|<span class="label">Entity</span>|<span class="label">Item</span>) ()</li>
+<li> <span class="argument-name">target</span> (<span class="label">Item</span>|<span class="label">EventLike</span>|<span class="label">Entity</span>) ()</li>
 <li> <span class="argument-name">[location]</span> (<span class="label">Location</span>) (?)</li>
 <li> <span class="argument-name">[map]</span> (<span class="label">Map</span>) (?)</li>
 <li> <span class="argument-name">item</span> (<span class="label">Item</span>) ()</li>
@@ -866,6 +903,7 @@
 <li><span class="label">[B6]</span></li>
 <li><span class="label">[B7]</span></li>
 </div>
+<li><span class="label">BottomSection</span></li>
 <button type="button" class="parent label">C</button>
 <div class="content">
 <li><span class="label">[C1]</span></li>
@@ -936,6 +974,11 @@
 <li><span class="label">[I6]</span></li>
 <li><span class="label">[I7]</span></li>
 </div>
+<li><span class="label">LeftSection</span></li>
+<li><span class="label">MiddleSection</span></li>
+<li><span class="label">[RegionGeneric]</span></li>
+<li><span class="label">RightSection</span></li>
+<li><span class="label">TopSection</span></li>
 </div>
 <li><span class="label">[Swamp]</span></li>
 
@@ -982,6 +1025,7 @@
 <button type="button" class="parent label">Type</button>
 <div class="content">
 <li><span class="label">[ChainBomb]</span></li>
+<li><span class="label">[MarkedBomb]</span></li>
 <li><span class="label">[VolatileBomb]</span></li>
 </div>
 </div>
@@ -1020,8 +1064,9 @@
 <li><span class="label">BombDisposer</span></li>
 <li><span class="label">BombPPE</span></li>
 <li><span class="label">BombSensor</span></li>
+<li><span class="label">FireExtinguisher</span></li>
 
-                <button type="button" class="parent label">OneUseTool</button>
+                <button type="button" class="parent label">WireCutter</button>
                 <div class="content">
 
                 <li><span class="label">BlueTool</span></li>

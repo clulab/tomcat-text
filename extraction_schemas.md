@@ -266,11 +266,11 @@ _No arguments_
 
 ----------------------------------
 
-###  Charlie
+###  Delta
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`Charlie`, `Role`, `Entity`, `Concept`] 
+|label hierarchy  | [`Delta`, `Role`, `Entity`, `Concept`] 
 |keep             | `false` 
 
 _No arguments_
@@ -441,6 +441,22 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _action_ | [`Action`] | _none_ | `true`
+
+----------------------------------
+
+###  AgreeWithEntity
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`AgreeWithEntity`, `Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _entity_ | [`Entity`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1145,6 +1161,38 @@ _Arguments_
 
 ----------------------------------
 
+###  StickToLocation
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`StickToLocation`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Location`] | _none_ | `true`
+
+----------------------------------
+
+###  StickToStrategy
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`StickToStrategy`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Action`] | _none_ | `true`
+
+----------------------------------
+
 ###  StickTogether
 
 |Attribute        |  Value | 
@@ -1205,6 +1253,39 @@ _Arguments_
 | :--------  | :----         | :----             | :---- 
 | _agent_ | [`Entity`] | `?` | `false`
 | _target_ | [`Bomb`] | _none_ | `true`
+
+----------------------------------
+
+###  Extinguish
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Extinguish`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _target_ | [`Fire`] | _none_ | `true`
+
+----------------------------------
+
+###  Mark
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Mark`, `SimpleAction`, `Action`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_Arguments_
+
+|name        | **label(s)**  | **quantifier(s)** | **required?**|
+| :--------  | :----         | :----             | :---- 
+| _agent_ | [`Entity`] | `?` | `false`
+| _location_ | [`Location`] | [_none_, `?`] | [`false`, `true`]
+| _target_ | [`Bomb`, `Obstacle`] | _none_ | `true`
 
 ----------------------------------
 
@@ -1844,6 +1925,17 @@ _No arguments_
 
 ----------------------------------
 
+###  BottomSection
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`BottomSection`, `MapSection`, `Location`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
 ###  C1
 
 |Attribute        |  Value | 
@@ -2383,6 +2475,61 @@ _No arguments_
 
 ----------------------------------
 
+###  LeftSection
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`LeftSection`, `MapSection`, `Location`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  MiddleSection
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`MiddleSection`, `MapSection`, `Location`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  RegionGeneric
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`RegionGeneric`, `MapSection`, `Location`, `EventLike`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
+###  RightSection
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`RightSection`, `MapSection`, `Location`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  TopSection
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`TopSection`, `MapSection`, `Location`, `EventLike`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
 ###  Swamp
 
 |Attribute        |  Value | 
@@ -2567,6 +2714,17 @@ _No arguments_
 
 ----------------------------------
 
+###  MarkedBomb
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`MarkedBomb`, `Type`, `Bomb`, `Item`, `Concept`] 
+|keep             | `false` 
+
+_No arguments_
+
+----------------------------------
+
 ###  VolatileBomb
 
 |Attribute        |  Value | 
@@ -2734,11 +2892,22 @@ _No arguments_
 
 ----------------------------------
 
-###  OneUseTool
+###  FireExtinguisher
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|label hierarchy  | [`FireExtinguisher`, `Tool`, `Product`, `Item`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
+###  WireCutter
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`WireCutter`, `Tool`, `Product`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
@@ -2749,7 +2918,7 @@ _No arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`BlueTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|label hierarchy  | [`BlueTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
@@ -2760,7 +2929,7 @@ _No arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`GreenTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|label hierarchy  | [`GreenTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_
@@ -2771,7 +2940,7 @@ _No arguments_
 
 |Attribute        |  Value | 
 | :--------       | :---- |
-|label hierarchy  | [`RedTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`] 
+|label hierarchy  | [`RedTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`] 
 |keep             | `true` 
 
 _No arguments_

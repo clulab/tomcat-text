@@ -204,6 +204,25 @@ keep      | `true`
 
 --------
 
+#### rule: _agree_with_entity_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`AgreeWithEntity`, `Agreement`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ entity | `Entity` | _none_ | `true` 
+ agent | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
 #### rule: _agree_token_match_
 
 attribute | value
@@ -728,7 +747,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`BlueTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`BlueTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -744,7 +763,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`BlueTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`BlueTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -935,6 +954,22 @@ _No arguments_
 
 --------
 
+#### rule: _sensor_compass_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BombSensor`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _sensor_indicator_
 
 attribute | value
@@ -942,6 +977,22 @@ attribute | value
 type |  TokenExtractor
 labels    | [`BombSensor`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bottom_map_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BottomSection`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
 keep      | `true`
 
 
@@ -1128,22 +1179,6 @@ keep      | `true`
 :---- | :---- | :---- | :----
  target | `Person` | _none_ | `true` 
  agent | `Entity` | `?` | `false` 
-
-&nbsp;
-
---------
-
-#### rule: _charlie_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`Charlie`, `Role`, `Entity`, `Concept`]
-priority  | `3+`
-keep      | `false`
-
-
-_No arguments_
 
 &nbsp;
 
@@ -1876,6 +1911,22 @@ action | `Action` | `Some(preventSubjectVerbInversion)`
 
 --------
 
+#### rule: _delta_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Delta`, `Role`, `Entity`, `Concept`]
+priority  | `3+`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _demonstrative_pronoun_
 
 attribute | value
@@ -2257,6 +2308,44 @@ _No arguments_
 
 --------
 
+#### rule: _extinguish_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Extinguish`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Fire` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _extinguish_take_care_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Extinguish`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Fire` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
 #### rule: _quadrantf1_
 
 attribute | value
@@ -2406,7 +2495,7 @@ keep      | `true`
 
 --------
 
-#### rule: _fire_detection_
+#### rule: _fire_
 
 attribute | value
 -----  |   ---- 
@@ -2414,6 +2503,22 @@ type |  TokenExtractor
 labels    | [`Fire`, `Obstacle`, `EventLike`, `Concept`]
 priority  | `3+`
 keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _fire_extinguishier_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`FireExtinguisher`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
 
 
 _No arguments_
@@ -2769,7 +2874,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`GreenTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`GreenTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -2785,7 +2890,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`GreenTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`GreenTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -2801,7 +2906,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`GreenTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`GreenTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -3566,6 +3671,22 @@ _No arguments_
 
 --------
 
+#### rule: _left_map_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`LeftSection`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _less_
 
 attribute | value
@@ -3774,6 +3895,115 @@ _No arguments_
 
 --------
 
+#### rule: _markBomb_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Mark`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Bomb` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _markLocation_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Mark`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ location | `Location` | _none_ | `true` 
+ target | `Obstacle` | _none_ | `true` 
+ target | `Bomb` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _mark_pattern_bomb_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Mark`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `9`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _mark_pattern_fire_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Mark`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `9`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _markobstacle_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`Mark`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `(8-9)`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Obstacle` | _none_ | `true` 
+ location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _marked_type_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`MarkedBomb`, `Type`, `Bomb`, `Item`, `Concept`]
+priority  | `5`
+keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _medkit_
 
 attribute | value
@@ -3847,6 +4077,22 @@ keep      | `true`
  location | `Location` | _none_ | `true` 
  agent | `Entity` | `?` | `false` 
  target | `Entity` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _center_map_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`MiddleSection`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -4561,22 +4807,6 @@ type |  TokenExtractor
 labels    | [`OneStep`, `Sequence`, `Bomb`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `false`
-
-
-_No arguments_
-
-&nbsp;
-
---------
-
-#### rule: _single_use_tool_
-
-attribute | value
------  |   ---- 
-type |  TokenExtractor
-labels    | [`OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
-priority  | `5+`
-keep      | `true`
 
 
 _No arguments_
@@ -5394,7 +5624,7 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`RedTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`RedTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
 
@@ -5410,9 +5640,25 @@ _No arguments_
 attribute | value
 -----  |   ---- 
 type |  TokenExtractor
-labels    | [`RedTool`, `OneUseTool`, `Tool`, `Product`, `Item`, `Concept`]
+labels    | [`RedTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
 priority  | `5+`
 keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _region_generic_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`RegionGeneric`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `false`
 
 
 _No arguments_
@@ -5632,6 +5878,22 @@ _No arguments_
 
 --------
 
+#### rule: _right_map_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`RightSection`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _role_declare_
 
 attribute | value
@@ -5783,7 +6045,7 @@ attribute | value
 -----  |   ---- 
 type |  GraphExtractor
 labels    | [`Search`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `(8-9)`
 keep      | `true`
 
 
@@ -6398,6 +6660,82 @@ keep      | `true`
 
 --------
 
+#### rule: _stick_to_location_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`StickToLocation`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _stick_to_location_stay_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`StickToLocation`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Location` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _stick_to_strat_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`StickToStrategy`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Action` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _stick_to_strat_continue_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`StickToStrategy`, `TeamStrategies`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `6+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ agent | `Entity` | `?` | `false` 
+ target | `Action` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
 #### rule: _stick_together_
 
 attribute | value
@@ -6705,6 +7043,22 @@ keep      | `true`
 **argument name** | **label(s)** | **quantifier** | **required?**
 :---- | :---- | :---- | :----
  tool | `Tool` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _top_map_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`TopSection`, `MapSection`, `Location`, `EventLike`, `Concept`]
+priority  | `2+`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -7126,6 +7480,38 @@ keep      | `true`
 :---- | :---- | :---- | :----
  topic | `Type` | _none_ | `true` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _cutter_generic_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _single_use_tool_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
