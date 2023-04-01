@@ -43,7 +43,6 @@ def write_tree_dict_html(tree_dict, level):
     prefix = '"""'
     suffix = '"""'
     html_code = ""
-    # if level == 0: html_code += '<ul class="taxonomy">\n'
     for key in tree_dict:
         if key == "Bool_for_bracket":
             continue
@@ -59,14 +58,12 @@ def write_tree_dict_html(tree_dict, level):
             #check if this is a parent or not
             if len(tree_dict[key]) == 1:
                 if tree_dict[key]['Bool_for_bracket'] == True:
-                    #<button type="button" class="parent">[Concept]</button>
                     html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">' + key + '</li>\n'
                 else:
                     html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">[' + key + ']</li>\n'
             #if a parent
             else:
                 if tree_dict[key]['Bool_for_bracket'] == True:
-                    #<button type="button" class="parent">[Concept]</button>
                     html_code += '<button type="button" class="parent">' + key + '</button>\n'
                 else:
                     html_code += '<button type="button" class="parent">[' + key + ']</button>\n'
@@ -75,33 +72,15 @@ def write_tree_dict_html(tree_dict, level):
                 html_code += '</div>\n'
         else:
             if len(tree_dict[key]) == 1:
-                #<button type="button" class="parent">[Concept]</button>
                 html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">' + key + '</li>\n'
             #if a parent
             else:
-                #<button type="button" class="parent">[Concept]</button>
                 html_code += '<button type="button" class="parent">' + key + '</button>\n'
                 html_code += '<div class="content">\n'
                 html_code  += write_tree_dict_html(tree_dict[key], level+1)
                 html_code += '</div>\n'
 
 
-        # elif 'Bool_for_bracket' in tree_dict[key]:
-        #     if tree_dict[key]['Bool_for_bracket'] == True:
-        #         html_code += '<li>' + key + "</li>\n"
-        #     else:
-        #         html_code += '<li>' + '[' + key + ']' + '</li>\n'
-    #         html_code += '<ul class="taxonomy">\n'
-    #         html_code  += write_tree_dict_html(tree_dict[key], level+1)
-    #         if html_code[-22:] != "<ul class='taxonomy'>\n": html_code += '</ul>\n'
-    #         else: html_code = html_code[0:-5]
-    #     else:
-    #         html_code += '<li>' + key + '</li>\n'
-    #         html_code += '<ul class="taxonomy">\n'
-    #         html_code  += write_tree_dict_html(tree_dict[key], level+1)
-    #         html_code += '</ul>\n'
-
-    # if level == 0: html_code += '</ul>\n'
     return eval(prefix + html_code + suffix)
 
 # Version of the dialog agent for which this documentation is being
