@@ -32,9 +32,20 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
       (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]))
       [word=/^(in|on|next|at)$/]? []? (@location:Location)
+
+  - name: bomb_w_late_type
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    example: "Bombs I've marked"
+    keep: true
+    pattern: |
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/])) []{0,3}? (@type:Type)
+      [word=/^(in|on|next|at)$/]? []? (@location:Location)?
 
   - name: bomb_n_location
     priority: ${ rulepriority }
@@ -42,8 +53,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
-      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]|[]?[]? @Location))
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool|disposer|defuser|sisposer)s?/]|[]?[]? @Location))
 
   - name: bomb_nude
     priority: ${ rulepriority }

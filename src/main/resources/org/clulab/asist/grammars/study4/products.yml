@@ -105,6 +105,33 @@
   pattern: |
     (@agent:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
 
+- name: greentool_and_other
+  priority: ${ rulepriority }
+  label: GreenTool
+  example: "I got green and red tools"
+  type: token
+  keep: true
+  pattern: |
+      [lemma=green] (?=  [lemma=and] [lemma=/^(red|green|blue)$/] [lemma=tool] )
+
+- name: redtool_and_other
+  priority: ${ rulepriority }
+  label: RedTool
+  example: "I got red and green tools"
+  type: token
+  keep: true
+  pattern: |
+    [lemma=red] (?=  [lemma=and] [lemma=/^(red|green|blue)$/] [lemma=tool] )
+
+- name: bluetool_and_other
+  priority: ${ rulepriority }
+  label: BlueTool
+  example: "I got blue and red tools"
+  type: token
+  keep: true
+  pattern: |
+    [lemma=blue] (?=  [lemma=and] [lemma=/^(red|green|blue)$/] [lemma=tool] )
+
 - name: ppe
   priority: ${ rulepriority }
   label: BombPPE
@@ -151,7 +178,7 @@
   type: token
   keep: true
   pattern: |
-    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb] [lemma=/(disposer|dispose|defuser|diffuser)/])
+    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb] [lemma=/(disposer|dispose|defuser|diffuser|sisposer)/])
 
 - name: fire_extinguishier
   priority: ${ rulepriority }
