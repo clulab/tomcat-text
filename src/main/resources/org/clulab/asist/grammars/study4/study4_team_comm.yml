@@ -241,6 +241,15 @@ rules:
       trigger = [lemma=ready]
       agent: Entity = >nsubj
 
+  - name: ready_bare
+    priority: ${ rulepriority }
+    label: AmReady
+    example: "Ready when you are"
+    keep: true
+    type: token
+    pattern: |
+       (?<! []) [lemma=ready] (?!  []* [mention=Question & !lemma=when] )
+
   - name: "finish_task"
     label: Completed
     example: "I finished defusing the bomb."

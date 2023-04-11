@@ -63,11 +63,11 @@ rules:
 
   - name: unknown_question
     comment: "This is for utterances with question marks where we dont detect a question"
-    priority: ${ rulepriority }
+    priority: ${ second_priority }
     label: Question
     type: token
     pattern: |
-      (?<! [mention=Question] []+) [word="?"]
+      (?<! [mention=Question] []*) [word="?"] (?! []* [mention=Question] )
 
 
 

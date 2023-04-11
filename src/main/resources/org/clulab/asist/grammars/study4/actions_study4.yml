@@ -346,6 +346,7 @@ rules:
 
   - name: markBomb
     priority: ${ rulepriority }
+    example: "I'm marking bombs. Bombs I've marked are in a5"
     label: Mark
     pattern: |
       trigger = [lemma=/(?i)^mark/ & tag=/^V/]

@@ -125,6 +125,13 @@ rules:
       trigger = [lemma=/(?i)broken|break/]
       tool: Tool = >/nsubj|dobj/
 
+  - name: report_item_not_work
+    priority: ${ rulepriority }
+    label: ToolBroken
+    pattern: |
+      trigger = [lemma=not] [lemma=/(?i)function|work/]
+      tool: Tool = >/nsubj|dobj/
+
   - name: report_door_open
     priority: ${ rulepriority }
     label: DoorOpen
