@@ -3062,6 +3062,17 @@ _No arguments_
 
 ----------------------------------
 
+###  Many
+
+|Attribute        |  Value | 
+| :--------       | :---- |
+|label hierarchy  | [`Many`, `Number`, `Concept`] 
+|keep             | `true` 
+
+_No arguments_
+
+----------------------------------
+
 ###  More
 
 |Attribute        |  Value | 

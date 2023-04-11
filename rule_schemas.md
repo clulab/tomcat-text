@@ -433,6 +433,22 @@ keep      | `true`
 
 --------
 
+#### rule: _ready_bare_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`AmReady`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _i_am_stuck_
 
 attribute | value
@@ -758,6 +774,22 @@ _No arguments_
 
 --------
 
+#### rule: _bluetool_and_other_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`BlueTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _bluetool_cutter_
 
 attribute | value
@@ -798,6 +830,22 @@ type |  TokenExtractor
 labels    | [`Bomb`, `Item`, `Concept`]
 priority  | `6+`
 keep      | `false`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _bomb_w_late_type_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Bomb`, `Item`, `Concept`]
+priority  | `6+`
+keep      | `true`
 
 
 _No arguments_
@@ -2885,6 +2933,22 @@ _No arguments_
 
 --------
 
+#### rule: _greentool_and_other_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`GreenTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
 #### rule: _greentool_cutter_
 
 attribute | value
@@ -3856,6 +3920,22 @@ keep      | `true`
 :---- | :---- | :---- | :----
  topic | `Entity` | _none_ | `true` 
  location | `Location` | `?` | `false` 
+
+&nbsp;
+
+--------
+
+#### rule: _many_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`Many`, `Number`, `Concept`]
+priority  | `(3-4)`
+keep      | `true`
+
+
+_No arguments_
 
 &nbsp;
 
@@ -5491,7 +5571,7 @@ attribute | value
 -----  |   ---- 
 type |  TokenExtractor
 labels    | [`Question`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
-priority  | `6+`
+priority  | `9+`
 keep      | `true`
 
 
@@ -5620,6 +5700,22 @@ _No arguments_
 --------
 
 #### rule: _redtool_
+
+attribute | value
+-----  |   ---- 
+type |  TokenExtractor
+labels    | [`RedTool`, `WireCutter`, `Tool`, `Product`, `Item`, `Concept`]
+priority  | `5+`
+keep      | `true`
+
+
+_No arguments_
+
+&nbsp;
+
+--------
+
+#### rule: _redtool_and_other_
 
 attribute | value
 -----  |   ---- 
@@ -7031,6 +7127,24 @@ keep      | `false`
 --------
 
 #### rule: _report_broken_item_
+
+attribute | value
+-----  |   ---- 
+type |  GraphExtractor
+labels    | [`ToolBroken`, `ReportItemStatus`, `ReportStatus`, `Communicate`, `SimpleAction`, `Action`, `EventLike`, `Concept`]
+priority  | `8+`
+keep      | `true`
+
+
+**argument name** | **label(s)** | **quantifier** | **required?**
+:---- | :---- | :---- | :----
+ tool | `Tool` | _none_ | `true` 
+
+&nbsp;
+
+--------
+
+#### rule: _report_item_not_work_
 
 attribute | value
 -----  |   ---- 
