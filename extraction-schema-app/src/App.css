@@ -1,0 +1,117 @@
+p {
+  font-size: 18px;
+  font-family: 'Roboto';
+  margin-top: 25px;
+}
+
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #2A404E;
+  color: white;
+  height: 30%;
+  font-family: sans-serif;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.asist {
+  font-size: 30px;
+  margin: 20px;
+}
+
+.hyperlink-container {
+  display: flex;
+  gap: 20px;
+  margin: 20px;
+}
+
+.lower-container {
+  background-color: white;
+  margin-left: 15%;
+  margin-right: 15%;
+  color: #29404F;
+  font-family: 'Roboto';
+}
+
+.basic-info-container {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-size: 16px;
+  font-family: 'Roboto';
+}
+
+.basic-info-container>div {
+  margin-top: 15px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.argument-name {
+  color: red;
+  font-size: 15px;
+}
+
+.label {
+  color: blue;
+  font-size: 15px;
+}
+
+.parent {
+  cursor: pointer;
+  padding-bottom: 5px;
+  background-color: white;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+}
+
+.parent:after {
+  content: "\02795";
+  /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: white;
+  float: left;
+
+}
+
+.active:after {
+  content: "\2796";
+  /* Unicode character for "minus" sign (-) */
+}
+
+button {
+  color: #29404F;
+}
+
+button:hover {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+li {
+  list-style-type: none;
+}
+
+li::before {
+  content: '\2796';
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.special-character {
+  font-family: monospace;
+}
