@@ -6,8 +6,6 @@ import sys
 import json
 from datetime import datetime
 
-input_file = sys.argv[1]
-version_file = sys.argv[2]
 
 def update_tree(tree_dict, names, arguments, keep):
     """
@@ -48,34 +46,35 @@ def write_tree_dict_html(tree_dict, level):
             continue
         elif key == "arguments":
             arguments = tree_dict['arguments']
+            html_code += '<ul style="list-style-type:disc;">'
             for arg in arguments:
-                html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">' + arg + f"({'|'.join(x for x in arguments[arg]['label(s)'])})" + \
-                    f"({arguments[arg]['quantifier(s)']})".replace(
+                argument_labels = '|'.join(f"<span class=\"label\">{x}</span>" for x in arguments[arg]['label(s)'])
+                argument_name = f"<span class=\"argument-name\">{arg}</span>"
+                html_code += f"<li> {argument_name} ({argument_labels})" + \
+                    f" ({arguments[arg]['quantifier(s)']})".replace(
                         "`", ""
                     ).replace("_none_", "") + \
                     '</li>\n'
+            html_code += "</ul>"
         elif 'Bool_for_bracket' in tree_dict[key]:
+            label = key if tree_dict[key]['Bool_for_bracket'] == True else f"[{key}]"
             #check if this is a parent or not
             if len(tree_dict[key]) == 1:
-                if tree_dict[key]['Bool_for_bracket'] == True:
-                    html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">' + key + '</li>\n'
-                else:
-                    html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">[' + key + ']</li>\n'
+                html_code += f"<li><span class=\"label\">{label}</span></li>\n"
             #if a parent
             else:
-                if tree_dict[key]['Bool_for_bracket'] == True:
-                    html_code += '<button type="button" class="parent">' + key + '</button>\n'
-                else:
-                    html_code += '<button type="button" class="parent">[' + key + ']</button>\n'
-                html_code += '<div class="content">\n'
+                html_code += f"""
+                <button type="button" class="parent label">{label}</button>
+                <div class="content">\n
+                """
                 html_code  += write_tree_dict_html(tree_dict[key], level+1)
                 html_code += '</div>\n'
         else:
             if len(tree_dict[key]) == 1:
-                html_code += '<li style="margin-left:' + str(marginleft*level)+'px;">' + key + '</li>\n'
+                html_code += f"<li>{key}</li>\n"
             #if a parent
             else:
-                html_code += '<button type="button" class="parent">' + key + '</button>\n'
+                html_code += '<button type="button" class="parent label">' + key + '</button>\n'
                 html_code += '<div class="content">\n'
                 html_code  += write_tree_dict_html(tree_dict[key], level+1)
                 html_code += '</div>\n'
@@ -83,18 +82,14 @@ def write_tree_dict_html(tree_dict, level):
 
     return eval(prefix + html_code + suffix)
 
-# Version of the dialog agent for which this documentation is being
-# generated.
 
-with open(version_file) as f:
-    agent_version = f.read().split()[-1].replace('"', "")
+    return eval(prefix + html_code + suffix)
 
-
-def generate_html(tree_dict, agent_version):
+def generate_html(input_file: str, tree_dict, agent_version, output_file: str):
     # Write to HTML file
     date=datetime.utcnow()
     with open(input_file) as f:
-        with open("extraction_schema_html.html", "w") as html_file:
+        with open(output_file, "w") as html_file:
             html_code_part1 = """
                 <html>
                     <head>
@@ -145,6 +140,17 @@ def generate_html(tree_dict, agent_version):
                             h1 {
                                 text-align: center;
                             }
+
+                            .argument-name {
+                                color: red;
+                                font-size: 15px;
+                            }
+
+                            .label {
+                                color: blue;
+                                font-size: 15px;
+                            }
+
                             .parent {
                                 cursor: pointer;
                                 padding-bottom: 5px;
@@ -179,6 +185,12 @@ def generate_html(tree_dict, agent_version):
                             button {
                                 color: #29404F;
                             }
+                            button:hover {
+                                text-decoration:underline;
+                                font-weight:bold;
+                            }
+
+
 
                             li {
                                 list-style-type: none;
@@ -241,7 +253,7 @@ def generate_html(tree_dict, agent_version):
                                     several ways. First, they may be optional (<span class='special-character'>?</span>), meaning that if they can be
                                     added, given a particular sentence, they will be, but if not the Mention can
                                     still be found. Further, they can be allowed to match multiple arguments. For
-                                    example, in the sentence Ferdinand ate ice cream and pop tarts., if you made a
+                                    example, in the sentence <i>"Ferdinand ate ice cream and pop tarts."</i>", if you made a
                                     rule to extract eating events and used a <span class='special-character'>+</span> quantifier with the food argument
                                     <span class='special-character'>(food: Food+ = ...)</span>, then the Mention would have two separate arguments (ice
                                     cream and pop tarts). The quantifiers you may see are:
@@ -257,16 +269,20 @@ def generate_html(tree_dict, agent_version):
                                 <p>
                                     Take for example the following block:
                                     <ul style="list-style-type: none;">
-                                        <li> Concept</li>
-                                        <li style="margin-left: 15px;">  LeafNode
-                                            <li style="margin-left: 25px;"> <span class='special-character' >arg1</span> (LeafNode1|LeafNode2) () </li>
-                                            <li style="margin-left: 25px;"> <span class='special-character' >[arg2]</span> (LeafNode3) (?) </li>
+                                        <li><span class="label">Concept</span></li>
+                                        <li style="margin-left: 15px;">  <span class="label">LeafNode</span>
+                                            <li style="margin-left: 25px;">
+                                            <span class='argument-name' >arg1</span> (<span class="label">LeafNode1</span>|<span class="label">LeafNode2</span>) () </li>
+                                            <li style="margin-left: 25px;"> <span class='argument-name' >[arg2]</span> (<span class="label">LeafNode3<span>) (?) </li>
                                         </li>
                                     </ul>
                                     <p>
-                                        The full path to the leaf node in the taxonomy is <span class='special-character'>Concept/LeafNode</span>. The
-                                        extraction has two arguments, <span class='special-character'>arg1</span> and <span class='special-character'>arg2</span>, with <span class='special-character'>arg2</span> being optional.
-                                        The <span class='special-character'>arg1</span> argument can be labeled as either <span class='special-character'>LeafNode1</span> or <span class='special-character'>LeafNode2</span> (we
+                                        The full path to the leaf node in the taxonomy is <span class='special-character'>Concept/LeafNode</span>.
+                                        The extraction has two arguments,
+                                        <span class='special-character'>arg1</span> and <span class='special-character'>arg2</span>,
+                                        with <span class='special-character'>arg2</span> being optional.
+                                        The <span class='special-character'>arg1</span> argument can be labeled as either
+                                        <span class='special-character'>LeafNode1</span> or <span class='special-character'>LeafNode2</span> (we
                                         elide the full taxonomy paths here for clarity). Additionally, <span class='special-character'>arg2</span> has an
                                         optional quantifier.
 
@@ -305,79 +321,30 @@ def generate_html(tree_dict, agent_version):
             """
             )
 
-
-# To markdown file
-with open(input_file) as f:
-    data = json.load(f)
-
-    print(
-        """\
-ASIST Extraction Schemas
-========================
-Authors: Adarsh Pyarelal, Rebecca Sharp
-
-Agent version: `{agent_version}`
-
-Document generation timestamp (UTC): `{date}`
-
-This is automatically generated documentation of the different entities and
-events being extracted by the University of Arizona [Dialog
-Agent](https://github.com/clulab/tomcat-text).
-Format
-------
-
-The extractions are listed below.
-
-The full path to the leaf node in the taxonomy is represented in a hierarchical
-structure, with each level indented from a new line. If the extraction is only
-output as an argument of another extraction, rather than as a standalone
-extraction, the name of the extraction is wrapped in square brackets (`[]`).
-
-The argument of an extraction, if any, is listed below the extraction.  If the
-the argument is optional, the name is enclosed in square brackets, it is an
-optional argument. The possible labels that can be assigned to the argument
-come next, enclosed in parentheses and separated by the `|` character.
-Finally, the third component of the argument line is a list of quantifiers,
-separated by commas, and enclosed in
-parentheses.
-
-[Odin](https://github.com/clulab/processors) arguments can be quantified in
-several ways. First, they may be optional (`?`), meaning that if they can be
-added, given a particular sentence, they will be, but if not the Mention can
-still be found. Further, they can be allowed to match multiple arguments. For
-example, in the sentence Ferdinand ate ice cream and pop tarts., if you made a
-rule to extract eating events and used a `+` quantifier with the food argument
-`(food: Food+ = ...)`, then the Mention would have two separate arguments (ice
-cream and pop tarts). The quantifiers you may see are:
-
-- `?` (arg is optional)
-- `+` (you need at least one, can have as many as are there)
-- `(_min_, _max_)` (you need at least min and can have up to max, where min can be 0).
-
-Take for example the following block:
-```
-- Concept
-  - LeafNode
-    - arg1 (LeafNode1|LeafNode2) ()
-    - [arg2] (LeafNode3) (?)
-```
-
-The full path to the leaf node in the taxonomy is `Concept/LeafNode`. The
-extraction has two arguments, `arg1` and `arg2`, with `arg2` being optional.
-The 'arg1' argument can be labeled as either `LeafNode1` or `LeafNode2` (we
-elide the full taxonomy paths here for clarity). Additionally, `arg2` has an
-optional quantifier.
-
-The extractions are documented in the following section.
-
-Extractions
------------
-""".format(
-            agent_version=agent_version, date=datetime.utcnow()
-        )
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    parser.add_argument("input", help="Input extraction schemas JSON file")
+    parser.add_argument("version", help="version file")
+    parser.add_argument("output", help="Output file")
+    args = parser.parse_args()
+
+    input_file = args.input
+    version_file = args.version
+
+    # Version of the dialog agent for which this documentation is being
+    # generated.
+
+    with open(args.version) as f:
+        agent_version = f.read().split()[-1].replace('"', "")
 
     tree_dict = {}
+
+    with open(input_file) as f:
+        data = json.load(f)
 
     for extraction in data:
         names = extraction["labels"][::-1]
@@ -398,8 +365,4 @@ Extractions
         else: arguments = []
         update_tree(tree_dict, names, arguments, keep)
 
-    # print_tree_dict(tree_dict, 0)
-    generate_html(tree_dict, agent_version)
-
-    # Close markdown code block
-    # print("```")
+    generate_html(input_file, tree_dict, agent_version, args.output)

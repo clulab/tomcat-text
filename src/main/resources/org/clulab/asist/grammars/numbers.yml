@@ -52,6 +52,14 @@ rules:
     pattern: |
       [word=/^(all)$/]
 
+  - name: many
+    priority: ${ rulepriority }
+    label: Many
+    type: token
+    keep: true
+    pattern: |
+      [word=/^(many|much|lots?)$/]
+
   - name: number_coordination
     priority: ${ rulepriority }
     label: Number

@@ -127,6 +127,7 @@ rules:
   - import: org/clulab/asist/grammars/questions.yml
     vars:
       rulepriority: "6+"
+      second_priority: "7+"
 
   # Extract study 4 questions
   - import: org/clulab/asist/grammars/study4/study4_questions.yml

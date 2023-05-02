@@ -1,4 +1,5 @@
 package org.clulab.asist.apps
+
 import org.clulab.asist.GrammarDemo
 
 /**
