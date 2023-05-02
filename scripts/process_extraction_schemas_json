@@ -83,6 +83,7 @@ def write_tree_dict_html(tree_dict, level):
     return eval(prefix + html_code + suffix)
 
 
+    return eval(prefix + html_code + suffix)
 
 def generate_html(input_file: str, tree_dict, agent_version, output_file: str):
     # Write to HTML file
