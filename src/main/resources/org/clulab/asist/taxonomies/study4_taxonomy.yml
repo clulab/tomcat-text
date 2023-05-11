@@ -4,7 +4,10 @@
       - PastTense
       - FutureTense
   - Number:
+      - CoordinatedNumber
+      - NumberRange
       - Some
+      - Many
       - More
       - Less
       - All
@@ -115,6 +118,7 @@
       - CoordinatedAction
       - GenericAction # this label is used if the DialogAgent does not know what the action is
       - SimpleAction:
+        - Explode
         - Extinguish
         - Defuse
         - Transfer
@@ -159,6 +163,8 @@
           - Vote:
             - VoteFor
           - TeamStrategies:
+              - Focus
+              - Ignore
               - StickTogether
               - StickToLocation
               - StickToStrategy
@@ -168,7 +174,8 @@
           - ReportStatus:
             - Stuck # for players stuck in a room (for whichever reason), has some overlap with AmTrapped
             - ReportLocation # players reporting on their, or other players locations: "I'm in B2"
-            - RoleDeclare # players declaring their role to the team
+            - RoleDeclare: # players declaring their role to the team
+              - ResponsibleFor # players taking responsibility for a task/thing
             - DeclareColor
             - ReportPossession
             - Remaining
@@ -201,6 +208,8 @@
             - YesNoQuestion
             - HowQuestion
             - WhichVictimType # example: "What kind of victim is it?"
+            - WhoQuestion
+            - QuestionMark
           - Plan:
               - ShouldPlan
               - ContingentPlan # planning dependent on a condition: "If we remove the rubble, we can save the victim"
@@ -221,11 +230,16 @@
     - You
     - Team # "we/us"
     - DemPron # "this/those/that/these"
+    - Who # unknown entity
     - EachPlayer
-    - Role:
+    - Player:
         - Alpha
         - Bravo
         - Delta
+  - Role:
+      - FireMan
+      - DefuserMan
+      - ScoutMan
   - Color:
     - Red
     - Blue
@@ -256,8 +270,12 @@
             - ChainBomb
             - VolatileBomb
             - MarkedBomb
+            - FireBomb
         - Sequence:
-            - OneStep
+            - OneStep:
+                - RedSequence
+                - BlueSequence
+                - GreenSequence
             - TwoStep
             - ThreeStep
             - FourStep

@@ -10,7 +10,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []?? ) (?<trigger> @Color) []? @second:Color []? @third:Color []? @fourth:Color @sequence:Sequence?
+      (?<! [mention=Color] []?? ) @first:Color []? @second:Color []? @third:Color []? @fourth:Color @sequence:Sequence?
 
   - name: medium
     priority: ${ rulepriority }
@@ -18,7 +18,8 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []? )  (?<trigger> @Color) [!mention=Color]? @second:Color [!mention=Color]? @third:Color @sequence:Sequence? []? (?! []?? [mention=Color])
+      (?<! [mention=Color] []? )  @first:Color [!mention=Color]? @second:Color [!mention=Color]? @third:Color @sequence:Sequence? []?
+      (?! []?? [mention=Color]| []{0,3}? [word=tool])
 
   - name: 2step
     priority: ${ rulepriority }
@@ -26,16 +27,36 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [mention=Color] []? )  (?<trigger> @Color) [!mention=Color]? @second:Color ([!mention=Color] @sequence:Sequence?)  (?! []?? [mention=Color])
+      (?<! [mention=Color] []? )  @first:Color [!mention=Color]? @second:Color ([!mention=Color] @sequence:Sequence?)
+       (?! []?? [mention=Color]| []{0,3}? [word=tool])
 
 
-  - name: easy
+  - name: easy_red
     priority: ${ rulepriority }
-    label: OneStep
+    label: RedSequence
     type: token
-    keep: false
+    keep: true
     pattern: |
-      (?<! [mention=Color] []?| [word=/^am$|^are$|^r$/] | [mention=DeclareColor] | [tag=PRP])  (?<trigger> @Red|Blue|Green)  @sequence:Sequence??  (?! [mention=Color]| [word=tool])
+      (?<! [mention=Color] []?| [word=/^am$|^are$|^r$/] | [mention=DeclareColor] | [tag=PRP])  @Red
+       (?! [word=',']? []? [mention=Color]| [word=tool])
+
+  - name: easy_blue
+    priority: ${ rulepriority }
+    label: BlueSequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?| [word=/^am$|^are$|^r$/] | [mention=DeclareColor] | [tag=PRP])  @Blue
+       (?! [word=',']? []?  [mention=Color]| [word=tool])
+
+  - name: easy_green
+    priority: ${ rulepriority }
+    label: GreenSequence
+    type: token
+    keep: true
+    pattern: |
+      (?<! [mention=Color] []?| [word=/^am$|^are$|^r$/] | [mention=DeclareColor] | [tag=PRP])  @Green
+       (?! [word=',']? []? [mention=Color]| [word=tool])
 
   - name: sequence
     priority: ${ rulepriority }
@@ -51,7 +72,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      /(?i)^[brg]{4}$/
+      /(?i)^[brg]{4}$/ (?!  []{0,3}? [word=tool])
 
   - name: threestep
     priority: ${ rulepriority }
@@ -59,7 +80,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      /(?i)^[brg]{3}$/
+      /(?i)^[brg]{3}$/ (?!  []{0,3}? [word=tool])
 
   - name: green_single
     priority: ${ rulepriority }
@@ -91,4 +112,4 @@ rules:
     type: token
     keep: false
     pattern: |
-      /(?i)^[brg]{2}$/
+      /(?i)^[brg]{2}$/ (?!  []{0,3}? [word=tool])

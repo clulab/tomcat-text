@@ -51,7 +51,7 @@ rules:
     priority: ${ rulepriority }
     label: Precedence
     pattern: |
-      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after))
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after)) (?= [] [])
       first: EventLike =
         # get to the second action, which is linked to the first
         <advmod
@@ -67,7 +67,7 @@ rules:
     priority: ${ rulepriority }
     label: Precedence
     pattern: |
-      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after))
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after)) (?= [] [])
       first: EventLike =  <advmod </parataxis/ [tag=/^V/]
       second: EventLike? = <advmod
 
@@ -75,7 +75,7 @@ rules:
     priority: ${ rulepriority }
     label: Precedence
     pattern: |
-      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! [word=/\,/]|([]? after))
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! [word=/\,/]|([]? after)) (?= [] [])
       first: EventLike? =
         # get to the second action, which is linked to the first
         <advmod
@@ -91,7 +91,7 @@ rules:
     priority: ${ rulepriority }
     label: Precedence
     pattern: |
-      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after))
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! ([]? after)) (?= [] [])
       first: EventLike =
         # get to the second action, which is linked to the first
         </mark/
@@ -108,7 +108,7 @@ rules:
     priority: ${ rulepriority }
     label: Precedence
     pattern: |
-      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! [word=/\,/]|([]? after))
+      trigger = [lemma=/(?i)^(${ then_precedence_triggers })/] (?! [word=/\,/]|([]? after)) (?= [] [])
       first: EventLike? =
         # get to the second action, which is linked to the first
         </mark/

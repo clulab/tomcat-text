@@ -4,7 +4,6 @@ rules:
 
   - name: stick_together
     label: StickTogether
-    example: "I have 5 coins"
     priority: ${ rulepriority }
     pattern: |
       trigger = [lemma=/^stick$|^stay$|^keep$/] [word=/^close|^together$/]
@@ -12,7 +11,7 @@ rules:
 
   - name: spread_out
     label: SpreadOut
-    example: "I have 5 coins"
+    example: "Let's spread out"
     priority: ${ rulepriority }
     pattern: |
       trigger = [lemma=/^spread|^stay$|^keep$/] [word=/^out|^apart$/]
@@ -20,10 +19,9 @@ rules:
 
   - name: split_up
     label: SpreadOut
-    example: "I have 5 coins"
     priority: ${ rulepriority }
     pattern: |
-      trigger = [lemma=/^split$/] [word=/^up|^apart$/]
+      trigger = [lemma=/^split$/] [word=/^up$|^apart$/]
       agent: Entity? = >/${agents}/
 
   - name: stick_to_location
@@ -61,3 +59,51 @@ rules:
       trigger = [lemma=/^continue/]
       agent: Entity? = >/${agents}/
       target: Action = >/${objects}/ | >xcomp | >advcl_to
+
+  - name: focus_on_action
+    label: Focus
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(concentrate|focus)$/] [word=/^on$/]?
+      agent: Entity? = >/${agents}/
+      target: Action = >/${objects}/ | >/nmod/ | </acl/
+
+  - name: focus_on_thing
+    label: Focus
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(concentrate|focus)$/] [word=/^on$/]?
+      agent: Entity? = >/${agents}/
+      target: Item = >/${objects}/ | >/nmod/ | </acl/
+
+  - name: focus_on_obstacle
+    label: Focus
+    priority: ${ rulepriority }
+    pattern: |
+        trigger = [lemma=/^(concentrate|focus)$/] [word=/^on$/]?
+        agent: Entity? = >/${agents}/
+        target: Obstacle = >/${objects}/ | >/nmod/ | </acl/
+
+  - name: ignore_on_action
+    label: Ignore
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(ignore|neglect)$/]
+      agent: Entity? = >/${agents}/
+      target: Action = >/${objects}/ | >/nmod/ | </acl/
+
+  - name: ignore_item
+    label: Ignore
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(ignore|neglect)$/]
+      agent: Entity? = >/${agents}/
+      target: Item = >/${objects}/ | >/nmod/ | </acl/
+
+  - name: ignore_obstacle
+    label: Ignore
+    priority: ${ rulepriority }
+    pattern: |
+      trigger = [lemma=/^(ignore|neglect)$/]
+      agent: Entity? = >/${agents}/
+      target: Obstacle = >/${objects}/ | >/nmod/ | </acl/

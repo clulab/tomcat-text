@@ -98,7 +98,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO] (?! [lemma=victim])
+      [lemma=/(?i)^(${ disagree_triggers })$/ & !tag=TO] (?! [lemma=victim]| []* [word="?"])
 
   - name: no_token_match
     label: Disagreement
@@ -106,7 +106,7 @@ rules:
     type: token
     keep: true
     pattern: |
-      (?<! [word=oh] )[word=/(?i)^no$/ & !tag=TO] (?! [lemma=victim]|[word=worries]|[word=more]|[tag=JJ]|[tag=NN])
+      (?<! [word=oh] )[word=/(?i)^no$/ & !tag=TO] (?! [lemma=victim]|[word=worries]|[word=more]|[tag=JJ]|[tag=NN]| []* [word="?"])
 
   - name: thank_you
     label: Gratitude

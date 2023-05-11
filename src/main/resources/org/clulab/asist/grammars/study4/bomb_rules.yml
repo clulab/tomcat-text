@@ -10,6 +10,14 @@ rules:
     pattern: |
         [word=/(i?)^chain/]
 
+  - name: fire_type
+    priority: ${ first_priority }
+    label: FireBomb
+    type: token
+    keep: false
+    pattern: |
+      [word=/(i?)^fire/] (?= [lemma=/^(bomb|ied|explosive)$/])
+
   - name: volatile_type
     priority: ${ first_priority }
     label: VolatileBomb
@@ -24,7 +32,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [word=/(i?)^marked|^labeled|^labelled/]
+      [word=/(i?)^marked|^labeled|^labelled/] | [word=mark & tag= NN]
 
   - name: bomb_w_location
     priority: ${ rulepriority }
@@ -32,18 +40,29 @@ rules:
     type: token
     keep: true
     pattern: |
-      (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
       (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]))
       [word=/^(in|on|next|at)$/]? []? (@location:Location)
+
+  - name: bomb_w_late_type
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    example: "Bombs I've marked"
+    keep: true
+    pattern: |
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/])) [word=that]? []{0,3}? [mention=Negation]? (@type:Type)
+      [word=/^(in|on|next|at)$/]? []? (@location:Location)?
 
   - name: bomb_n_location
     priority: ${ rulepriority }
     label: Bomb
     type: token
-    keep: true
+    keep: false
     pattern: |
-      (@number:Number)? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
-      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]|[]?[]? @Location))
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (@type:Type)? (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool|disposer|defuser|sisposer)s?/]|[]?[]? @Location))
 
   - name: bomb_nude
     priority: ${ rulepriority }
@@ -68,3 +87,13 @@ rules:
     pattern: |
       trigger = [mention=Bomb]
       type:  Sequence = <${agents}
+
+
+  - name: bomb_w_initial_location
+    priority: ${ rulepriority }
+    label: Bomb
+    type: token
+    keep: true
+    pattern: |
+      (@number:Number)? [word=of]? (@sequence:Sequence)? (@location:Location) (?<trigger>  [lemma=/(?i)bomb$|^ied/ & tag=/^N/]
+      (?! [word=/(?i)(indicator|finder|scanner|tool)s?/]))

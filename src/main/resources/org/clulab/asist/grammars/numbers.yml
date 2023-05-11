@@ -52,11 +52,61 @@ rules:
     pattern: |
       [word=/^(all)$/]
 
+  - name: many
+    priority: ${ rulepriority }
+    label: Many
+    type: token
+    keep: false
+    pattern: |
+      [word=/^(many|much|lots?)$/]
+
   - name: number_coordination
     priority: ${ rulepriority }
-    label: Number
+    label: CoordinatedNumber
     type: token
     keep: true
     pattern: |
-      (@number0:Number)? []? (@number1:Number) (?<trigger> [lemma=and]) [word=/\#/]? (@number2:Number)
+      (@number0:Number)? []? (@number1:Number) (?<trigger> [lemma=/^(and)$/]) [word=/\#/]? (@number2:Number)
 
+  - name: number_coordination_no_and
+    priority: ${ rulepriority }
+    label: CoordinatedNumber
+    type: token
+    keep: true
+    pattern: |
+      (@number0:Number) (?<trigger> [lemma=/^(,)$/]) [word=/\#/]?  (@number1:Number) []? (@number2:Number)?
+
+  - name: number_range
+    priority: ${ rulepriority }
+    label: NumberRange
+    type: token
+    keep: true
+    pattern: |
+      (@number0:Number) (?<trigger> [word=/^(to|-)$/] ) (@number1:Number)
+
+
+  - name: one
+    priority: ${ rulepriority }
+    label: One
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^one$/ & tag=CD]
+
+
+  - name: two
+    priority: ${ rulepriority }
+    label: Two
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^two/ & tag=CD]
+
+
+  - name: three
+    priority: ${ rulepriority }
+    label: Three
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^three$/ & tag=CD]

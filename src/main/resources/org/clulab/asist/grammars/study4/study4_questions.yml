@@ -61,13 +61,22 @@ rules:
     pattern: |
       [lemma=/^what$/] [lemma=have] []? [word=got]? [word=left]
 
+  - name: unknown_question_early
+    comment: "This rule is here to catch question marks so other rules that need to avoid question marks can see them"
+    priority: ${ first_priority }
+    label: QuestionMark
+    type: token
+    keep: false
+    pattern: |
+      (?<! [mention=Question] []*) [word="?"] (?! []* [mention=Question] )
+
   - name: unknown_question
     comment: "This is for utterances with question marks where we dont detect a question"
-    priority: ${ rulepriority }
+    priority: ${ second_priority }
     label: Question
     type: token
     pattern: |
-      (?<! [mention=Question] []+) [word="?"]
+      (?<! [mention=Question] []{2,30}) [word="?"] (?! []{2,30} [mention=Question] )
 
 
 

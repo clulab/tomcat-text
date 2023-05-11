@@ -10,6 +10,15 @@ rules:
       agent: Entity? = >/${agents}/
       target: Bomb = >dobj
 
+  - name: defuse1_defusing
+    priority: ${ rulepriority }
+    example: "I'll be in charge of defusing bombs"
+    label: Defuse
+    type: token
+    keep: true
+    pattern: |
+      (?<trigger>  [word=defusing & tag=VBG] ) (@bomb:Bomb)
+
   - name: defuse2
     priority: ${ rulepriority }
     label: Defuse
@@ -23,6 +32,15 @@ rules:
     label: Defuse
     pattern: |
       trigger = [lemma=/(?i)^remove/ & tag=/^V/]
+      agent: Entity? = >/${agents}/
+      target: Bomb = >dobj
+
+  - name: defuse_get
+    priority: ${ rulepriority }
+    example: "let's get the bombs"
+    label: Defuse
+    pattern: |
+      trigger = [lemma=/(?i)get|do$/ & tag=/^V/]
       agent: Entity? = >/${agents}/
       target: Bomb = >dobj
 
@@ -346,6 +364,7 @@ rules:
 
   - name: markBomb
     priority: ${ rulepriority }
+    example: "I'm marking bombs. Bombs I've marked are in a5"
     label: Mark
     pattern: |
       trigger = [lemma=/(?i)^mark/ & tag=/^V/]
@@ -389,3 +408,21 @@ rules:
     pattern: |
       (@agent:Entity)? []? (?<trigger>  [lemma=/(?i)^mark/] [!mention=Mark]) (@location:Location)? []? (@target:Fire)
       []? (@location:Location)?
+
+  - name: bomb_explode
+    example: "A bomb exploded"
+    priority: ${ rulepriority }
+    label: Explode
+    pattern: |
+      trigger = [lemma=/^(explode)$/]
+      bomb: Bomb = >/${agents}/
+      location: Location? = >/nmod_(in|from)/
+
+  - name: bomb_explode_go_off
+    example: "This bomb will go off!"
+    priority: ${ rulepriority }
+    label: Explode
+    pattern: |
+      trigger = [lemma=/^(go)$/] [lemma=off]
+      bomb: Bomb = >/${agents}/
+      location: Location? = >/nmod_(in|from)/

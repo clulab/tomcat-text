@@ -68,7 +68,7 @@ rules:
     type: token
     keep: false
     pattern: |
-      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP|^FW$/]
+      [lemma=/(?i)^(${ self_triggers })$/ & tag=/PRP|^FW$|^LS$/]
 
   - name: you_token_capture
     label: You
@@ -216,4 +216,20 @@ rules:
     type: token
     keep:  ${ keep_entities }
     pattern: |
-      [lemma=/^(fire)$/ & tag=/^N/] (?! [lemma=extinguisher])
+      (?<trigger> [lemma=/^(fire)$/ & tag=/^N/]) (?! [lemma=extinguisher])
+
+  - name: fire_w_loc
+    priority: ${ rulepriority }
+    label: Fire
+    type: token
+    keep:  true
+    pattern: |
+      (?<trigger> [lemma=/^(fire)$/ & tag=/^N/]) (?! [lemma=extinguisher]) []{0,2} @location:Location
+
+  - name: who
+    priority: ${ rulepriority }
+    label: Who
+    type: token
+    keep: ${ keep_entities }
+    pattern: |
+      [lemma=/^(who)$/]

@@ -1,12 +1,11 @@
 #These are procedurally generated rules for the study 4 map quadrants
-
 - name: quadranta1
   priority: ${ first_priority }
   label: A1
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?1$/]| [lemma=/(?i)^1[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^1$/]
 
 - name: quadranta2
   priority: ${ first_priority }
@@ -14,7 +13,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?2$/]| [lemma=/(?i)^2[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^2$/]
 
 - name: quadranta3
   priority: ${ first_priority }
@@ -22,7 +21,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?3$/]| [lemma=/(?i)^3[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^3$/]
 
 - name: quadranta4
   priority: ${ first_priority }
@@ -30,7 +29,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?4$/]| [lemma=/(?i)^4[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^4$/]
 
 - name: quadranta5
   priority: ${ first_priority }
@@ -38,7 +37,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?5$/]| [lemma=/(?i)^5[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^5$/]
 
 - name: quadranta6
   priority: ${ first_priority }
@@ -46,7 +45,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?6$/]| [lemma=/(?i)^6[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^6$/]
 
 - name: quadranta7
   priority: ${ first_priority }
@@ -54,7 +53,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^a[-\s]?7$/]| [lemma=/(?i)^7[-\s]?a$/]
+          [lemma=/(?i)^a[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?a$/] | [lemma=/(?i)^a$/] [lemma=/(?i)^7$/]
 
 - name: quadrantb1
   priority: ${ first_priority }
@@ -62,7 +61,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?1$/]| [lemma=/(?i)^1[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^1$/]
 
 - name: quadrantb2
   priority: ${ first_priority }
@@ -70,7 +69,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?2$/]| [lemma=/(?i)^2[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^2$/]
 
 - name: quadrantb3
   priority: ${ first_priority }
@@ -78,7 +77,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?3$/]| [lemma=/(?i)^3[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^3$/]
 
 - name: quadrantb4
   priority: ${ first_priority }
@@ -86,7 +85,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?4$/]| [lemma=/(?i)^4[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^4$/]
 
 - name: quadrantb5
   priority: ${ first_priority }
@@ -94,7 +93,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?5$/]| [lemma=/(?i)^5[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^5$/]
 
 - name: quadrantb6
   priority: ${ first_priority }
@@ -102,7 +101,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?6$/]| [lemma=/(?i)^6[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^6$/]
 
 - name: quadrantb7
   priority: ${ first_priority }
@@ -110,7 +109,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^b[-\s]?7$/]| [lemma=/(?i)^7[-\s]?b$/]
+          [lemma=/(?i)^b[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?b$/] | [lemma=/(?i)^b$/] [lemma=/(?i)^7$/]
 
 - name: quadrantc1
   priority: ${ first_priority }
@@ -118,7 +117,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?1$/]| [lemma=/(?i)^1[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^1$/]
 
 - name: quadrantc2
   priority: ${ first_priority }
@@ -126,7 +125,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?2$/]| [lemma=/(?i)^2[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^2$/]
 
 - name: quadrantc3
   priority: ${ first_priority }
@@ -134,7 +133,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?3$/]| [lemma=/(?i)^3[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^3$/]
 
 - name: quadrantc4
   priority: ${ first_priority }
@@ -142,7 +141,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?4$/]| [lemma=/(?i)^4[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^4$/]
 
 - name: quadrantc5
   priority: ${ first_priority }
@@ -150,7 +149,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?5$/]| [lemma=/(?i)^5[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^5$/]
 
 - name: quadrantc6
   priority: ${ first_priority }
@@ -158,7 +157,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?6$/]| [lemma=/(?i)^6[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^6$/]
 
 - name: quadrantc7
   priority: ${ first_priority }
@@ -166,7 +165,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^c[-\s]?7$/]| [lemma=/(?i)^7[-\s]?c$/]
+          [lemma=/(?i)^c[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?c$/] | [lemma=/(?i)^c$/] [lemma=/(?i)^7$/]
 
 - name: quadrantd1
   priority: ${ first_priority }
@@ -174,7 +173,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?1$/]| [lemma=/(?i)^1[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^1$/]
 
 - name: quadrantd2
   priority: ${ first_priority }
@@ -182,7 +181,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?2$/]| [lemma=/(?i)^2[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^2$/]
 
 - name: quadrantd3
   priority: ${ first_priority }
@@ -190,7 +189,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?3$/]| [lemma=/(?i)^3[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^3$/]
 
 - name: quadrantd4
   priority: ${ first_priority }
@@ -198,7 +197,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?4$/]| [lemma=/(?i)^4[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^4$/]
 
 - name: quadrantd5
   priority: ${ first_priority }
@@ -206,7 +205,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?5$/]| [lemma=/(?i)^5[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^5$/]
 
 - name: quadrantd6
   priority: ${ first_priority }
@@ -214,7 +213,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?6$/]| [lemma=/(?i)^6[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^6$/]
 
 - name: quadrantd7
   priority: ${ first_priority }
@@ -222,7 +221,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^d[-\s]?7$/]| [lemma=/(?i)^7[-\s]?d$/]
+          [lemma=/(?i)^d[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?d$/] | [lemma=/(?i)^d$/] [lemma=/(?i)^7$/]
 
 - name: quadrante1
   priority: ${ first_priority }
@@ -230,7 +229,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?1$/]| [lemma=/(?i)^1[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^1$/]
 
 - name: quadrante2
   priority: ${ first_priority }
@@ -238,7 +237,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?2$/]| [lemma=/(?i)^2[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^2$/]
 
 - name: quadrante3
   priority: ${ first_priority }
@@ -246,7 +245,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?3$/]| [lemma=/(?i)^3[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^3$/]
 
 - name: quadrante4
   priority: ${ first_priority }
@@ -254,7 +253,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?4$/]| [lemma=/(?i)^4[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^4$/]
 
 - name: quadrante5
   priority: ${ first_priority }
@@ -262,7 +261,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?5$/]| [lemma=/(?i)^5[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^5$/]
 
 - name: quadrante6
   priority: ${ first_priority }
@@ -270,7 +269,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?6$/]| [lemma=/(?i)^6[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^6$/]
 
 - name: quadrante7
   priority: ${ first_priority }
@@ -278,7 +277,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^e[-\s]?7$/]| [lemma=/(?i)^7[-\s]?e$/]
+          [lemma=/(?i)^e[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?e$/] | [lemma=/(?i)^e$/] [lemma=/(?i)^7$/]
 
 - name: quadrantf1
   priority: ${ first_priority }
@@ -286,7 +285,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?1$/]| [lemma=/(?i)^1[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^1$/]
 
 - name: quadrantf2
   priority: ${ first_priority }
@@ -294,7 +293,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?2$/]| [lemma=/(?i)^2[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^2$/]
 
 - name: quadrantf3
   priority: ${ first_priority }
@@ -302,7 +301,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?3$/]| [lemma=/(?i)^3[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^3$/]
 
 - name: quadrantf4
   priority: ${ first_priority }
@@ -310,7 +309,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?4$/]| [lemma=/(?i)^4[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^4$/]
 
 - name: quadrantf5
   priority: ${ first_priority }
@@ -318,7 +317,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?5$/]| [lemma=/(?i)^5[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^5$/]
 
 - name: quadrantf6
   priority: ${ first_priority }
@@ -326,7 +325,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?6$/]| [lemma=/(?i)^6[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^6$/]
 
 - name: quadrantf7
   priority: ${ first_priority }
@@ -334,7 +333,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^f[-\s]?7$/]| [lemma=/(?i)^7[-\s]?f$/]
+          [lemma=/(?i)^f[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?f$/] | [lemma=/(?i)^f$/] [lemma=/(?i)^7$/]
 
 - name: quadrantg1
   priority: ${ first_priority }
@@ -342,7 +341,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?1$/]| [lemma=/(?i)^1[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^1$/]
 
 - name: quadrantg2
   priority: ${ first_priority }
@@ -350,7 +349,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?2$/]| [lemma=/(?i)^2[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^2$/]
 
 - name: quadrantg3
   priority: ${ first_priority }
@@ -358,7 +357,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?3$/]| [lemma=/(?i)^3[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^3$/]
 
 - name: quadrantg4
   priority: ${ first_priority }
@@ -366,7 +365,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?4$/]| [lemma=/(?i)^4[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^4$/]
 
 - name: quadrantg5
   priority: ${ first_priority }
@@ -374,7 +373,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?5$/]| [lemma=/(?i)^5[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^5$/]
 
 - name: quadrantg6
   priority: ${ first_priority }
@@ -382,7 +381,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?6$/]| [lemma=/(?i)^6[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^6$/]
 
 - name: quadrantg7
   priority: ${ first_priority }
@@ -390,7 +389,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^g[-\s]?7$/]| [lemma=/(?i)^7[-\s]?g$/]
+          [lemma=/(?i)^g[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?g$/] | [lemma=/(?i)^g$/] [lemma=/(?i)^7$/]
 
 - name: quadranth1
   priority: ${ first_priority }
@@ -398,7 +397,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?1$/]| [lemma=/(?i)^1[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^1$/]
 
 - name: quadranth2
   priority: ${ first_priority }
@@ -406,7 +405,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?2$/]| [lemma=/(?i)^2[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^2$/]
 
 - name: quadranth3
   priority: ${ first_priority }
@@ -414,7 +413,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?3$/]| [lemma=/(?i)^3[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^3$/]
 
 - name: quadranth4
   priority: ${ first_priority }
@@ -422,7 +421,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?4$/]| [lemma=/(?i)^4[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^4$/]
 
 - name: quadranth5
   priority: ${ first_priority }
@@ -430,7 +429,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?5$/]| [lemma=/(?i)^5[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^5$/]
 
 - name: quadranth6
   priority: ${ first_priority }
@@ -438,7 +437,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?6$/]| [lemma=/(?i)^6[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^6$/]
 
 - name: quadranth7
   priority: ${ first_priority }
@@ -446,7 +445,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^h[-\s]?7$/]| [lemma=/(?i)^7[-\s]?h$/]
+          [lemma=/(?i)^h[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?h$/] | [lemma=/(?i)^h$/] [lemma=/(?i)^7$/]
 
 - name: quadranti1
   priority: ${ first_priority }
@@ -454,7 +453,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?1$/]| [lemma=/(?i)^1[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?1$/]| [lemma=/(?i)^1[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^1$/]
 
 - name: quadranti2
   priority: ${ first_priority }
@@ -462,7 +461,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?2$/]| [lemma=/(?i)^2[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?2$/]| [lemma=/(?i)^2[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^2$/]
 
 - name: quadranti3
   priority: ${ first_priority }
@@ -470,7 +469,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?3$/]| [lemma=/(?i)^3[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?3$/]| [lemma=/(?i)^3[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^3$/]
 
 - name: quadranti4
   priority: ${ first_priority }
@@ -478,7 +477,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?4$/]| [lemma=/(?i)^4[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?4$/]| [lemma=/(?i)^4[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^4$/]
 
 - name: quadranti5
   priority: ${ first_priority }
@@ -486,7 +485,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?5$/]| [lemma=/(?i)^5[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?5$/]| [lemma=/(?i)^5[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^5$/]
 
 - name: quadranti6
   priority: ${ first_priority }
@@ -494,7 +493,7 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?6$/]| [lemma=/(?i)^6[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?6$/]| [lemma=/(?i)^6[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^6$/]
 
 - name: quadranti7
   priority: ${ first_priority }
@@ -502,5 +501,5 @@
   type: token
   keep: ${ keep_locations}
   pattern: |
-          [lemma=/(?i)^i[-\s]?7$/]| [lemma=/(?i)^7[-\s]?i$/]
+          [lemma=/(?i)^i[-\s_]?7$/]| [lemma=/(?i)^7[-\s_]?i$/] | [lemma=/(?i)^i$/] [lemma=/(?i)^7$/]
 

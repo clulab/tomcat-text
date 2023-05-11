@@ -105,6 +105,33 @@
   pattern: |
     (@agent:Entity)? (@number:Number) (?<trigger> [lemma=green] ) (?!  [mention=Bomb])
 
+- name: greentool_and_other
+  priority: ${ rulepriority }
+  label: GreenTool
+  example: "I got green and red tools"
+  type: token
+  keep: true
+  pattern: |
+      [lemma=green] (?= [word=',']? [mention=Color]?  [lemma=and] [word=',']? [lemma=/^(red|green|blue)$/] [lemma=tool] )
+
+- name: redtool_and_other
+  priority: ${ rulepriority }
+  label: RedTool
+  example: "I got red and green tools"
+  type: token
+  keep: true
+  pattern: |
+    [lemma=red] (?= [word=',']? [mention=Color]?  [lemma=and] [word=',']? [lemma=/^(red|green|blue)$/] [lemma=tool] )
+
+- name: bluetool_and_other
+  priority: ${ rulepriority }
+  label: BlueTool
+  example: "I got blue and red tools"
+  type: token
+  keep: true
+  pattern: |
+    [lemma=blue] (?= [word=',']? [mention=Color]?  [lemma=and] [word=',']? [lemma=/^(red|green|blue)$/] [lemma=tool] )
+
 - name: ppe
   priority: ${ rulepriority }
   label: BombPPE
@@ -119,7 +146,7 @@
   type: token
   keep: true
   pattern: |
-    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb]? [word=/(i?)armor$/])
+    (@agent:Entity)?  (@number:Number)? (?<trigger> [word=suit]? []? [lemma=bomb]? [word=/(i?)armor$/])
 
 - name: beacon_generic
   priority: ${ rulepriority }
@@ -151,7 +178,7 @@
   type: token
   keep: true
   pattern: |
-    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb] [lemma=/(disposer|dispose|defuser|diffuser)/])
+    (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=bomb] [lemma=/(disposer|dispose|defuser|diffuser|sisposer)/])
 
 - name: fire_extinguishier
   priority: ${ rulepriority }
@@ -160,6 +187,14 @@
   keep: true
   pattern: |
     (@agent:Entity)?  (@number:Number)? (?<trigger> [lemma=fire] [lemma=/(extinguisher|extinguish|exting|extiguisher)/])
+
+- name: fire_extinguishier_bare
+  priority: ${ rulepriority }
+  label: FireExtinguisher
+  type: token
+  keep: ${ keep_items }
+  pattern: |
+    (?<! [lemma=fire]) [lemma=extinguisher]
 
 - name: beacon_hazard
   priority: ${ rulepriority }
@@ -180,14 +215,23 @@
     product1: Product = <cc
     product2: Product = <cc >conj_and
 
-- name: comma_sep_prod
+- name: comma_sep_prod_and
   priority: ${ second_priority }
   label: CoordinatedProduct
   example: "I'll buy a sensor, a ppe, and a tools"
   type: token
   keep: true
   pattern: |
-    (@product:Product) ("," []? @product:Product)+ (and []? @product:Product)?
+    (@product:Product)  ([word=","]? []? @product:Product)+ [word=',']? and []? @product:Product
+
+- name: comma_sep_prod_no_and
+  priority: ${ second_priority }
+  label: CoordinatedProduct
+  example: "I'll buy a sensor, a ppe, and a tools"
+  type: token
+  keep: true
+  pattern: |
+    (@product:Product)  ([word=","]? []? @product:Product)+
 
 - name: prep_sep_prod
   priority: ${ second_priority }

@@ -8,7 +8,7 @@ rules:
     label: Proposal
     example: "Let's go"
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & lemma=let] (?! me|(you)|([]{4} I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh) []*) [tag=VB & lemma=let] (?! me|(you)|([]{0,4} I)| ([]* @Question))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ [!mention=Instruction] | <aux [!mention=Instruction] |
       >/dobj|ccomp/  [!mention=Instruction & lemma=/^(do|go)$/] >/dobj|ccomp/?
@@ -18,8 +18,8 @@ rules:
     label: Instruction
     example: "Help him save the victim! Don't enter D2."
     pattern: |
-      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh|[lemma=let]) []*)
-      [tag=VB & !lemma=let & !lemma=be] (?! (we) i_am_searching|(you)|([]* I))
+      trigger = (?<! (I|[tag=/^MD$|^WP$|^WRB$|VBD$/]|to|[lemma=do]you|[lemma=do][lemma=not]|or|oh|[lemma=let]) []* )
+      [tag=VB & !lemma=let & !lemma=be &!mention=Question] (?! (we) |(you)|([]* I) | ([]* @Question))
       agent: Entity? = >/^nsubj/ [!mention=Self]
       topic: Action = >/dobj|ccomp/ | <aux
 
@@ -123,6 +123,13 @@ rules:
     label: ToolBroken
     pattern: |
       trigger = [lemma=/(?i)broken|break/]
+      tool: Tool = >/nsubj|dobj/
+
+  - name: report_item_not_work
+    priority: ${ rulepriority }
+    label: ToolBroken
+    pattern: |
+      trigger = [lemma=not] [lemma=/(?i)function|work/]
       tool: Tool = >/nsubj|dobj/
 
   - name: report_door_open
@@ -442,7 +449,7 @@ rules:
       trigger = [lemma=/assist|help|aid|support/ & !mention=HelpOffer]
       agent: Self = >nsubj|<xcomp >nsubj
       location: Location? = >/${preps}/|
-               >/advmod/
+               >/advmod/ | >/nmod/
 
   - name: "Help_command"
     label: HelpCommand

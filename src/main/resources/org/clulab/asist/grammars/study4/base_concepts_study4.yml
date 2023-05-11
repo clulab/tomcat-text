@@ -55,7 +55,7 @@ rules:
       [word=health]
 
   - name: tool_generic_number
-    priority: ${ second_priority }
+    priority: ${ generic_priority }
     label: Tool
     type: token
     keep: true
@@ -64,7 +64,7 @@ rules:
       (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
 
   - name: tool_generic_owner
-    priority: ${ second_priority }
+    priority: ${ generic_priority }
     label: Tool
     type: token
     keep: true
@@ -73,7 +73,7 @@ rules:
       (?<trigger> (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool]))
 
   - name: tool_generic
-    priority: ${ second_priority }
+    priority: ${ generic_priority }
     label: Tool
     type: token
     keep: false
@@ -81,7 +81,7 @@ rules:
        (?<! ([mention=Tool]|/use/) ) [lemma=/^tool$/]  (?!  [mention=Tool])
 
   - name: unknown_prod_numbered
-    priority: ${ second_priority }
+    priority: ${ generic_priority }
     label: OfEachTool
     example: "6 of each"
     keep: true
@@ -90,7 +90,7 @@ rules:
       number: Number = <"nmod_of" |>"compound" | >nummod
 
   - name: unknown_prod_numbered_token
-    priority: ${ second_priority }
+    priority: ${ generic_priority }
     label: OfEachTool
     example: "6 of each"
     type: token
@@ -99,7 +99,7 @@ rules:
 
 
   - name: tool_wire_snip
-    priority: ${ second_priority }
+    priority: ${ generic_priority }
     label: Tool
     keep: ${ keep_items }
     pattern: |
@@ -187,3 +187,34 @@ rules:
     pattern: |
       [word=/^(planning)$/ & tag=/^N/] [word=phase]?
 
+  - name: fire_duty
+    priority: ${ rulepriority }
+    label: FireMan
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(fire)$/ ] [word=duty] | [lemma=/^(fire)$/ ] [lemma= /^(person|guy|man)$/]
+
+  - name: fire_man
+    priority: ${ rulepriority }
+    label: FireMan
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(fireman)$/ ]
+
+  - name: bomb_duty
+    priority: ${ rulepriority }
+    label: DefuserMan
+    type: token
+    keep: false
+    pattern: |
+      [lemma=/^(bomb)$/ ] [word=duty] | [lemma=/^(bomb)$/ ] [lemma= /^(person|guy|man|defuser)$/]
+
+  - name: scout_man
+    priority: ${ rulepriority }
+    label: ScoutMan
+    type: token
+    keep: false
+    pattern: |
+      [lemma=bomb]? [lemma=/^(scout|searcher|finder)$/ ]

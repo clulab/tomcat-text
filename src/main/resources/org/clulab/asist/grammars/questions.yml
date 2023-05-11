@@ -148,6 +148,13 @@ rules:
       topic: Type = <det
       location: Location? = <det (</nsubj/|>/nmod/)
 
+  - name: who_question
+    example: "Who will be the fire guy?"
+    priority: ${ rulepriority }
+    label: WhoQuestion
+    pattern: |
+      trigger = [mention=Who]
+      topic: Action = </nsubj/ | </nsubj/ >aux
 
 
 #leave this here so I can remember how to do these complex dependencies

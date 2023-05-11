@@ -124,11 +124,11 @@ rules:
   ###################### Plans for study 4 live here for now
   - name: shall_should_plan
     priority: ${ rulepriority }
-    example: "I will save this guy. I'll start going there"
+    example: "I should save this guy. I'll start going there"
     label: ShouldPlan
     action: preventSubjectVerbInversion
     pattern: |
-      trigger = (?<! [mention=Question] ) [tag=/^MD/ & lemma=/^should|^shall$/]
+      trigger = (?<! [mention=Question] ) [tag=/^MD/ & lemma=/^should|^shall$|^might$/]
       topic: Action = <aux >xcomp?
       agent: Entity? = <aux >nsubj
 
@@ -151,6 +151,16 @@ rules:
         agent: Entity? = <ccomp >nsubj
   #      topic: Action = <amod <dobj | <advmod <dobj
 
+  - name: is_left_bombs
+    example: "5 bombs are left"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      bomb: Bomb = >/nsubj/
+      agent: Entity? = <ccomp >nsubj
+  #      topic: Action = <amod <dobj | <advmod <dobj
+
   - name: is_left_of
     example: "I have 5 left of the red tool"
     priority: ${ rulepriority }
@@ -158,6 +168,16 @@ rules:
     pattern: |
       trigger = [word=/^(left)|(remaining)$/]
       item: Item = >/nmod_of/
+      agent: Entity? = <dobj >nsubj
+      number: Number = >nummod | >amod | >det
+
+  - name: is_left_of_bomb
+    example: "I have 5 left of the red tool"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      bomb: Bomb = >/nmod_of/
       agent: Entity? = <dobj >nsubj
       number: Number = >nummod | >amod | >det
 
@@ -178,6 +198,15 @@ rules:
     pattern: |
       trigger = [word=/^(left)|(remaining)$/]
       item: Item = >dobj
+      agent: Entity? = <nsubj
+
+  - name: is_left_obj_bomb
+    example: "How many tools do we have left?"
+    priority: ${ rulepriority }
+    label: Remaining
+    pattern: |
+      trigger = [word=/^(left)|(remaining)$/]
+      bomb: Bomb = >dobj
       agent: Entity? = <nsubj
   #      topic: Action = <amod <dobj | <advmod <dobj
 
@@ -241,6 +270,15 @@ rules:
       trigger = [lemma=ready]
       agent: Entity = >nsubj
 
+  - name: ready_bare
+    priority: ${ rulepriority }
+    label: AmReady
+    example: "Ready when you are"
+    keep: true
+    type: token
+    pattern: |
+       (?<! []) [lemma=ready] (?!  []* [mention=Question & !lemma=when] )
+
   - name: "finish_task"
     label: Completed
     example: "I finished defusing the bomb."
@@ -276,3 +314,67 @@ rules:
       trigger = [lemma=/^do$/] [lemma=/^not$/] [lemma=/^(know)$/]
       agent: Entity? = >/${agents}/
       topic: Action = >/advcl/
+
+  - name: contains_report
+    priority: ${ rulepriority }
+    label: ReportBomb
+    example: "D2 contains a bomb."
+    pattern: |
+      trigger = [lemma=/(?i)^(contain|have)/]
+      exists: Bomb = >dobj
+      location: Location =  >/${agents}/
+
+  - name: role_declare_inf
+    priority: ${ rulepriority }
+    label: RoleDeclare
+    example: "Who will be on fire duty?"
+    pattern: |
+      trigger = [lemma=/(?i)^be/ & tag=VB] [!mention=/You|Self/]
+      target: Role = <cop
+      agent: Entity = <cop >/(${agents})/
+
+  - name: role_declare_take
+    priority: ${ rulepriority }
+    label: RoleDeclare
+    example: "I'll take fire duty"
+    pattern: |
+      trigger = [lemma=/(?i)^(take|do)/]
+      target: Role = >dobj
+      agent: Entity = >/(${agents})/
+
+  - name: role_declare_take_care
+    priority: ${ rulepriority }
+    label: RoleDeclare
+    example: "I'll take care of fire duty"
+    pattern: |
+      trigger = [lemma=/(?i)^(take)/] [lemma=/(?i)^(care)/]
+      target: Role = >dobj | >/nmod/
+      agent: Entity = >/(${agents})/
+
+
+  - name: take_care_of_obstacle
+    priority: ${ rulepriority }
+    label: ResponsibleFor
+    example: "I'll be in charge of fires"
+    pattern: |
+      trigger = [lemma=/(?i)^(in|take|responsible)/] [lemma=/(?i)^(charge|care|for)/]
+      target: Obstacle = >dobj | >/nmod/
+      agent: Entity = >/(${agents})/
+
+  - name: take_care_of_action
+    priority: ${ rulepriority }
+    label: ResponsibleFor
+    example: "I'll be in charge of fires"
+    pattern: |
+      trigger = [lemma=/(?i)^(in|take|responsible)/] [lemma=/(?i)^(charge|care|for)/]
+      target: Action = >dobj | >/nmod/
+      agent: Entity? = >/(${agents})/
+
+  - name: take_care_of_item
+    priority: ${ rulepriority }
+    label: ResponsibleFor
+    example: "I'll be in charge of fires"
+    pattern: |
+      trigger = [lemma=/(?i)^(in|take|responsible)/] [lemma=/(?i)^(charge|care|for)/]
+      target: Item = >dobj | >/nmod/
+      agent: Entity? = >/(${agents})/
